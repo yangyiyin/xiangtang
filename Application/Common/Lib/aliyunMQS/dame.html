@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+		<title>MQS SDK dame</title>
+		<link rel="stylesheet" href="/file/bootstrap.min.css">
+		<style>
+			#show{
+				height:200px;
+				border:1px solid #ccc;
+				margin:0 auto;
+				overflow:auto;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="row">
+			<div class="col-md-4"></div>
+			<div class="col-md-4">
+				<br/><br/>
+				<p> 发送于接收消息列队里的消息：</p>
+				<div id="show"></div>
+				<center>
+					<textarea cols="47" rows="3" class="form-control" ></textarea><br />
+					<button type="button" class="btn btn-primary btn-lg btn-block" onclick="pub()"> 发送 </button>
+				</center>
+			
+			</div>
+			<div class="col-md-4"></div>
+		
+		</div>
+		
+		<!--******************************-->
+		<script src="/file/jquery.js"></script>
+		<script>	
+			//定义一个sub函数,来请求消息列队里的消息
+			function sub(){
+				$.post('message.php?do=get',function(data){	//使用ajax请求消息列队里的消息
+					if(data!=""){						//如果接收到消息列队里的消息,就会插入到div层当中
+						$("#show").append(data+"<br />");
+						$('#show').scrollTop( $('#show')[0].scrollHeight );
+					}
+					sub();//重新调用自己,重新去请求消息列队里的消息
+				});
+			}
+			sub();//第一次调用消息列队里的消息
+			
+			function pub(){//定义发布函数
+				$.post('message.php?do=pus',{'content':$('textarea').val()});	//将textarea里面的内容通过ajax 发送到消息列队里
+				$("textarea").val("");										//清空textarea里面的值
+			}
+		</script>
+	</body>
+</html>
+
+

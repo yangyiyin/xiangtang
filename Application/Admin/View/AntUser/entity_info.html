@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>企业资质</title>
+</head>
+<body>
+
+    <p>名称:{$info.entity_title}</p>
+    <p>联系号码:{$info.entity_tel}</p>
+    <p>联系人:{$info.entity_name}</p>
+    <p><img src="__ROOT__{$info['entity_license']|get_cover='path'}" /></p>
+</body>
+</html>

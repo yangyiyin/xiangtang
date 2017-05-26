@@ -1,0 +1,139 @@
+<extend name="Public/base"/>
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+
+		    <ul class="cc">
+		      	<li class="current"><a href="javascript:;">所有供货商</a></li>
+				<li ><a href="{:U('add')}">添加供货商</a></li>
+		    </ul>
+		</div>
+	    <div class="search_type cc mb10 search-form">
+	      <div class="mb10">
+			  &nbsp;名称：
+			  <input type="text" class="input length_2" name="name" style="width:100px;" value="{:I('name')}" >
+
+			  &nbsp;手机号：
+	        <input type="text" class="input length_2" name="tel" style="width:100px;" value="{:I('tel')}" >
+
+			  <a class="u-btn" href="javascript:;" id="search" url="{:U('index')}">搜索</a>
+	        <!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
+	        </span>
+	      </div>
+	    </div>
+		<!-- 数据表格 -->
+	    <div class="table_list">
+			<table class="" width="100%">
+		    <thead>
+		        <tr>
+					<th width="5%"><input class="check-all" type="checkbox"/></th>
+					<th width="5%">id</th>
+					<th width="10%">名称</th>
+					<th width="10%">手机号</th>
+					<th width="30%">地址</th>
+					<th width="10%">操作</th>
+				</tr>
+		    </thead>
+		    <tbody>
+				<volist name="list" id="vo">
+				<tr>
+		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
+					<td>{$vo.id} </td>
+
+					<td>
+						{$vo.name}
+					</td>
+					<td>{$vo.tel}</td>
+					<td>{$vo.address}</td>
+					<td>
+						<a  class="u-btn " href="{:U('add')}/id/{$vo.id}">编辑</a>|
+						<a  class="u-btn confirm J_ajax_get" href="{:U('del')}/id/{$vo.id}" >删除</a>
+
+					</td>
+				</tr>
+				</volist>
+			</tbody>
+		    </table> 
+		</div>
+		<div class="btn_wrap">
+			<div class="btn_wrap_pd">
+				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
+
+		    </div>
+		</div>
+		<!-- 分页 -->
+	    <div class="page">
+	        {$page_html}
+	    </div>
+	</div>
+</div>
+
+</block>
+<block name="script">
+<link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
+<php>if(C('COLOR_STYLE')=='blue_color') echo '<link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css" rel="stylesheet" type="text/css">';</php>
+<link href="__STATIC__/datetimepicker/css/dropdown.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script type="text/javascript">
+$(function(){
+	//搜索功能
+	$("#search").click(function(){
+		var url = $(this).attr('url');
+        var query  = $('.search-form').find('input,select').serialize();
+        query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+        query = query.replace(/^&/g,'');
+
+
+        if( url.indexOf('?')>0 ){
+            url += '&' + query;
+        }else{
+            url += '?' + query;
+        }
+		window.location.href = url;
+	});
+
+	/* 状态搜索子菜单 */
+	$(".search-form").find(".drop-down").hover(function(){
+		$("#sub-sch-menu").removeClass("hidden");
+	},function(){
+		$("#sub-sch-menu").addClass("hidden");
+	});
+	$("#sub-sch-menu li").find("a").each(function(){
+		$(this).click(function(){
+			var text = $(this).text();
+			$("#sch-sort-txt").text(text).attr("data",$(this).attr("value"));
+			$("#sub-sch-menu").addClass("hidden");
+		})
+	});
+
+    //回车自动提交
+    $('.search-form').find('input').keyup(function(event){
+        if(event.keyCode===13){
+            $("#search").click();
+        }
+    });
+
+    $('#time-start').datetimepicker({
+        format: 'yyyy-mm-dd',
+        language:"zh-CN",
+	    minView:2,
+	    autoclose:true
+    });
+
+    $('#datetimepicker').datetimepicker({
+       format: 'yyyy-mm-dd',
+        language:"zh-CN",
+        minView:2,
+        autoclose:true,
+        pickerPosition:'bottom-left'
+    });
+
+
+});
+
+</script>
+</block>
+
+

@@ -1,0 +1,108 @@
+<extend name="Public/base"/>
+<block name="body">
+	<div class="g-wrap">
+		<div class="u-tab">
+		    <ul class="cc">
+		      <li class="current"><a href="javasctipt:;">分类管理 </a></li>
+		      <li><a href="{:U('add')}">添加分类 </a></li>
+		    </ul>
+		</div>
+        <div class="common-form">
+            <div class="table_list u-table-left j-hidden-level">
+                <table width="100%">
+                <thead>
+                  <tr>
+                    <th width="80">级别</th>
+                    <th width="80">排序</th>
+                    <th width="100">ID</th>
+                    <th>分类名称</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <volist name="category" id="cat">
+
+                    <tr>
+                        <td>一级分类</td>
+                        <td width="80">{$cat.content.sort}</td>
+                        <td width="100">{$cat.content.id}</td>
+                        <td>{$cat.content.name}</td>
+                        <td>
+                            <a href="{:U('add')}/pid/{$cat['content']['id']}">添加子分类</a> |
+                            <a href="{:U('edit')}/id/{$cat['content']['id']}">修改</a> |
+                            <a class="confirm J_ajax_get" href="{:U('del')}/id/{$cat['content']['id']}">删除</a>
+                        </td>
+                    </tr>
+
+                    <if condition="isset($cat['child']) && $cat['child']">
+                        <volist name="cat['child']" id="_cat">
+                            <tr style="background: #eee">
+                                <td>二级分类</td>
+                                <td width="80">{$_cat.content.sort}</td>
+                                <td width="100">{$_cat.content.id}</td>
+                                <td>{$_cat.content.name}</td>
+                                <td>
+                                    <a href="{:U('add')}/pid/{$_cat['content']['id']}">添加子分类</a> |
+                                    <a href="{:U('edit')}/id/{$_cat['content']['id']}">修改</a> |
+                                    <a class="confirm J_ajax_get" href="{:U('del')}/id/{$_cat['content']['id']}">删除</a>
+                                </td>
+                            </tr>
+
+                            <if condition="isset($_cat['child']) && $_cat['child']">
+                                <volist name="_cat['child']" id="__cat">
+                                    <tr style="background: #ccc">
+                                        <td>三级分类</td>
+                                        <td width="80">{$__cat.content.sort}</td>
+                                        <td width="100">{$__cat.content.id}</td>
+                                        <td>{$__cat.content.name}</td>
+                                        <td>
+                                            <a href="{:U('add')}/pid/{$__cat['content']['id']}">添加子分类</a> |
+                                            <a href="{:U('edit')}/id/{$__cat['content']['id']}">修改</a> |
+                                            <a class="confirm J_ajax_get" href="{:U('del')}/id/{$__cat['content']['id']}">删除</a>
+                                        </td>
+                                    </tr>
+                                </volist>
+                            </if>
+
+                        </volist>
+                    </if>
+                </volist>
+
+                </tbody>
+                </table>
+                <div class="btn_wrap">
+                  <div class="btn_wrap_pd">
+                  	<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId']))}?title={$meta_title}"><i class="fa fa-heart"></i></a>
+                  </div>
+                </div>
+            </div>
+
+        </div>
+	</div>
+</block>
+
+<block name="script">
+	<script type="text/javascript">
+		(function($){
+	      var $level = $(".j-hidden-level table").find("tbody tr");
+	      $level.each(function(){
+	          var $this_level = $(this).attr('data-parentid');
+	          if($this_level=='0'){
+	              $(this).show();
+	          }
+	          if($(this).next('tr').attr('data-parentid')>$this_level){
+	            $(this).find('td:eq(2)').append("&nbsp;&nbsp;<i class='fa fa-caret-right'></i>");
+	          }
+	          if($(this).next('tr').attr('data-parentid')>0){
+	             $(this).addClass('hand');
+	             $(this).click(function(){
+	                var $i = $(this).find('i');
+	                $i.toggleClass('fa-caret-right');
+	                $i.toggleClass('fa-caret-down');
+	                $(this).nextAll('tr[data-parentid='+$(this).attr('data-id')+']').toggle();
+	             })
+	          }
+	      });
+		})(jQuery);
+	</script>
+</block>

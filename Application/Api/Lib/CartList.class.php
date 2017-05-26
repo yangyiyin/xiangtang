@@ -1,0 +1,74 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: yyy
+ * Date: 17/4/25
+ * Time: 下午8:25
+ */
+namespace Api\Lib;
+use Common\Model;
+use Common\Service;
+class CartList extends BaseApi{
+    protected $method = parent::API_METHOD_GET;
+    private $CartService;
+    public function init() {
+        $this->CartService = Service\CartService::get_instance();
+    }
+
+    public function excute() {
+        $carts = $this->CartService->get_by_uid($this->uid);
+        if (!$carts) {
+            return result_json(FALSE, '您的购物车空空如也~');
+        }
+        $carts_iid_map = result_to_map($carts, 'iid');
+        $iids = result_to_array($carts, 'iid');
+        $ItemService = Service\ItemService::get_instance();
+        $items = $ItemService->get_by_ids($iids);
+
+        $result = $this->convert_data($items, $carts_iid_map);
+        return result_json(TRUE, '', $result);
+
+    }
+
+    private function convert_data($data, $carts_iid_map) {
+        $list = [];
+        if ($data) {
+            $ItemService = Service\ItemService::get_instance();
+            $itemUsertypePricesService = Service\ItemUsertypePricesService::get_instance();
+            $iids = result_to_array($data);
+            $prices = $itemUsertypePricesService->get_by_iids($iids);
+            $prices_map = result_to_complex_map($prices, 'iid');
+
+            $UserService = Service\UserService::get_instance();
+            $user_info = $UserService->get_info_by_id($this->uid);
+
+            $cids = result_to_array($data, 'cid');
+            $CategoryService = Service\CategoryService::get_instance();
+            $cates = $CategoryService->get_by_ids($cids);
+            $cates_cid_map = result_to_map($cates);
+            foreach ($data as $key => $_item) {
+                $_item['img'] = item_img(get_cover($_item['img'], 'path'));//todo 这种方式后期改掉
+                if (isset($prices_map[$_item['id']])) {
+                    $price = $itemUsertypePricesService->get_price_by_type($user_info['type'], $prices_map[$_item['id']]);
+                    if ($price) {
+                        $_item['price'] = $price;
+                    }
+                }
+                $_item['id'] = (int) $_item['id'];
+                $_item['pid'] = (int) $_item['pid'];
+                $_item['price'] = (int) $_item['price'];
+                if (isset($carts_iid_map[$_item['id']])) {
+                    $_item['num'] = (int) $carts_iid_map[$_item['id']]['num'];
+                }
+                if ($_item['status'] != Model\NfItemModel::STATUS_NORAML) {
+                    $_item['status_desc'] = $ItemService->get_status_txt($_item['status']);
+                }
+                $cate_name = isset($cates_cid_map[$_item['cid']]['name']) ? $cates_cid_map[$_item['cid']]['name'] : '其他';
+                $list[$cate_name]['cate_name'] = $cate_name;
+                $list[$cate_name]['item_list'][] = convert_obj($_item, 'id=item_id,pid,title,img,desc,unit_desc,price,num,status_desc');
+            }
+
+        }
+        return array_values($list);
+    }
+}

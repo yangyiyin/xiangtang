@@ -1,0 +1,86 @@
+<extend name="Public/base"/>
+
+<block name="body">
+<script type="text/javascript" src="__STATIC__/uploadify/jquery.uploadify.min.js"></script>
+<script type="text/javascript" src="__STATIC__/popwin.js"></script>   
+<style type="text/css">#dialog{display:none;}</style>
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+		    <ul class="cc tab-nav">
+				<li><a href="{:U('index')}">所有供货商</a></li>
+				<if condition="I('get.id')">
+					<li class="current"><a href="javascript:;">编辑供货商</a></li>
+					<else/>
+					<li class="current"><a href="javascript:;">添加供货商</a></li>
+				</if>
+		    </ul>
+		</div>
+		<!-- 数据表格 -->
+		<div class="tab-content table_list">
+		<!-- 表单 -->
+		<form id="form" action="{:U('update')}/id/{:I('get.id')}" method="post" class="form-horizontal">
+				<div id="tab">
+					<table class="" width="100%">
+				    <tbody>
+							<tr>
+					            <td width="20%"><label class="item-label">名称</label></td>
+					            <td width="80%">
+									<input type="text" class="input input-medium" name="name" value="{$info.name}">
+								</td>
+							</tr>
+							<tr>
+								<td width="20%"><label class="item-label">手机号</label></td>
+								<td width="80%">
+			                                <input type="text" class="input input-medium" name="tel" value="{$info.tel}">
+								</td>
+							</tr>
+
+							<tr>
+								<td width="20%"><label class="item-label">地址</label></td>
+								<td width="80%">
+									<input type="text" class="input input-xlarge" name="address" value="{$info.address}">
+								</td>
+							</tr>
+
+
+					</tbody>
+				    </table> 
+			     </div>
+
+			<div class="btn_wrap">
+	          <div class="btn_wrap_pd">
+	            	<button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">确 定</button>
+				  <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+	          </div>
+	        </div>
+	    </form>
+	    </div>
+	</div>
+</div>
+
+</block>
+<block name="script">
+<link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
+<php>if(C('COLOR_STYLE')=='blue_color') echo '<link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css" rel="stylesheet" type="text/css">';</php>
+<link href="__STATIC__/datetimepicker/css/dropdown.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script type="text/javascript">
+$('#submit').click(function(){
+	$('#form').submit();
+});
+$(function(){
+	$("#xgwz").on('click' , function(){
+		popWin.showWin("1000","600","请勾选出相关文章","{:U('article/mydocument?showids=true')}");
+	});
+    $('.time').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii',
+        language:"zh-CN",
+        minView:2,
+        autoclose:true
+    });
+    showTab();
+});
+</script>
+</block>

@@ -1,0 +1,208 @@
+<extend name="Public/base"/>
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+
+		    <ul class="cc">
+		      	<li class="current"><a href="javascript:;">订单列表</a></li>
+		    </ul>
+		</div>
+	    <div class="search_type cc mb10 search-form">
+	      <div class="mb10">
+			  &nbsp;订单编号：
+			  <input type="text" class="input length_2" name="order_no" style="width:100px;" value="{:I('order_no')}" >
+
+			  <span class="mr20">状态：
+        	<php>
+        		$all = (I('get.status'))?'selected':'';
+        		$first = (I('get.status')==1)?'selected':'';
+        		$second = (I('get.status')==2)?'selected':'';
+				$third = (I('get.status')==3)?'selected':'';
+        		$forth = (I('get.status')==4)?'selected':'';
+				$fifth = (I('get.status')==5)?'selected':'';
+        		$sixth = (I('get.status')==6)?'selected':'';
+				$seventh = (I('get.status')==7)?'selected':'';
+        	</php>
+	        <select class="select_2 select" id="sch-sort-txt" name="status">
+	          	<option value="" {$all}>全部</option>
+	          	<option value="1" {$first}>已提交</option>
+				<option value="7" {$seventh}>支付中</option>
+	          	<option value="2" {$second}>已付款</option>
+				<option value="3" {$third}>已出库</option>
+				<option value="4" {$forth}>已发货</option>
+				<option value="5" {$fifth}>已完成</option>
+				<option value="6" {$sixth}>已取消</option>
+	        </select>
+			&nbsp;创建时间：
+	        <input type="text" name="create_begin" id="time-start" class="input length_2" value="{:I('create_begin')}" style="width:80px;" autocomplete="off" placeholder="起始时间">-<span class="input-append date" id="datetimepicker"><input type="text" id="time-end" name="create_end" class="input length_2" value="{:I('create_end')}" placeholder="结束时间" /><span class="add-on" style="background:none;border:none;"><i class="icon-th"></i></span></span>
+
+	        <a class="u-btn" href="javascript:;" id="search" url="{:U('index')}">搜索</a>
+	        <!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
+	        </span>
+	      </div>
+	    </div>
+		<!-- 数据表格 -->
+	    <div class="table_list">
+			<table class="" width="100%">
+		    <thead>
+		        <tr>
+					<th width="5%"><input class="check-all" type="checkbox"/></th>
+
+					<th width="10%">订单编号</th>
+					<th width="20%">基本信息</th>
+					<th width="25%">详情</th>
+					<th width="25%">收货地址</th>
+					<th width="10%">状态</th>
+					<th width="10%">操作</th>
+				</tr>
+		    </thead>
+		    <tbody>
+				<volist name="list" id="vo">
+				<tr>
+		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
+					<td>{$vo.order_no} </td>
+					<td>
+						<p class="short_info">订单id:{$vo.id}</p>
+						<p class="short_info">总价:{$vo.sum|format_price}元</p>
+						<p class="short_info">总数量:{$vo.num}</p>
+						<p class="short_info">类型:{$vo.type_desc}</p>
+						<p class="short_info">创建时间:{$vo.create_time}</p>
+					</td>
+
+
+					<td>
+						<table>
+							<tr>
+								<th width="20%">商品</th>
+								<th width="20%">单价</th>
+								<th width="20%">数量</th>
+								<th width="20%">总价</th>
+							</tr>
+							<volist name="vo['order_snapshot']" id="order_item">
+							<tr>
+
+									<td style="border: 1px solid #ddd;" class="iid">
+										<p><img src="{$order_item['img']}" width="20" height="20"/></p>
+										<p>{$order_item.title}</p>
+									</td>
+									<td style="border: 1px solid #ddd;" class="title">{$order_item.price|format_price}元</td>
+									<td style="border: 1px solid #ddd" class="factory-price">{$order_item.num}{$order_item.unit_desc}</td>
+									<td style="border: 1px solid #ddd" class="meituan-price">{$order_item.sum|format_price}元</td>
+
+
+							</tr>
+							</volist>
+						</table>
+					</td>
+
+					<td>
+						<p class="short_info">收货地址:{$vo.receiving_address}</p>
+						<p class="short_info">收货人:{$vo.receiving_name}</p>
+						<p class="short_info">联系电话:{$vo.receiving_tel}</p>
+					</td>
+
+					<td ><span>{$vo.status_desc}</span></td>
+					<td>
+
+						<if condition="$vo['type'] == 4">
+							<if condition="$vo['status'] == 2">
+								<a class="u-btn confirm J_ajax_get" href="{:U('order_step')}/id/{$vo.id}/step/send" >发货</a>
+							</if>
+						<else />
+							<if condition="$vo['status'] == 1">
+								<a class="u-btn confirm J_ajax_get" href="{:U('order_step')}/id/{$vo.id}/step/stock_out" confirm_tips="出库信息:{$vo.order_stock_out_info}">出库</a>
+							</if>
+						</if>
+						<if condition="$vo['status'] == 1">
+							<a class="u-btn confirm J_ajax_get" url="{:U('order_step')}/id/{$vo.id}/step/cancel">取消订单</a>
+						</if>
+					</td>
+				</tr>
+				</volist>
+			</tbody>
+		    </table> 
+		</div>
+		<div class="btn_wrap">
+			<div class="btn_wrap_pd">
+				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
+				<if condition="$type == 4">
+				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("order_step")}/step/send'>批量发货</button>
+		    	</if>
+			</div>
+		</div>
+		<!-- 分页 -->
+	    <div class="page">
+	        {$page_html}
+	    </div>
+	</div>
+</div>
+
+
+</block>
+<block name="script">
+<link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
+<php>if(C('COLOR_STYLE')=='blue_color') echo '<link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css" rel="stylesheet" type="text/css">';</php>
+<link href="__STATIC__/datetimepicker/css/dropdown.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script type="text/javascript">
+$(function(){
+	//搜索功能
+	$("#search").click(function(){
+		var url = $(this).attr('url');
+        var query  = $('.search-form').find('input,select').serialize();
+        query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+        query = query.replace(/^&/g,'');
+
+
+        if( url.indexOf('?')>0 ){
+            url += '&' + query;
+        }else{
+            url += '?' + query;
+        }
+		window.location.href = url;
+	});
+
+	/* 状态搜索子菜单 */
+	$(".search-form").find(".drop-down").hover(function(){
+		$("#sub-sch-menu").removeClass("hidden");
+	},function(){
+		$("#sub-sch-menu").addClass("hidden");
+	});
+	$("#sub-sch-menu li").find("a").each(function(){
+		$(this).click(function(){
+			var text = $(this).text();
+			$("#sch-sort-txt").text(text).attr("data",$(this).attr("value"));
+			$("#sub-sch-menu").addClass("hidden");
+		})
+	});
+
+    //回车自动提交
+    $('.search-form').find('input').keyup(function(event){
+        if(event.keyCode===13){
+            $("#search").click();
+        }
+    });
+
+    $('#time-start').datetimepicker({
+        format: 'yyyy-mm-dd',
+        language:"zh-CN",
+	    minView:2,
+	    autoclose:true
+    });
+
+    $('#datetimepicker').datetimepicker({
+       format: 'yyyy-mm-dd',
+        language:"zh-CN",
+        minView:2,
+        autoclose:true,
+        pickerPosition:'bottom-left'
+    });
+
+});
+
+</script>
+</block>
+
+
