@@ -22,22 +22,22 @@ class AlipayCreate extends BaseApi{
 
     public function excute() {
         //订单号
-//        $order_id = $this->post_data['order_id'];
-//        if (!$order_id) {
-//            return result_json(FALSE, '订单号不存在');
-//        }
-//        $ret = $this->OrderService->is_available_paying($order_id, $this->uid);
-//        if (!$ret->success) {
-//            return result_json(FALSE, $ret->message);
-//        }
-//        $order = $ret->data;
-//
-//
-//        $ret = $this->PayService->create_by_order($order);
-//        if (!$ret->success) {
-//            return result_json(FALSE, $ret->message);
-//        }
-//        $pay_info = $ret->data;
+        $order_id = $this->post_data['order_id'];
+        if (!$order_id) {
+            return result_json(FALSE, '订单号不存在');
+        }
+        $ret = $this->OrderService->is_available_paying($order_id, $this->uid);
+        if (!$ret->success) {
+            return result_json(FALSE, $ret->message);
+        }
+        $order = $ret->data;
+
+
+        $ret = $this->PayService->create_by_order($order);
+        if (!$ret->success) {
+            return result_json(FALSE, $ret->message);
+        }
+        $pay_info = $ret->data;
 
         $aop = new \AopClient;
         //$aop->gatewayUrl = "https://openapi.alipay.com/gateway.do";
