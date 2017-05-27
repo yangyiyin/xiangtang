@@ -28,7 +28,7 @@ class AlipayNotify extends BaseSapi{
         $data_notify['remark'] = '';
         $this->PayNotifyLogService->add_one($data_notify);
         $aop = new \AopClient;
-        $aop->alipayrsaPublicKey = Service\PayService::AlipayPubKeyTest;
+        $aop->alipayrsaPublicKey = Service\PayService::AlipayPubKey;
         $flag = $aop->rsaCheckV1($_POST, NULL, "RSA2");
         if (!$flag) {
             echo 'fail';

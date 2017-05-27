@@ -42,12 +42,12 @@ class AlipayCreate extends BaseApi{
         $aop = new \AopClient;
         //$aop->gatewayUrl = "https://openapi.alipay.com/gateway.do";
         $aop->gatewayUrl = "https://openapi.alipaydev.com/gateway.do";
-        $aop->appId = Service\PayService::AlipayAppIdTest;
+        $aop->appId = Service\PayService::AlipayAppId;
         $aop->rsaPrivateKey = Service\PayService::AlipayPriKey;
         $aop->format = "json";
         $aop->charset = "UTF-8";
         $aop->signType = "RSA2";
-        $aop->alipayrsaPublicKey = Service\PayService::AlipayPubKeyTest;
+        $aop->alipayrsaPublicKey = Service\PayService::AlipayPubKey;
         //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
         $request = new \AlipayTradeAppPayRequest();
         //SDK已经封装掉了公共参数，这里只需要传入业务参数
