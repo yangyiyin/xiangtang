@@ -84,7 +84,7 @@ class OrderService extends BaseService{
         return \Common\Model\NfOrderModel::TYPE_ORDER_MEITUAN;
     }
     public function get_shop_type () {
-        return \Common\Model\NfOrderModel::TYPE_ORDER_MEITUAN;
+        return \Common\Model\NfOrderModel::TYPE_ORDER_SHOP;
     }
     public function get_people_type () {
         return \Common\Model\NfOrderModel::TYPE_ORDER_PEOPLE;

@@ -58,8 +58,12 @@ class AntOrderController extends AdminController {
             $order_ids = result_to_array($data);
 
             $snapshots = $orderSnapshotService->get_by_order_ids($order_ids);
-
             $snapshots_map = result_to_map($snapshots, 'order_id');
+
+            $userCourierService = \Common\Service\UserCourierService::get_instance();
+            $uids = result_to_array($data);
+            $user_courier = $userCourierService->get_by_uids($uids);
+            $user_courier_map = result_to_map($user_courier, 'uid');
 
             foreach ($data as $key => $_item) {
                 if (isset($snapshots_map[$_item['id']])) {
@@ -74,6 +78,7 @@ class AntOrderController extends AdminController {
                 //var_dump($data[$key]['order_snapshot']);die();
                 $data[$key]['status_desc'] = $this->OrderService->get_status_txt($_item['status']);
                 $data[$key]['type_desc'] = $this->OrderService->get_type_txt($_item['type']);
+                $data[$key]['courier'] = isset($user_courier_map[$_item['uid']]) ? $user_courier_map[$_item['uid']] : [];
             }
             //var_dump($data);die();
         }

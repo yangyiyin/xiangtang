@@ -68,6 +68,9 @@
 						<p class="short_info">总数量:{$vo.num}</p>
 						<p class="short_info">类型:{$vo.type_desc}</p>
 						<p class="short_info">创建时间:{$vo.create_time}</p>
+						<if condition="$vo['type'] == 3">
+							<p class="short_info">业务员:{$vo.courier.courier_name}</p>
+						</if>
 					</td>
 
 
