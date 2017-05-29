@@ -61,9 +61,9 @@ class AntOrderController extends AdminController {
             $snapshots_map = result_to_map($snapshots, 'order_id');
 
             $userCourierService = \Common\Service\UserCourierService::get_instance();
-            $uids = result_to_array($data);
+            $uids = result_to_array($data, 'uid');
             $user_courier = $userCourierService->get_by_uids($uids);
-            $user_courier_map = result_to_map($user_courier, 'id');
+            $user_courier_map = result_to_map($user_courier, 'uid');
 
             foreach ($data as $key => $_item) {
                 if (isset($snapshots_map[$_item['id']])) {
