@@ -73,7 +73,7 @@ class UserRegist extends BaseSapi{
         $data['password_md5'] = $user_password;
         $data['avatar'] = '';
         $data['entity_title'] = $this->post_data['entity_title'];
-        $data['entity_license'] = $this->post_data['entity_title'] ? $this->post_data['entity_title'] : '';
+        $data['entity_license'] = $this->post_data['entity_license'] ? $this->post_data['entity_license'] : '';
         $data['entity_name'] = $this->post_data['entity_name'];
         $data['entity_tel'] = $this->post_data['entity_tel'];
         $data['province'] = $this->post_data['province'];
