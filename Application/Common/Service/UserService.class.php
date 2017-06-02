@@ -13,6 +13,11 @@ class UserService extends BaseService{
         $NfUser = D('NfUser');
         $data['status'] = isset($data['status']) ? $data['status'] : \Common\Model\NfUserModel::STATUS_VERIFY;
         $data['create_time'] = isset($data['create_time']) ? $data['create_time'] : current_date();
+
+        //个人用户,直接通过
+        if ($data['type'] == \Common\Model\NfUserModel::TYPE_PEOPLE) {
+            $data['status'] = \Common\Model\NfUserModel::STATUS_NORAML;
+        }
         if (!$NfUser->create($data)) {
             return result(FALSE, $NfUser->getError());
         }
