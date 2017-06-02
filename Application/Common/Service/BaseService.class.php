@@ -8,6 +8,9 @@
 namespace Common\Service;
 class BaseService {
     protected static $instance_map = NULL;
+    public static $page_size = 20;
+    public static $NOT_DELETED = 0;
+    public static $DELETED = 1;
 
     // 不允许实例化，子类禁止覆盖
     final protected function __construct() {
@@ -35,4 +38,5 @@ class BaseService {
         }
         return self::$instance_map[$class];
     }
+
 }
