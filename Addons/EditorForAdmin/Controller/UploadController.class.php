@@ -35,9 +35,10 @@ class UploadController extends AddonsController{
 		/* 返回标准数据 */
 		$return  = array('error' => 0, 'info' => '上传成功', 'data' => '');
 		$img = $this->upload();
+        $setting = C('EDITOR_UPLOAD');
 		/* 记录附件信息 */
 		if($img){
-			$return['url'] = $img['fullpath'];
+			$return['url'] = $setting['host'] . $img['fullpath'];
 			unset($return['info'], $return['data']);
 		} else {
 			$return['error'] = 1;
