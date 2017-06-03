@@ -77,7 +77,7 @@ return array(
 		'replace'  => false, //存在同名是否覆盖
 		'hash'     => true, //是否生成hash编码
 		'callback' => false, //检测文件是否存在回调函数，如果存在返回文件信息数组
-        'host' => 'http://http://php.gooduo.net'
+        'host' => 'http://php.gooduo.net'
     ),
 
     /* 模板相关配置 */
