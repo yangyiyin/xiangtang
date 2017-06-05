@@ -8,7 +8,27 @@
         <link href="__CSS__/admin_login.css" rel="stylesheet" />
     </head>
 <body class="login-wrap">
-    <div class="wrap">
+
+<div class="login_top">
+    <div class="logo_img"></div>
+    <a href="http://www.gooduo.net" target="_blank">访问谷多官网</a>
+</div>
+
+<div class="login_form">
+    <a href="http://www.gooduo.net" target="_blank"></a>
+    <h1>欢迎使用网站管理PHP系统 V1.1</h1>
+    <form method="post" action="{:U('login')}">
+        <input name="cmd" type="hidden" value="admin_login" class="login-form">
+        <div class="form">
+            <input class="txt" type="text" name="username" placeholder="请输入用户名">
+            <input class="txt" type="password" name="password" placeholder="请输入密码">
+            <input type="submit" value="登 录" class="btn">
+            <div style="color: red;font-size: 14px" class="check-tips"></div>
+        </div>
+    </form>
+</div>
+
+    <div style="display: none" class="wrap">
         <h1><a href="">ANT 后台管理中心</a></h1>
         <form action="{:U('login')}" method="post" class="login-form">
             <div class="login">
@@ -36,6 +56,10 @@
             </div>
         </form>
     </div>
+
+<div class="login_foot">
+    © 2015 <a href="http://www.gooduo.net" target="_blank">谷多网络</a><span>|</span><a href="#">微信公众号</a><span>|</span>服务热线 400-884-0097<span>|</span>Powered by gooduo.net
+</div>
     <!--[if lt IE 9]>
     <script type="text/javascript" src="__STATIC__/jquery-1.10.2.min.js"></script>
     <![endif]-->

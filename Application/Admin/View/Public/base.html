@@ -22,6 +22,150 @@
 <!--<![endif]-->
 <script type="text/javascript" src="__STATIC__/jquery.pin.min.js"></script>
 <block name="style"></block>
+    <style>
+        .sidebar{
+            top:80px;
+
+        }
+        .navbar .navbar-inner {
+            min-height: 80px;
+            background: #30719B;
+        }
+        .breadcrumbs{
+            background: #fff;
+            border-bottom: none;
+        }
+        .macro-component-tabitem{
+            background: none;
+            color:#000;
+        }
+        .macro-component-tabitem:hover{
+            background: none;
+        }
+        .macro-tabs-item-text {
+            color: #333;
+            font-size: 12px;
+        }
+        .logo {
+            margin-left: 15px;
+            font-size: 32px;
+            padding: 21px 0;
+            float: left;
+            _width: 300px;
+            color: #fff;
+            font-family: Georgia, "Times New Roman", Times, serif;
+            text-shadow: 2px 2px 2px #333;
+            font-weight: bold;
+        }
+        .link {
+            margin-right: 15px;
+            padding: 14px 0;
+            float: right;
+            _width: 400px;
+        }
+        .link a.logout {
+            width: 20px;
+            height: 20px;
+            margin-top: 25px;
+            background: url('http://php.gooduo.net/gnc/templates/default/images/icon_13.gif') center no-repeat;
+        }
+        .link a {
+            float: right;
+            margin-right: 10px;
+            display: block;
+        }
+        .link div {
+            float: right;
+            margin-right: 30px;
+            _width: 65px;
+        }
+        .link div h2 {
+            height: 28px;
+            line-height: 28px;
+            font-size: 14px;
+            color: #eee;
+        }
+        .link div h3 {
+            height: 24px;
+            line-height: 24px;
+            font-size: 12px;
+            color: #79a7c9;
+            font-style: italic;
+        }
+        .link a.home {
+            width: 20px;
+            height: 20px;
+            margin-top: 25px;
+            background: url('http://php.gooduo.net/gnc/templates/default/images/icon_15.gif') center no-repeat;
+        }
+        .link a {
+            float: right;
+            margin-right: 10px;
+            display: block;
+        }
+        .link a.gooduo {
+            height: 48px;
+            width: 48px;
+            border: 2px solid #65a1c6;
+            background: url('http://php.gooduo.net/gnc/templates/default/images/gooduo.jpg') center no-repeat;
+            overflow: hidden;
+        }
+        .sidebar{
+            background-color: #363739;
+        }
+        .nav-list>li>a {
+            background: none;
+            color: #fff;
+            border-bottom: 1px solid #464648;
+            height: 40px;
+            font-size: 14px;
+            line-height: 40px;
+        }
+        .nav-list>li>a:hover:before{
+            display: none;
+        }
+        .nav-list>li>a:hover{
+            background: none;
+            color: #ddd;
+        }
+        .nav-list>li{
+            border: none;
+
+        }
+
+        .nav-list>li.open>a{
+            background: none;
+            color: #fff;
+            border: none;
+            border-bottom: 1px solid #464648;
+        }
+        .nav-list>li .submenu{
+            background-color: #292a2c;
+            border: none;
+        }
+        .nav-list>li>.submenu>li:before{
+            display: none;
+        }
+        .nav-list>li .submenu>li>a{
+            border: none;
+            border-bottom: 1px solid #464648;
+            height: 40px;
+            font-size: 14px;
+            line-height: 40px;
+            padding-top: 0;
+            padding-bottom: 0;
+            color: #999;
+        }
+        .nav-list>li .submenu>li>a:hover{
+            color: #999;
+        }
+        .nav-list>li>.submenu:before{
+            display: none;
+        }
+        .nav-list>li>.submenu>li:first-child>a{
+            border-top: none;
+        }
+    </style>
 </head>
 <body style="" screen_capture_injected="true">
     <php>
@@ -31,8 +175,19 @@
     </php>
     <div class="navbar">
         <div class="container-fluid navbar-inner">
-            <a href="#" class="brand">ANT 管理后台</a>
-            <div class="user-bar j_user_bar">
+            <div class="logo">Gooduo.net</div>
+
+            <div class="link">
+                <a href="{:U('Admin/Public/logout')}" class="logout"></a>
+                <a href="{:U('Index/index')}" target="_blank" class="home"></a>
+                <div>
+                    <h2>gooduo</h2>
+                    <h3>后台管理员</h3>
+                </div>
+                <a href="javascript:;" target="_blank" class="gooduo"></a>
+            </div>
+
+            <div style="display: none" class="user-bar j_user_bar">
                 <a href="#" class="dropdown-toggle">
                     <img class="nav-user-photo" src="{:C('ADMIN_IMG')}/user.jpg" alt="admin">
                     <span class="user-info">
@@ -58,7 +213,7 @@
         </a>
         <div class="sidebar" id="sidebar">
             <div class="j_pin">
-                <div class="sidebar-shortcuts" id="sidebar-shortcuts">
+                <div style="display: none" class="sidebar-shortcuts" id="sidebar-shortcuts">
                     <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
                         <a style="display: none" class="u-btn-index u-btn-small u-btn-danger" href="{:U('Admin/index/clean')}" title="清除缓存">
                             <i class="fa fa-trash-o"></i>
@@ -71,7 +226,7 @@
                         <span class="u-btn u-btn-warning"></span> <span class="u-btn u-btn-danger"></span>
                     </div>
                 </div>
-                <div class="sidebar-collapse">
+                <div style="display: none" class="sidebar-collapse">
                     <i class="fa fa-angle-double-left"></i>
                 </div>
                 <div id="nav_wraper">
@@ -84,7 +239,6 @@
                                 <a href="#" class="dropdown-toggle">
                                     <i class="fa {$menu.ico}"></i>
                                     <span class="menu-text">{$menu.title}</span>
-                                    <b class="arrow fa fa-angle-down"></b>
                                 </a>
                                 <ul class="submenu" id="submenu_{$menu.id}">
                                     <volist name="menu.child" id="second_menu">
@@ -138,7 +292,7 @@
                 <?php $hotkey = json_decode(cookie('Admin_hotkey'),true);?>
                 <ul class="macro-component-tab" id="task-content-inner">
                     <li class="macro-component-tabitem noclose" app-id="0" app-url="{:u('main/index')}" app-name="首页">
-                        <a href="{:U('Index/index')}"><span class="macro-tabs-item-text">首页</span></a>
+                        <a href="{:U('Index/index')}"><span class="macro-tabs-item-text"><img style="margin-right: 10px" src="http://php.gooduo.net/gnc/templates/default/images/icon_12.gif"/>首页</span></a>
                     </li>
                     <volist name="hotkey" id="vo">
                         <li class="macro-component-tabitem noclose">
