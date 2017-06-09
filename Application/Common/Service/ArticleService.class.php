@@ -93,11 +93,12 @@ class ArticleService extends BaseService{
         return [$data, $count];
     }
 
-    public function get_pre_next_by_id($id) {
+    public function get_pre_next($id, $type) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
+        $where['type'] = ['eq', $type];
         $where['id'] = ['lt', $id];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        $where['deleted'] = ['eq', static::$NOT_DELETED];
         $pre = $NfModel->order('id desc')->where($where)->find();
         $where['id'] = ['gt', $id];
         $next = $NfModel->order('id asc')->where($where)->find();

@@ -27,7 +27,10 @@ class ArticleInfo extends BaseApi{
         $result->content = '';
         if ($id) {
             $info = $this->ArticleService->get_info_by_id($id);
-            list($pre, $next) = $this->ArticleService->get_pre_next_by_id($id);
+            if (!$info) {
+                result_json(FALSE, '没有找到文章~');
+            }
+            list($pre, $next) = $this->ArticleService->get_pre_next($id, $info['type']);
             $result->pre = convert_obj($pre, 'id,title');
             $result->next = convert_obj($next, 'id,title');
         } elseif ($block == self::block_type_about) {
