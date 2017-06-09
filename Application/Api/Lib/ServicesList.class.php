@@ -34,7 +34,7 @@ class ServicesList extends BaseApi{
             foreach ($list as $_item) {
                 $_item['id'] = (int) $_item['id'];
                 $tmp = [];
-                $tmp = convert_obj($_item, 'id=service_id,name=service_name');
+                $tmp = convert_obj($_item, 'id=service_id,title=service_name');
                 $data[] = $tmp;
             }
         }
