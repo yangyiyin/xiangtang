@@ -387,6 +387,7 @@ class OrderService extends BaseService{
         return [\Common\Model\NfOrderModel::STATUS_SUBMIT, \Common\Model\NfOrderModel::STATUS_RECEIVED, \Common\Model\NfOrderModel::STATUS_SENDING];
     }
     public function get_count_by_where($where) {
+        $NfOrder = D('NfOrder');
         $count = $NfOrder->where($where)->count();
         return $count;
     }
