@@ -16,7 +16,7 @@ class UserService extends BaseService{
 
         //个人用户,直接通过
         if ($data['type'] == \Common\Model\NfUserModel::TYPE_PEOPLE) {
-            $data['status'] = \Common\Model\NfUserModel::STATUS_NORAML;
+            $data['status'] = \Common\Model\NfUserModel::STATUS_VERIFY;
         }
         if (!$NfUser->create($data)) {
             return result(FALSE, $NfUser->getError());
@@ -165,5 +165,9 @@ class UserService extends BaseService{
 
     public function get_type_people () {
         return \Common\Model\NfUserModel::TYPE_PEOPLE;
+    }
+
+    public function get_verify_status_submit() {
+        return \Common\Model\NfUserModel::VERIFY_STATUS_SUBMIT;
     }
 }

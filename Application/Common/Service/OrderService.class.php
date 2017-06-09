@@ -383,4 +383,12 @@ class OrderService extends BaseService{
         return ($this->get_people_type() == $order['type']) && ($order['status'] == \Common\Model\NfOrderModel::STATUS_SUBMIT);
     }
 
+    public function get_my_status() {
+        return [\Common\Model\NfOrderModel::STATUS_SUBMIT, \Common\Model\NfOrderModel::STATUS_RECEIVED, \Common\Model\NfOrderModel::STATUS_SENDING];
+    }
+    public function get_count_by_where($where) {
+        $count = $NfOrder->where($where)->count();
+        return $count;
+    }
+
 }

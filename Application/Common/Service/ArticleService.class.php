@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: ___time___
+ * Time: 2017-06-08 12:20:24
  */
 namespace Common\Service;
-class ___name___Service extends BaseService{
-    public static $name = '___name___';
+class ArticleService extends BaseService{
+    public static $name = 'Article';
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
@@ -93,5 +93,31 @@ class ___name___Service extends BaseService{
         return [$data, $count];
     }
 
+    public function get_pre_next_by_id($id) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['id'] = ['lt', $id];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        $pre = $NfModel->order('id desc')->where($where)->find();
+        $where['id'] = ['gt', $id];
+        $next = $NfModel->order('id asc')->where($where)->find();
+        return [$pre, $next];
+    }
+
+    public function get_about() {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['type'] = ['EQ', $NfModel::TYPE_ABOUT];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->find();
+    }
+
+    public function get_contact() {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['type'] = ['EQ', $NfModel::TYPE_CONTACT];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->find();
+    }
 
 }

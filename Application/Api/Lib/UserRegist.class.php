@@ -21,10 +21,10 @@ class UserRegist extends BaseSapi{
         $user_type = I('post.user_type');
         $code = I('post.code');
 
-        $user_name = $this->post_data['user_name'];
+        $user_name = '';
         $user_tel = $this->post_data['user_tel'];
         $user_password = $this->post_data['user_password'];
-        $user_type = $this->post_data['user_type'];
+        $user_type = 1;
         $code = $this->post_data['code'];
 
         $result = new \stdClass();
@@ -36,7 +36,7 @@ class UserRegist extends BaseSapi{
             $result->callback = $this->callback;
         }
 
-        if (!$user_tel || !$user_password || !$user_type || !$code) {
+        if (!$user_tel || !$user_password || !$code) {
             $result->message = '填写信息不完整~';
             echo json_encode($result);
             exit();
@@ -67,18 +67,19 @@ class UserRegist extends BaseSapi{
         //$upload_info = upload();
         $user_password = md5(base64_decode($user_password));
         $data = [];
-        $data['type'] = $user_type;
+        $data['type'] = 1;
         $data['user_name'] = '';
         $data['user_tel'] = $user_tel;
         $data['password_md5'] = $user_password;
         $data['avatar'] = '';
-        $data['entity_title'] = $this->post_data['entity_title'];
-        $data['entity_license'] = $this->post_data['entity_license'] ? $this->post_data['entity_license'] : '';
-        $data['entity_name'] = $this->post_data['entity_name'];
-        $data['entity_tel'] = $this->post_data['entity_tel'];
-        $data['province'] = $this->post_data['province'];
-        $data['city'] = $this->post_data['city'];
-        $data['address'] = $this->post_data['address'];
+        $data['entity_title'] = '';
+        $data['entity_license'] = '';
+        $data['entity_name'] = '';
+        $data['entity_tel'] = '';
+        $data['province'] = '';
+        $data['city'] = '';
+        $data['address'] = '';
+        $data['service_id'] = $this->post_data['service_id'];
         $ret = $this->UserService->add_one($data);
         if (!$ret->success) {
             $result->message = $ret->message;

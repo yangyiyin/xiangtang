@@ -16,6 +16,7 @@ class NfOrderModel extends Model {
     const STATUS_DONE = 5;//已完成
     const STATUS_CANCEL = 6;//已取消
     const STATUS_PAYING = 7;//支付中
+    const STATUS_RECEIVED = 8;//已接单
 
     const TYPE_ORDER_FACTORY = 1;
     const TYPE_ORDER_MEITUAN = 2;

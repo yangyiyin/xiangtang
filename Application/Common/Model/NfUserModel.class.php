@@ -17,6 +17,10 @@ class NfUserModel extends Model {
     const STATUS_VERIFY = 2;
     const STATUS_FORBID = 99;
 
+    const VERIFY_STATUS_NONE = 0;
+    const VERIFY_STATUS_SUBMIT = 1;
+    const VERIFY_STATUS_OK = 2;
+    const VERIFY_STATUS_REJECT = 3;
     public static $type_map = [
         1=>'factory',
         2=>'meituan',
@@ -36,6 +40,6 @@ class NfUserModel extends Model {
     ];
 
     protected $_validate = array(
-        array('type', array(1,2,3,4), '用户类型不正确！', self::EXISTS_VALIDATE , 'in', self::MODEL_INSERT)
+        //array('type', array(1,2,3,4), '用户类型不正确！', self::EXISTS_VALIDATE , 'in', self::MODEL_INSERT)
     );
 }

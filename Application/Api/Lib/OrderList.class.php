@@ -55,7 +55,6 @@ class OrderList extends BaseApi{
                 $_order['status'] = (int) $_order['status'];
                 $_order['order_detail'] = json_decode($snaps_oid_map[$_order['id']]['content'], TRUE);
                 $_order['status_desc'] = $this->OrderService->get_status_txt($_order['status']);
-                $_order['to_pay'] = $this->OrderService->get_to_pay($_order);
                 $tmp = [];
                 $tmp = convert_obj($_order, 'id=order_id,order_no,status,status_desc,create_time,num=total_num,sum=total_price,order_detail,to_pay');
                 $data[] = $tmp;

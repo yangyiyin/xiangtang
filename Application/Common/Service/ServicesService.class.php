@@ -91,5 +91,15 @@ class ServicesService extends BaseService{
         return [$data, $count];
     }
 
+    public function get_by_where_all($where, $order = 'id desc') {
+        $NfModel = D('Nf' . static::$name);
+        $data = [];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        $count = $NfModel->where($where)->count();
+        if ($count > 0) {
+            $data = $NfModel->where($where)->order($order)->select();
+        }
+        return [$data, $count];
+    }
 
 }

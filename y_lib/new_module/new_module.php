@@ -60,16 +60,16 @@ class newModule {
     public function gain_power($names) {
         if (isset($names['service'])) {
 
-            chmod($this->service_path . $this->name . 'Service.class.php', 666);
+            chmod($this->service_path . $this->name . 'Service.class.php', 777);
 
         }
         if (isset($names['model'])) {
 
-            chmod($this->model_path . 'Nf' . $this->name . 'Model.class.php', 666);
+            chmod($this->model_path . 'Nf' . $this->name . 'Model.class.php', 777);
         }
         if (isset($names['controller'])) {
 
-            chmod($this->controller_path . 'Ant' . $this->name . 'Controller.class.php', 666);
+            chmod($this->controller_path . 'Ant' . $this->name . 'Controller.class.php', 777);
         }
         echo 'success';
         exit();
@@ -77,6 +77,6 @@ class newModule {
 }
 
 
-$newModule = new newModule('services', '网点');
+$newModule = new newModule('article', '文章');
 //$newModule->gain(['model'=>1, 'controller'=>1, 'service'=>1]);
 $newModule->gain_power(['model'=>1, 'controller'=>1, 'service'=>1]);

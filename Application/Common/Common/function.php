@@ -14,7 +14,7 @@ const ZCMS_ADDON_PATH = './Addons/';
 const ERROR_CODE_NONE = 0;//正常
 const ERROR_CODE_NORMAL_ERROR = 100;//一般错误,一般不需要跳转,只要提示错误信息
 const ERROR_CODE_SESSION_ERROR = 101;//登录错误,一般跳转到登录页
-
+const ERROR_USER_NOT_EXIST_ERROR = 102;//登录错误,一般跳转到登录页
 
 /**
  * 系统公共库文件

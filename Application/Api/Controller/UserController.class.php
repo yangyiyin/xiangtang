@@ -16,10 +16,16 @@ class UserController extends BaseController {
     public function login() {
         $this->excute_api('Api\Lib\UserLogin');
     }
+    public function login_quick() {
+        $this->excute_api('Api\Lib\UserLoginQuick');
+    }
     public function info() {
         $this->excute_api('Api\Lib\UserInfo');
     }
     public function info_modify() {
         $this->excute_api('Api\Lib\UserInfo_modify');
+    }
+    public function extra_info() {
+        $this->excute_api('Api\Lib\UserExtraInfo');
     }
 }
