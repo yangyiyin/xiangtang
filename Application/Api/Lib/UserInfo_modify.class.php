@@ -38,6 +38,15 @@ class UserInfo_modify extends BaseApi{
         }
 
         if ($user_tel) { //修改用户注册手机
+            if (!is_tel_num($user_tel)) {
+                return result_json('FALSE', '您输入的手机号码可能有误~');
+            }
+
+            //检测用户是否存在
+            $ret = $this->UserService->check_tel_available($user_tel);
+            if (!$ret->success) {
+                return result_json(FALSE, $ret->message);
+            }
             $data['user_tel'] = $user_tel;
         }
 
