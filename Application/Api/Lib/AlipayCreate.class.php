@@ -21,6 +21,7 @@ class AlipayCreate extends BaseApi{
     }
 
     public function excute() {
+        return result_json(FALSE, '不支持支付~');
         //订单号
         $order_id = $this->post_data['order_id'];
         if (!$order_id) {

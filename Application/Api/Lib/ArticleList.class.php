@@ -8,7 +8,7 @@
 namespace Api\Lib;
 use Common\Model;
 use Common\Service;
-class ArticleList extends BaseApi{
+class ArticleList extends BaseSApi{
     const block_type_news = 'news';
     protected $method = parent::API_METHOD_GET;
     private $ArticleService;
