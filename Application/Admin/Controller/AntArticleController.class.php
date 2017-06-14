@@ -24,6 +24,9 @@ class AntArticleController extends AdminController {
             $where['name'] = ['LIKE', '%' . I('get.name') . '%'];
         }
         */
+        if (I('get.title')) {
+            $where['title'] = ['LIKE', '%' . I('get.title') . '%'];
+        }
         $page = I('get.p', 1);
         list($data, $count) = $this->ArticleService->get_by_where($where, 'id desc', $page);
         $PageInstance = new \Think\Page($count, \Common\Service\ArticleService::$page_size);
@@ -60,7 +63,30 @@ class AntArticleController extends AdminController {
         if ($id = I('get.id')) {
             $info = $this->ArticleService->get_info_by_id($id);
             if ($info) {
+                $this->assign('info',$info);
+            } else {
+                $this->error('没有找到对应的信息~');
+            }
+        }
+        $this->display();
+    }
 
+    public function add_about() {
+        if ($id = I('get.id')) {
+            $info = $this->ArticleService->get_info_by_id($id);
+            if ($info) {
+                $this->assign('info',$info);
+            } else {
+                $this->error('没有找到对应的信息~');
+            }
+        }
+        $this->display();
+    }
+
+    public function add_contact() {
+        if ($id = I('get.id')) {
+            $info = $this->ArticleService->get_info_by_id($id);
+            if ($info) {
                 $this->assign('info',$info);
             } else {
                 $this->error('没有找到对应的信息~');

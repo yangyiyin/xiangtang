@@ -42,6 +42,6 @@ class OrderAdd extends BaseApi{
         }
         $userService = Service\UserService::get_instance();
         $to_pay = $this->user_info->type == $userService->get_type_people();
-        return result_json(TRUE, '成功创建订单~', ['order_id' => $ret->data);
+        return result_json(TRUE, '成功创建订单~', ['order_id' => $ret->data]);
     }
 }
