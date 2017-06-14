@@ -15,9 +15,7 @@ class UserService extends BaseService{
         $data['create_time'] = isset($data['create_time']) ? $data['create_time'] : current_date();
 
         //个人用户,直接通过
-        if ($data['type'] == \Common\Model\NfUserModel::TYPE_PEOPLE) {
-            $data['status'] = \Common\Model\NfUserModel::STATUS_VERIFY;
-        }
+        $data['status'] = \Common\Model\NfUserModel::STATUS_VERIFY;
         if (!$NfUser->create($data)) {
             return result(FALSE, $NfUser->getError());
         }
@@ -128,6 +126,32 @@ class UserService extends BaseService{
         }
         $NfUser = D('NfUser');
         $ret = $NfUser->where('id in ('. join(',', $uids) .')')->save(['status'=>\Common\Model\NfUserModel::STATUS_FORBID]);
+        if ($ret) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, $NfUser->getError());
+        }
+    }
+
+    public function approve_entity($uids) {
+        if (!check_num_ids($uids)) {
+            return result(FALSE, 'uids为空~');
+        }
+        $NfUser = D('NfUser');
+        $ret = $NfUser->where('id in ('. join(',', $uids) .')')->save(['verify_status'=>\Common\Model\NfUserModel::VERIFY_STATUS_OK]);
+        if ($ret) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, $NfUser->getError());
+        }
+    }
+
+    public function reject_entity($uids) {
+        if (!check_num_ids($uids)) {
+            return result(FALSE, 'uids为空~');
+        }
+        $NfUser = D('NfUser');
+        $ret = $NfUser->where('id in ('. join(',', $uids) .')')->save(['verify_status'=>\Common\Model\NfUserModel::VERIFY_STATUS_REJECT]);
         if ($ret) {
             return result(TRUE);
         } else {

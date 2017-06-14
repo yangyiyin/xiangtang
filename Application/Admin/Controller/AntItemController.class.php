@@ -19,6 +19,9 @@ class AntItemController extends AdminController {
         $catetree = $categoryService->get_all_tree_option(I('get.cid'));
         $this->assign('catetree', $catetree);
 
+        $ServicesService = \Common\Service\ServicesService::get_instance();
+        list($services, $count) = $ServicesService->get_by_where_all([]);
+        $this->assign('services', $services);
         $where = [];
         if (I('get.cid')) {
             $where['cid'] = ['EQ', I('get.cid')];
@@ -58,8 +61,8 @@ class AntItemController extends AdminController {
             $id = I('post.id');
             $data = I('post.');
             if ($id) {
-                $itemUsertypePricesService = \Common\Service\ItemUsertypePricesService::get_instance();
-                $ret = $itemUsertypePricesService->update_by_iid_prices($id, $data);
+                $ItemServicePricesServicee = \Common\Service\ItemServicePricesService::get_instance();
+                $ret = $ItemServicePricesServicee->update_by_iid_prices($id, $data);
 
                 if ($ret->success) {
                     action_user_log('修改商品价格');
@@ -82,9 +85,9 @@ class AntItemController extends AdminController {
             $cates = $categorySkuService->get_by_ids($cids);
             $cates_map = result_to_map($cates);
 
-            $itemUsertypePricesService = \Common\Service\ItemUsertypePricesService::get_instance();
+            $itemServicePricesService = \Common\Service\ItemServicePricesService::get_instance();
             $iids = result_to_array($data);
-            $prices = $itemUsertypePricesService->get_by_iids($iids);
+            $prices = $itemServicePricesService->get_by_iids($iids);
             $prices_map = result_to_complex_map($prices, 'iid');
 
             foreach ($data as $key => $_product) {
@@ -94,7 +97,7 @@ class AntItemController extends AdminController {
 
                 if (isset($prices_map[$_product['id']])) {
 
-                    $data[$key]['prices'] = $itemUsertypePricesService->get_prices_map($prices_map[$_product['id']]);
+                    $data[$key]['prices'] = $itemServicePricesService->get_prices_map($prices_map[$_product['id']]);
                 }
 
                 $data[$key]['status_text'] = $this->ItemService->get_status_txt($_product['status']);
@@ -143,14 +146,17 @@ class AntItemController extends AdminController {
 
     public function add() {
         $id = I('get.id');
+        $categoryService = \Common\Service\CategoryService::get_instance();
         if (!$id) {
-            $this->error('没有id');
+            $catetree = $categoryService->get_all_tree_option('');
+            $this->assign('catetree', $catetree);
+            $this->display();
+            exit;
         }
         $item = $this->ItemService->get_info_by_id($id);
         if (!$item) {
             $this->error('没有找到商品信息');
         }
-        $categoryService = \Common\Service\CategoryService::get_instance();
         $catetree = $categoryService->get_all_tree_option($item['cid']);
         $this->assign('catetree', $catetree);
         $this->assign('item', $item);
@@ -169,8 +175,22 @@ class AntItemController extends AdminController {
                 } else {
                     $this->error($ret->message);
                 }
+            } else {
+
+                $ret = $this->ItemService->add_one($data);
+
+                if ($ret->success) {
+                    action_user_log('添加商品信息');
+                    $this->success('添加成功！', U('index'));
+                } else {
+                    $this->error($ret->message);
+                }
             }
         }
         $this->error('非法请求');
     }
+
+
+
+
 }

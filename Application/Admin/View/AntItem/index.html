@@ -6,6 +6,7 @@
 
 		    <ul class="cc">
 		      	<li class="current"><a href="javascript:;">所有商品</a></li>
+				<li ><a href="{:U('add')}">添加商品</a></li>
 		    </ul>
 		</div>
 	    <div class="search_type cc mb10 search-form">
@@ -66,20 +67,19 @@
 					<td>
 						<table>
 							<tr>
-								<th width="20%">工厂价</th>
-								<th width="20%">美团价</th>
-								<th width="20%">排挡价</th>
-								<th width="20%">个人价</th>
+								<volist name="services" id="service">
+									<th width="20%">{$service.title}(元)</th>
+								</volist>
+
 								<th width="20%">操作</th>
 							</tr>
 
 							<tr>
 								<td style="border: 1px solid #ddd;display: none" class="iid">{$vo.id}</td>
 								<td style="border: 1px solid #ddd;display: none" class="title">{$vo.title}</td>
-								<td style="border: 1px solid #ddd" class="factory-price">{$vo['prices']['factory']|format_price}</td>
-								<td style="border: 1px solid #ddd" class="meituan-price">{$vo['prices']['meituan']|format_price}</td>
-								<td style="border: 1px solid #ddd" class="shop-price">{$vo['prices']['shop']|format_price}</td>
-								<td style="border: 1px solid #ddd" class="people-price">{$vo['prices']['people']|format_price}</td>
+								<volist name="services" id="service">
+									<td style="border: 1px solid #ddd" class="prices price{$service.id}" service_id="{$service.id}">{$vo['prices'][$service['id']]|format_price}</td>
+								</volist>
 								<td style="border: 1px solid #ddd">	<a href="javascript:;" class="u-btn show_box" tmp_id="modify_prices">修改</a></td>
 							</tr>
 
@@ -124,18 +124,12 @@
 		<p style="padding: 10px">
 			商品id:<input disabled="disabled" value="0" class="input iid"/>
 		</p>
-		<p style="padding: 10px">
-			工厂价:<input value="0" class="input factory-price"/>
-		</p>
-		<p style="padding: 10px">
-			美团价:<input value="0" class="input meituan-price"/>
-		</p>
-		<p style="padding: 10px">
-			排挡价:<input value="0" class="input shop-price"/>
-		</p>
-		<p style="padding: 10px">
-			个人价:<input value="0" class="input people-price"/>
-		</p>
+		<volist name="services" id="service">
+			<p style="padding: 10px">
+				{$service.title}:<input value="0" class="input prices" id="{$service.id}"/>元
+			</p>
+
+		</volist>
 		<p style="padding: 10px">
 			<a class="u-btn submit" url="{:U('update_prices')}" href="javascript:;">确定</a>
 			<a class="u-btn	close_show_box" href="javascript:;">取消</a>
@@ -219,12 +213,13 @@ $(function(){
 	$('#modify_prices').find('.submit').on('click',function () {
 		var url = $(this).attr('url');
 		var data = {
-			id:$('#modify_prices').find('.iid').val(),
-			factory:$('#modify_prices').find('.factory-price').val(),
-			meituan:$('#modify_prices').find('.meituan-price').val(),
-			shop:$('#modify_prices').find('.shop-price').val(),
-			people:$('#modify_prices').find('.people-price').val()
+			id:$('#modify_prices').find('.iid').val()
 		}
+
+		$('#modify_prices').find('.prices').each(function (a,e) {
+			var id = $(e).attr('id');
+			data['price'+id] = $(e).val();
+		});
 		do_post(url, data, this);
 	});
 
@@ -267,16 +262,21 @@ $(function(){
 	function after_show_box(_this, box) {
 		var iid = _this.parent().parent().find('.iid').html();
 		var title = _this.parent().parent().find('.title').html();
-		var factory_price = _this.parent().parent().find('.factory-price').html();
-		var meituan_price = _this.parent().parent().find('.meituan-price').html();
-		var shop_price = _this.parent().parent().find('.shop-price').html();
-		var people_price = _this.parent().parent().find('.people-price').html();
+		var prices = _this.parent().parent().find('.prices');
+//		var factory_price = _this.parent().parent().find('.factory-price').html();
+//		var meituan_price = _this.parent().parent().find('.meituan-price').html();
+//		var shop_price = _this.parent().parent().find('.shop-price').html();
+//		var people_price = _this.parent().parent().find('.people-price').html();
 		box.find('.title').html(title);
 		box.find('.iid').val(iid);
-		box.find('.factory-price').val(factory_price);
-		box.find('.meituan-price').val(meituan_price);
-		box.find('.shop-price').val(shop_price);
-		box.find('.people-price').val(people_price);
+//		box.find('.factory-price').val(factory_price);
+//		box.find('.meituan-price').val(meituan_price);
+//		box.find('.shop-price').val(shop_price);
+//		box.find('.people-price').val(people_price);
+
+		prices.each(function (a, e) {
+			box.find('#'+$(e).attr('service_id')).val($(e).html());
+		});
 	}
 
     

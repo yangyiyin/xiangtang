@@ -20,6 +20,9 @@ class AntUserController extends AdminController {
         if (I('get.type')) {
             $where['type'] = ['EQ', I('get.type')];
         }
+        if (I('get.service_id')) {
+            $where['service_id'] = ['EQ', I('get.service_id')];
+        }
         if (I('get.create_begin')) {
             $where['create_time'][] = ['EGT', I('get.create_begin')];
         }
@@ -49,6 +52,9 @@ class AntUserController extends AdminController {
             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
         }
         $page_html = $PageInstance->show();
+        $ServicesService = \Common\Service\ServicesService::get_instance();
+        $services_options = $ServicesService->get_all_option(I('get.service_id'));
+        $this->assign('services_options', $services_options);
 
         $this->assign('list', $data);
         $this->assign('page_html', $page_html);
@@ -58,17 +64,24 @@ class AntUserController extends AdminController {
 
     private function convert_data(&$data) {
         if ($data) {
-            $userCourierService = \Common\Service\UserCourierService::get_instance();
-            $uids = result_to_array($data);
-            $user_courier = $userCourierService->get_by_uids($uids);
-            $user_courier_map = result_to_map($user_courier, 'uid');
+            $ServicesService = \Common\Service\ServicesService::get_instance();
+            $ids = result_to_array($data, 'service_id');
+            $services = $ServicesService->get_by_ids($ids);
+            $services_map = result_to_map($services, 'id');
+           // $user_courier = $userCourierService->get_by_uids($uids);
+          //  $user_courier_map = result_to_map($user_courier, 'uid');
+
             foreach ($data as $key => $_item) {
-                $data[$key]['type_desc'] = $this->UserService->get_type_txt($_item['type']);
+//                $data[$key]['type_desc'] = $this->UserService->get_type_txt($_item['type']);
+
                 $data[$key]['status_desc'] = $this->UserService->get_status_txt($_item['status']);
 
-                if (isset($user_courier_map[$_item['id']])) {
-                    $data[$key]['courier'] = $user_courier_map[$_item['id']];
+                if (isset($services_map[$_item['service_id']])) {
+                    $data[$key]['service'] = $services_map[$_item['service_id']];
                 }
+
+
+
             }
         }
     }
@@ -108,6 +121,43 @@ class AntUserController extends AdminController {
         action_user_log('禁用用户');
         $this->success('禁用成功！');
     }
+
+    public function approve_entity() {
+        $id = I('get.id');
+        $ids = I('post.ids');
+
+        if ($id) {
+            $ret = $this->UserService->approve_entity([$id]);
+        } elseif ($ids) {
+            $ret = $this->UserService->approve_entity($ids);
+        } else {
+            $this->error('id没有');
+        }
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        action_user_log('认证通过用户');
+        $this->success('认证成功！');
+    }
+
+    public function reject_entity() {
+        $id = I('get.id');
+        $ids = I('post.ids');
+
+        if ($id) {
+            $ret = $this->UserService->reject_entity([$id]);
+        } elseif ($ids) {
+            $ret = $this->UserService->reject_entity($ids);
+        } else {
+            $this->error('id没有');
+        }
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        action_user_log('拒绝认证用户');
+        $this->success('认证拒绝！');
+    }
+
 
     public function search_courier() {
         $name = I('post.courier_name');

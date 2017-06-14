@@ -18,6 +18,7 @@ class OrderPre_order_info extends BaseApi{
     }
 
     public function excute() {
+        $this->can_order();
         $pre_order_id = I('get.pre_order_id');
         $pre_order = $this->OrderPreService->get_info_by_id($pre_order_id);
         if (!$pre_order) {

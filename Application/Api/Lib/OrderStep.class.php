@@ -16,6 +16,7 @@ class OrderStep extends BaseApi{
     }
 
     public function excute() {
+        $this->can_order();
         $order_id = I('post.order_id');
         $action = I('post.action');
         $order_id = $this->post_data['order_id'];

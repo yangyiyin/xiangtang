@@ -27,6 +27,14 @@ class ServicesService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
+    public function get_by_ids($ids) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['id'] = ['in', $ids];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
     public function update_by_id($id, $data) {
 
         if (!$id) {
@@ -102,4 +110,22 @@ class ServicesService extends BaseService{
         return [$data, $count];
     }
 
+    public function get_all_option($selected_id = '') {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+
+        $all = $NfModel->where($where)->select();
+        $options = '';
+        if ($all) {
+            foreach ($all as $_li) {
+                if ($selected_id && $selected_id == $_li['id']) {
+                    $options .= '<option selected="selected" value="'.$_li['id'].'">'.$_li['title'].'</option>';
+                } else {
+                    $options .= '<option value="'.$_li['id'].'">'.$_li['title'].'</option>';
+                }
+            }
+        }
+        return $options;
+    }
 }

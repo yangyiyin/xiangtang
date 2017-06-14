@@ -12,20 +12,10 @@
 	    <div class="search_type cc mb10 search-form">
 	      <div class="mb10">
 
-	        <span class="mr20">用户类型：
-        	<php>
-        		$all = (I('get.type'))?'selected':'';
-        		$first = (I('get.type')==1)?'selected':'';
-        		$second = (I('get.type')==2)?'selected':'';
-				$third = (I('get.type')==3)?'selected':'';
-				$forth = (I('get.type')==4)?'selected':'';
-        	</php>
-	        <select class="select_2 select" id="sch-sort-txt" name="type">
-	          	<option value="" {$all}>全部</option>
-	          	<option value="1" {$first}>工厂</option>
-	          	<option value="2" {$second}>美团</option>
-				<option value="3" {$third}>排挡</option>
-				<option value="4" {$forth}>个人</option>
+	        <span class="mr20">网点：
+				<select class="select_2 select" name="service_id">
+	          	<option value='' >全部</option>
+	          	{$services_options}
 	        </select>
 				<span class="mr20">状态：
         	<php>
@@ -62,7 +52,7 @@
 					<th width="5%"><input class="check-all" type="checkbox"/></th>
 					<th width="15%">基本信息</th>
 					<th width="15%">申请时间</th>
-					<th width="5%">类型</th>
+					<th width="15%">网点</th>
 					<th width="5%">状态</th>
 					<th>操作</th>
 				</tr>
@@ -74,13 +64,14 @@
 					<td>
 						<p class="short_info">用户id:{$vo.id}</p>
 						<p class="short_info">注册手机号:{$vo.user_tel}</p>
-						<if condition="($vo['type'] == 1 || $vo['type'] == 3)">
-							<p class="short_info"><a target="_blank" class="u-btn" href="{:U('entity_info')}/id/{$vo.id}" class="confirm J_ajax_get">查看企业资质信息</a></p>
-						</if>
+						<if condition="$vo['verify_status'] != 0 ">
+						<p class="short_info"><a target="_blank" class="u-btn" href="{:U('entity_info')}/id/{$vo.id}" class="confirm J_ajax_get">查看认证信息</a></p>
+							</if>
+
 					</td>
 
 					<td ><span>{$vo.create_time}</span></td>
-					<td ><span>{$vo.type_desc}</span></td>
+					<td ><span>{$vo.service.title}</span></td>
 					<td ><span>{$vo.status_desc}</span></td>
 					<td>
 
@@ -92,8 +83,15 @@
 							<else />
 							<a  class="u-btn confirm J_ajax_get" href="{:U('approve')}/id/{$vo.id}" >通过</a>
 						</if>
-						<if condition="($vo['type'] == 3)"><!--排挡添加业务员-->
-							<a  class="u-btn show_box" tmp_id="select_courier" uid="{$vo.id}" href="javascript:;">选择业务员:{$vo.courier.courier_name}</a>
+						<if condition="$vo['verify_status'] == 1 ">
+							<a  class="u-btn confirm J_ajax_get" href="{:U('approve_entity')}/id/{$vo.id}" >通过实名认证</a>
+							<a  class="u-btn confirm J_ajax_get" href="{:U('reject_entity')}/id/{$vo.id}" >拒绝实名认证</a>
+							<elseif condition="$vo['verify_status'] == 2"/>
+							已认证
+							<elseif condition="$vo['verify_status'] == 3"/>
+							已拒绝
+							<else />
+
 						</if>
 					</td>
 				</tr>

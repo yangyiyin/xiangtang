@@ -18,6 +18,7 @@ class OrderPre_order extends BaseApi{
     }
 
     public function excute() {
+        $this->can_order();
         $items_num = I('post.items');
         $items_num = $this->post_data['items'];
         if (!$items_num) {

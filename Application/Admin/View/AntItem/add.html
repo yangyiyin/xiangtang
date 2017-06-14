@@ -9,7 +9,11 @@
 		<div class="u-tab">
 		    <ul class="cc tab-nav">
 				<li><a href="{:U('index')}">所有商品</a></li>
-				<li class="current"><a href="javascript:;">编辑商品</a></li>
+				<if condition="I('get.id')">
+					<li class="current"><a href="javascript:;">编辑商品</a></li>
+					<else />
+					<li class="current"><a href="javascript:;">添加商品</a></li>
+				</if>
 		    </ul>
 		</div>
 		<!-- 数据表格 -->
@@ -41,6 +45,12 @@
 								<td width="20%"><label class="item-label">购买须知</label></td>
 								<td width="80%">
 									 <textarea name="tips">{$item.tips}</textarea>
+								</td>
+							</tr>
+							<tr style="display: none">
+								<td width="20%"><label class="item-label">价格</label></td>
+								<td width="80%">
+									<input type="text" class="input input-small" name="price1" value="{$item.price}">
 								</td>
 							</tr>
 							<tr>

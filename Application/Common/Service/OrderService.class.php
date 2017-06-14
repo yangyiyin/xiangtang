@@ -9,7 +9,7 @@ namespace Common\Service;
 class OrderService extends BaseService{
     public static $page_size = 20;
 
-    public static $order_steps = ['submit', 'paying', 'pay', 'send', 'stock_out', 'complete', 'cancel'];
+    public static $order_steps = ['received', 'submit', 'paying', 'pay', 'send', 'stock_out', 'complete', 'cancel'];
     public function add_one($data) {
         $NfOrder = D('NfOrder');
         $data['status'] = isset($data['status']) ? $data['status'] : \Common\Model\NfOrderModel::STATUS_SUBMIT;
@@ -129,8 +129,16 @@ class OrderService extends BaseService{
         return $this->$step($orders);
     }
 
+    public function received($order) {
+        if ($order['status'] != \Common\Model\NfOrderModel::STATUS_SUBMIT) {
+            return result(FALSE, '订单状态不是已提交,不能接单操作!');
+        }
+
+        return $this->update_by_id($order['id'], ['status'=>\Common\Model\NfOrderModel::STATUS_RECEIVED]);
+    }
+
     public function send($order) {
-        if ($order['status'] != \Common\Model\NfOrderModel::STATUS_PAY) {
+        if ($order['status'] != \Common\Model\NfOrderModel::STATUS_RECEIVED) {
             return result(FALSE, '订单状态不是已付款状态,不能发货操作!');
         }
 
@@ -139,7 +147,7 @@ class OrderService extends BaseService{
 
     public function batch_send($orders) {
         foreach ($orders as $order) {
-            if ($order['status'] != \Common\Model\NfOrderModel::STATUS_PAY) {
+            if ($order['status'] != \Common\Model\NfOrderModel::STATUS_RECEIVED) {
                 return result(FALSE, '订单id为'.$order['id'].',状态不是已付款状态,不能发货操作!');
             }
         }

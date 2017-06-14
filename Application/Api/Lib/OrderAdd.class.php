@@ -16,6 +16,7 @@ class OrderAdd extends BaseApi{
     }
 
     public function excute() {
+        $this->can_order();
         $pre_order_id = I('post.pre_order_id');
         $address = I('post.address');
         $name = I('post.name');

@@ -19,6 +19,7 @@ class AlipayNotify extends BaseSapi{
     }
 
     public function excute() {
+        die();
         $data_notify = [];
         $data_notify['pay_no'] = isset($_POST['out_trade_no']) ? $_POST['out_trade_no'] : '';
         $data_notify['pay_agent'] = \Common\Model\NfPayModel::PAY_AGENT_ALIPAY;

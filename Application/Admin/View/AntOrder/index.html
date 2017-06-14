@@ -23,11 +23,12 @@
 				$fifth = (I('get.status')==5)?'selected':'';
         		$sixth = (I('get.status')==6)?'selected':'';
 				$seventh = (I('get.status')==7)?'selected':'';
+				$eight = (I('get.status')==8)?'selected':'';
         	</php>
 	        <select class="select_2 select" id="sch-sort-txt" name="status">
 	          	<option value="" {$all}>全部</option>
+				<option value="8" {$eight}>已接单</option>
 	          	<option value="1" {$first}>已提交</option>
-				<option value="7" {$seventh}>支付中</option>
 	          	<option value="2" {$second}>已付款</option>
 				<option value="3" {$third}>已出库</option>
 				<option value="4" {$forth}>已发货</option>
@@ -68,9 +69,6 @@
 						<p class="short_info">总数量:{$vo.num}</p>
 						<p class="short_info">类型:{$vo.type_desc}</p>
 						<p class="short_info">创建时间:{$vo.create_time}</p>
-						<if condition="$vo['type'] == 3">
-							<p class="short_info">业务员:{$vo.courier.courier_name}</p>
-						</if>
 					</td>
 
 
@@ -107,15 +105,11 @@
 
 					<td ><span>{$vo.status_desc}</span></td>
 					<td>
-
-						<if condition="$vo['type'] == 4">
-							<if condition="$vo['status'] == 2">
-								<a class="u-btn confirm J_ajax_get" href="{:U('order_step')}/id/{$vo.id}/step/send" >发货</a>
-							</if>
-						<else />
-							<if condition="$vo['status'] == 1">
-								<a class="u-btn confirm J_ajax_get" href="{:U('order_step')}/id/{$vo.id}/step/stock_out" confirm_tips="出库信息:{$vo.order_stock_out_info}">出库</a>
-							</if>
+						<if condition="$vo['status'] == 1">
+							<a class="u-btn confirm J_ajax_get" href="{:U('order_step')}/id/{$vo.id}/step/received" >接单</a>
+						</if>
+						<if condition="$vo['status'] == 8">
+							<a class="u-btn confirm J_ajax_get" href="{:U('order_step')}/id/{$vo.id}/step/send" >发货</a>
 						</if>
 						<if condition="$vo['status'] == 1">
 							<a class="u-btn confirm J_ajax_get" url="{:U('order_step')}/id/{$vo.id}/step/cancel">取消订单</a>

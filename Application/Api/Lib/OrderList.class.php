@@ -16,6 +16,7 @@ class OrderList extends BaseApi{
     }
 
     public function excute() {
+        $this->can_order();
         $status = I('get.type');
         $page = I('get.p', 1);
         if ($status && !$this->OrderService->is_available_status($status)) {
