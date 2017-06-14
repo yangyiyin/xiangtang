@@ -84,7 +84,7 @@ class UserCourierService extends BaseService{
     public function set_name_by_uid($uid, $name) {
         $NfUserCourier = D('NfUserCourier');
         $NfCourier = D('NfCourier');
-        $courier = $NfCourier->where('name='.$name)->find();
+        $courier = $NfCourier->where('name="'.$name.'"')->find();
         if (!$courier) {
             return result(FALSE, '没有找到业务员信息');
         }
