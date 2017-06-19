@@ -25,7 +25,7 @@ class UserReceivingModify extends BaseApi{
             }
         }
 
-        if (!$this->post_data['name'] || !$this->post_data['tel'] || !$this->post_data['province'] || !$this->post_data['city'] || !$this->post_data['area'] || !$this->post_data['address']) {
+        if (!$this->post_data['name'] || !$this->post_data['tel'] || !$this->post_data['address']) {
             return result_json(FALSE, '请填写完整的收货地址信息~');
         }
 

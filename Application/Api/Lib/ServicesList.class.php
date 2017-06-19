@@ -8,7 +8,7 @@
 namespace Api\Lib;
 use Common\Model;
 use Common\Service;
-class ServicesList extends BaseSApi{
+class ServicesList extends BaseSapi{
     protected $method = parent::API_METHOD_GET;
     private $ServicesService;
     public function init() {
