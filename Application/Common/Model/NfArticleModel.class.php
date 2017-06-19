@@ -6,9 +6,9 @@
 namespace Common\Model;
 use Think\Model;
 class NfArticleModel extends NfBaseModel {
-    const TYPE_NEWS = 1;
-    const TYPE_ABOUT = 2;
-    const TYPE_CONTACT = 3;
+    const TYPE_NEWS = 'news';
+    const TYPE_ABOUT = 'about';
+    const TYPE_CONTACT = 'contact';
     protected $_validate = array(
         /**
         array('title', 'require', '名称不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT),

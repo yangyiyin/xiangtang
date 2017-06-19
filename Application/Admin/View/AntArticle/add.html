@@ -34,8 +34,8 @@
 							<tr>
 								<td width="20%"><label class="item-label">内容</label></td>
 								<td width="80%">
-									<textarea name="content">{$item.content}</textarea>
-									{:hook('adminArticleEdit', array('name'=>'content','value'=>$item['content']))}
+									<textarea name="content">{$info.content}</textarea>
+									{:hook('adminArticleEdit', array('name'=>'content','value'=>$info['content']))}
 								</td>
 							</tr>
 					</tbody>
