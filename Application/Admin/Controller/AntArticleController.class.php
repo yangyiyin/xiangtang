@@ -72,26 +72,14 @@ class AntArticleController extends AdminController {
     }
 
     public function add_about() {
-        if ($id = I('get.id')) {
-            $info = $this->ArticleService->get_info_by_id($id);
-            if ($info) {
-                $this->assign('info',$info);
-            } else {
-                $this->error('没有找到对应的信息~');
-            }
-        }
+        $info = $this->ArticleService->get_about();
+        $this->assign('info',$info);
         $this->display();
     }
 
     public function add_contact() {
-        if ($id = I('get.id')) {
-            $info = $this->ArticleService->get_info_by_id($id);
-            if ($info) {
-                $this->assign('info',$info);
-            } else {
-                $this->error('没有找到对应的信息~');
-            }
-        }
+        $info = $this->ArticleService->get_contact();
+        $this->assign('info',$info);
         $this->display();
     }
 
