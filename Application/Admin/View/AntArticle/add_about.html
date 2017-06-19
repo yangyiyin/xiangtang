@@ -14,7 +14,7 @@
 		<!-- 数据表格 -->
 		<div class="tab-content table_list">
 		<!-- 表单 -->
-		<form id="form" action="{:U('update')}/id/{:I('get.id')}" method="post" class="form-horizontal">
+		<form id="form" action="{:U('update')}/id/{$info.id}" method="post" class="form-horizontal">
 				<div id="tab">
 					<table class="" width="100%">
 				    <tbody>
@@ -29,8 +29,8 @@
 							<tr>
 								<td width="20%"><label class="item-label">内容</label></td>
 								<td width="80%">
-									<textarea name="content">{$item.content}</textarea>
-									{:hook('adminArticleEdit', array('name'=>'content','value'=>$item['content']))}
+									<textarea name="content">{$info.content}</textarea>
+									{:hook('adminArticleEdit', array('name'=>'content','value'=>$info['content']))}
 								</td>
 							</tr>
 					</tbody>
