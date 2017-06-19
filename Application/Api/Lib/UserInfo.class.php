@@ -18,7 +18,8 @@ class UserInfo extends BaseApi{
     public function excute() {
         $info = $this->UserService->get_info_by_id($this->uid);
         $data = convert_obj($info, 'user_name,avatar,user_tel,sex,province,city,address,entity_name,verify_status');
-        $data->avatar = item_img(get_cover(13, 'path'));
+        $data->verify_status = (int) $data->verify_status;
+        $data->avatar = item_img(get_cover(46, 'path'));
         return result_json(TRUE, '', $data);
     }
 }
