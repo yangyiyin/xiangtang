@@ -27,6 +27,7 @@ class AntArticleController extends AdminController {
         if (I('get.title')) {
             $where['title'] = ['LIKE', '%' . I('get.title') . '%'];
         }
+        $where['type'] = \Common\Model\NfArticleModel::TYPE_NEWS;
         $page = I('get.p', 1);
         list($data, $count) = $this->ArticleService->get_by_where($where, 'id desc', $page);
         $PageInstance = new \Think\Page($count, \Common\Service\ArticleService::$page_size);
@@ -91,7 +92,11 @@ class AntArticleController extends AdminController {
                 $ret = $this->ArticleService->update_by_id($id, $data);
                 if ($ret->success) {
                     action_user_log('修改文章');
-                    $this->success('修改成功！', U('index'));
+                    if (I('get.current')) {
+                        $this->success('修改成功！', '');
+                    } else {
+                        $this->success('修改成功！', U('index'));
+                    }
                 } else {
                     $this->error($ret->message);
                 }
@@ -99,7 +104,11 @@ class AntArticleController extends AdminController {
                 $ret = $this->ArticleService->add_one($data);
                 if ($ret->success) {
                     action_user_log('添加文章');
-                    $this->success('添加成功！', U('index'));
+                    if (I('get.current')) {
+                        $this->success('添加成功！', '');
+                    } else {
+                        $this->success('添加成功！', U('index'));
+                    }
                 } else {
                     $this->error($ret->message);
                 }
