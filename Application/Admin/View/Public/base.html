@@ -165,6 +165,13 @@
         .nav-list>li>.submenu>li:first-child>a{
             border-top: none;
         }
+        .sidebar:before{
+            background-color: #363739;
+        }
+        .nav-list>li>a:focus{
+            background-color: #363739;
+            color:#fff;
+        }
     </style>
 </head>
 <body style="" screen_capture_injected="true">
@@ -181,7 +188,7 @@
                 <a href="{:U('Admin/Public/logout')}" class="logout"></a>
                 <a href="{:U('Index/index')}" target="_blank" class="home"></a>
                 <div>
-                    <h2>gooduo</h2>
+                    <h2>{:session('user_auth.username')}</h2>
                     <h3>后台管理员</h3>
                 </div>
                 <a href="javascript:;" target="_blank" class="gooduo"></a>
