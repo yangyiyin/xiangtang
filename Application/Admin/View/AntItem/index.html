@@ -45,6 +45,7 @@
 					<th width="15%">基本信息</th>
 					<th width="5%">分类</th>
 					<th width="28%">价格</th>
+					<th width="10%">排序</th>
 					<th  style="display: none"width="5%">状态</th>
 					<th width="12%">操作</th>
 				</tr>
@@ -84,6 +85,13 @@
 							</tr>
 
 						</table>
+					</td>
+					<td>
+						<span class="sort_text">{$vo.sort}</span>
+						<div style="display: none" class="modify_sort">
+							<input class="sort_value" style="width: 30px" type="text" value="{$vo.sort}"/>
+							<input iid="{$vo.id}" class="sort_submit" type="button" value="确定"/>
+						</div>
 					</td>
 					<td style="display: none"><span>{$vo.status_text}</span></td>
 					<td>
@@ -278,6 +286,31 @@ $(function(){
 			box.find('#'+$(e).attr('service_id')).val($(e).html());
 		});
 	}
+
+
+	$('.sort_text').on('click',function(){
+		$(this).css('display', 'none');
+		$(this).next().css('display', '');
+	});
+	$('.sort_submit').on('click',function(){
+		var url = '{:U("modify_sort")}';
+		var sort = $(this).prev().val();
+		var query = {
+			id:$(this).attr('iid'),
+			sort:sort
+		}
+		$.post(url,query).success(function(data){
+			if (data.status==1) {
+				updateAlert(data.info ,'alert-success');
+				$(this).parent().css('display', 'none');
+				$(this).parent().prev().html(sort);
+				$(this).parent().prev().css('display', '');
+			}else{
+				updateAlert('网络繁忙~请稍后再试~');
+			}
+		}.bind(this));
+
+	});
 
     
 });

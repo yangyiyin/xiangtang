@@ -31,7 +31,7 @@ class ItemList extends BaseApi{
             $where['keyword'] = ['LIKE', '%'.$keyword.'%'];
         }
         $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
-        list($data, $count) = $this->ItemService->get_by_where($where, 'id desc', $page);
+        list($data, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc', $page);
         $list = $this->convert_data($data);
         $result = new \stdClass();
         $result->list = $list;

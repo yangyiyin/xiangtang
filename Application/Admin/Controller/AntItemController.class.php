@@ -191,6 +191,24 @@ class AntItemController extends AdminController {
     }
 
 
+    public function modify_sort() {
+        $id = I('post.id');
+        $sort = I('post.sort');
+        if ($id) {
+            $data = [];
+            $data['sort'] = (int) $sort;
+            $ret = $this->ItemService->update_by_id($id, $data);
+            if ($ret->success) {
+                action_user_log('修改商品排序,id:'.$id);
+                $this->success('修改排序成功！', U('index'));
+            } else {
+                $this->error($ret->message);
+            }
+        } else {
+
+            $this->error('没有id~');
+        }
+    }
 
 
 }

@@ -23,7 +23,7 @@ class ItemDetailDefault extends BaseSapi{
         $where['id'] = ['EQ', $item_id];
         $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
         $page = 1;
-        list($data, $count) = $this->ItemService->get_by_where($where, 'id desc', $page);
+        list($data, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc', $page);
         $list = $this->convert_data($data);
         $data = isset($list[0]) ? $list[0] : [];
         return result_json(TRUE, '', $data);
