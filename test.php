@@ -7,10 +7,11 @@
  *f
  *
  * */
-class aa{
-  const a = 1;
-}
-$a = new aa();
-echo $a::a;
+
+$a = ['a'=>1];
+var_dump(array_merge(null, [1,2]));
+
+
+
 
 ?>

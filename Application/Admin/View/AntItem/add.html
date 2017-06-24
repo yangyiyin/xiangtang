@@ -2,6 +2,11 @@
 
 <block name="body">
 <script type="text/javascript" src="__STATIC__/uploadify/jquery.uploadify.min.js"></script>
+	<!--百度webuploader-->
+	<link rel="stylesheet" type="text/css" href="__STATIC__/webuploader/webuploader.css">
+	<script type="text/javascript" src="__STATIC__/webuploader/webuploader.min.js"></script>
+
+
 <script type="text/javascript" src="__STATIC__/popwin.js"></script>   
 <style type="text/css">#dialog{display:none;}</style>
 	<div class="g-wrap">
@@ -65,41 +70,69 @@
 								<td width="80%">
 
 									<div class="controls">
-										<input type="file" id="upload_picture_1">
+										<div id="filePicker">选择图片</div>
 										<input type="hidden" value="{$item.img}" name="img" id="cover_id_1"/>
 										<div class="upload-img-box">
 											<notempty name="item['img']">
-												<div class="upload-pre-item"><img src="__ROOT__{$item['img']|get_cover='path'}" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic()"><i class="fa fa-times-circle u-close"></i></a></div>
+												<div class="upload-pre-item"><img src="__ROOT__{$item['img']}" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic()"><i class="fa fa-times-circle u-close"></i></a></div>
 											</notempty>
 										</div>
 									</div>
+
+
 									<script type="text/javascript">
 										//上传图片
 										/* 初始化上传插件 */
-										$("#upload_picture_1").uploadify({
-											"height"          : 30,
-											"swf"             : "__STATIC__/uploadify/uploadify.swf",
-											"fileObjName"     : "download",
-											"buttonText"      : "上传图片",
-											"uploader"        : "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
-											"width"           : 120,
-											'removeTimeout'	  : 1,
-											'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
-											"onUploadSuccess" : uploadPicture1,
-										'onFallback' : function() {
-											alert('未检测到兼容版本的Flash.');
-										}
+//										$("#upload_picture_1").uploadify({
+//											"height"          : 30,
+//											"swf"             : "__STATIC__/uploadify/uploadify.swf",
+//											"fileObjName"     : "download",
+//											"buttonText"      : "上传图片",
+//											"uploader"        : "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+//											"width"           : 120,
+//											'removeTimeout'	  : 1,
+//											'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
+//											"onUploadSuccess" : uploadPicture1,
+//										'onFallback' : function() {
+//											alert('未检测到兼容版本的Flash.');
+//										}
+//										});
+
+										var uploader = WebUploader.create({
+
+											// 选完文件后，是否自动上传。
+											auto: true,
+
+											// swf文件路径
+											swf: '__STATIC__/webuploader/Uploader.swf',
+
+											// 文件接收服务端。
+											server: "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+
+											// 选择文件的按钮。可选。
+											// 内部根据当前运行是创建，可能是input元素，也可能是flash.
+											pick: '#filePicker',
+											fileVal: 'download',
+											duplicate: true,
+											// 只允许选择图片文件。
+											accept: {
+												title: 'Images',
+												extensions: 'gif,jpg,jpeg,bmp,png',
+												mimeTypes: 'image/*'
+											}
+										});
+										uploader.on( 'uploadSuccess', function(file, response) {
+											uploadPicture1(file, response);
 										});
 										function delpic(){
-											$("#cover_id_1").attr("value",0);
+											$("#cover_id_1").attr("value",'');
 											$("#cover_id_1").parent().find('.upload-img-box').html('');
 										}
 										function uploadPicture1(file, data){
 											/*var data = $.parseJSON(data);*/
-											var data = window["eval"]("(" + data + ")");
 											var src = '';
 											if(data.status){
-												$("#cover_id_1").val(data.id);
+												$("#cover_id_1").val(data.path);
 												src = data.url || '__ROOT__' + data.path
 												$("#cover_id_1").parent().find('.upload-img-box').html(
 														'<div class="upload-pre-item j_1"><img src="' + src + '" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic()"><i class="fa fa-times-circle u-close"></i></a></div>'
@@ -108,7 +141,6 @@
 												updateAlert(data.info);
 												setTimeout(function(){
 													$('#top-alert').find('button').click();
-													$(that).removeClass('disabled').prop('disabled',false);
 												},1500);
 											}
 										}

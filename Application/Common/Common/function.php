@@ -933,6 +933,13 @@ function get_link($link_id = null, $field = 'url'){
  * @author huajie <banhuajie@163.com>
  */
 function get_cover($cover_id, $field = null){
+
+    if (substr($cover_id, 0,1) == '/') {
+        if ($field == 'path') {
+            return $cover_id;
+        }
+        return __ROOT__ . $cover_id;
+    }
     if(empty($cover_id)){
         return false;
     }
@@ -942,6 +949,9 @@ function get_cover($cover_id, $field = null){
 
 function item_img($path) {
     if (!$path) return '';
+    if (strpos($path, 'http') !== FALSE) {
+        return $path;
+    }
     return 'http://' . $_SERVER['HTTP_HOST'] . __ROOT__ . $path;
 }
 

@@ -2,7 +2,11 @@
 
 <block name="body">
 <script type="text/javascript" src="__STATIC__/uploadify/jquery.uploadify.min.js"></script>
-<script type="text/javascript" src="__STATIC__/popwin.js"></script>   
+	<!--百度webuploader-->
+	<link rel="stylesheet" type="text/css" href="__STATIC__/webuploader/webuploader.css">
+	<script type="text/javascript" src="__STATIC__/webuploader/webuploader.min.js"></script>
+
+	<script type="text/javascript" src="__STATIC__/popwin.js"></script>
 <style type="text/css">#dialog{display:none;}</style>
 	<div class="g-wrap">
 		<!-- 按钮工具栏 -->
@@ -73,7 +77,7 @@
 								<td width="20%"><label class="item-label">图片</label></td>
 								<td width="80%">
 									<div class="controls">
-										<input type="file" id="upload_picture_1">
+										<div id="filePicker">选择图片</div>
 										<div class="upload-img-box">
 											<div class="upload-pre-item image-gallery">
 												<fieldset>
@@ -83,11 +87,11 @@
 													<?php else:?>
 													<?php $images = explode(',', $info['imgs']);?>
 													<ul class="imagelist" id="image_result">
-														<volist name="images" id="vo">
-															<li class="imageitem" id="gallery_{$vo}">
+														<volist name="images" id="vo"  key="k">
+															<li class="imageitem" id="gallery_{$k}">
 																<input type="hidden" name="imgs[]" value="{$vo}">
-																<img height="160" width="160" src="__ROOT__{$vo|get_product_image}" />
-																<a title="删除" href="javascript:remove({$vo});"><i class="fa fa-times-circle"></i></a>
+																<img height="160" width="160" src="{$vo|get_cover}" />
+																<a title="删除" href="javascript:remove({$k});"><i class="fa fa-times-circle"></i></a>
 															</li>
 														</volist>
 													</ul>
@@ -100,28 +104,54 @@
 									<script type="text/javascript">
 										//上传图片
 										/* 初始化上传插件 */
-										$("#upload_picture_1").uploadify({
-											"height"          : 30,
-											"swf"             : "__STATIC__/uploadify/uploadify.swf",
-											"fileObjName"     : "download",
-											"buttonText"      : "上传图片",
-											"uploader"        : "{:U('Admin/File/uploadPicture',array('session_id'=>session_id()))}",
-											"width"           : 120,
-											'removeTimeout'	  : 1,
-											'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
-											"onUploadSuccess" : uploadPicture1,
-										'onFallback' : function() {
-											alert('未检测到兼容版本的Flash.');
-										}
+//										$("#upload_picture_1").uploadify({
+//											"height"          : 30,
+//											"swf"             : "__STATIC__/uploadify/uploadify.swf",
+//											"fileObjName"     : "download",
+//											"buttonText"      : "上传图片",
+//											"uploader"        : "{:U('Admin/File/uploadPicture',array('session_id'=>session_id()))}",
+//											"width"           : 120,
+//											'removeTimeout'	  : 1,
+//											'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
+//											"onUploadSuccess" : uploadPicture1,
+//										'onFallback' : function() {
+//											alert('未检测到兼容版本的Flash.');
+//										}
+//										});
+										var uploader = WebUploader.create({
+
+											// 选完文件后，是否自动上传。
+											auto: true,
+
+											// swf文件路径
+											swf: '__STATIC__/webuploader/Uploader.swf',
+
+											// 文件接收服务端。
+											server: "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+
+											// 选择文件的按钮。可选。
+											// 内部根据当前运行是创建，可能是input元素，也可能是flash.
+											pick: '#filePicker',
+											fileVal: 'download',
+											duplicate: true,
+											// 只允许选择图片文件。
+											accept: {
+												title: 'Images',
+												extensions: 'gif,jpg,jpeg,bmp,png',
+												mimeTypes: 'image/*'
+											}
+										});
+										uploader.on( 'uploadSuccess', function(file, response) {
+											uploadPicture1(file, response);
 										});
 										function uploadPicture1(file, data){
 											//var data = $.parseJSON(data);
-											var data = window["eval"]("(" + data + ")");
-											var src = '';
+//											var data = window["eval"]("(" + data + ")");
 											if(data.status){
+												var src = data.url || '__ROOT__'+data.path;
 												var html = '<li class="imageitem" id="gallery_'+data.id+'">';
-												html+= '<input type="hidden" name="imgs[]" value="'+data.id+'">'; //隐藏域，是为了把图片地址入库。。
-												html+= '<img height="160" width="160" src="'+'__ROOT__'+data.path+'" />';
+												html+= '<input type="hidden" name="imgs[]" value="'+data.path+'">'; //隐藏域，是为了把图片地址入库。。
+												html+= '<img height="160" width="160" src="'+src+'" />';
 
 												html+=  '<a title="删除" href="javascript:remove('+data.id+')" class="J_ajax_get confirm"><i class="fa fa-times-circle"></i></a>';
 												html+=  '</li>';
@@ -130,7 +160,6 @@
 												updateAlert(data.info);
 												setTimeout(function(){
 													$('#top-alert').find('button').click();
-													$(that).removeClass('disabled').prop('disabled',false);
 												},1500);
 											}
 										}

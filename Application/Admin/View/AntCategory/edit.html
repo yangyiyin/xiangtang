@@ -3,7 +3,11 @@
 <block name="body">
 	<!-- 标题栏 -->
 		<script type="text/javascript" src="__STATIC__/uploadify/jquery.uploadify.min.js"></script>
-		<div class="g-wrap tab-wrap">
+	<!--百度webuploader-->
+	<link rel="stylesheet" type="text/css" href="__STATIC__/webuploader/webuploader.css">
+	<script type="text/javascript" src="__STATIC__/webuploader/webuploader.min.js"></script>
+
+	<div class="g-wrap tab-wrap">
         <div class="common-form tab-content">
 		    <form action="{:U()}" method="post" class="form-horizontal">
 		    	<div id="tab1" class="tab-pane in tab1 table_list">
@@ -33,40 +37,66 @@
 			            <tr>
 			              <td width="20%"><label class="item-label">分类图标</label></td>
 			              <td>
-				              	<input type="file" id="upload_picture">
+							  <div id="filePicker">选择图片</div>
 								<input type="hidden" name="icon" id="icon" value="{$info['icon']|default=''}"/>
 								<div class="upload-img-box">
 								<notempty name="info.icon">
-									<div class="upload-pre-item"><img src="__ROOT__{$info.icon|get_cover='path'}"/><a title="删除" href="javascript:;" class="j_delpic" onclick="delpic()"><i class="fa fa-times-circle u-close"></i></a></div>
+									<div class="upload-pre-item"><img src="{$info.icon|get_cover='path'}"/><a title="删除" href="javascript:;" class="j_delpic" onclick="delpic()"><i class="fa fa-times-circle u-close"></i></a></div>
 								</notempty>
 								</div>
 								<script type="text/javascript">
 								//上传图片
 							    /* 初始化上传插件 */
-								$("#upload_picture").uploadify({
-							        "height"          : 30,
-							        "swf"             : "__STATIC__/uploadify/uploadify.swf",
-							        "fileObjName"     : "download",
-							        "buttonText"      : "上传图片",
-							        "uploader"        : "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
-							        "width"           : 120,
-							        'removeTimeout'	  : 1,
-							        'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
-							        "onUploadSuccess" : uploadPicture,
-							        'onFallback' : function() {
-							            alert('未检测到兼容版本的Flash.');
-							        }
-							    });
+//								$("#upload_picture").uploadify({
+//							        "height"          : 30,
+//							        "swf"             : "__STATIC__/uploadify/uploadify.swf",
+//							        "fileObjName"     : "download",
+//							        "buttonText"      : "上传图片",
+//							        "uploader"        : "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+//							        "width"           : 120,
+//							        'removeTimeout'	  : 1,
+//							        'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
+//							        "onUploadSuccess" : uploadPicture,
+//							        'onFallback' : function() {
+//							            alert('未检测到兼容版本的Flash.');
+//							        }
+//							    });
+								var uploader = WebUploader.create({
+
+									// 选完文件后，是否自动上传。
+									auto: true,
+
+									// swf文件路径
+									swf: '__STATIC__/webuploader/Uploader.swf',
+
+									// 文件接收服务端。
+									server: "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+
+									// 选择文件的按钮。可选。
+									// 内部根据当前运行是创建，可能是input元素，也可能是flash.
+									pick: '#filePicker',
+									fileVal: 'download',
+									duplicate: true,
+									// 只允许选择图片文件。
+									accept: {
+										title: 'Images',
+										extensions: 'gif,jpg,jpeg,bmp,png',
+										mimeTypes: 'image/*'
+									}
+								});
+								uploader.on( 'uploadSuccess', function(file, response) {
+									uploadPicture(file, response);
+								});
 							    function delpic(){
-							    	$("#icon").attr("value",0);
+							    	$("#icon").attr("value",'');
 							    	$("#icon").parent().find('.upload-img-box').html('');
 							    }
 								function uploadPicture(file, data){
 							    	//var data = $.parseJSON(data);
-							    	var data = window["eval"]("(" + data + ")"); 
+//							    	var data = window["eval"]("(" + data + ")");
 							    	var src = '';
 							        if(data.status){
-							        	$("#icon").val(data.id);
+							        	$("#icon").val(data.path);
 							        	src = data.url || '__ROOT__' + data.path;
 							        	$("#icon").parent().find('.upload-img-box').html(
 							        		'<div class="upload-pre-item"><img src="' + src + '"/><a title="删除" href="javascript:;" onclick="delpic()"><i class="fa fa-times-circle u-close"></i></a></div>'
@@ -75,7 +105,6 @@
 							        	updateAlert(data.info);
 							        	setTimeout(function(){
 							                $('#top-alert').find('button').click();
-							                $(that).removeClass('disabled').prop('disabled',false);
 							            },1500);
 							        }
 							    }

@@ -62,7 +62,7 @@
 				<tr>
 		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
 					<td>{$vo.id} </td>
-					<td><img src="__ROOT__{$vo['img']|get_cover='path'}" width="50" height="50"/></td>
+					<td><img src="{$vo['img']|get_cover}" width="50" height="50"/></td>
 					<td>
 						<p class="short_info">标题:{$vo.title}</p>
 						<p class="short_info">创建时间:{$vo.create_time}</p>

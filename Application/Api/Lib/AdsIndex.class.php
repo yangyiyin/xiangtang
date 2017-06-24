@@ -36,7 +36,7 @@ class AdsIndex extends BaseSapi{
 
             $imgs = explode(',', $ad['imgs']);
             foreach ($imgs as $img_id) {
-                $data[$ad['name']]->imgs[] = item_img(get_product_image($img_id));
+                $data[$ad['name']]->imgs[] = item_img(get_cover($img_id, 'path'));
             }
         }
 
