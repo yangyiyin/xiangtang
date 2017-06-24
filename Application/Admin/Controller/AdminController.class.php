@@ -46,7 +46,7 @@ class AdminController extends Controller {
                 //检测非动态权限
                 $rule  = strtolower(MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME);
                 if ( !$this->checkRule($rule,array('in','1,2')) ){
-                    //$this->error('未授权访问!');
+                    $this->error('未授权访问!');
                 }
             }
         }
@@ -257,8 +257,8 @@ class AdminController extends Controller {
                 }
 
                 // 获取当前主菜单的子菜单项
-                if(M('Menu')->where("pid = {$item['id']}")->select()){
-                    $groups = M('Menu')->field($field)->where("pid = {$item['id']}")->order('sort asc,id')->distinct(true)->select();
+                if(M('Menu')->where("pid = {$item['id']} and hide=0")->select()){
+                    $groups = M('Menu')->field($field)->where("pid = {$item['id']} and hide=0")->order('sort asc,id')->distinct(true)->select();
 
                     $to_check_urls = array();
                     if(!IS_ROOT){

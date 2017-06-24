@@ -7,11 +7,10 @@
  *f
  *
  * */
+$auth = 'AuthManager/changeStatus?method=forbidGroup';
+$query = preg_replace('/^.+\?/U','',$auth);
 
-$a = ['a'=>1];
-var_dump(array_merge(null, [1,2]));
-
-
-
+parse_str($query,$param); //解析规则中的param
+var_dump( $param);
 
 ?>
