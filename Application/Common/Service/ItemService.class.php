@@ -122,31 +122,31 @@ class ItemService extends BaseService{
 
     public function check_status_stock($items_num) {
         if ($items_num) {
-            $ProductSkuService = \Common\Service\ProductSkuService::get_instance();
-            $pids = result_to_array($items_num, 'pid');
-            $skus = $ProductSkuService->get_by_pids($pids);
-            $skus_pid_map = result_to_map($skus, 'pid');//一个pid只有一个sku
-            if (!$skus_pid_map) {
-                return result_json(FALSE, '库存异常~');
-            }
+//            $ProductSkuService = \Common\Service\ProductSkuService::get_instance();
+//            $pids = result_to_array($items_num, 'pid');
+            //$skus = $ProductSkuService->get_by_pids($pids);
+            //$skus_pid_map = result_to_map($skus, 'pid');//一个pid只有一个sku
+//            if (!$skus_pid_map) {
+//                return result_json(FALSE, '库存异常~');
+//            }
 
             foreach ($items_num as $key => $_item) {
                 if ($_item['status'] != \Common\Model\NfItemModel::STATUS_NORAML) {
                     return result(FALSE, $_item['title'] . '状态为' . $this->get_status_txt($_item['status']));
                 }
 
-                //检测库存
-                if (!isset($skus_pid_map[$_item['pid']]['num'])) {
-                    return result(FALSE, $_item['title'] . '库存异常~');
-                }
+//                //检测库存
+//                if (!isset($skus_pid_map[$_item['pid']]['num'])) {
+//                    return result(FALSE, $_item['title'] . '库存异常~');
+//                }
 
                 if (!isset($_item['num']) || !$_item['num']) {
                     return result(FALSE, $_item['title'] . '购买数量未知~');
                 }
 
-                if ($skus_pid_map[$_item['pid']]['num'] < $_item['num']) {
-                    return result(FALSE, $_item['title'] . '库存不足~');
-                }
+//                if ($skus_pid_map[$_item['pid']]['num'] < $_item['num']) {
+//                    return result(FALSE, $_item['title'] . '库存不足~');
+//                }
             }
 
         } else {
