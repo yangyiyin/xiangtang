@@ -20,7 +20,7 @@ class UserRegist extends BaseSapi{
         $user_password = I('post.user_password');
         $user_type = I('post.user_type');
         $code = I('post.code');
-
+        $service_id = $this->post_data['service_id'];
         $user_name = '';
         $user_tel = $this->post_data['user_tel'];
         $user_password = $this->post_data['user_password'];
@@ -36,7 +36,7 @@ class UserRegist extends BaseSapi{
             $result->callback = $this->callback;
         }
 
-        if (!$user_tel || !$user_password || !$code) {
+        if (!$user_tel || !$user_password || !$code || !$service_id) {
             $result->message = '填写信息不完整~';
             echo json_encode($result);
             exit();
