@@ -19,11 +19,11 @@ class OrderList extends BaseApi{
         $this->can_order();
         $status = I('get.type');
         $page = I('get.p', 1);
-        if ($status && !$this->OrderService->is_available_status($status)) {
+        if ($status && $status != -1 && !$this->OrderService->is_available_status($status)) {
             return result_json(FALSE, '非法参数');
         }
         if ($status) {
-            if ($status == 1) {//1是全部
+            if ($status == -1) {//1是全部
                 //$where['status'] = ['EQ', $status];
             } else {
                 $where['status'] = ['EQ', $status];
