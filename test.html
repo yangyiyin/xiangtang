@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    * {
+        padding: 0px;
+        margin: 0px;
+    }
+
+
+</style>
+<body>
+
+
+    <div id="div1" onclick="aa();" style="background-color: #00a2d4;width: 100px;height: 100px;"></div>
+
+</body>
+
+<script>
+    function get_ele(ele) {
+        return document.getElementById(ele);
+    }
+
+
+    function () {
+        var xx = get_ele('div1')
+        xx.style.backgroundColor = '#000000';
+        xx.style.width = '200px';
+    }
+
+
+</script>
+</html>

@@ -13,6 +13,9 @@ class NfUserModel extends Model {
     const TYPE_SHOP = 3;
     const TYPE_PEOPLE = 4;
 
+    const TYPE_NORMAL = 1;
+    const TYPE_DEALER = 2;
+
     const STATUS_NORAML = 1;
     const STATUS_VERIFY = 2;
     const STATUS_FORBID = 99;
@@ -21,6 +24,11 @@ class NfUserModel extends Model {
     const VERIFY_STATUS_SUBMIT = 1;
     const VERIFY_STATUS_OK = 2;
     const VERIFY_STATUS_REJECT = 3;
+
+    const IS_INVITER_NONE = 0;
+    const IS_INVITER_SUBMIT = 1;
+    const IS_INVITER_YES = 2;
+
     public static $type_map = [
         1=>'factory',
         2=>'meituan',

@@ -17,11 +17,9 @@ class AntUserController extends AdminController {
     public function index() {
 
         $where = [];
-        if (I('get.type')) {
-            $where['type'] = ['EQ', I('get.type')];
-        }
-        if (I('get.service_id')) {
-            $where['service_id'] = ['EQ', I('get.service_id')];
+        $where['type'] = ['EQ', \Common\Model\NfUserModel::TYPE_NORMAL];
+        if (isset($this->type)) {
+            $where['type'] = ['EQ', $this->type];
         }
         if (I('get.create_begin')) {
             $where['create_time'][] = ['EGT', I('get.create_begin')];
@@ -43,7 +41,7 @@ class AntUserController extends AdminController {
         if (I('get.user_name')) {
             $where['status'] = ['LIKE', '%' . I('get.user_name') . '%'];
         }
-        //var_dump($where);die();
+
         $page = I('get.p', 1);
         list($data, $count) = $this->UserService->get_by_where($where, 'id desc', $page);
         $this->convert_data($data);
@@ -53,6 +51,15 @@ class AntUserController extends AdminController {
         }
         $page_html = $PageInstance->show();
         $ServicesService = \Common\Service\ServicesService::get_instance();
+
+        $model =new offer();
+        $MODE->TITLE = DDFD;
+        $MODEL->save();
+
+        $service = new service();
+        $service->save_title();
+
+
         $services_options = $ServicesService->get_all_option(I('get.service_id'));
         $this->assign('services_options', $services_options);
 
@@ -194,5 +201,18 @@ class AntUserController extends AdminController {
         }
         $this->assign('info', $user);
         $this->display();
+    }
+
+    public function disabled_info() {
+        $id = I('get.id');
+        if (!$id) {
+            $this->error('id没有');
+        }
+        $user = $this->UserService->get_info_by_id($id);
+        if (!$user) {
+            $this->error('没有找到信息~');
+        }
+        $this->assign('info', $user);
+        $this->display('AntUser/disabled_info');
     }
 }
