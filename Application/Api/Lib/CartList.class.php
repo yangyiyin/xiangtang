@@ -34,9 +34,10 @@ class CartList extends BaseApi{
         $list = [];
         if ($data) {
             $ItemService = Service\ItemService::get_instance();
-            $itemUsertypePricesService = Service\ItemUsertypePricesService::get_instance();
+
+            $ItemServicePricesService = \Common\Service\ItemServicePricesService::get_instance();
             $iids = result_to_array($data);
-            $prices = $itemUsertypePricesService->get_by_iids($iids);
+            $prices = $ItemServicePricesService->get_by_iids($iids);
             $prices_map = result_to_complex_map($prices, 'iid');
 
             $UserService = Service\UserService::get_instance();
@@ -49,7 +50,7 @@ class CartList extends BaseApi{
             foreach ($data as $key => $_item) {
                 $_item['img'] = item_img(get_cover($_item['img'], 'path'));//todo 这种方式后期改掉
                 if (isset($prices_map[$_item['id']])) {
-                    $price = $itemUsertypePricesService->get_price_by_type($user_info['type'], $prices_map[$_item['id']]);
+                    $price = $ItemServicePricesService->get_price_by_service_id($user_info['service_id'], $prices_map[$_item['id']]);
                     if ($price) {
                         $_item['price'] = $price;
                     }
