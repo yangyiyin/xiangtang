@@ -40,7 +40,7 @@ class AliyunMsmService extends BaseService
         $topic = $this->client->getTopicRef($topicName);
 
         // 3.1 设置发送短信的签名（SMSSignName）和模板（SMSTemplateCode）
-        $batchSmsAttributes = new BatchSmsAttributes("蚂蚁配送", "SMS_67170103");
+        $batchSmsAttributes = new BatchSmsAttributes("绿锦", "SMS_75775160");
         // 3.2 （如果在短信模板中定义了参数）指定短信模板中对应参数的值
         $batchSmsAttributes->addReceiver((string) $tel_num, $params);
         //$batchSmsAttributes->addReceiver("YourReceiverPhoneNumber2", array("YourSMSTemplateParamKey1" => "value1"));
