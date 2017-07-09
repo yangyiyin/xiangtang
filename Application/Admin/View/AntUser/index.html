@@ -86,7 +86,7 @@
 
 						<if condition="$vo['status'] == 1 ">
 							<a  class="u-btn confirm J_ajax_get" href="{:U('forbid')}/id/{$vo.id}" >禁用</a>
-							<elseif condition="$name eq 2"/>
+							<elseif condition="$vo['status'] eq 2"/>
 							<a  class="u-btn confirm J_ajax_get" href="{:U('approve')}/id/{$vo.id}" >通过</a>|
 							<a  class="u-btn confirm J_ajax_get" href="{:U('forbid')}/id/{$vo.id}" >禁用</a>
 							<else />
