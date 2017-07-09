@@ -187,6 +187,10 @@ class AntUserController extends AdminController {
         $id = I('get.id');
 
         if ($id) {
+            $ret = $this->UserService->can_be_inviter($id);
+            if (!$ret->success) {
+                $this->error($ret->message);
+            }
             $ret = $this->UserService->be_inviter([$id]);
         } else {
             $this->error('id没有');

@@ -104,7 +104,10 @@ class UcenterMemberModel extends Model{
 		);
 
 		//验证手机
-		if(empty($data['mobile'])) unset($data['mobile']);
+		if(empty($data['email'])) unset($data['email']);
+
+        //验证手机
+        if(empty($data['mobile'])) unset($data['mobile']);
 
 		/* 添加用户 */
 		if($this->create($data)){

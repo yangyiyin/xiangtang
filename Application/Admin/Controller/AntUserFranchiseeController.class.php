@@ -6,15 +6,41 @@
  * Time: 下午1:31
  */
 namespace Admin\Controller;
-
-class AntUserDealerController extends AntUserController {
-    protected $type = 2;
+use User\Api\UserApi;
+class AntUserFranchiseeController extends AdminController  {
+    protected $MemberService;
     protected function _initialize() {
         parent::_initialize();
+        $this->MemberService = \Common\Service\MemberService::get_instance();
     }
+
     public function add() {
+
+
+        if(IS_POST){
+            /* 检测密码 */
+            $password = '123123';
+            /* 调用注册接口注册用户 */
+            $User   =   new UserApi();
+            $uid    =   $User->register($username, $password, '');
+            if(0 < $uid){ //注册成功
+                $user = array('uid' => $uid, 'nickname' => $username, 'status' => 1);
+                if(!M('Member')->add($user)){
+                    $this->error('加盟商添加失败！');
+                } else {
+                    $this->success('加盟商添加成功！',U('index'));
+                }
+            } else { //注册失败，显示错误信息
+                $this->error('加盟商添加失败!');
+            }
+        } else {
+            $this->meta_title = '新增用户';
+            $this->display();
+        }
+
+
         if ($id = I('get.id')) {
-            $user = $this->UserService->get_info_by_id($id);
+            $user = $this->MemberService->get_info_by_id($id);
             if ($user) {
                 $this->assign('info',$user);
             } else {
@@ -34,16 +60,16 @@ class AntUserDealerController extends AntUserController {
             }
 
             if ($id) {
-                $info = $this->UserService->get_info_by_id($id);
+                $info = $this->MemberService->get_info_by_id($id);
                 if ($info['user_tel'] != $data['user_tel']) { //修改用户手机号,则检测手机号是否存在
-                    $ret = $this->UserService->check_tel_available($data['user_tel']);
+                    $ret = $this->MemberService->check_tel_available($data['user_tel']);
                     if (!$ret->success) {
                         $this->error($ret->message);
                     }
                 }
-                $ret = $this->UserService->update_by_id($id, $data);
+                $ret = $this->MemberService->update_by_id($id, $data);
                 if ($ret->success) {
-                    action_user_log('修改经销商信息');
+                    action_user_log('修改加盟商');
                     $this->success('修改成功！', U('index'));
                 } else {
                     $this->error($ret->message);
@@ -54,18 +80,16 @@ class AntUserDealerController extends AntUserController {
                 }
 
                 //检测用户是否存在
-                $ret = $this->UserService->check_tel_available($data['user_tel']);
+                $ret = $this->MemberService->check_tel_available($data['user_tel']);
                 if (!$ret->success) {
                     $this->error($ret->message);
                 }
 
                 $data['password_md5'] = md5('123123');
-                $data['type'] = \Common\Model\NfUserModel::TYPE_DEALER;
-                $data['verify_status'] = \Common\Model\NfUserModel::VERIFY_STATUS_OK;
-                $data['is_inviter'] = \Common\Model\NfUserModel::IS_INVITER_SUBMIT;
-                $ret = $this->UserService->add_one($data);
+
+                $ret = $this->MemberService->add_one($data);
                 if ($ret->success) {
-                    action_user_log('添加经销商');
+                    action_user_log('添加加盟商');
                     $this->success('添加成功！', U('index'));
                 } else {
                     $this->error($ret->message);

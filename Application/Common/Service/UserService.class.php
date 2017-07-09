@@ -209,5 +209,13 @@ class UserService extends BaseService{
         }
     }
 
+    public function can_be_inviter($uid) {
+        $info = $this->get_info_by_id($uid);
+        if ($info['verify_status'] != \Common\Model\NfUserModel::VERIFY_STATUS_OK) {
+            return result(FALSE, '没有认证为残疾人,不能成为分佣者');
+        }
+        return result(TRUE);
+    }
+
 
 }
