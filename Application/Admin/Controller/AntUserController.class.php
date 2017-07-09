@@ -8,7 +8,7 @@
 namespace Admin\Controller;
 
 class AntUserController extends AdminController {
-    private $UserService;
+    protected $UserService;
     protected function _initialize() {
         parent::_initialize();
         $this->UserService = \Common\Service\UserService::get_instance();
@@ -51,14 +51,6 @@ class AntUserController extends AdminController {
         }
         $page_html = $PageInstance->show();
         $ServicesService = \Common\Service\ServicesService::get_instance();
-
-        $model =new offer();
-        $MODE->TITLE = DDFD;
-        $MODEL->save();
-
-        $service = new service();
-        $service->save_title();
-
 
         $services_options = $ServicesService->get_all_option(I('get.service_id'));
         $this->assign('services_options', $services_options);
@@ -165,31 +157,6 @@ class AntUserController extends AdminController {
         $this->success('认证拒绝！');
     }
 
-
-    public function search_courier() {
-        $name = I('post.courier_name');
-        $courierService = \Common\Service\CourierService::get_instance();
-        list($couriers, $count) = $courierService->get_by_where(['name'=>['LIKE', '%'.$name.'%']]);
-        if ($couriers) {
-            //var_dump(result_to_array($couriers, 'name'));
-            $this->ajaxReturn(result_to_array($couriers, 'name'));
-        } else {
-            $this->ajaxReturn('');
-        }
-    }
-
-    public function set_courier() {
-        $name = I('post.courier_name');
-        $uid = I('post.uid');
-        $userCourierService = \Common\Service\UserCourierService::get_instance();
-        $ret = $userCourierService->set_name_by_uid($uid, $name);
-        if (!$ret->success) {
-            $this->error($ret->message);
-        }
-        action_user_log('设置业务员');
-        $this->success('设置成功！');
-    }
-
     public function entity_info() {
         $id = I('get.id');
         if (!$id) {
@@ -215,4 +182,21 @@ class AntUserController extends AdminController {
         $this->assign('info', $user);
         $this->display('AntUser/disabled_info');
     }
+
+    public function be_inviter() {
+        $id = I('get.id');
+
+        if ($id) {
+            $ret = $this->UserService->be_inviter([$id]);
+        } else {
+            $this->error('id没有');
+        }
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        action_user_log('设置用户id:' . $id . '为分佣者');
+        $this->success('设置成功！');
+    }
+
+
 }

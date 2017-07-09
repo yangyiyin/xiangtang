@@ -48,6 +48,7 @@
 					<th width="15%">申请时间</th>
 					<th width="5%">状态</th>
 					<th>操作</th>
+					<th>残疾认证</th>
 					<th>分佣者</th>
 				</tr>
 		    </thead>
@@ -76,6 +77,8 @@
 							<else />
 							<a  class="u-btn confirm J_ajax_get" href="{:U('approve')}/id/{$vo.id}" >通过</a>
 						</if>
+					</td>
+					<td>
 						<if condition="$vo['verify_status'] == 1 ">
 							<a  class="u-btn confirm J_ajax_get" href="{:U('approve_entity')}/id/{$vo.id}" >通过残疾人认证</a>
 							<a  class="u-btn confirm J_ajax_get" href="{:U('reject_entity')}/id/{$vo.id}" >拒绝残疾人认证</a>
@@ -84,7 +87,7 @@
 							<elseif condition="$vo['verify_status'] == 3"/>
 							已拒绝认证残疾人
 							<else />
-
+							无认证
 						</if>
 					</td>
 					<td>
@@ -93,6 +96,7 @@
 							<elseif condition="$vo['is_inviter'] == 2"/>
 							已成为分佣者
 							<else />
+							非分佣者
 						</if>
 					</td>
 				</tr>

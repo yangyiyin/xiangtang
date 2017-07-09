@@ -7,6 +7,7 @@
 
 		    <ul class="cc">
 		      	<li class="current"><a href="javascript:;">经销商</a></li>
+				<li><a href="{:U('add')}">添加经销商</a></li>
 		    </ul>
 		</div>
 	    <div class="search_type cc mb10 search-form">
@@ -48,6 +49,7 @@
 					<th width="15%">申请时间</th>
 					<th width="5%">状态</th>
 					<th>操作</th>
+					<th>认证残疾</th>
 					<th>分佣者</th>
 				</tr>
 		    </thead>
@@ -70,12 +72,17 @@
 
 						<if condition="$vo['status'] == 1 ">
 							<a  class="u-btn confirm J_ajax_get" href="{:U('forbid')}/id/{$vo.id}" >禁用</a>
-							<elseif condition="$name eq 2"/>
+							<elseif condition="$vo['status'] eq 2"/>
 							<a  class="u-btn confirm J_ajax_get" href="{:U('approve')}/id/{$vo.id}" >通过</a>|
 							<a  class="u-btn confirm J_ajax_get" href="{:U('forbid')}/id/{$vo.id}" >禁用</a>
 							<else />
 							<a  class="u-btn confirm J_ajax_get" href="{:U('approve')}/id/{$vo.id}" >通过</a>
 						</if>
+
+						<a  class="u-btn" href="{:U('add')}/id/{$vo.id}" >编辑</a>
+
+					</td>
+					<td>
 						<if condition="$vo['verify_status'] == 1 ">
 							<a  class="u-btn confirm J_ajax_get" href="{:U('approve_entity')}/id/{$vo.id}" >通过残疾人认证</a>
 							<a  class="u-btn confirm J_ajax_get" href="{:U('reject_entity')}/id/{$vo.id}" >拒绝残疾人认证</a>
@@ -84,7 +91,7 @@
 							<elseif condition="$vo['verify_status'] == 3"/>
 							已拒绝认证残疾人
 							<else />
-
+							无认证
 						</if>
 					</td>
 					<td>
@@ -93,6 +100,7 @@
 							<elseif condition="$vo['is_inviter'] == 2"/>
 							已成为分佣者
 							<else />
+							非分佣者
 						</if>
 					</td>
 				</tr>

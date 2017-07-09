@@ -15,7 +15,7 @@ class UserService extends BaseService{
         $data['create_time'] = isset($data['create_time']) ? $data['create_time'] : current_date();
 
         //个人用户,直接通过
-        $data['status'] = \Common\Model\NfUserModel::STATUS_VERIFY;
+        $data['status'] = \Common\Model\NfUserModel::STATUS_NORAML;
         if (!$NfUser->create($data)) {
             return result(FALSE, $NfUser->getError());
         }
@@ -194,4 +194,20 @@ class UserService extends BaseService{
     public function get_verify_status_submit() {
         return \Common\Model\NfUserModel::VERIFY_STATUS_SUBMIT;
     }
+
+
+    public function be_inviter($ids) {
+        if (!check_num_ids($ids)) {
+            return result(FALSE, 'uids为空~');
+        }
+        $NfUser = D('NfUser');
+        $ret = $NfUser->where('id in ('. join(',', $ids) .')')->save(['is_inviter'=>\Common\Model\NfUserModel::IS_INVITER_YES]);
+        if ($ret) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, $NfUser->getError());
+        }
+    }
+
+
 }
