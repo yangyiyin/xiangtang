@@ -15,7 +15,7 @@ class UserService extends BaseService{
         $data['create_time'] = isset($data['create_time']) ? $data['create_time'] : current_date();
 
         //个人用户,直接通过
-        $data['status'] = \Common\Model\NfUserModel::STATUS_VERIFY;
+        $data['status'] = \Common\Model\NfUserModel::STATUS_NORAML;
         if (!$NfUser->create($data)) {
             return result(FALSE, $NfUser->getError());
         }
