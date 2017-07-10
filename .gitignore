@@ -2,4 +2,4 @@
 /Uploads/
 *.DS_Store
 /.idea/
-/Application/User/Conf/config.php
+/Application/User/Conf/
