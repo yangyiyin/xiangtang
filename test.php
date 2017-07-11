@@ -7,10 +7,15 @@
  *f
  *
  * */
-$auth = 'AuthManager/changeStatus?method=forbidGroup';
-$query = preg_replace('/^.+\?/U','',$auth);
 
-parse_str($query,$param); //解析规则中的param
-var_dump( $param);
+
+
+INSERT INTO `gd_zhucan`.`shopy_menu`
+(`title`, `pid`, `module`, `sort`, `url`, `hide`, `tip`, `ico`)
+VALUES
+('订单管理', 136, 'Admin', 99, 'AntOrder/index', 1, '', '');
+
+
+
 
 ?>

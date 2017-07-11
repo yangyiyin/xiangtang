@@ -32,6 +32,7 @@ class UserService extends BaseService{
         return $NfUser->where('id = ' . $id)->find();
     }
 
+
     public function get_by_tel($tel, $status = 1) {
         $NfUser = D('NfUser');
         return $NfUser->where('user_tel = ' . $tel . ' and status = ' . $status)->find();
@@ -214,8 +215,36 @@ class UserService extends BaseService{
         if ($info['verify_status'] != \Common\Model\NfUserModel::VERIFY_STATUS_OK) {
             return result(FALSE, '没有认证为残疾人,不能成为分佣者');
         }
+
+        if ($info['is_inviter'] != \Common\Model\NfUserModel::IS_INVITER_SUBMIT) {
+            return result(FALSE, '当前分佣者状态不是提交状态,不能通过成为分佣者');
+        }
+
         return result(TRUE);
     }
 
+
+    public function nbe_inviter($ids) {
+        if (!check_num_ids($ids)) {
+            return result(FALSE, 'uids为空~');
+        }
+        $NfUser = D('NfUser');
+        $ret = $NfUser->where('id in ('. join(',', $ids) .')')->save(['is_inviter'=>\Common\Model\NfUserModel::IS_INVITER_SUBMIT]);
+        if ($ret) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, $NfUser->getError());
+        }
+    }
+
+    public function can_nbe_inviter($uid) {
+        $info = $this->get_info_by_id($uid);
+
+        if ($info['is_inviter'] != \Common\Model\NfUserModel::IS_INVITER_YES) {
+            return result(FALSE, '当前用户不是分佣者,退回无效');
+        }
+
+        return result(TRUE);
+    }
 
 }

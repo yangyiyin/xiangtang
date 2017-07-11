@@ -13,13 +13,13 @@ class UcenterMemberModel extends Model{
 	 * 数据表前缀
 	 * @var string
 	 */
-	protected $tablePrefix = UC_TABLE_PREFIX;
+	//protected $tablePrefix = UC_TABLE_PREFIX;
 
 	/**
 	 * 数据库连接
 	 * @var string
 	 */
-	protected $connection = UC_DB_DSN;
+	//protected $connection = UC_DB_DSN;
 
 	/* 用户模型自动验证 */
 	protected $_validate = array(
@@ -32,10 +32,10 @@ class UcenterMemberModel extends Model{
 		array('password', '6,30', -4, self::EXISTS_VALIDATE, 'length'), //密码长度不合法
 
 		/* 验证邮箱 */
-		array('email', 'email', -5, self::EXISTS_VALIDATE), //邮箱格式不正确
-		array('email', '1,32', -6, self::EXISTS_VALIDATE, 'length'), //邮箱长度不合法
-		array('email', 'checkDenyEmail', -7, self::EXISTS_VALIDATE, 'callback'), //邮箱禁止注册
-		array('email', '', -8, self::EXISTS_VALIDATE, 'unique'), //邮箱被占用
+		array('email', 'email', -5, self::VALUE_VALIDATE), //邮箱格式不正确
+		array('email', '1,32', -6, self::VALUE_VALIDATE, 'length'), //邮箱长度不合法
+		array('email', 'checkDenyEmail', -7, self::VALUE_VALIDATE, 'callback'), //邮箱禁止注册
+		array('email', '', -8, self::VALUE_VALIDATE, 'unique'), //邮箱被占用
 
 		/* 验证手机号码 */
 		array('mobile', '//', -9, self::EXISTS_VALIDATE), //手机格式不正确 TODO:
@@ -103,12 +103,9 @@ class UcenterMemberModel extends Model{
 			'mobile'   => $mobile,
 		);
 
-		//验证手机
-		if(empty($data['email'])) unset($data['email']);
 
         //验证手机
         if(empty($data['mobile'])) unset($data['mobile']);
-
 		/* 添加用户 */
 		if($this->create($data)){
 			$uid = $this->add();

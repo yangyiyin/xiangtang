@@ -86,7 +86,12 @@ class AuthManagerController extends AdminController{
      * @author 朱亚杰 <zhuyajie@topthink.net>
      */
     public function index(){
-        $list = $this->lists('AuthGroup',array('module'=>'admin'),'id asc');
+        if (I('get.dev_y')) {
+            $where = array('module'=>'admin');
+        } else {
+            $where = array('module'=>'admin', 'id'=>['neq', C('GROUP_FRANCHISEE')]);
+        }
+        $list = $this->lists('AuthGroup',$where,'id asc');
         $list = int_to_string($list);
         $this->assign( '_list', $list );
         $this->assign( '_use_tip', true );
@@ -206,6 +211,11 @@ class AuthManagerController extends AdminController{
             $this->error('参数错误');
         }
 
+
+        if ($group_id == C('GROUP_FRANCHISEE') && !I('dev_y')) {
+            $this->error('加盟商组不支持人为管理,请联系技术');
+        }
+
         $auth_group = M('AuthGroup')->where( array('status'=>array('egt','0'),'module'=>'admin','type'=>AuthGroupModel::TYPE_ADMIN) )
             ->getfield('id,id,title,rules');
         $prefix   = C('DB_PREFIX');
@@ -285,6 +295,10 @@ class AuthManagerController extends AdminController{
 
         if( $gid && !$AuthGroup->checkGroupId($gid)){
             $this->error($AuthGroup->error);
+        }
+
+        if ($gid == C('GROUP_FRANCHISEE') && !I('dev_y')) {
+            $this->error('加盟商组不支持人为管理,请联系技术');
         }
         if ( $AuthGroup->addToGroup($uid,$gid) ){
             $this->success('操作成功');

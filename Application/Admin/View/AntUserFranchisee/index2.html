@@ -1,0 +1,288 @@
+<extend name="Public/base"/>
+
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+
+		    <ul class="cc">
+		      	<li class="current"><a href="javascript:;">加盟商</a></li>
+				<li><a href="{:U('add')}">添加加盟商</a></li>
+		    </ul>
+		</div>
+	    <div class="search_type cc mb10 search-form">
+	      <div class="mb10">
+
+
+				<span class="mr20">状态：
+        	<php>
+        		$all = (I('get.status'))?'selected':'';
+        		$first = (I('get.status')==1)?'selected':'';
+        		$second = (I('get.status')==2)?'selected':'';
+				$third = (I('get.status')==99)?'selected':'';
+        	</php>
+	        <select class="select_2 select" id="sch-sort-txt" name="status">
+	          	<option value="" {$all}>全部</option>
+	          	<option value="1" {$first}>正常</option>
+	          	<option value="2" {$second}>待审核</option>
+				<option value="99" {$third}>禁用</option>
+	        </select>
+	         用户手机号：
+	        <input type="text" class="input length_2" name="tel" style="width:100px;" value="{:I('tel')}">
+			用户id：
+	        <input type="text" class="input length_2" name="id" style="width:50px;" value="{:I('id')}" >
+					创建时间：
+	        <input type="text" name="create_begin" id="time-start" class="input length_2" value="{:I('create_begin')}" style="width:80px;" autocomplete="off" placeholder="起始时间">-<span class="input-append date" id="datetimepicker"><input type="text" id="time-end" name="create_end" class="input input" value="{:I('create_end')}" placeholder="结束时间" /><span class="add-on" style="background:none;border:none;"><i class="icon-th"></i></span></span>
+	        &nbsp;
+	        <a class="u-btn" href="javascript:;" id="search" url="{:U('index')}">搜索</a>
+	        <!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
+	        </span>
+	      </div>
+	    </div>
+		<!-- 数据表格 -->
+	    <div class="table_list">
+			<table class="" width="100%">
+		    <thead>
+		        <tr>
+					<th width="5%"><input class="check-all" type="checkbox"/></th>
+					<th width="15%">基本信息</th>
+					<th width="15%">创建时间</th>
+					<th width="5%">状态</th>
+					<th>审核操作</th>
+					<th>修改操作</th>
+				</tr>
+		    </thead>
+		    <tbody>
+				<volist name="list" id="vo">
+				<tr>
+		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
+					<td>
+						<p class="short_info">用户id:{$vo.id}</p>
+						<p class="short_info">注册手机号:{$vo.user_tel}</p>
+						<p class="short_info"><a target="_blank" class="u-btn" href="{:U('entity_info')}/id/{$vo.id}" class="confirm J_ajax_get">查看单位信息</a></p>
+					</td>
+
+					<td ><span>{$vo.create_time}</span></td>
+					<td ><span>{$vo.status_desc}</span></td>
+					<td>
+						<if condition="$vo['status'] == 1 ">
+							<a  class="u-btn confirm J_ajax_get" href="{:U('forbid')}/id/{$vo.id}" >禁用</a>
+							<elseif condition="$vo['status'] eq 2"/>
+							<a  class="u-btn confirm J_ajax_get" href="{:U('approve')}/id/{$vo.id}" >通过</a>|
+							<a  class="u-btn confirm J_ajax_get" href="{:U('forbid')}/id/{$vo.id}" >禁用</a>
+							<else />
+							<a  class="u-btn confirm J_ajax_get" href="{:U('approve')}/id/{$vo.id}" >通过</a>
+						</if>
+
+					</td>
+					<td>
+						<a  class="u-btn" href="{:U('add')}/id/{$vo.id}" >编辑</a>
+					</td>
+				</tr>
+				</volist>
+			</tbody>
+		    </table> 
+		</div>
+		<div class="btn_wrap">
+			<div class="btn_wrap_pd">
+				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
+
+
+				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("approve")}'>批量通过</button>
+
+
+		    </div>
+		</div>
+		<!-- 分页 -->
+	    <div class="page">
+	        {$page_html}
+	    </div>
+	</div>
+</div>
+	<div id="select_courier" class="show_box_temp" style="display:none;position: fixed;width: 500;left: 50%;top:30%;z-index: 1000;background: #ddd;border: 1px solid #000000;padding: 10px">
+		<p style="padding: 10px;font-size: 20px" class="title">重新设置业务员</p>
+		<input type="hidden" value="0" class="input-medium uid"/>
+		<p style="padding: 10px">
+			业务员名字:<input value="" class="input courier_name"/><a class="u-btn search" url="{:U('search_courier')}">查询</a>
+		</p>
+		<style>
+			.select_list{
+				padding-left: 70px;
+				margin-top: -20px;
+			}
+			.select_list li {
+				padding: 2px;
+				cursor: pointer;
+			}
+			.select_list li:hover{
+				background: #eee;
+			}
+		</style>
+		<p style="padding: 10px">
+			<ul class="select_list">
+				<li class="select_name" style="display: none"></li>
+			</ul>
+		</p>
+		<p style="padding: 10px">
+			<a class="u-btn submit" url="{:U('set_courier')}" href="javascript:;">确定</a>
+			<a class="u-btn	close_show_box" href="javascript:;">取消</a>
+		</p>
+	</div>
+
+</block>
+<block name="script">
+<link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
+<php>if(C('COLOR_STYLE')=='blue_color') echo '<link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css" rel="stylesheet" type="text/css">';</php>
+<link href="__STATIC__/datetimepicker/css/dropdown.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script type="text/javascript">
+$(function(){
+	//搜索功能
+	$("#search").click(function(){
+		var url = $(this).attr('url');
+        var query  = $('.search-form').find('input,select').serialize();
+        query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+        query = query.replace(/^&/g,'');
+
+
+        if( url.indexOf('?')>0 ){
+            url += '&' + query;
+        }else{
+            url += '?' + query;
+        }
+		window.location.href = url;
+	});
+
+	/* 状态搜索子菜单 */
+	$(".search-form").find(".drop-down").hover(function(){
+		$("#sub-sch-menu").removeClass("hidden");
+	},function(){
+		$("#sub-sch-menu").addClass("hidden");
+	});
+	$("#sub-sch-menu li").find("a").each(function(){
+		$(this).click(function(){
+			var text = $(this).text();
+			$("#sch-sort-txt").text(text).attr("data",$(this).attr("value"));
+			$("#sub-sch-menu").addClass("hidden");
+		})
+	});
+
+    //回车自动提交
+    $('.search-form').find('input').keyup(function(event){
+        if(event.keyCode===13){
+            $("#search").click();
+        }
+    });
+
+    $('#time-start').datetimepicker({
+        format: 'yyyy-mm-dd',
+        language:"zh-CN",
+	    minView:2,
+	    autoclose:true
+    });
+
+    $('#datetimepicker').datetimepicker({
+       format: 'yyyy-mm-dd',
+        language:"zh-CN",
+        minView:2,
+        autoclose:true,
+        pickerPosition:'bottom-left'
+    });
+
+
+	$('.show_box').on('click', function () {
+		//console.log($(this).attr('data'));
+		$('.show_box_temp').hide();
+
+		var id = $(this).attr('tmp_id');
+		$('#'+id).show();
+		after_show_box($(this), $('#'+id));
+	});
+	$('.close_show_box').on('click',function () {
+		$(this).parents('.show_box_temp').hide();
+	});
+
+	$('#select_courier').find('.submit').on('click',function () {
+		var url = $(this).attr('url');
+		var data = {
+			uid:$('#select_courier').find('.uid').val(),
+			courier_name:$('#select_courier').find('.courier_name').val()
+		}
+		do_post(url, data, this);
+	});
+
+	$('#select_courier').find('.search').on('click',function () {
+		var url = $(this).attr('url');
+		var data = {
+			courier_name:$('#select_courier').find('.courier_name').val()
+		}
+		do_post(url, data, this, function(data){
+			if (data) {
+				var list = '';
+				for(var i in data) {
+					list += '<li class="select_name">'+data[i]+'</li>';
+				}
+
+				$('#select_courier').find('.select_list').html(list);
+			} else {
+				$('#select_courier').find('.select_list').html('');
+			}
+		});
+	});
+
+	$('#select_courier').on('click','.select_name', function(){
+
+		var name = $(this).html();
+		$('#select_courier').find('.courier_name').val(name);
+	});
+	function do_post(url, query, that, callback) {
+
+		$.post(url,query).success(function(data){
+			if (callback) {
+				callback(data);
+				return;
+			}
+			if (data.status==1) {
+				if (data.url) {
+					updateAlert(data.info + ' 页面即将自动跳转~','alert-success');
+				}else{
+					updateAlert(data.info ,'alert-success');
+				}
+				setTimeout(function(){
+					if (data.url) {
+						location.href=data.url;
+					}else if( $(that).hasClass('no-refresh')){
+						$('#top-alert').find('button').click();
+						$(that).removeClass('disabled').prop('disabled',false);
+					}else{
+						location.reload();
+					}
+				},200);
+			}else{
+				updateAlert(data.info);
+				setTimeout(function(){
+					if (data.url) {
+						location.href=data.url;
+					}else{
+						$('#top-alert').find('button').click();
+						$(that).removeClass('disabled').prop('disabled',false);
+					}
+				},200);
+			}
+		});
+
+	}
+
+	function after_show_box(_this, box) {
+		var uid = _this.attr('uid');
+		box.find('.uid').val(uid);
+	}
+
+    
+});
+
+</script>
+</block>
+
+

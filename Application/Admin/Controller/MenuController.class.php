@@ -12,6 +12,22 @@ namespace Admin\Controller;
  */
 class MenuController extends AdminController {
     protected $Menu;
+
+    public function add_menu_direct() {
+
+        $arr = [
+            ['title' => '设置分佣者界面', 'url'=>'AntUserInviter/add']
+        ];
+
+
+        $data = [];
+        foreach ($arr as $_value) {
+            $data[] = ['title'=>$_value['title'], 'pid'=>157, 'module'=>'Admin', 'sort'=>99, 'url'=>$_value['url'], 'hide'=>1];
+        }
+
+        M('menu')->addAll($data);
+    }
+
     /**
      * 后台菜单首页
      * @return none

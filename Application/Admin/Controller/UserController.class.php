@@ -6,7 +6,7 @@
 
 namespace Admin\Controller;
 use User\Api\UserApi;
-
+use Admin\Model\MemberModel;
 /**
  * 后台用户控制器
  * @author Jroy
@@ -25,7 +25,7 @@ class UserController extends AdminController {
         }else{
             $map['nickname']    =   array('like', '%'.(string)$nickname.'%');
         }
-
+        $map['attr'] = MemberModel::ATTR_DEFAULT;
         $list   = $this->lists('Member', $map);
         int_to_string($list);
         $this->assign('_list', $list);

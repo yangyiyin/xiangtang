@@ -19,7 +19,11 @@ class AntUserController extends AdminController {
         $where = [];
         $where['type'] = ['EQ', \Common\Model\NfUserModel::TYPE_NORMAL];
         if (isset($this->type)) {
-            $where['type'] = ['EQ', $this->type];
+            if (is_array($this->type)) {
+                $where['type'] = ['IN', $this->type];
+            } else {
+                $where['type'] = ['EQ', $this->type];
+            }
         }
         if (I('get.create_begin')) {
             $where['create_time'][] = ['EGT', I('get.create_begin')];
@@ -61,7 +65,7 @@ class AntUserController extends AdminController {
         $this->display();
     }
 
-    private function convert_data(&$data) {
+    protected function convert_data(&$data) {
         if ($data) {
             $ServicesService = \Common\Service\ServicesService::get_instance();
             $ids = result_to_array($data, 'service_id');
@@ -202,5 +206,23 @@ class AntUserController extends AdminController {
         $this->success('设置成功！');
     }
 
+    public function nbe_inviter() {
+        $id = I('get.id');
+
+        if ($id) {
+            $ret = $this->UserService->can_nbe_inviter($id);
+            if (!$ret->success) {
+                $this->error($ret->message);
+            }
+            $ret = $this->UserService->nbe_inviter([$id]);
+        } else {
+            $this->error('id没有');
+        }
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        action_user_log('用户id:' . $id . '退回分佣者');
+        $this->success('退回成功！');
+    }
 
 }
