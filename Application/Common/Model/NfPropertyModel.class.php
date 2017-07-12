@@ -13,5 +13,6 @@ class NfPropertyModel extends NfBaseModel {
         array('img', 'require', '图片不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT),
         array('unit_desc', 'require', '单位不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT)
         */
+      array('name', '', '已存在该属性名', self::EXISTS_VALIDATE, 'unique'),
     );
 }

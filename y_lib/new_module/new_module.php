@@ -115,6 +115,7 @@ class newModule {
 }
 
 
-$newModule = new newModule('property', '产品属性');
-//$newModule->gain(['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]);
-$newModule->gain_power(['view'=>1]);
+$newModule = new newModule('propertyValue', '产品属性值');
+//['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]
+//$newModule->gain(['service'=>1]);
+$newModule->gain_power(['service'=>1]);

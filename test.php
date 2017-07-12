@@ -9,13 +9,7 @@
  * */
 
 
-
-INSERT INTO `gd_zhucan`.`shopy_menu`
-(`title`, `pid`, `module`, `sort`, `url`, `hide`, `tip`, `ico`)
-VALUES
-('订单管理', 136, 'Admin', 99, 'AntOrder/index', 1, '', '');
-
-
+var_dump(explode(',', ''));
 
 
 ?>
