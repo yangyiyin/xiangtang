@@ -133,4 +133,14 @@ class AntPropertyController extends AdminController {
         }
     }
 
+    public function search() {
+        $property_name = I('get.property_name');
+        $info = $this->PropertyService->get_by_name($property_name);
+        if ($info) {
+
+        }
+
+
+    }
+
 }

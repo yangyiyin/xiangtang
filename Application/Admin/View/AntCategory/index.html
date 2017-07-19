@@ -31,6 +31,7 @@
                             <a href="{:U('add')}/pid/{$cat['content']['id']}">添加子分类</a> |
                             <a href="{:U('edit')}/id/{$cat['content']['id']}">修改</a> |
                             <a class="confirm J_ajax_get" href="{:U('del')}/id/{$cat['content']['id']}">删除</a>
+                            <a class="btn set_property show_box" tmp_id="set_property" cid="{$_cat['content']['id']}">设置属性</a>
                         </td>
                     </tr>
 
@@ -45,6 +46,8 @@
                                     <a href="{:U('add')}/pid/{$_cat['content']['id']}">添加子分类</a> |
                                     <a href="{:U('edit')}/id/{$_cat['content']['id']}">修改</a> |
                                     <a class="confirm J_ajax_get" href="{:U('del')}/id/{$_cat['content']['id']}">删除</a>
+                                    <a class="btn set_property show_box" tmp_id="set_property" cid="{$_cat['content']['id']}">设置属性</a>
+                                    <div class="property" style="display: none"></div>
                                 </td>
                             </tr>
 
@@ -59,6 +62,7 @@
                                             <a href="{:U('add')}/pid/{$__cat['content']['id']}">添加子分类</a> |
                                             <a href="{:U('edit')}/id/{$__cat['content']['id']}">修改</a> |
                                             <a class="confirm J_ajax_get" href="{:U('del')}/id/{$__cat['content']['id']}">删除</a>
+                                            <a class="btn set_property show_box" tmp_id="set_property" cid="{$_cat['content']['id']}">设置属性</a>
                                         </td>
                                     </tr>
                                 </volist>
@@ -79,6 +83,40 @@
 
         </div>
 	</div>
+
+    <div id="set_property" class="show_box_temp" style="position: fixed;width: 500;left: 50%;top:30%;z-index: 1000;background: #ddd;border: 1px solid #000000;padding: 10px">
+        <p style="padding: 10px;font-size: 20px" class="title">设置属性</p>
+        <input type="hidden" value="0" class="input-medium cid"/>
+        <p style="padding: 10px">
+            已有属性:<div class="cur_property"></div>
+        </p>
+        <p style="padding: 10px">
+            添加属性:<input value="" class="input add_property"/><a class="u-btn search" url="{:U('AntProperty/search')}">查询</a>
+
+            <a class="u-btn submit" url="{:U('AntProperty/add_property')}" href="javascript:;">确定</a></p>
+        <style>
+            .select_list{
+                padding-left: 70px;
+                margin-top: -20px;
+            }
+            .select_list li {
+                padding: 2px;
+                cursor: pointer;
+            }
+            .select_list li:hover{
+                background: #eee;
+            }
+        </style>
+        <p style="padding: 10px">
+        <ul class="select_list">
+            <li class="select_name" style="display: none"></li>
+        </ul>
+        </p>
+        <p style="padding: 10px">
+            <a class="u-btn	close_show_box" href="javascript:;">关闭</a>
+        </p>
+    </div>
+
 </block>
 
 <block name="script">
@@ -104,5 +142,104 @@
 	          }
 	      });
 		})(jQuery);
+
+
+        $(document).ready(function(){
+            $(document).on('click', '.show_box', function () {
+                //console.log($(this).attr('data'));
+                $('.show_box_temp').hide();
+
+                var id = $(this).attr('tmp_id');
+                $('#'+id).show();
+                after_show_box($(this), $('#'+id));
+            });
+            $('.close_show_box').on('click',function () {
+                $(this).parents('.show_box_temp').hide();
+            });
+
+            $('#set_property').find('.submit').on('click',function () {
+                var url = $(this).attr('url');
+                var data = {
+                    cid:$('#set_property').find('.cid').val(),
+                    property_id:$('#set_property').find('.property_id').val()
+                }
+                do_post(url, data, this);
+            });
+
+            $('#set_property').find('.search').on('click',function () {
+                var url = $(this).attr('url');
+                var data = {
+                    property_name:$('#set_property').find('.add_property').val()
+                }
+                do_post(url, data, this, function(data){
+                    if (data) {
+                        var list = '';
+                        for(var i in data) {
+                            list += '<li class="select_name" id="'+data[i].id+'">'+data[i].name+'</li>';
+                        }
+
+                        $('#set_property').find('.select_list').html(list);
+                    } else {
+                        $('#set_property').find('.select_list').html('');
+                    }
+                });
+            });
+
+            $('#set_property').on('click','.select_name', function(){
+
+                var name = $(this).html();
+                var id = $(this).attr('id');
+                $('#set_property').find('.add_property').val(name);
+                $('#set_property').find('.property_id').val(id);
+
+
+            });
+            function do_post(url, query, that, callback) {
+
+                $.post(url,query).success(function(data){
+                    if (callback) {
+                        callback(data);
+                        return;
+                    }
+                    if (data.status==1) {
+                        if (data.url) {
+                            updateAlert(data.info + ' 页面即将自动跳转~','alert-success');
+                        }else{
+                            updateAlert(data.info ,'alert-success');
+                        }
+                        setTimeout(function(){
+                            if (data.url) {
+                                location.href=data.url;
+                            }else if( $(that).hasClass('no-refresh')){
+                                $('#top-alert').find('button').click();
+                                $(that).removeClass('disabled').prop('disabled',false);
+                            }else{
+                                location.reload();
+                            }
+                        },200);
+                    }else{
+                        updateAlert(data.info);
+                        setTimeout(function(){
+                            if (data.url) {
+                                location.href=data.url;
+                            }else{
+                                $('#top-alert').find('button').click();
+                                $(that).removeClass('disabled').prop('disabled',false);
+                            }
+                        },200);
+                    }
+                });
+
+            }
+
+            function after_show_box(_this, box) {
+                var cur_properties = _this.next('.property').html();
+                var cid = _this.attr('cid');
+                box.find('.cur_property').val(cur_properties);
+                box.find('.cid').val(cid);
+            }
+        })
+
+
 	</script>
 </block>
