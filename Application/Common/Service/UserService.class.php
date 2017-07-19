@@ -32,9 +32,21 @@ class UserService extends BaseService{
         return $NfUser->where('id = ' . $id)->find();
     }
 
+    public function get_by_uids($ids) {
+        if (!check_num_ids($ids)) {
+            return result(FALSE, 'ids不能为空');
+        }
+        $NfUser = D('NfUser');
+        return $NfUser->where(['id'=>['in', $ids]])->select();
+    }
+
     public function get_by_tel($tel, $status = 1) {
         $NfUser = D('NfUser');
-        return $NfUser->where('user_tel = ' . $tel . ' and status = ' . $status)->find();
+        $where = [];
+        $where[] = ['user_tel'=>['eq', $tel]];
+        $where[] = ['status'=>['eq', $status]];
+
+        return $NfUser->where($where)->find();
     }
 
     public function update_by_id($id, $data) {
@@ -105,6 +117,16 @@ class UserService extends BaseService{
             $data = $NfUser->where($where)->order($order)->page($page . ',' . self::$page_size)->select();
         }
         return [$data, $count];
+    }
+
+    public function get_by_where_all($where, $order = 'id desc') {
+        $NfUser = D('NfUser');
+        $data = [];
+        $count = $NfUser->where($where)->count();
+        if ($count > 0) {
+            $data = $NfUser->where($where)->order($order)->select();
+        }
+        return $data;
     }
 
     public function approve($uids) {

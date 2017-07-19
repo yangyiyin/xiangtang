@@ -12,6 +12,14 @@
 	      <div class="mb10">
 			  &nbsp;订单编号：
 			  <input type="text" class="input length_2" name="order_no" style="width:100px;" value="{:I('order_no')}" >
+			  &nbsp;用户手机号：
+			  <input type="text" class="input length_2" name="user_tel" style="width:100px;" value="{:I('user_tel')}" >
+
+			  &nbsp;网点：
+			  <input type="text" class="input length_2" name="service_name" style="width:100px;" value="{:I('service_name')}" >
+
+			  &nbsp;企业名：
+			  <input type="text" class="input length_2" name="entity_name" style="width:100px;" value="{:I('entity_name')}" >
 
 			  <span class="mr20">状态：
         	<php>
@@ -68,6 +76,7 @@
 						<p class="short_info">总价:{$vo.sum|format_price}元</p>
 						<p class="short_info">总数量:{$vo.num}</p>
 						<p class="short_info">类型:{$vo.type_desc}</p>
+						<p class="short_info">企业名:{$vo.user_info.entity_name}</p>
 						<p class="short_info">创建时间:{$vo.create_time}</p>
 					</td>
 
@@ -114,6 +123,9 @@
 						<if condition="$vo['status'] == 1">
 							<a class="u-btn confirm J_ajax_get" url="{:U('order_step')}/id/{$vo.id}/step/cancel">取消订单</a>
 						</if>
+
+						<a class="u-btn print_btn" id="{$vo.id}">打印</a>
+
 					</td>
 				</tr>
 				</volist>
@@ -196,6 +208,30 @@ $(function(){
         autoclose:true,
         pickerPosition:'bottom-left'
     });
+
+
+
+	function preview(prnhtml)
+	{
+		bdhtml=window.document.body.innerHTML;//获取当前页的html代码
+		window.document.body.innerHTML=prnhtml;
+		window.print();
+		window.document.body.innerHTML=bdhtml;
+	}
+
+	$(document).on('click', '.print_btn', function () {
+		var id = $(this).attr('id');
+		var url = '{:U('order_info')}/id/' + id;
+
+		$.get(url, function (html) {
+			preview(html);
+		})
+
+
+
+	});
+
+
 
 });
 

@@ -32,6 +32,50 @@ class AntOrderController extends AdminController {
         if (I('get.create_end')) {
             $where['create_time'][] = ['ELT', I('get.create_end')];
         }
+        $UserService = \Common\Service\UserService::get_instance();
+        if ($user_tel = I('get.user_tel')) {
+            //$UserService = \Common\Service\UserService::get_instance();
+            $info = $UserService->get_by_tel($user_tel);
+            if ($info) {
+                $where['uid'][] = ['eq', $info['id']];
+            } else {
+                $this->error('没有该用户');
+            }
+        }
+
+        if ($entity_name = I('get.entity_name')) {
+            // $UserService = \Common\Service\UserService::get_instance();
+            $user_where = [];
+            $user_where['entity_name'] =  ['eq', $entity_name];
+            $users = $UserService->get_by_where_all($user_where);
+            if ($users) {
+                $uids = result_to_array($users);
+                $where['uid'][] = ['in', $uids];
+            } else {
+                $this->error('没有该企业名');
+            }
+        }
+
+        if ($service_name = I('get.service_name')) {
+            $ServicesService = \Common\Service\ServicesService::get_instance();
+            $service_where = [];
+            $service_where['title'] = ['eq', $service_name];
+            list($services,) = $ServicesService->get_by_where_all($service_where);
+            if ($services) {
+                $service_ids = result_to_array($services);
+                $user_where = [];
+                $user_where[] = ['service_id' => ['in', $service_ids]];
+                $users = $UserService->get_by_where_all($user_where);
+                if ($users) {
+                    $uids = result_to_array($users);
+                    $where['uid'][] = ['in', $uids];
+                } else {
+                    $this->error('该网点没有用户');
+                }
+            } else {
+                $this->error('没有该网点');
+            }
+        }
 
         if ($this->type) {
             $where['type'] = ['EQ', $this->type];
@@ -53,6 +97,7 @@ class AntOrderController extends AdminController {
 
     private function convert_data(&$data) {
         if ($data) {
+            $uids = result_to_array($data, 'uid');
 
             $orderSnapshotService = \Common\Service\OrderSnapshotService::get_instance();
             $order_ids = result_to_array($data);
@@ -61,10 +106,12 @@ class AntOrderController extends AdminController {
             $snapshots_map = result_to_map($snapshots, 'order_id');
 
             $userCourierService = \Common\Service\UserCourierService::get_instance();
-            $uids = result_to_array($data, 'uid');
             $user_courier = $userCourierService->get_by_uids($uids);
             $user_courier_map = result_to_map($user_courier, 'uid');
 
+            $userService = \Common\Service\UserService::get_instance();
+            $users = $userService->get_by_uids($uids);
+            $users_map =  result_to_map($users, 'id');
             foreach ($data as $key => $_item) {
                 if (isset($snapshots_map[$_item['id']])) {
                     $data[$key]['order_snapshot'] = json_decode($snapshots_map[$_item['id']]['content'], TRUE);
@@ -79,6 +126,8 @@ class AntOrderController extends AdminController {
                 $data[$key]['status_desc'] = $this->OrderService->get_status_txt($_item['status']);
                 $data[$key]['type_desc'] = $this->OrderService->get_type_txt($_item['type']);
                 $data[$key]['courier'] = isset($user_courier_map[$_item['uid']]) ? $user_courier_map[$_item['uid']] : [];
+                $data[$key]['user_info'] = isset($users_map[$_item['uid']]) ? $users_map[$_item['uid']] : [];
+
             }
             //var_dump($data);die();
         }
@@ -102,6 +151,20 @@ class AntOrderController extends AdminController {
         $this->success('订单状态更新成功~');
     }
 
+    public function order_info() {
+        $order_id = I('get.id');
+        $info = $this->OrderService->get_info_by_id($order_id);
+
+        if (!$info) {
+            $this->error('没有该订单');
+        } else {
+            $list = [$info];
+            $this->convert_data($list);
+            $this->assign('vo', $list[0]);
+        }
+
+        $this->display('AntOrder/info');
+    }
 
 
 }
