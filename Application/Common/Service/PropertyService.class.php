@@ -29,6 +29,15 @@ class PropertyService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
+    public function get_by_name($name) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['name'] = ['EQ', $name];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->find();
+    }
+
+
     public function update_by_id($id, $data) {
 
         if (!$id) {
