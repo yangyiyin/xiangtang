@@ -270,3 +270,23 @@ function showBtn() {
         $("#submit-next").removeClass("hidden");
     }
 }
+
+
+function merage_arr(a, b) {
+    var c = [];
+    for(var i in a) {
+        c.push(a[i]);
+    }
+
+    for(var i in b) {
+        c.push(b[i]);
+    }
+    return c;
+}
+
+function in_array(needle, arr) {
+    for (i in arr) {
+        if (arr[i] == needle) return true;
+    }
+    return false;
+}

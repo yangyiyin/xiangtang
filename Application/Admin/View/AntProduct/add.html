@@ -137,7 +137,7 @@
 							</tr>
 
 
-							<tr>
+							<tr style="display: none">
 								<td width="20%"><label class="item-label">供货商</label></td>
 								<td width="80%">
 									<select class="select_2 select" name="provider_id">
@@ -149,20 +149,65 @@
 							<tr>
 								<td width="20%"><label class="item-label">分类</label></td>
 								<td width="80%">
-									<select class="select_2 select" name="cid">
+									<select class="select_2 select cat_select" name="cid">
 										{$catetree}
 									</select>
 								</td>
 							</tr>
+
+							<tr>
+								<td width="20%"><label class="item-label">属性选择</label></td>
+								<td class="properties" width="80%">
+
+								</td>
+							</tr>
+
+							<tr>
+								<td width="20%"><label class="item-label">sku</label></td>
+								<td class="skus" width="80%">
+									<table>
+										<tr>
+											<td>属性</td>
+											<td>经销商价格</td>
+											<td>普通会员价格</td>
+											<td>库存</td>
+										</tr>
+
+											<if condition="$skus">
+
+												<volist name="skus" id="sku">
+													<tr>
+														<td>{$sku.props}</td>
+														<td><input value="{$sku.dealer_price|format_price}" name="dealer_prices[]" type="text"/></td>
+														<td><input value="{$sku.price|format_price}" name="normal_prices[]" type="text"/></td>
+														<td><input value="{$sku.num}" name="stocks[]" type="text"/></td>
+													</tr>
+													<input type="hidden" value="{$sku.prop_vals}" name="prop_vals[]"/>
+												</volist>
+											<else/>
+												<tr>
+													<td>默认</td>
+													<td><input name="dealer_prices[]" type="text"/></td>
+													<td><input name="normal_prices[]" type="text"/></td>
+													<td><input name="stocks[]" type="text"/></td>
+												</tr>
+											</if>
+
+
+									</table>
+								</td>
+							</tr>
+
+
 							<if condition="!I('get.id')">
-								<tr>
+								<tr style="display: none">
 									<td width="20%"><label class="item-label">批号</label></td>
 									<td width="80%">
 										<input type="text" class="input input-medium" name="no" value="{$product_no}">
 									</td>
 								</tr>
 
-								<tr>
+								<tr style="display: none">
 									<td width="20%"><label class="item-label">库存</label></td>
 									<td width="80%">
 										<input type="text" class="input input-small" name="sku_num" value="">
@@ -208,5 +253,132 @@ $(function(){
     });
     showTab();
 });
+	$(document).ready(function(){
+		gain_p_values($('.cat_select').find("option:selected").val());
+		$(document).on('change', '.cat_select', function(){
+			var cid = $(this).find("option:selected").val();
+			gain_p_values(cid);
+			init_skus();
+		});
+
+		$(document).on('change', '.p_values', function(){
+			var skus = gain_skus();
+			var sku_html = '<tr>'+
+					'<td>属性</td>'+
+					'<td>经销商价格</td>'+
+					'<td>普通会员价格</td>'+
+					'<td>库存</td>'+
+					'</tr>';
+			//console.log(skus);
+			for(var i in skus) {
+				var prop = '';
+				var prop_vals = '';
+				for(var j in skus[i]) {
+					prop += '<span>['+skus[i][j].name+']</span>';
+					prop_vals += skus[i][j].pid + '_' + skus[i][j].p_name + '_' + skus[i][j].id + '_' + skus[i][j].name + '|+|';
+
+				}
+				prop+= '<input type="hidden" value="'+prop_vals+'" name="prop_vals[]"/>';
+
+				sku_html += '<tr>'+
+						'<td>'+prop+'</td>'+
+						'<td><input name="dealer_prices[]" type="text"/></td>'+
+						'<td><input name="normal_prices[]" type="text"/></td>'+
+						'<td><input name="stocks[]" type="text"/></td>'+
+						'</tr>';
+
+			}
+			if (skus.length) {
+				$('.skus').html(sku_html);
+
+			} else {
+				init_skus();
+
+			}
+
+		});
+		function init_skus() {
+			var sku_html = '<tr>'+
+					'<td>属性</td>'+
+					'<td>经销商价格</td>'+
+					'<td>普通会员价格</td>'+
+					'<td>库存</td>'+
+					'</tr>';
+			sku_html += '<tr>'+
+					'<td>默认</td>' +
+					'<td><input name="dealer_prices[]" type="text"/></td>'+
+					'<td><input name="normal_prices[]" type="text"/></td>'+
+					'<td><input name="stocks[]" type="text"/></td>'+
+					'</tr>'
+			$('.skus').html(sku_html);
+		}
+
+	});
+	
+	function gain_p_values(cid) {
+		//获取分类属性
+		var url = '{:U("AntProperty/get_cat_property_values")}';
+		var data = {cid:cid};
+		var callback = function(data){
+			var div = '';
+			var li = '';
+			for(var i in data) {
+				li = '';
+				for (var j in data[i].values) {
+					var checked = '';
+					var sku_properties_str = '{$sku_properties_str}';
+					if (sku_properties_str && in_array(data[i].values[j].id, sku_properties_str.split(','))) {
+						checked = 'checked=checked';
+					} else {
+						checked = '';
+					}
+					li += '<input '+checked+' pid="'+data[i].values[j].property_id+'" p_name="'+data[i].property+'" group="p'+i+'" class="p_values" type="checkbox" name="p'+j+'" value="'+data[i].values[j].id+'"/><span>'+data[i].values[j].name+'</span>';
+				}
+				div += '<div class="div_pp">'+data[i].property + ':' + li +'</div>';
+			}
+
+			$('.properties').html(div);
+		}
+
+
+		$.get(url, data, callback);
+
+	}
+	
+	function gain_skus() {
+		var values = {};
+
+		$('.p_values:checked').each(function(i, e){
+			var val = $(e).val();
+			var name = $(e).next('span').text();
+			var group = $(e).attr('group');
+			var pid = $(e).attr('pid');
+			var p_name = $(e).attr('p_name');
+			if (!values[group]) {
+				values[group] = [];
+			}
+			values[group].push({id:val, name:name, pid:pid, p_name:p_name});
+		});
+		var sku_temp = [];
+		var is_first = 0;
+		for(var i in values) {
+			var sku_temp_new = [];
+			for(var j in values[i]) {
+				if (is_first > 0) {
+					for (var k in sku_temp) {
+						sku_temp_new.push(merage_arr(sku_temp[k],[values[i][j]]));
+					}
+				} else {
+					sku_temp.push([values[i][j]]);
+				}
+			}
+			if (sku_temp_new.length) {
+				sku_temp = sku_temp_new;
+			}
+			is_first++;
+		}
+		return sku_temp;
+	}
+	
 </script>
 </block>

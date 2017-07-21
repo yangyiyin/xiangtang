@@ -31,7 +31,7 @@
                             <a href="{:U('add')}/pid/{$cat['content']['id']}">添加子分类</a> |
                             <a href="{:U('edit')}/id/{$cat['content']['id']}">修改</a> |
                             <a class="confirm J_ajax_get" href="{:U('del')}/id/{$cat['content']['id']}">删除</a>
-                            <a class="btn set_property show_box" tmp_id="set_property" cid="{$_cat['content']['id']}">设置属性</a>
+                            <a class="btn set_property show_box" tmp_id="set_property" cid="{$cat['content']['id']}">设置属性</a>
                         </td>
                     </tr>
 
@@ -62,7 +62,7 @@
                                             <a href="{:U('add')}/pid/{$__cat['content']['id']}">添加子分类</a> |
                                             <a href="{:U('edit')}/id/{$__cat['content']['id']}">修改</a> |
                                             <a class="confirm J_ajax_get" href="{:U('del')}/id/{$__cat['content']['id']}">删除</a>
-                                            <a class="btn set_property show_box" tmp_id="set_property" cid="{$_cat['content']['id']}">设置属性</a>
+                                            <a class="btn set_property show_box" tmp_id="set_property" cid="{$__cat['content']['id']}">设置属性</a>
                                         </td>
                                     </tr>
                                 </volist>
@@ -84,16 +84,17 @@
         </div>
 	</div>
 
-    <div id="set_property" class="show_box_temp" style="position: fixed;width: 500;left: 50%;top:30%;z-index: 1000;background: #ddd;border: 1px solid #000000;padding: 10px">
+    <div id="set_property" class="show_box_temp" style="display:none;position: fixed;width: 500;left: 50%;top:30%;z-index: 1000;background: #ddd;border: 1px solid #000000;padding: 10px">
         <p style="padding: 10px;font-size: 20px" class="title">设置属性</p>
         <input type="hidden" value="0" class="input-medium cid"/>
+        <input type="hidden" value="0" class="input-medium property_id"/>
         <p style="padding: 10px">
             已有属性:<div class="cur_property"></div>
         </p>
         <p style="padding: 10px">
             添加属性:<input value="" class="input add_property"/><a class="u-btn search" url="{:U('AntProperty/search')}">查询</a>
 
-            <a class="u-btn submit" url="{:U('AntProperty/add_property')}" href="javascript:;">确定</a></p>
+            <a class="u-btn submit" url="{:U('AntProperty/add_cid_property')}" href="javascript:;">确定</a></p>
         <style>
             .select_list{
                 padding-left: 70px;
@@ -161,9 +162,15 @@
                 var url = $(this).attr('url');
                 var data = {
                     cid:$('#set_property').find('.cid').val(),
-                    property_id:$('#set_property').find('.property_id').val()
+                    property_name:$('#set_property').find('.add_property').val()
                 }
-                do_post(url, data, this);
+                do_post(url, data, this, function (data) {
+                    if (!data.success) {
+                        alert(data.message);
+                    } else {
+                        location.reload();
+                    }
+                });
             });
 
             $('#set_property').find('.search').on('click',function () {
@@ -194,6 +201,8 @@
 
 
             });
+
+
             function do_post(url, query, that, callback) {
 
                 $.post(url,query).success(function(data){
@@ -233,11 +242,38 @@
             }
 
             function after_show_box(_this, box) {
-                var cur_properties = _this.next('.property').html();
                 var cid = _this.attr('cid');
-                box.find('.cur_property').val(cur_properties);
+                var cur_properties = '';
+                do_post('{:U("AntProperty/get_cat_property")}',{'cid':cid},this, function(data){
+                   for(var i in data){
+                       var  ele = data[i];
+                        cur_properties += '<div style="float: left;padding: 2px">'+ele.p_name+'<span style="padding: 3px;cursor: pointer;background: red;color: #fff" pid="'+ele.pid+'" cid="'+cid+'" class="del_property">X</span></div>';
+                    };
+                    cur_properties += '<div style="clear: both"></div>';
+                    box.find('.cur_property').html(cur_properties);
+
+                });
+
+                //console.log(cid);
                 box.find('.cid').val(cid);
             }
+
+            $(document).on('click', '.del_property', function () {
+                var cid = $(this).attr('cid');
+                var pid = $(this).attr('pid');
+                var that = $(this);
+                do_post('{:U("AntProperty/del_cat_property")}',{'cid':cid,'pid':pid},this, function(data){
+                   if (data.success){
+                       that.parent().remove();
+                   } else {
+                       alert(data.message);
+                   }
+
+                });
+
+            });
+
+
         })
 
 

@@ -6,6 +6,8 @@
  * Time: 下午9:03
  */
 namespace Common\Service;
+use Admin\Model\MemberModel;
+
 class MemberService extends BaseService{
     public static $page_size = 20;
 
@@ -31,6 +33,15 @@ class MemberService extends BaseService{
         } else {
             return result(FALSE, '网络繁忙~');
         }
+    }
+
+    public function get_franchisee_uids() {
+        $NfUser = D('Member');
+        $where = [];
+        $where['attr'] = ['eq', MemberModel::ATTR_FRANCHISEE];
+
+        $members = $NfUser->where($where)->select();
+        return result_to_array($members, 'uid');
     }
 //
 //    public function update_by_ids($ids, $data) {

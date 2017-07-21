@@ -37,6 +37,12 @@ class AntProductController extends AdminController {
             $where['title'] = ['LIKE', '%'.I('get.title').'%'];
         }
 
+        //获取加盟商的uids
+        $MemberService = \Common\Service\MemberService::get_instance();
+        $franchisee_uids = $MemberService->get_franchisee_uids();
+        if ($franchisee_uids) {
+            $where['uid'] = ['not in', $franchisee_uids];
+        }
 
         $page = I('get.p', 1);
         list($data, $count) = $this->ProductService->get_by_where($where, 'id desc', $page);
@@ -56,6 +62,7 @@ class AntProductController extends AdminController {
     public function add() {
         $product_no = time();//默认
         $provider_id = $cate_id = 0;
+
         if ($id = I('get.id')) {
             $product = $this->ProductService->get_info_by_id($id);
             if ($product) {
@@ -65,6 +72,33 @@ class AntProductController extends AdminController {
             } else {
                 $this->error('没有找到对应的产品信息~');
             }
+
+            //获取所有sku sku属性
+            $ProductSkuService = \Common\Service\ProductSkuService::get_instance();
+            $skus = $ProductSkuService->get_by_pids([$id]);
+            $sku_ids = result_to_array($skus);
+            $SkuPropertyService = \Common\Service\SkuPropertyService::get_instance();
+            $sku_properties = $SkuPropertyService->get_by_sku_ids($sku_ids);
+            $sku_properties_str = join(',',result_to_array($sku_properties, 'property_value_id'));
+            $sku_properties_map = result_to_complex_map($sku_properties, 'sku_id');
+            foreach ($skus as &$sku) {
+                if (isset($sku_properties_map[$sku['id']])) {
+                    $props_arr = [];
+                    $prop_vals = '';
+                    foreach ($sku_properties_map[$sku['id']] as $prop) {
+                        $props_arr[] = '['.$prop['property_value_name'].']';
+                        $prop_vals .= $prop['property_id'] . '_' . $prop['property_name'] . '_' . $prop['property_value_id'] . '_' . $prop['property_value_name'] . '|+|';
+                    }
+                    $sku['props'] = join('', $props_arr);
+                    $sku['prop_vals'] = $prop_vals;
+                }
+            }
+
+            $this->assign('skus',$skus);
+            $this->assign('sku_properties_str',$sku_properties_str);
+
+        } else {
+            $this->assign('skus','');
         }
         $providerService = \Common\Service\ProviderService::get_instance();
         $providers = $providerService->get_all_provider_option($provider_id);
@@ -82,9 +116,21 @@ class AntProductController extends AdminController {
             $id = I('get.id');
             $data = I('post.');
             $data['price'] = intval($data['price'] * 100);
+            $data['min_normal_price'] = intval(min($data['normal_prices']) * 100);
+            $data['min_dealer_price'] = intval(min($data['dealer_prices']) * 100);
+            $data['uid'] = UID;
             if ($id) {
                 $ret = $this->ProductService->update_by_id($id, $data);
                 if ($ret->success) {
+                    //删除
+                    $productSkuService = \Common\Service\ProductSkuService::get_instance();
+                    $SkuPropertyService = \Common\Service\SkuPropertyService::get_instance();
+                    $skus = $productSkuService->get_by_pids([$id]);
+                    $productSkuService->del_by_pid($id);
+                    $sku_ids = result_to_array($skus);
+                    $SkuPropertyService->del_by_sku_ids($sku_ids);
+
+                    $this->set_skus($data, $id);
                     action_user_log('修改产品信息');
                     $this->success('修改成功！', U('index'));
                 } else {
@@ -93,27 +139,7 @@ class AntProductController extends AdminController {
             } else {
                 $ret = $this->ProductService->add_one($data);
                 if ($ret->success) {
-                    //新增库存
-                    $productSkuService = \Common\Service\ProductSkuService::get_instance();
-                    $data_sku = [];
-                    $data_sku['pid'] = $ret->data;
-                    $data_sku['price'] = $data['price'];
-                    $data_sku['num'] = $data['sku_num'];
-                    $ret_sku = $productSkuService->add_one($data_sku);
-                    if (!$ret_sku->success) {
-                        $this->error($ret_sku->message);
-                    }
-                    //新增批号库存
-                    $productNoSkuService = \Common\Service\ProductNoSkuService::get_instance();
-                    $data_no_sku = [];
-                    $data_no_sku['pid'] = $ret->data;
-                    $data_no_sku['product_no'] = $data['no'];
-                    $data_no_sku['num'] = $data['sku_num'];
-                    $data_no_sku['create_time'] = current_date();
-                    $ret_no_sku = $productNoSkuService->add_one($data_no_sku);
-                    if (!$ret_no_sku->success) {
-                        $this->error($ret_no_sku->message);
-                    }
+                    $this->set_skus($data, $ret->data);
                     action_user_log('添加产品');
                     $this->success('添加成功！', U('index'));
                 } else {
@@ -124,6 +150,38 @@ class AntProductController extends AdminController {
         }
     }
 
+    private function set_skus($data, $producy_id) {
+        //新增sku
+        $productSkuService = \Common\Service\ProductSkuService::get_instance();
+        $data_sku = [];
+        $SkuPropertyService = \Common\Service\SkuPropertyService::get_instance();
+        for($i=0; $i<count($data['stocks']); $i++) {
+            $data_sku = ['pid'=>$producy_id, 'price' => intval($data['normal_prices'][$i] * 100), 'dealer_price' => intval($data['dealer_prices'][$i] * 100), 'num'=>$data['stocks'][$i]];
+            $ret_sku = $productSkuService->add_one($data_sku);
+            if (!$ret_sku->success) {
+                $this->error($ret_sku->message);
+            }
+
+            //新增sku属性
+            $sku_id = $ret_sku->data;
+            $prop_vals = explode('|+|', $data['prop_vals'][$i]);
+            foreach ($prop_vals as $vals) {
+                if ($vals) {
+                    list($pid, $p_name, $vid, $v_name) = explode('_', $vals);
+                    $data_values = [
+                        'sku_id' => $sku_id,
+                        'property_id' => $pid,
+                        'property_name' => $p_name,
+                        'property_value_id' => $vid,
+                        'property_value_name' => $v_name,
+                    ];
+
+                    $SkuPropertyService->add_one($data_values);
+                }
+            }
+
+        }
+    }
     private function convert_data(&$data) {
         if ($data) {
 
@@ -291,21 +349,20 @@ class AntProductController extends AdminController {
             }
             $data = [];
             $data['pid'] = $product['id'];
+            $data['uid'] = $product['uid'];
             $data['title'] = $product['title'];
             $data['cid'] = $product['cid'];
             $data['img'] = $product['img'];
             $data['desc'] = $product['desc'];
             $data['price'] = $product['price'];
             $data['unit_desc'] = $product['unit_desc'];
-
+            $data['min_normal_price'] = $product['min_normal_price'];
+            $data['min_dealer_price'] = $product['min_dealer_price'];
             $ret = $itemService->add_one($data);
 
             if (!$ret->success) {
                 $this->error($ret->message);
             }
-            //插入个price
-            $ItemUsertypePricesService = \Common\Service\ItemUsertypePricesService::get_instance();
-            $ret = $ItemUsertypePricesService->add_by_iid_price($ret->data, $data['price']);
 
         } elseif ($ids) {//批量
             if ($exists_items = $itemService->get_by_pids($ids)) {
@@ -323,6 +380,7 @@ class AntProductController extends AdminController {
             foreach ($products as $product) {
                 $data = [];
                 $data['pid'] = $product['id'];
+                $data['uid'] = $product['uid'];
                 $data['title'] = $product['title'];
                 $data['cid'] = $product['cid'];
                 $data['img'] = $product['img'];
@@ -330,6 +388,8 @@ class AntProductController extends AdminController {
                 $data['price'] = $product['price'];
                 $data['unit_desc'] = $product['unit_desc'];
                 $data['create_time'] = current_date();
+                $data['min_normal_price'] = $product['min_normal_price'];
+                $data['min_dealer_price'] = $product['min_dealer_price'];
                 $insert_data[] = $data;
             }
             $ret = $itemService->add_batch($insert_data);
@@ -337,8 +397,6 @@ class AntProductController extends AdminController {
                 $this->error($ret->message);
             }
 
-            $ItemUsertypePricesService = \Common\Service\ItemUsertypePricesService::get_instance();
-            $ret = $ItemUsertypePricesService->add_by_pids($ids);
         } else {
             $this->error('id没有');
         }

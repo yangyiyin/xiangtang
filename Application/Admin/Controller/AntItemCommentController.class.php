@@ -1,15 +1,15 @@
 <?php
 /**
  * Created by newModule.
- * Time: ___time___
+ * Time: 2017-07-21 10:33:25
  */
 namespace Admin\Controller;
 
-class Ant___name___Controller extends AdminController {
-    private $___name___Service;
+class AntItemCommentController extends AdminController {
+    private $ItemCommentService;
     protected function _initialize() {
         parent::_initialize();
-        $this->___name___Service = \Common\Service\___name___Service::get_instance();
+        $this->ItemCommentService = \Common\Service\ItemCommentService::get_instance();
     }
 
     public function index() {
@@ -24,11 +24,26 @@ class Ant___name___Controller extends AdminController {
             $where['name'] = ['LIKE', '%' . I('get.name') . '%'];
         }
         */
+
+        if (I('get.keyword')) {
+            $where['comment'] = ['LIKE', '%' . I('get.keyword') . '%'];
+        }
+
+        if (I('get.id')) {
+            $where['id'] = ['EQ', I('get.id')];
+        }
+        if (I('get.iid')) {
+            $where['iid'] = ['EQ', I('get.iid')];
+        }
+        if (I('get.uid')) {
+            $where['uid'] = ['EQ', I('get.uid')];
+        }
+
         $page = I('get.p', 1);
-        list($data, $count) = $this->___name___Service->get_by_where($where, 'id desc', $page);
+        list($data, $count) = $this->ItemCommentService->get_by_where($where, 'id desc', $page);
         $this->convert_data($data);
-        $PageInstance = new \Think\Page($count, \Common\Service\___name___Service::$page_size);
-        if($total>\Common\Service\___name___Service::$page_size){
+        $PageInstance = new \Think\Page($count, \Common\Service\ItemCommentService::$page_size);
+        if($total>\Common\Service\ItemCommentService::$page_size){
             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
         }
         $page_html = $PageInstance->show();
@@ -46,20 +61,20 @@ class Ant___name___Controller extends AdminController {
         $ids = I('post.ids');
 
         if ($id) {
-            $ret = $this->___name___Service->del_by_id($id);
+            $ret = $this->ItemCommentService->del_by_id($id);
         } else {
             $this->error('id没有');
         }
         if (!$ret->success) {
             $this->error($ret->message);
         }
-        action_user_log('删除___desc___');
+        action_user_log('删除商品评论');
         $this->success('删除成功！');
     }
 
     public function add() {
         if ($id = I('get.id')) {
-            $info = $this->___name___Service->get_info_by_id($id);
+            $info = $this->ItemCommentService->get_info_by_id($id);
             if ($info) {
 
                 $this->assign('info',$info);
@@ -75,17 +90,17 @@ class Ant___name___Controller extends AdminController {
             $id = I('get.id');
             $data = I('post.');
             if ($id) {
-                $ret = $this->___name___Service->update_by_id($id, $data);
+                $ret = $this->ItemCommentService->update_by_id($id, $data);
                 if ($ret->success) {
-                    action_user_log('修改___desc___');
+                    action_user_log('修改商品评论');
                     $this->success('修改成功！', U('index'));
                 } else {
                     $this->error($ret->message);
                 }
             } else {
-                $ret = $this->___name___Service->add_one($data);
+                $ret = $this->ItemCommentService->add_one($data);
                 if ($ret->success) {
-                    action_user_log('添加___desc___');
+                    action_user_log('添加商品评论');
                     $this->success('添加成功！', U('index'));
                 } else {
                     $this->error($ret->message);
@@ -94,7 +109,22 @@ class Ant___name___Controller extends AdminController {
 
         }
     }
-    public function convert_data(&$data) {
 
+    public function convert_data(&$data) {
+        $iids = result_to_array($data, 'iid');
+        $ItemService = \Common\Service\ItemService::get_instance();
+        $items = $ItemService->get_by_ids($iids);
+        $item_map = result_to_map($items);
+        $new_data = [];
+        foreach ($data as $da) {
+
+            if (isset($item_map[$da['iid']])) {
+                $da['item'] = $item_map[$da['iid']];
+            }
+            $new_data[] = $da;
+        }
+
+        $data = $new_data;
     }
+
 }

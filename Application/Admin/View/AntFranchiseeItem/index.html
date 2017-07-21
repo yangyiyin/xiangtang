@@ -6,7 +6,6 @@
 
 		    <ul class="cc">
 		      	<li class="current"><a href="javascript:;">所有商品</a></li>
-				<li ><a href="{:U('add')}">添加商品</a></li>
 		    </ul>
 		</div>
 	    <div class="search_type cc mb10 search-form">
@@ -19,11 +18,13 @@
 	        <span class="mr20">状态：
         	<php>
         		$all = (I('get.status'))?'selected':'';
+				$f_first = (I('get.status')==2)?'selected':'';
         		$first = (I('get.status')==1)?'selected':'';
         		$second = (I('get.status')==99)?'selected':'';
         	</php>
 	        <select class="select_2 select" id="sch-sort-txt" name="status">
 	          	<option value="" {$all}>全部</option>
+				 	<option value="2" {$f_first}>待审核</option>
 	          	<option value="1" {$first}>正常</option>
 	          	<option value="99" {$second}>已下架</option>
 	        </select>
@@ -75,10 +76,14 @@
 					<td style="display: none"><span>{$vo.status_text}</span></td>
 					<td>
 
-						<a  class="u-btn" href="{:U('add')}/id/{$vo.id}" >编辑</a>
+						<if condition="$vo['status']==0">
+							<a  class="u-btn confirm J_ajax_get" href="{:U('approve')}/id/{$vo.id}">审核通过</a>
+						</if>
+
 						<if condition="$vo['status']!=99">
 							<a  class="u-btn confirm J_ajax_get" href="{:U('off_shelf')}/id/{$vo.id}">下架</a>
-							<else/>
+						</if>
+						<if condition="$vo['status']==99">
 							<a  class="u-btn confirm J_ajax_get" href="{:U('on_shelf')}/id/{$vo.id}" >上架</a>
 						</if>
 
@@ -97,7 +102,7 @@
 
 				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("on_shelf")}'>批量上架</button>
 
-
+				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("approve")}'>批量审核通过</button>
 		    </div>
 		</div>
 		<!-- 分页 -->

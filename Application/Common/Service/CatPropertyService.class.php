@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-07-11 14:41:08
+ * Time: 2017-07-19 16:08:21
  */
 namespace Common\Service;
-class PropertyService extends BaseService{
-    public static $name = 'Property';
+class CatPropertyService extends BaseService{
+    public static $name = 'CatProperty';
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
@@ -29,22 +29,14 @@ class PropertyService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
-    public function get_like_name($name) {
+    public function get_by_cid_pid($cid, $pid) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
-        $where['name'] = ['like', '%' . $name . '%'];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->select();
-    }
-
-    public function get_by_name($name) {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['name'] = ['eq', $name];
+        $where['cid'] = ['EQ', $cid];
+        $where['pid'] = ['EQ', $pid];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->find();
     }
-
 
     public function update_by_id($id, $data) {
 
@@ -110,5 +102,25 @@ class PropertyService extends BaseService{
         return [$data, $count];
     }
 
+    public function get_by_cid($cid) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['cid'] = ['EQ', $cid];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
+    public function del_by_cid_pid($cid, $pid){
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['cid'] = $cid;
+        $where['pid'] = $pid;
+        $ret = $NfModel->where($where)->save(['deleted'=>static::$DELETED]);
+        if ($ret) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, '网络繁忙~');
+        }
+    }
 
 }

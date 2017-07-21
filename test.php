@@ -9,7 +9,12 @@
  * */
 
 
-var_dump(explode(',', ''));
 
+ function decode_user_session($user_session) {
+    $user_session_str = base64_decode($user_session);
+    return explode('|', $user_session_str);
 
+}
+
+var_dump(decode_user_session('MTB8MTUwMDYxNzAzMHw0'));
 ?>

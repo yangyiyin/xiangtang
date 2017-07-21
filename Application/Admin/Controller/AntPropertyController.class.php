@@ -134,13 +134,87 @@ class AntPropertyController extends AdminController {
     }
 
     public function search() {
-        $property_name = I('get.property_name');
-        $info = $this->PropertyService->get_by_name($property_name);
+        $property_name = I('post.property_name');
+        $info = $this->PropertyService->get_like_name($property_name);
         if ($info) {
+            $this->ajaxReturn($info);
+        } else {
+            $this->ajaxReturn('');
+        }
+    }
 
+    public function add_cid_property() {
+        $cid = I('post.cid');
+        $property_name = I('post.property_name');
+        $info = $this->PropertyService->get_by_name($property_name);
+        if (!$info) {
+            $this->ajaxReturn(result(false, '添加失败'));
+            //$this->ajaxReturn($info);
         }
 
+        $CatPropertyService = \Common\Service\CatPropertyService::get_instance();
+        $ret = $CatPropertyService->get_by_cid_pid($cid, $info['id']);
+        if ($ret) {
+            $this->ajaxReturn(result(false, '已存在该属性'));
+        }
+        $data['cid'] = $cid;
+        $data['pid'] = $info['id'];
+        $data['p_name'] = $info['name'];
+        $CatPropertyService->add_one($data);
+
+        $this->ajaxReturn(result(true, '添加失败'));
 
     }
 
+    public function get_cat_property(){
+        $cid = I('post.cid');
+        $CatPropertyService = \Common\Service\CatPropertyService::get_instance();
+        $data = $CatPropertyService->get_by_cid($cid);
+
+        if ($data) {
+            $this->ajaxReturn($data);
+        } else {
+            $this->ajaxReturn([]);
+        }
+    }
+
+    public function get_cat_property_values(){
+        $cid = I('get.cid');
+        $CatPropertyService = \Common\Service\CatPropertyService::get_instance();
+        $PropertyValueService = \Common\Service\PropertyValueService::get_instance();
+
+        $data = $CatPropertyService->get_by_cid($cid);
+        $map = [];
+        if ($data) {
+            //var_dump($data);die();
+            $property_ids = result_to_array($data, 'pid');
+           // var_dump($property_ids);die();
+            $p_values = $PropertyValueService->get_by_property_ids($property_ids);
+            $p_values_map = result_to_complex_map($p_values, 'property_id');
+            foreach ($data as $_property) {
+                if (isset($p_values_map[$_property['pid']])) {
+                    $map[] = ['property'=>$_property['p_name'], 'values' => $p_values_map[$_property['pid']]];
+                }
+            }
+        }
+
+        $this->ajaxReturn($map);
+    }
+
+    public function del_cat_property() {
+        $cid = I('post.cid');
+        $pid = I('post.pid');
+
+        $CatPropertyService = \Common\Service\CatPropertyService::get_instance();
+        $data = $CatPropertyService->get_by_cid_pid($cid, $pid);
+
+        if ($data) {
+            $CatPropertyService->del_by_cid_pid($cid, $pid);
+            $this->ajaxReturn(result(true, '删除成功'));
+        }
+
+
+        $this->ajaxReturn(result(false, '找不到对应的属性,请重试'));
+
+    }
 }

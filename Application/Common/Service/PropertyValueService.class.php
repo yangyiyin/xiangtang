@@ -37,6 +37,16 @@ class PropertyValueService extends BaseService{
         return $NfModel->where($where)->select();
     }
 
+
+    public function get_by_property_ids($ids) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['property_id'] = ['in', $ids];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
+
     public function update_by_id($id, $data) {
 
         if (!$id) {

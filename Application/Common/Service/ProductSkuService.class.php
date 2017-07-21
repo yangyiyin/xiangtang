@@ -14,10 +14,22 @@ class ProductSkuService extends BaseService{
             return result(FALSE, $NfProductSku->getError());
         }
 
-        if ($NfProductSku->add($data)) {
-            return result(TRUE);
+        if ($id = $NfProductSku->add($data)) {
+            return result(TRUE, '', $id);
         } else {
             return result(FALSE, $NfProductSku->getError());
+        }
+    }
+
+
+    public function add_batch($data) {
+        $NfProductSku = D('NfProductSku');
+        $ret =  $NfProductSku->addAll($data);
+        var_dump($ret);die();
+        if ($NfProductSku->addAll($data)) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, '批量插入失败');
         }
     }
 
@@ -58,9 +70,10 @@ class ProductSkuService extends BaseService{
             return false;
         }
         $NfProductSku = D('NfProductSku');
-        return $NfProductSku->where('pid in (' . join(',', $pids) . ')')->select();
+        return $NfProductSku->where('pid in (' . join(',', $pids) . ')')->order('id asc')->select();
 
     }
+
 
     public function add_stock_by_pid($pid, $modify_num) {//方法只支持单个sku
         $NfProductSku = D('NfProductSku');
@@ -79,5 +92,10 @@ class ProductSkuService extends BaseService{
         } else {
             return result(FALSE, $NfProductSku->getError());
         }
+    }
+
+    public function del_by_pid($pid) {
+        $NfProductSku = D('NfProductSku');
+        return $NfProductSku->where('pid=' . $pid)->delete();
     }
 }

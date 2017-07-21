@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-07-11 14:41:08
+ * Time: 2017-07-21 10:33:25
  */
 namespace Common\Service;
-class PropertyService extends BaseService{
-    public static $name = 'Property';
+class ItemCommentService extends BaseService{
+    public static $name = 'ItemComment';
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
@@ -28,23 +28,6 @@ class PropertyService extends BaseService{
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->find();
     }
-
-    public function get_like_name($name) {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['name'] = ['like', '%' . $name . '%'];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->select();
-    }
-
-    public function get_by_name($name) {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['name'] = ['eq', $name];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->find();
-    }
-
 
     public function update_by_id($id, $data) {
 
