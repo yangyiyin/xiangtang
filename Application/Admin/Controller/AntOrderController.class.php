@@ -65,6 +65,9 @@ class AntOrderController extends AdminController {
             $user_courier = $userCourierService->get_by_uids($uids);
             $user_courier_map = result_to_map($user_courier, 'uid');
 
+            $OrderExpressService = \Common\Service\OrderExpressService::get_instance();
+            $expresses = $OrderExpressService->get_by_oids($order_ids);
+            $expresses_map = result_to_map($expresses, 'oid');
             foreach ($data as $key => $_item) {
                 if (isset($snapshots_map[$_item['id']])) {
                     $data[$key]['order_snapshot'] = json_decode($snapshots_map[$_item['id']]['content'], TRUE);
@@ -79,6 +82,8 @@ class AntOrderController extends AdminController {
                 $data[$key]['status_desc'] = $this->OrderService->get_status_txt($_item['status']);
                 $data[$key]['type_desc'] = $this->OrderService->get_type_txt($_item['type']);
                 $data[$key]['courier'] = isset($user_courier_map[$_item['uid']]) ? $user_courier_map[$_item['uid']] : [];
+                $data[$key]['express'] = isset($expresses_map[$_item['id']]) ? $expresses_map[$_item['id']] : [];
+
             }
             //var_dump($data);die();
         }
@@ -98,6 +103,35 @@ class AntOrderController extends AdminController {
         if (!$ret->success) {
             $this->error($ret->message);
         }
+
+        //发货信息
+        $OrderExpressService = \Common\Service\OrderExpressService::get_instance();
+        if ($step == 'send') {
+            if ($order_id) {
+                $order = $ret->data;
+                $data = [];
+                $data['oid'] = $order_id;
+                $data['express_no'] = I('post.express_no');
+                $data['express_entity'] = I('post.express_name');
+                $data['order_no'] = $order['order_no'];
+                $data['express_type'] = $order['receiving_type'] ? $order['receiving_type'] : 1;
+                $OrderExpressService->add_one($data);
+            } elseif ($order_ids) {
+                $orders = $ret->data;
+                $data = [];
+                foreach ($orders as $order) {
+                    $data_temp = [];
+                    $data_temp['oid'] = $order['id'];
+                    $data_temp['express_no'] = I('post.express_no');
+                    $data_temp['express_entity'] = I('post.express_name');
+                    $data_temp['order_no'] = $order['order_no'];
+                    $data_temp['express_type'] = $order['receiving_type'] ? $order['receiving_type'] : 1;
+                    $data[] = $data_temp;
+                }
+                $OrderExpressService->add_batch($data);
+            }
+        }
+
         action_user_log('修改订单状态');
         $this->success('订单状态更新成功~');
     }

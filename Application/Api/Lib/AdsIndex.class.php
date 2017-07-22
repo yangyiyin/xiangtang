@@ -15,13 +15,13 @@ class AdsIndex extends BaseSapi{
     }
 
     public function excute() {
-        $ids = I('get.ad_ids');
+        $ids = I('get.names');
         if (!$ids) {
             result_json(FALSE, '没有广告ids');
         }
         $ids_arr = explode('_', $ids);
 
-        $ads = $this->AdService->get_by_ids($ids_arr);
+        $ads = $this->AdService->get_by_names($ids_arr);
         if (!$ads) {
             result_json(FALSE, '没有任何广告');
         }

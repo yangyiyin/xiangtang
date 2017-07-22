@@ -37,6 +37,8 @@ class AntProductController extends AdminController {
             $where['title'] = ['LIKE', '%'.I('get.title').'%'];
         }
 
+        $where['is_real'] = 1;
+
         //获取加盟商的uids
         $MemberService = \Common\Service\MemberService::get_instance();
         $franchisee_uids = $MemberService->get_franchisee_uids();
@@ -58,6 +60,54 @@ class AntProductController extends AdminController {
 
         $this->display();
     }
+
+    public function unreal() {
+        $categoryService = \Common\Service\CategoryService::get_instance();
+        $catetree = $categoryService->get_all_tree_option(I('get.cid'));
+        $this->assign('catetree', $catetree);
+
+        $where = [];
+        if (I('get.cid')) {
+            $where['cid'] = ['EQ', I('get.cid')];
+        }
+        if (I('get.status')) {
+            $where['status'] = ['EQ', I('get.status')];
+        }
+        if (I('get.create_begin')) {
+            $where['create_time'][] = ['EGT', I('get.create_begin')];
+        }
+        if (I('get.create_end')) {
+            $where['create_time'][] = ['ELT', I('get.create_end')];
+        }
+
+        if (I('get.title')) {
+            $where['title'] = ['LIKE', '%'.I('get.title').'%'];
+        }
+
+        $where['is_real'] = 0;
+
+        //获取加盟商的uids
+        $MemberService = \Common\Service\MemberService::get_instance();
+        $franchisee_uids = $MemberService->get_franchisee_uids();
+        if ($franchisee_uids) {
+            $where['uid'] = ['not in', $franchisee_uids];
+        }
+
+        $page = I('get.p', 1);
+        list($data, $count) = $this->ProductService->get_by_where($where, 'id desc', $page);
+        $this->convert_data($data);
+        $PageInstance = new \Think\Page($count, \Common\Service\ProductService::$page_size);
+        if($total>\Common\Service\ProductService::$page_size){
+            $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+        }
+        $page_html = $PageInstance->show();
+
+        $this->assign('list', $data);
+        $this->assign('page_html', $page_html);
+
+        $this->display();
+    }
+
 
     public function add() {
         $product_no = time();//默认
@@ -111,6 +161,59 @@ class AntProductController extends AdminController {
 
     }
 
+
+    public function add_unreal() {
+        $product_no = time();//默认
+        $provider_id = $cate_id = 0;
+
+        if ($id = I('get.id')) {
+            $product = $this->ProductService->get_info_by_id($id);
+            if ($product) {
+                $cate_id = $product['cid'];
+                $provider_id = $product['provider_id'];
+                $this->assign('product',$product);
+            } else {
+                $this->error('没有找到对应的产品信息~');
+            }
+
+            //获取所有sku sku属性
+            $ProductSkuService = \Common\Service\ProductSkuService::get_instance();
+            $skus = $ProductSkuService->get_by_pids([$id]);
+            $sku_ids = result_to_array($skus);
+            $SkuPropertyService = \Common\Service\SkuPropertyService::get_instance();
+            $sku_properties = $SkuPropertyService->get_by_sku_ids($sku_ids);
+            $sku_properties_str = join(',',result_to_array($sku_properties, 'property_value_id'));
+            $sku_properties_map = result_to_complex_map($sku_properties, 'sku_id');
+            foreach ($skus as &$sku) {
+                if (isset($sku_properties_map[$sku['id']])) {
+                    $props_arr = [];
+                    $prop_vals = '';
+                    foreach ($sku_properties_map[$sku['id']] as $prop) {
+                        $props_arr[] = '['.$prop['property_value_name'].']';
+                        $prop_vals .= $prop['property_id'] . '_' . $prop['property_name'] . '_' . $prop['property_value_id'] . '_' . $prop['property_value_name'] . '|+|';
+                    }
+                    $sku['props'] = join('', $props_arr);
+                    $sku['prop_vals'] = $prop_vals;
+                }
+            }
+
+            $this->assign('skus',$skus);
+            $this->assign('sku_properties_str',$sku_properties_str);
+
+        } else {
+            $this->assign('skus','');
+        }
+        $providerService = \Common\Service\ProviderService::get_instance();
+        $providers = $providerService->get_all_provider_option($provider_id);
+        $categoryService = \Common\Service\CategoryService::get_instance();
+        $catetree = $categoryService->get_server_cats_tree_option($cate_id);
+        $this->assign('product_no',$product_no);
+        $this->assign('providers',$providers);
+        $this->assign('catetree',$catetree);
+        $this->display();
+
+    }
+
     public function update() {
         if (IS_POST) {
             $id = I('get.id');
@@ -132,7 +235,12 @@ class AntProductController extends AdminController {
 
                     $this->set_skus($data, $id);
                     action_user_log('修改产品信息');
-                    $this->success('修改成功！', U('index'));
+                    if($data['is_real']) {
+                        $this->success('修改成功！', U('index'));
+                    } else {
+                        $this->success('修改成功！', U('unreal'));
+                    }
+
                 } else {
                     $this->error($ret->message);
                 }
@@ -141,7 +249,11 @@ class AntProductController extends AdminController {
                 if ($ret->success) {
                     $this->set_skus($data, $ret->data);
                     action_user_log('添加产品');
-                    $this->success('添加成功！', U('index'));
+                    if($data['is_real']) {
+                        $this->success('修改成功！', U('index'));
+                    } else {
+                        $this->success('修改成功！', U('unreal'));
+                    }
                 } else {
                     $this->error($ret->message);
                 }
@@ -339,6 +451,14 @@ class AntProductController extends AdminController {
         $ids = I('post.ids');
         $id = I('get.id');
         $itemService = \Common\Service\ItemService::get_instance();
+
+        //获取加盟商的uids
+        $MemberService = \Common\Service\MemberService::get_instance();
+        $franchisee_uids = $MemberService->get_franchisee_uids();
+
+        $is_franchisee = ($franchisee_uids && in_array(UID, $franchisee_uids))? TRUE : FALSE;
+
+
         if ($id) {
             if ($itemService->get_by_pids([$id])) {
                 $this->error('已经创建了商品了');
@@ -356,8 +476,12 @@ class AntProductController extends AdminController {
             $data['desc'] = $product['desc'];
             $data['price'] = $product['price'];
             $data['unit_desc'] = $product['unit_desc'];
+            $data['is_real'] = $product['is_real'];
             $data['min_normal_price'] = $product['min_normal_price'];
             $data['min_dealer_price'] = $product['min_dealer_price'];
+            if ($is_franchisee) {
+                $data['status'] = \Common\Model\NfItemModel::STATUS_READY;
+            }
             $ret = $itemService->add_one($data);
 
             if (!$ret->success) {
@@ -387,9 +511,13 @@ class AntProductController extends AdminController {
                 $data['desc'] = $product['desc'];
                 $data['price'] = $product['price'];
                 $data['unit_desc'] = $product['unit_desc'];
+                $data['is_real'] = $product['is_real'];
                 $data['create_time'] = current_date();
                 $data['min_normal_price'] = $product['min_normal_price'];
                 $data['min_dealer_price'] = $product['min_dealer_price'];
+                if ($is_franchisee) {
+                    $data['status'] = \Common\Model\NfItemModel::STATUS_READY;
+                }
                 $insert_data[] = $data;
             }
             $ret = $itemService->add_batch($insert_data);

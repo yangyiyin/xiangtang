@@ -13,6 +13,11 @@ class CategoryService extends BaseService{
         return $this->make_tree($cat_all);
     }
 
+    public function get_server_tree() {
+        $NfCategory = D('NfCategory');
+        $cat_all = $NfCategory->get_server_cats();
+        return $this->make_tree($cat_all);
+    }
 
     private function make_tree($cats) {
         if (!$cats) return [];
@@ -97,6 +102,44 @@ class CategoryService extends BaseService{
 
     public function get_all_tree_option($id = '') {
         $all_tree = $this->get_all_tree();
+        $options = '';
+        //取3级
+        foreach ($all_tree as $_cat) {
+            if ($id && $id == $_cat['content']['id']) {
+                $selected = ' selected="selected" ';
+            } else {
+                $selected = '';
+            }
+            $options .= '<option value="' . $_cat['content']['id']  . '"' .$selected. '>'. $_cat['content']['name'] .'</option>';
+
+            if (isset($_cat['child']) && $_cat['child']) {
+                foreach ($_cat['child'] as $__cat) {
+                    if ($id && $id == $__cat['content']['id']) {
+                        $selected = ' selected ="selected" ';
+                    } else {
+                        $selected = '';
+                    }
+                    $options .= '<option value="' . $__cat['content']['id']  . '"' .$selected. '>---'. $__cat['content']['name'] .'</option>';
+
+                    if (isset($__cat['child']) && $__cat['child']) {
+                        foreach ($__cat['child'] as $___cat) {
+                            if ($id && $id == $___cat['content']['id']) {
+                                $selected = ' selected ="selected" ';
+                            } else {
+                                $selected = '';
+                            }
+                            $options .= '<option value="' . $___cat['content']['id'] . '"' .$selected. '>------'. $___cat['content']['name'] .'</option>';
+                        }
+                    }
+
+                }
+            }
+        }
+        return $options;
+    }
+
+    public function get_server_cats_tree_option($id = '') {
+        $all_tree = $this->get_server_tree();
         $options = '';
         //取3级
         foreach ($all_tree as $_cat) {

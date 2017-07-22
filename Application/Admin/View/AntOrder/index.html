@@ -97,6 +97,7 @@
 					</td>
 
 					<td>
+
 						<if condition="$vo.receiving_type == 1">
 							<p class="short_info">收货方式:自提</p>
 							<p class="short_info">网点:{$vo.receiving_service_name}</p>
@@ -107,7 +108,9 @@
 							<p class="short_info">收货人:{$vo.receiving_name}</p>
 							<p class="short_info">联系电话:{$vo.receiving_tel}</p>
 						</if>
-
+						<if condition="$vo['express']">
+							<p class="short_info">发货信息:{$vo.express.express_entity}-{$vo.express.express_no}</p>
+						</if>
 					</td>
 
 					<td ><span>{$vo.status_desc}</span></td>

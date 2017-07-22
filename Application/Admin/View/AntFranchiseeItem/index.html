@@ -76,7 +76,7 @@
 					<td style="display: none"><span>{$vo.status_text}</span></td>
 					<td>
 
-						<if condition="$vo['status']==0">
+						<if condition="$vo['status']==2">
 							<a  class="u-btn confirm J_ajax_get" href="{:U('approve')}/id/{$vo.id}">审核通过</a>
 						</if>
 

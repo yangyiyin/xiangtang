@@ -12,11 +12,11 @@
 		<!-- 按钮工具栏 -->
 		<div class="u-tab">
 		    <ul class="cc tab-nav">
-				<li><a href="{:U('index')}">所有产品</a></li>
+				<li><a href="{:U('unreal')}">所有虚拟产品</a></li>
 				<if condition="I('get.id')">
-					<li class="current"><a href="javascript:;">编辑产品</a></li>
+					<li class="current"><a href="javascript:;">编辑虚拟产品</a></li>
 					<else/>
-					<li class="current"><a href="javascript:;">添加产品</a></li>
+					<li class="current"><a href="javascript:;">添加虚拟产品</a></li>
 				</if>
 		    </ul>
 		</div>
@@ -39,7 +39,7 @@
 			                                <input type="text" class="input input-xlarge" name="desc" value="{$product.desc}">
 								</td>
 							</tr>
-
+							<input type="hidden" value="0" name="is_real"/>
 							<tr>
 								<td width="20%"><label class="item-label">原价(元)</label></td>
 								<td width="80%">

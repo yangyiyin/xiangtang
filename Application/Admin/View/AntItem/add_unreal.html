@@ -1,0 +1,210 @@
+<extend name="Public/base"/>
+
+<block name="body">
+<script type="text/javascript" src="__STATIC__/uploadify/jquery.uploadify.min.js"></script>
+	<!--百度webuploader-->
+	<link rel="stylesheet" type="text/css" href="__STATIC__/webuploader/webuploader.css">
+	<script type="text/javascript" src="__STATIC__/webuploader/webuploader.min.js"></script>
+
+
+<script type="text/javascript" src="__STATIC__/popwin.js"></script>   
+<style type="text/css">#dialog{display:none;}</style>
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+		    <ul class="cc tab-nav">
+				<li><a href="{:U('unreal')}">所有虚拟商品</a></li>
+				<if condition="I('get.id')">
+					<li class="current"><a href="javascript:;">编辑虚拟商品</a></li>
+					<else />
+					<li class="current"><a href="javascript:;">添加虚拟商品</a></li>
+				</if>
+		    </ul>
+		</div>
+		<!-- 数据表格 -->
+		<div class="tab-content table_list">
+		<!-- 表单 -->
+		<form id="form" action="{:U('update')}/id/{:I('get.id')}" method="post" class="form-horizontal">
+				<div id="tab">
+					<table class="" width="100%">
+				    <tbody>
+							<tr>
+					            <td width="20%"><label class="item-label">标题</label></td>
+					            <td width="80%">
+									<input type="text" class="input input-medium" name="title" value="{$item.title}">
+								</td>
+							</tr>
+							<input type="hidden" value="0" name="is_real"/>
+							<tr>
+								<td width="20%"><label class="item-label">关键词(如:安全,绿色)</label></td>
+								<td width="80%">
+									<input type="text" class="input input-medium" name="keyword" value="{$item.keyword}">
+								</td>
+							</tr>
+							<tr>
+								<td width="20%"><label class="item-label">描述</label></td>
+								<td width="80%">
+			                                <input type="text" class="input input-xlarge" name="desc" value="{$item.desc}">
+								</td>
+							</tr>
+							<tr>
+								<td width="20%"><label class="item-label">购买须知</label></td>
+								<td width="80%">
+									 <textarea name="tips">{$item.tips}</textarea>
+								</td>
+							</tr>
+							<tr style="display: none">
+								<td width="20%"><label class="item-label">价格</label></td>
+								<td width="80%">
+									<input type="text" class="input input-small" name="price1" value="{$item.price}">
+								</td>
+							</tr>
+							<tr>
+								<td width="20%"><label class="item-label">单位</label></td>
+								<td width="80%">
+									<input type="text" class="input input-small" name="unit_desc" value="{$item.unit_desc}">
+								</td>
+							</tr>
+
+							<tr>
+								<td width="20%"><label class="item-label">主图</label></td>
+								<td width="80%">
+
+									<div class="controls">
+										<div id="filePicker">选择图片</div>
+										<input type="hidden" value="{$item.img}" name="img" id="cover_id_1"/>
+										<div class="upload-img-box">
+											<notempty name="item['img']">
+												<div class="upload-pre-item"><img src="__ROOT__{$item['img']}" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic()"><i class="fa fa-times-circle u-close"></i></a></div>
+											</notempty>
+										</div>
+									</div>
+
+
+									<script type="text/javascript">
+										//上传图片
+										/* 初始化上传插件 */
+//										$("#upload_picture_1").uploadify({
+//											"height"          : 30,
+//											"swf"             : "__STATIC__/uploadify/uploadify.swf",
+//											"fileObjName"     : "download",
+//											"buttonText"      : "上传图片",
+//											"uploader"        : "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+//											"width"           : 120,
+//											'removeTimeout'	  : 1,
+//											'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
+//											"onUploadSuccess" : uploadPicture1,
+//										'onFallback' : function() {
+//											alert('未检测到兼容版本的Flash.');
+//										}
+//										});
+
+										var uploader = WebUploader.create({
+
+											// 选完文件后，是否自动上传。
+											auto: true,
+
+											// swf文件路径
+											swf: '__STATIC__/webuploader/Uploader.swf',
+
+											// 文件接收服务端。
+											server: "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+
+											// 选择文件的按钮。可选。
+											// 内部根据当前运行是创建，可能是input元素，也可能是flash.
+											pick: '#filePicker',
+											fileVal: 'download',
+											duplicate: true,
+											// 只允许选择图片文件。
+											accept: {
+												title: 'Images',
+												extensions: 'gif,jpg,jpeg,bmp,png',
+												mimeTypes: 'image/*'
+											}
+										});
+										uploader.on( 'uploadSuccess', function(file, response) {
+											uploadPicture1(file, response);
+										});
+										function delpic(){
+											$("#cover_id_1").attr("value",'');
+											$("#cover_id_1").parent().find('.upload-img-box').html('');
+										}
+										function uploadPicture1(file, data){
+											/*var data = $.parseJSON(data);*/
+											var src = '';
+											if(data.status){
+												$("#cover_id_1").val(data.path);
+												src = data.url || '__ROOT__' + data.path
+												$("#cover_id_1").parent().find('.upload-img-box').html(
+														'<div class="upload-pre-item j_1"><img src="' + src + '" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic()"><i class="fa fa-times-circle u-close"></i></a></div>'
+												);
+											} else {
+												updateAlert(data.info);
+												setTimeout(function(){
+													$('#top-alert').find('button').click();
+												},1500);
+											}
+										}
+									</script>
+								</td>
+							</tr>
+
+							<tr>
+								<td width="20%"><label class="item-label">分类</label></td>
+								<td width="80%">
+									<select class="select_2 select" name="cid">
+										{$catetree}
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td>图文详情</td>
+								<td>
+									<label class="inputarea">
+										<textarea name="content">{$item.content}</textarea>
+										{:hook('adminArticleEdit', array('name'=>'content','value'=>$item['content']))}
+									</label>
+								</td>
+
+							</tr>
+
+					</tbody>
+				    </table> 
+			     </div>
+
+			<div class="btn_wrap">
+	          <div class="btn_wrap_pd">
+	            	<button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">确 定</button>
+				  <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+	          </div>
+	        </div>
+	    </form>
+	    </div>
+	</div>
+</div>
+
+</block>
+<block name="script">
+<link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
+<php>if(C('COLOR_STYLE')=='blue_color') echo '<link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css" rel="stylesheet" type="text/css">';</php>
+<link href="__STATIC__/datetimepicker/css/dropdown.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script type="text/javascript">
+$('#submit').click(function(){
+	$('#form').submit();
+});
+$(function(){
+	$("#xgwz").on('click' , function(){
+		popWin.showWin("1000","600","请勾选出相关文章","{:U('article/mydocument?showids=true')}");
+	});
+    $('.time').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii',
+        language:"zh-CN",
+        minView:2,
+        autoclose:true
+    });
+    showTab();
+});
+</script>
+</block>

@@ -5,9 +5,9 @@
 		<div class="u-tab">
 
 		    <ul class="cc">
-		      	<li class="current"><a href="javascript:;">所有仓库产品</a></li>
+		      	<li class="current"><a href="javascript:;">所有产品</a></li>
 
-				<li><a href="{:U('add')}">添加仓库产品</a></li>
+				<li><a href="{:U('add')}">添加产品</a></li>
 
 
 		    </ul>
@@ -69,7 +69,6 @@
 					<td style="display: none"><span>{$vo.status_text}</span></td>
 					<td>
 						<a class="u-btn" href="{:U('add')}/id/{$vo.id}">编辑</a> |
-						<a class="u-btn show_box" href="javascript:;" tmp_id="stock_in" pid="{$vo.id}" pname="{$vo.title}">入库</a>
 						<if condition="$vo['status']!=99">
 							<a class="u-btn confirm J_ajax_get" href="{:U('off_shelf')}/id/{$vo.id}" >下架</a>
 							<else/>

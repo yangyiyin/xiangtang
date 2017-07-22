@@ -10,9 +10,10 @@ use Think\Model;
 class NfItemModel extends Model {
     const STATUS_READY = 0;
     const STATUS_NORAML = 1;
+    const STATUS_SUBMIT = 2;
     const STATUS_DELETE = 99;
 
-    public static $status_map = [0=>'待审核', 1=>'正常',99=>'已下架'];
+    public static $status_map = [0=>'已创建', 1=>'正常',99=>'已下架', 2=>'待审核'];
 
     protected $_validate = array(
         array('title', 'require', '名称不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT),

@@ -40,7 +40,7 @@ class AntItemController extends AdminController {
             $where['title'] = ['LIKE', '%'.I('get.title').'%'];
         }
 
-
+        $where['is_real'] = 1;
         $page = I('get.p', 1);
         list($data, $count) = $this->ItemService->get_by_where($where, 'id desc', $page);
         $this->convert_data($data);
@@ -55,6 +55,59 @@ class AntItemController extends AdminController {
 
         $this->display();
     }
+
+    public function unreal() {
+        $categoryService = \Common\Service\CategoryService::get_instance();
+        $catetree = $categoryService->get_all_tree_option(I('get.cid'));
+        $this->assign('catetree', $catetree);
+
+        $ServicesService = \Common\Service\ServicesService::get_instance();
+        list($services, $count) = $ServicesService->get_by_where_all([]);
+        $this->assign('services', $services);
+        $where = [];
+        if (I('get.cid')) {
+            $where['cid'] = ['EQ', I('get.cid')];
+        }
+        if (I('get.status')) {
+            $where['status'] = ['EQ', I('get.status')];
+        }
+        if (I('get.create_begin')) {
+            $where['create_time'][] = ['EGT', I('get.create_begin')];
+        }
+        if (I('get.create_end')) {
+            $where['create_time'][] = ['ELT', I('get.create_end')];
+        }
+
+        if (I('get.title')) {
+            $where['title'] = ['LIKE', '%'.I('get.title').'%'];
+        }
+
+        $where['is_real'] = 0;
+        $page = I('get.p', 1);
+        list($data, $count) = $this->ItemService->get_by_where($where, 'id desc', $page);
+        $this->convert_data($data);
+        $PageInstance = new \Think\Page($count, \Common\Service\ItemService::$page_size);
+        if($total>\Common\Service\ItemService::$page_size){
+            $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+        }
+        $page_html = $PageInstance->show();
+
+        $this->assign('list', $data);
+        $this->assign('page_html', $page_html);
+
+
+        //获取加盟商的uids
+        $MemberService = \Common\Service\MemberService::get_instance();
+        $franchisee_uids = $MemberService->get_franchisee_uids();
+        if ($franchisee_uids && in_array(UID, $franchisee_uids)) {
+            $is_manager = 0;
+        } else {
+            $is_manager = 1;
+        }
+        $this->assign('is_manager', $is_manager);
+        $this->display();
+    }
+
 
     public function update_prices() {
         if (IS_POST) {
@@ -143,6 +196,25 @@ class AntItemController extends AdminController {
         $this->success('上架成功！');
     }
 
+    public function submit() {
+        $ids = I('post.ids');
+        $id = I('get.id');
+
+        if ($id) {
+            $ret = $this->ItemService->submit([$id]);
+        }
+
+        if ($ids) {
+            $ret = $this->ItemService->submit($ids);
+        }
+
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        action_user_log('提交审核商品');
+        $this->success('提交审核成功！');
+    }
+
 
     public function add() {
         $id = I('get.id');
@@ -163,6 +235,25 @@ class AntItemController extends AdminController {
         $this->display();
     }
 
+    public function add_unreal() {
+        $id = I('get.id');
+        $categoryService = \Common\Service\CategoryService::get_instance();
+        if (!$id) {
+            $catetree = $categoryService->get_server_cats_tree_option('');
+            $this->assign('catetree', $catetree);
+            $this->display();
+            exit;
+        }
+        $item = $this->ItemService->get_info_by_id($id);
+        if (!$item) {
+            $this->error('没有找到商品信息');
+        }
+        $catetree = $categoryService->get_server_cats_tree_option($item['cid']);
+        $this->assign('catetree', $catetree);
+        $this->assign('item', $item);
+        $this->display();
+    }
+
     public function update() {
         if (IS_POST) {
             $id = I('get.id');
@@ -171,7 +262,11 @@ class AntItemController extends AdminController {
                 $ret = $this->ItemService->update_by_id($id, $data);
                 if ($ret->success) {
                     action_user_log('修改商品信息');
-                    $this->success('修改成功！', U('index'));
+                    if($data['is_real']) {
+                        $this->success('修改成功！', U('index'));
+                    } else {
+                        $this->success('修改成功！', U('unreal'));
+                    }
                 } else {
                     $this->error($ret->message);
                 }
@@ -181,7 +276,11 @@ class AntItemController extends AdminController {
 
                 if ($ret->success) {
                     action_user_log('添加商品信息');
-                    $this->success('添加成功！', U('index'));
+                    if($data['is_real']) {
+                        $this->success('修改成功！', U('index'));
+                    } else {
+                        $this->success('修改成功！', U('unreal'));
+                    }
                 } else {
                     $this->error($ret->message);
                 }

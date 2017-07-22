@@ -142,7 +142,9 @@ class OrderService extends BaseService{
             return result(FALSE, '订单状态不是已付款状态,不能发货操作!');
         }
 
-        return $this->update_by_id($order['id'], ['status'=>\Common\Model\NfOrderModel::STATUS_SENDING]);
+        $ret = $this->update_by_id($order['id'], ['status'=>\Common\Model\NfOrderModel::STATUS_SENDING]);
+        $ret->data = $order;
+        return $ret;
     }
 
     public function batch_send($orders) {
@@ -152,7 +154,9 @@ class OrderService extends BaseService{
             }
         }
         $order_ids = result_to_array($orders);
-        return $this->update_by_ids($order_ids, ['status'=>\Common\Model\NfOrderModel::STATUS_SENDING]);
+        $ret = $this->update_by_ids($order_ids, ['status'=>\Common\Model\NfOrderModel::STATUS_SENDING]);
+        $ret->data = $orders;
+        return $ret;
     }
 
     public function paying($order) {

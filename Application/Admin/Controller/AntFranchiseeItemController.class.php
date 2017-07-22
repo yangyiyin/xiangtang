@@ -22,12 +22,9 @@ class AntFranchiseeItemController extends AdminController {
         if (I('get.cid')) {
             $where['cid'] = ['EQ', I('get.cid')];
         }
+        $where['status'] = ['in', [\Common\Model\NfItemModel::STATUS_NORAML, \Common\Model\NfItemModel::STATUS_SUBMIT, \Common\Model\NfItemModel::STATUS_DELETE]];
         if (I('get.status')) {
-            if (I('get.status') == 2) {
-                $where['status'] = ['EQ', 0];
-            } else {
-                $where['status'] = ['EQ', I('get.status')];
-            }
+            $where['status'] = ['EQ', I('get.status')];
 
         }
         if (I('get.create_begin')) {
@@ -40,7 +37,6 @@ class AntFranchiseeItemController extends AdminController {
         if (I('get.title')) {
             $where['title'] = ['LIKE', '%'.I('get.title').'%'];
         }
-
 
         //获取加盟商的uids
         $MemberService = \Common\Service\MemberService::get_instance();

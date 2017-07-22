@@ -115,7 +115,7 @@ class newModule {
 }
 
 
-$newModule = new newModule('franchiseeItem', '商品评论');
+$newModule = new newModule('accountLog', '账务管理');
 //['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]
-//$newModule->gain(['controller'=>1, 'view'=>1]);
-$newModule->gain_power(['controller'=>1, 'view'=>1]);
+//$newModule->gain(['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]);
+$newModule->gain_power(['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]);

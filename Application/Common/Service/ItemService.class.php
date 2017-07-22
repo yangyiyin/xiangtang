@@ -103,6 +103,10 @@ class ItemService extends BaseService{
         return $this->update_by_ids($ids, ['status'=>\Common\Model\NfItemModel::STATUS_NORAML]);
     }
 
+    public function submit($ids) {
+        return $this->update_by_ids($ids, ['status'=>\Common\Model\NfItemModel::STATUS_SUBMIT]);
+    }
+
     public function approve($ids) {
         return $this->update_by_ids($ids, ['status'=>\Common\Model\NfItemModel::STATUS_NORAML]);
     }

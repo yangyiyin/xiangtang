@@ -5,8 +5,11 @@
 		<div class="u-tab">
 
 		    <ul class="cc">
-		      	<li class="current"><a href="javascript:;">所有商品</a></li>
-				<li style="display: none"><a href="{:U('add')}">添加商品</a></li>
+		      	<li class="current"><a href="javascript:;">所有虚拟产品</a></li>
+
+				<li><a href="{:U('add_unreal')}">添加虚拟产品</a></li>
+
+
 		    </ul>
 		</div>
 	    <div class="search_type cc mb10 search-form">
@@ -27,9 +30,11 @@
 	          	<option value="1" {$first}>正常</option>
 	          	<option value="99" {$second}>已下架</option>
 	        </select>
-	         &nbsp;标题：
+	        &nbsp;&nbsp;创建时间：
+	        <input type="text" name="create_begin" id="time-start" class="input length_2" value="{:I('create_begin')}" style="width:80px;" autocomplete="off" placeholder="起始时间">-<span class="input-append date" id="datetimepicker"><input type="text" id="time-end" name="create_end" class="input input" value="{:I('create_end')}" placeholder="结束时间" /><span class="add-on" style="background:none;border:none;"><i class="icon-th"></i></span></span>
+	        &nbsp; &nbsp;标题：
 	        <input type="text" class="input length_2" name="title" style="width:200px;" value="{:I('title')}" placeholder="请输入标题文档">
-	        <a class="u-btn" href="javascript:;" id="search" url="{:U('index')}">搜索</a>
+	        <a class="u-btn" href="javascript:;" id="search" url="{:U('unreal')}">搜索</a>
 	        <!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
 	        </span>
 	      </div>
@@ -40,13 +45,13 @@
 		    <thead>
 		        <tr>
 					<th width="5%"><input class="check-all" type="checkbox"/></th>
-					<th width="5%">商品id</th>
+					<th width="5%">产品id</th>
 					<th width="5%">预览</th>
 					<th width="15%">基本信息</th>
 					<th width="5%">分类</th>
-					<th width="10%">排序</th>
 					<th  style="display: none"width="5%">状态</th>
 					<th width="12%">操作</th>
+					<th width="10%">创建商品</th>
 				</tr>
 		    </thead>
 		    <tbody>
@@ -57,29 +62,25 @@
 					<td><img src="{$vo['img']|get_cover}" width="50" height="50"/></td>
 					<td>
 						<p class="short_info">标题:{$vo.title}</p>
-						<p class="short_info">关键词:{$vo.keyword}</p>
-						<p class="short_info">描述:{$vo.desc}</p>
-						<p class="short_info">购买须知:{$vo.tips}</p>
 						<p class="short_info">创建时间:{$vo.create_time}</p>
 					</td>
 					<td><span>{$vo['cate']['name']}</span></td>
 
-
-					<td>
-						<span class="sort_text">{$vo.sort}</span>
-						<div style="display: none" class="modify_sort">
-							<input class="sort_value" style="width: 30px" type="text" value="{$vo.sort}"/>
-							<input iid="{$vo.id}" class="sort_submit" type="button" value="确定"/>
-						</div>
-					</td>
 					<td style="display: none"><span>{$vo.status_text}</span></td>
 					<td>
-
-						<a  class="u-btn" href="{:U('add')}/id/{$vo.id}" >编辑</a>
+						<a class="u-btn" href="{:U('add_unreal')}/id/{$vo.id}">编辑</a> |
 						<if condition="$vo['status']!=99">
-							<a  class="u-btn confirm J_ajax_get" href="{:U('off_shelf')}/id/{$vo.id}">下架</a>
+							<a class="u-btn confirm J_ajax_get" href="{:U('off_shelf')}/id/{$vo.id}" >下架</a>
 							<else/>
-							<a  class="u-btn confirm J_ajax_get" href="{:U('on_shelf')}/id/{$vo.id}" >上架</a>
+							<a class="u-btn confirm J_ajax_get" href="{:U('on_shelf')}/id/{$vo.id}" >上架</a>
+						</if>
+
+					</td>
+					<td>
+						<if condition="!$vo['has_item']">
+							<a class="u-btn" href="{:U('create_item')}/id/{$vo.id}">创建商品</a>
+							<else />
+							<span>已创建</span>
 						</if>
 
 					</td>
@@ -93,11 +94,11 @@
 				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
 
 
-				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("off_shelf")}'>批量下架</button>
+				<button style="display: none" class="btn J_ajax_post confirm" target-form="ids" url='{:U("off_shelf")}'>批量下架</button>
 
-				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("on_shelf")}'>批量上架</button>
+				<button style="display: none" class="btn J_ajax_post confirm" target-form="ids" url='{:U("on_shelf")}'>批量上架</button>
 
-
+				<button class="btn J_ajax_post confirm" target-form="ids" url='{:U("create_item")}'>批量创建商品</button>
 		    </div>
 		</div>
 		<!-- 分页 -->
@@ -106,23 +107,52 @@
 	    </div>
 	</div>
 </div>
-	<div id="modify_prices" class="show_box_temp" style="display:none;position: fixed;width: 500;left: 50%;top:30%;z-index: 1000;background: #ddd;border: 1px solid #000000;padding: 10px">
-		<p style="padding: 10px;font-size: 20px" class="title"></p>
-		<p style="padding: 10px">
-			商品id:<input disabled="disabled" value="0" class="input iid"/>
-		</p>
-		<volist name="services" id="service">
-			<p style="padding: 10px">
-				{$service.title}:<input value="0" class="input prices" id="{$service.id}"/>元
-			</p>
 
-		</volist>
+	<div id="stock_add" class="show_box_temp" style="display:none;position: fixed;width: 500;left: 50%;top:30%;z-index: 1000;background: #ddd;border: 1px solid #000000;padding: 10px">
+		<p style="padding: 10px;font-size: 20px">加库</p>
 		<p style="padding: 10px">
-			<a class="u-btn submit" url="{:U('update_prices')}" href="javascript:;">确定</a>
+			批号:<input disabled="disabled" value="0" class="input no"/>
+		</p>
+		<p style="padding: 10px">
+			加库数量:<input value="0" class="input modify_num"/>
+		</p>
+		<p style="padding: 10px">
+			<a class="u-btn submit" url="{:U('stock_add')}" href="javascript:;">确定</a>
 			<a class="u-btn	close_show_box" href="javascript:;">取消</a>
 		</p>
 	</div>
-
+	<div id="stock_out" class="show_box_temp" style="display:none;position: fixed;width: 500;left: 50%;top:30%;z-index: 1000;background: #ddd;border: 1px solid #000000;padding: 10px">
+		<p style="padding: 10px;font-size: 20px">出库</p>
+		<p style="padding: 10px">
+			批号:<input disabled="disabled" value="0" class="input no"/>
+		</p>
+		<p style="padding: 10px">
+			出库数量:<input value="0" class="input modify_num"/>
+		</p>
+		<p style="padding: 10px">
+			<a class="u-btn submit" url="{:U('stock_out')}" href="javascript:;">确定</a>
+			<a class="u-btn	close_show_box" href="javascript:;">取消</a>
+		</p>
+	</div>
+	<div id="stock_in" class="show_box_temp" style="display:none;position: fixed;width: 500;left: 50%;top:30%;z-index: 1000;background: #ddd;border: 1px solid #000000;padding: 10px">
+		<p style="padding: 10px;font-size: 20px">入库新批号</p>
+		<p style="padding: 10px">
+			商品id:<input value="0" disabled="disabled" class="input pid"/>
+		</p>
+		<p style="padding: 10px">
+			商品名称:<input value="0" disabled="disabled" class="input pname"/>
+		</p>
+		<p style="padding: 10px">
+			批号:<input value="{:time()}" class="input no"/>
+		</p>
+		<p style="padding: 10px">
+			库存数量:<input value="0" class="input num"/>
+		</p>
+		<p style="padding: 10px">
+			<a class="u-btn submit" url="{:U('stock_in')}" href="javascript:;">确定</a>
+			<a class="u-btn	close_show_box" href="javascript:;">取消</a>
+		</p>
+	</div>
 </block>
 <block name="script">
 <link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
@@ -184,7 +214,6 @@ $(function(){
         pickerPosition:'bottom-left'
     });
 
-
 	$('.show_box').on('click', function () {
 		//console.log($(this).attr('data'));
 		$('.show_box_temp').hide();
@@ -197,20 +226,34 @@ $(function(){
 		$(this).parents('.show_box_temp').hide();
 	});
 
-	$('#modify_prices').find('.submit').on('click',function () {
+	$('#stock_add').find('.submit').on('click',function () {
 		var url = $(this).attr('url');
 		var data = {
-			id:$('#modify_prices').find('.iid').val()
+			no:$('#stock_add').find('.no').val(),
+			modify_num:$('#stock_add').find('.modify_num').val()
 		}
-
-		$('#modify_prices').find('.prices').each(function (a,e) {
-			var id = $(e).attr('id');
-			data['price'+id] = $(e).val();
-		});
 		do_post(url, data, this);
 	});
 
 
+	$('#stock_out').find('.submit').on('click',function () {
+		var url = $(this).attr('url');
+		var data = {
+			no:$('#stock_out').find('.no').val(),
+			modify_num:$('#stock_out').find('.modify_num').val()
+		}
+		do_post(url, data, this);
+	});
+
+	$('#stock_in').find('.submit').on('click',function () {
+		var url = $(this).attr('url');
+		var data = {
+			no:$('#stock_in').find('.no').val(),
+			pid:$('#stock_in').find('.pid').val(),
+			num:$('#stock_in').find('.num').val()
+		}
+		do_post(url, data, this);
+	});
 
 	function do_post(url, query, that) {
 
@@ -247,49 +290,26 @@ $(function(){
 	}
 
 	function after_show_box(_this, box) {
-		var iid = _this.parent().parent().find('.iid').html();
-		var title = _this.parent().parent().find('.title').html();
-		var prices = _this.parent().parent().find('.prices');
-//		var factory_price = _this.parent().parent().find('.factory-price').html();
-//		var meituan_price = _this.parent().parent().find('.meituan-price').html();
-//		var shop_price = _this.parent().parent().find('.shop-price').html();
-//		var people_price = _this.parent().parent().find('.people-price').html();
-		box.find('.title').html(title);
-		box.find('.iid').val(iid);
-//		box.find('.factory-price').val(factory_price);
-//		box.find('.meituan-price').val(meituan_price);
-//		box.find('.shop-price').val(shop_price);
-//		box.find('.people-price').val(people_price);
-
-		prices.each(function (a, e) {
-			box.find('#'+$(e).attr('service_id')).val($(e).html());
-		});
-	}
-
-
-	$('.sort_text').on('click',function(){
-		$(this).css('display', 'none');
-		$(this).next().css('display', '');
-	});
-	$('.sort_submit').on('click',function(){
-		var url = '{:U("modify_sort")}';
-		var sort = $(this).prev().val();
-		var query = {
-			id:$(this).attr('iid'),
-			sort:sort
-		}
-		$.post(url,query).success(function(data){
-			if (data.status==1) {
-				updateAlert(data.info ,'alert-success');
-				$(this).parent().css('display', 'none');
-				$(this).parent().prev().html(sort);
-				$(this).parent().prev().css('display', '');
-			}else{
-				updateAlert('网络繁忙~请稍后再试~');
+		var no, pid, pname;
+		if (no = _this.attr('no')) {
+			if (no) {
+				box.find('.no').val(no);
 			}
-		}.bind(this));
 
-	});
+		}
+		if (pid = _this.attr('pid')) {
+			if (pid) {
+				box.find('.pid').val(pid);
+			}
+
+		}
+		if (pname = _this.attr('pname')) {
+			if (pname) {
+				box.find('.pname').val(pname);
+			}
+
+		}
+	}
 
     
 });

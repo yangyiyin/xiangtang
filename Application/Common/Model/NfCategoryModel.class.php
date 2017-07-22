@@ -16,7 +16,16 @@ class NfCategoryModel extends Model {
     );
 
     public function get_all() {//最多3级
-        $where = 'status = 1';
+        $where = [];
+        $where[] = ['status'=>['eq', 1]];
+        $where[] = ['id'=>['not in', C('SERVER_CIDS')]];
+        return $this->where($where)->select();
+    }
+
+    public function get_server_cats() {//最多3级
+        $where = [];
+        $where[] = ['status'=>['eq', 1]];
+        $where[] = ['id'=>['in', C('SERVER_CIDS')]];
         return $this->where($where)->select();
     }
 
