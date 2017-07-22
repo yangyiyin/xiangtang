@@ -138,7 +138,7 @@ class OrderService extends BaseService{
     }
 
     public function send($order) {
-        if ($order['status'] != \Common\Model\NfOrderModel::STATUS_RECEIVED) {
+        if ($order['status'] != \Common\Model\NfOrderModel::STATUS_PAY) {
             return result(FALSE, '订单状态不是已付款状态,不能发货操作!');
         }
 
@@ -147,7 +147,7 @@ class OrderService extends BaseService{
 
     public function batch_send($orders) {
         foreach ($orders as $order) {
-            if ($order['status'] != \Common\Model\NfOrderModel::STATUS_RECEIVED) {
+            if ($order['status'] != \Common\Model\NfOrderModel::STATUS_PAY) {
                 return result(FALSE, '订单id为'.$order['id'].',状态不是已付款状态,不能发货操作!');
             }
         }
@@ -288,6 +288,7 @@ class OrderService extends BaseService{
         $data_order['sum'] = $order_pre['sum'];
         $data_order['num'] = $order_pre['num'];
         $data_order['type'] = $user_info['type'];//用户type和订单type保持一致
+        $data_order['inviter_id'] = $user_info['inviter_id'];
         $data_order['receiving_address'] = $extra['address'];
         $data_order['receiving_name'] = $extra['name'];
         $data_order['receiving_tel'] = $extra['tel'];

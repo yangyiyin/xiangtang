@@ -272,7 +272,7 @@ function showBtn() {
 }
 
 
-function merage_arr(a, b) {
+function y_merage_arr(a, b) {
     var c = [];
     for(var i in a) {
         c.push(a[i]);
@@ -284,9 +284,48 @@ function merage_arr(a, b) {
     return c;
 }
 
-function in_array(needle, arr) {
+function y_in_array(needle, arr) {
     for (i in arr) {
         if (arr[i] == needle) return true;
     }
     return false;
+}
+
+
+function y_do_post(url, query, that, callback) {
+
+    $.post(url,query).success(function(data){
+        if (callback) {
+            callback(data);
+            return;
+        }
+        if (data.status==1) {
+            if (data.url) {
+                updateAlert(data.info + ' 页面即将自动跳转~','alert-success');
+            }else{
+                updateAlert(data.info ,'alert-success');
+            }
+            setTimeout(function(){
+                if (data.url) {
+                    location.href=data.url;
+                }else if( $(that).hasClass('no-refresh')){
+                    $('#top-alert').find('button').click();
+                    $(that).removeClass('disabled').prop('disabled',false);
+                }else{
+                    location.reload();
+                }
+            },200);
+        }else{
+            updateAlert(data.info);
+            setTimeout(function(){
+                if (data.url) {
+                    location.href=data.url;
+                }else{
+                    $('#top-alert').find('button').click();
+                    $(that).removeClass('disabled').prop('disabled',false);
+                }
+            },200);
+        }
+    });
+
 }

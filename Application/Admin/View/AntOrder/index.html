@@ -27,13 +27,12 @@
         	</php>
 	        <select class="select_2 select" id="sch-sort-txt" name="status">
 	          	<option value="" {$all}>全部</option>
-				<option value="8" {$eight}>已接单</option>
 	          	<option value="1" {$first}>已提交</option>
 	          	<option value="2" {$second}>已付款</option>
-				<option value="3" {$third}>已出库</option>
 				<option value="4" {$forth}>已发货</option>
 				<option value="5" {$fifth}>已完成</option>
 				<option value="6" {$sixth}>已取消</option>
+				<option value="7" {$seventh}>支付中</option>
 	        </select>
 			&nbsp;创建时间：
 	        <input type="text" name="create_begin" id="time-start" class="input length_2" value="{:I('create_begin')}" style="width:80px;" autocomplete="off" placeholder="起始时间">-<span class="input-append date" id="datetimepicker"><input type="text" id="time-end" name="create_end" class="input length_2" value="{:I('create_end')}" placeholder="结束时间" /><span class="add-on" style="background:none;border:none;"><i class="icon-th"></i></span></span>
@@ -98,18 +97,24 @@
 					</td>
 
 					<td>
-						<p class="short_info">收货地址:{$vo.receiving_address}</p>
-						<p class="short_info">收货人:{$vo.receiving_name}</p>
-						<p class="short_info">联系电话:{$vo.receiving_tel}</p>
+						<if condition="$vo.receiving_type == 1">
+							<p class="short_info">收货方式:自提</p>
+							<p class="short_info">网点:{$vo.receiving_service_name}</p>
+						</if>
+						<if condition="$vo.receiving_type == 2">
+							<p class="short_info">收货方式:送货上门</p>
+							<p class="short_info">收货地址:{$vo.receiving_address}</p>
+							<p class="short_info">收货人:{$vo.receiving_name}</p>
+							<p class="short_info">联系电话:{$vo.receiving_tel}</p>
+						</if>
+
 					</td>
 
 					<td ><span>{$vo.status_desc}</span></td>
 					<td>
-						<if condition="$vo['status'] == 1">
-							<a class="u-btn confirm J_ajax_get" href="{:U('order_step')}/id/{$vo.id}/step/received" >接单</a>
-						</if>
-						<if condition="$vo['status'] == 8">
-							<a class="u-btn confirm J_ajax_get" href="{:U('order_step')}/id/{$vo.id}/step/send" >发货</a>
+
+						<if condition="$vo['status'] == 2">
+							<a class="u-btn show_box" tmp_id="express" order_id="{$vo.id}">发货</a>
 						</if>
 						<if condition="$vo['status'] == 1">
 							<a class="u-btn confirm J_ajax_get" url="{:U('order_step')}/id/{$vo.id}/step/cancel">取消订单</a>
@@ -123,9 +128,7 @@
 		<div class="btn_wrap">
 			<div class="btn_wrap_pd">
 				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
-				<if condition="$type == 4">
-				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("order_step")}/step/send'>批量发货</button>
-		    	</if>
+				<button class="btn show_box confirm" tmp_id="express">批量发货</button>
 			</div>
 		</div>
 		<!-- 分页 -->
@@ -135,7 +138,20 @@
 	</div>
 </div>
 
-
+	<div id="express" class="show_box_temp" style="display:none;position: fixed;width: 500;left: 50%;top:30%;z-index: 1000;background: #ddd;border: 1px solid #000000;padding: 10px">
+		<p class="title" style="padding: 10px;font-size: 20px">发货</p>
+		<p style="padding: 10px">
+			物流单位名称:<input value="" class="input express_name"/>
+		</p>
+		<p style="padding: 10px">
+			物流单号:<input value="" class="input express_no"/>
+		</p>
+		<input type="hidden" value="" class="order_id"/>
+		<p style="padding: 10px">
+			<a class="u-btn submit confirm" href="javascript:;">确定</a>
+			<a class="u-btn	close_show_box" href="javascript:;">取消</a>
+		</p>
+	</div>
 </block>
 <block name="script">
 <link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
@@ -196,6 +212,80 @@ $(function(){
         autoclose:true,
         pickerPosition:'bottom-left'
     });
+
+
+	$('.show_box').on('click', function () {
+		//console.log($(this).attr('data'));
+		$('.show_box_temp').hide();
+		var id = $(this).attr('tmp_id');
+		$('#'+id).show();
+		after_show_box($(this), $('#'+id));
+	});
+	$('.close_show_box').on('click',function () {
+		$(this).parents('.show_box_temp').hide();
+	});
+
+	$('#express').find('.submit').on('click',function () {
+		var url = "{:U('order_step')}/step/send";
+		var data = {
+			express_name:$('#express').find('.express_name').val(),
+			express_no:$('#express').find('.express_no').val(),
+		}
+		var order_id = $('#express').find('.order_id').val();
+
+		if (order_id) {
+			data.id = order_id;
+		} else {
+			data = $('.ids').serialize();
+			data+='&'+'express_name='+$('#express').find('.express_name').val() +'&'+'express_no='+$('#express').find('.express_no').val()
+		}
+
+		do_post(url, data, this);
+	});
+
+	function do_post(url, query, that) {
+
+		$.post(url,query).success(function(data){
+			if (data.status==1) {
+				if (data.url) {
+					updateAlert(data.info + ' 页面即将自动跳转~','alert-success');
+				}else{
+					updateAlert(data.info ,'alert-success');
+				}
+				setTimeout(function(){
+					if (data.url) {
+						location.href=data.url;
+					}else if( $(that).hasClass('no-refresh')){
+						$('#top-alert').find('button').click();
+						$(that).removeClass('disabled').prop('disabled',false);
+					}else{
+						location.reload();
+					}
+				},200);
+			}else{
+				updateAlert(data.info);
+				setTimeout(function(){
+					if (data.url) {
+						location.href=data.url;
+					}else{
+						$('#top-alert').find('button').click();
+						$(that).removeClass('disabled').prop('disabled',false);
+					}
+				},200);
+			}
+		});
+
+	}
+
+	function after_show_box(_this, box) {
+		if (_this.attr('order_id')) {
+			box.find('.order_id').val(_this.attr('order_id'));
+		} else {
+			box.find('.order_id').val('');
+		}
+
+	}
+
 
 });
 

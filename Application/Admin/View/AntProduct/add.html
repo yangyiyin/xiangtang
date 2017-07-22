@@ -327,7 +327,7 @@ $(function(){
 				for (var j in data[i].values) {
 					var checked = '';
 					var sku_properties_str = '{$sku_properties_str}';
-					if (sku_properties_str && in_array(data[i].values[j].id, sku_properties_str.split(','))) {
+					if (sku_properties_str && y_in_array(data[i].values[j].id, sku_properties_str.split(','))) {
 						checked = 'checked=checked';
 					} else {
 						checked = '';
@@ -366,7 +366,7 @@ $(function(){
 			for(var j in values[i]) {
 				if (is_first > 0) {
 					for (var k in sku_temp) {
-						sku_temp_new.push(merage_arr(sku_temp[k],[values[i][j]]));
+						sku_temp_new.push(y_merage_arr(sku_temp[k],[values[i][j]]));
 					}
 				} else {
 					sku_temp.push([values[i][j]]);
