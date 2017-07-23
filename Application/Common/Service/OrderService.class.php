@@ -130,8 +130,8 @@ class OrderService extends BaseService{
     }
 
     public function received($order) {
-        if ($order['status'] != \Common\Model\NfOrderModel::STATUS_SUBMIT) {
-            return result(FALSE, '订单状态不是已提交,不能接单操作!');
+        if ($order['status'] != \Common\Model\NfOrderModel::STATUS_SUBMIT && $order['status'] != \Common\Model\NfOrderModel::STATUS_PAY) {
+            return result(FALSE, '订单状态不是已提交或已付款,不能接单操作!');
         }
 
         return $this->update_by_id($order['id'], ['status'=>\Common\Model\NfOrderModel::STATUS_RECEIVED]);
@@ -176,7 +176,10 @@ class OrderService extends BaseService{
     }
 
     public function complete($order) {
-        if ($order['status'] != \Common\Model\NfOrderModel::STATUS_SENDING && $order['status'] != \Common\Model\NfOrderModel::STATUS_STOCK_OUT) {
+        if ($order['status'] != \Common\Model\NfOrderModel::STATUS_SENDING
+            && $order['status'] != \Common\Model\NfOrderModel::STATUS_STOCK_OUT
+            && $order['status'] != \Common\Model\NfOrderModel::STATUS_PAY
+            && $order['status'] != \Common\Model\NfOrderModel::STATUS_RECEIVED) {
             return result(FALSE, '当前订单状态还不能确认操作!');
         }
 

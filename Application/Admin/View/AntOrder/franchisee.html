@@ -37,7 +37,7 @@
 			&nbsp;创建时间：
 	        <input type="text" name="create_begin" id="time-start" class="input length_2" value="{:I('create_begin')}" style="width:80px;" autocomplete="off" placeholder="起始时间">-<span class="input-append date" id="datetimepicker"><input type="text" id="time-end" name="create_end" class="input length_2" value="{:I('create_end')}" placeholder="结束时间" /><span class="add-on" style="background:none;border:none;"><i class="icon-th"></i></span></span>
 
-	        <a class="u-btn" href="javascript:;" id="search" url="{:U('index')}">搜索</a>
+	        <a class="u-btn" href="javascript:;" id="search" url="{:U('franchisee')}">搜索</a>
 	        <!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
 	        </span>
 	      </div>
@@ -98,31 +98,22 @@
 
 					<td>
 
-						<if condition="$vo.receiving_type == 1">
-							<p class="short_info">收货方式:自提</p>
-							<p class="short_info">网点:{$vo.receiving_service_name}</p>
-						</if>
-						<if condition="$vo.receiving_type == 2">
-							<p class="short_info">收货方式:送货上门</p>
-							<p class="short_info">收货地址:{$vo.receiving_address}</p>
-							<p class="short_info">收货人:{$vo.receiving_name}</p>
-							<p class="short_info">联系电话:{$vo.receiving_tel}</p>
-						</if>
-						<if condition="$vo['express']">
-							<p class="short_info">发货信息:{$vo.express.express_entity}-{$vo.express.express_no}</p>
-						</if>
+						<p class="short_info">联系人:{$vo.receiving_name}</p>
+						<p class="short_info">联系电话:{$vo.receiving_tel}</p>
 					</td>
 
 					<td ><span>{$vo.status_desc}</span></td>
 					<td>
 
-						<if condition="$vo['status'] == 2 && $vo['is_real'] == 2">
+						<if condition="$vo['status'] == 2 && $vo['is_real'] == 1">
 							<a class="u-btn show_box" tmp_id="express" order_id="{$vo.id}">发货</a>
 						</if>
 
-						<if condition="$vo['status'] == 2 && $vo['is_real'] == 1">
+						<if condition="$vo['status'] == 2 && $vo['is_real'] == 0">
 							<a class="u-btn confirm J_ajax_get" url="{:U('order_step')}/id/{$vo.id}/step/received">接单</a>
 						</if>
+
+
 						<if condition="$vo['status'] == 1">
 							<a class="u-btn confirm J_ajax_get" url="{:U('order_step')}/id/{$vo.id}/step/cancel">取消订单</a>
 						</if>
@@ -135,7 +126,6 @@
 		<div class="btn_wrap">
 			<div class="btn_wrap_pd">
 				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
-				<button class="btn show_box confirm" tmp_id="express">批量发货</button>
 			</div>
 		</div>
 		<!-- 分页 -->

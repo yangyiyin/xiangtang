@@ -16,13 +16,14 @@ class MenuController extends AdminController {
     public function add_menu_direct() {
 
         $arr = [
-            ['title' => '设置分佣者界面', 'url'=>'AntUserInviter/add']
+            ['title' => '通过', 'url'=>'AntNeedsLocal/approve'],
+            ['title' => '拒绝', 'url'=>'AntNeedsLocal/reject'],
+            ['title' => '完成', 'url'=>'AntNeedsLocal/complete']
         ];
-
 
         $data = [];
         foreach ($arr as $_value) {
-            $data[] = ['title'=>$_value['title'], 'pid'=>157, 'module'=>'Admin', 'sort'=>99, 'url'=>$_value['url'], 'hide'=>1];
+            $data[] = ['title'=>$_value['title'], 'pid'=>188, 'module'=>'Admin', 'sort'=>99, 'url'=>$_value['url'], 'hide'=>1];
         }
 
         M('menu')->addAll($data);

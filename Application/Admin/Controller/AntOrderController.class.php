@@ -36,6 +36,15 @@ class AntOrderController extends AdminController {
         if ($this->type) {
             $where['type'] = ['EQ', $this->type];
         }
+
+        //获取加盟商的uids
+        $MemberService = \Common\Service\MemberService::get_instance();
+        $franchisee_uids = $MemberService->get_franchisee_uids();
+        if ($franchisee_uids) {
+            $where['seller_uid'] = ['not in', $franchisee_uids];
+        }
+
+
         $page = I('get.p', 1);
         list($data, $count) = $this->OrderService->get_by_where($where, 'id desc', $page);
         $this->convert_data($data);
@@ -50,6 +59,53 @@ class AntOrderController extends AdminController {
 
         $this->display('AntOrder/index');
     }
+
+    public function franchisee() {
+
+        $where = [];
+
+
+        if (I('get.order_no')) {
+            $where['order_no'] = ['EQ', I('get.order_no')];
+        }
+        if (I('get.status')) {
+            $where['status'] = ['EQ', I('get.status')];
+        }
+
+        if (I('get.create_begin')) {
+            $where['create_time'][] = ['EGT', I('get.create_begin')];
+        }
+        if (I('get.create_end')) {
+            $where['create_time'][] = ['ELT', I('get.create_end')];
+        }
+
+        if ($this->type) {
+            $where['type'] = ['EQ', $this->type];
+        }
+
+        //获取加盟商的uids
+        $MemberService = \Common\Service\MemberService::get_instance();
+        $franchisee_uids = $MemberService->get_franchisee_uids();
+        if ($franchisee_uids) {
+            $where['seller_uid'] = ['in', $franchisee_uids];
+        }
+
+
+        $page = I('get.p', 1);
+        list($data, $count) = $this->OrderService->get_by_where($where, 'id desc', $page);
+        $this->convert_data($data);
+        $PageInstance = new \Think\Page($count, \Common\Service\OrderService::$page_size);
+        if($total>\Common\Service\OrderService::$page_size){
+            $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+        }
+        $page_html = $PageInstance->show();
+
+        $this->assign('list', $data);
+        $this->assign('page_html', $page_html);
+
+        $this->display('AntOrder/index');
+    }
+
 
     private function convert_data(&$data) {
         if ($data) {
@@ -91,7 +147,7 @@ class AntOrderController extends AdminController {
 
     public function order_step() {
         $step = I('get.step');
-        $order_id = I('post.id');
+        $order_id = I('get.id');
         $order_ids = I('post.ids');
         if ($order_id) {
             $ret = $this->OrderService->process($order_id, $step);
