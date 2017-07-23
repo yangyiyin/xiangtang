@@ -20,7 +20,7 @@ class CartList extends BaseApi{
         if (!$carts) {
             return result_json(FALSE, '您的购物车空空如也~');
         }
-        $carts_iid_map = result_to_map($carts, 'iid');
+        $carts_iid_map = result_to_complex_map($carts, 'iid');
         $iids = result_to_array($carts, 'iid');
         $ItemService = Service\ItemService::get_instance();
         $items = $ItemService->get_by_ids($iids);

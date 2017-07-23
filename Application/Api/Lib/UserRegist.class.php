@@ -15,16 +15,12 @@ class UserRegist extends BaseSapi{
     }
 
     public function excute() {
-        $user_name = I('post.user_name');
-        $user_tel = I('post.user_tel');
-        $user_password = I('post.user_password');
-        $user_type = I('post.user_type');
-        $code = I('post.code');
 
         $user_name = '';
         $user_tel = $this->post_data['user_tel'];
         $user_password = $this->post_data['user_password'];
-        $user_type = 1;
+        $user_type = \Common\Model\NfUserModel::TYPE_NORMAL;
+        $inviter_code = $this->post_data['inviter_code'];
         $code = $this->post_data['code'];
 
         $result = new \stdClass();
@@ -63,11 +59,21 @@ class UserRegist extends BaseSapi{
         //失效code
         $UserCodeService->disable_code_by_tel($user_tel);
 
+        //检测邀请者
+        $inviter_uid = '';
+        if ($inviter_code) {
+            $UserInviterCodeService = \Common\Service\UserInviterCodeService::get_instance();
+            $inviter_info = $UserInviterCodeService->get_by_code($inviter_code);
+            if ($inviter_info) {
+                $inviter_uid = $inviter_info['uid'];
+            }
+        }
+
         //注册用户
         //$upload_info = upload();
         $user_password = md5(base64_decode($user_password));
         $data = [];
-        $data['type'] = 1;
+        $data['type'] = $user_type;
         $data['user_name'] = '';
         $data['user_tel'] = $user_tel;
         $data['password_md5'] = $user_password;
@@ -79,7 +85,10 @@ class UserRegist extends BaseSapi{
         $data['province'] = '';
         $data['city'] = '';
         $data['address'] = '';
-        $data['service_id'] = $this->post_data['service_id'];
+        $data['service_id'] = 0;
+        if ($inviter_uid) {
+            $data['inviter_id'] = $inviter_uid;
+        }
         $ret = $this->UserService->add_one($data);
         if (!$ret->success) {
             $result->message = $ret->message;

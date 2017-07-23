@@ -98,4 +98,21 @@ class ProductSkuService extends BaseService{
         $NfProductSku = D('NfProductSku');
         return $NfProductSku->where('pid=' . $pid)->delete();
     }
+
+
+    public function check_stock($skus_num) {
+        if ($skus_num) {
+            foreach ($skus_num as $key => $_item) {
+
+                //检测库存
+                if ($_item['num'] < $_item['buy_num']) {
+                    return result(FALSE, $_item['item']['title'] . '库存不足~');
+                }
+            }
+
+        } else {
+            return result(FALSE, '没有商品~');
+        }
+        return result(TRUE, '检测成功');
+    }
 }

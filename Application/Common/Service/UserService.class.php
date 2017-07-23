@@ -204,6 +204,14 @@ class UserService extends BaseService{
         $NfUser = D('NfUser');
         $ret = $NfUser->where('id in ('. join(',', $ids) .')')->save(['is_inviter'=>\Common\Model\NfUserModel::IS_INVITER_YES]);
         if ($ret) {
+            //生成邀请码
+            $UserInviterCodeService = \Common\Service\UserInviterCodeService::get_instance();
+            $data = [];
+            foreach ($ids as $uid) {
+                $code = $this->get_inviter_code($uid);
+                $data[] = ['uid'=>$uid, 'code'=>$code];
+            }
+            $UserInviterCodeService->add_batch($data);
             return result(TRUE);
         } else {
             return result(FALSE, $NfUser->getError());
@@ -231,6 +239,10 @@ class UserService extends BaseService{
         $NfUser = D('NfUser');
         $ret = $NfUser->where('id in ('. join(',', $ids) .')')->save(['is_inviter'=>\Common\Model\NfUserModel::IS_INVITER_SUBMIT]);
         if ($ret) {
+
+            $UserInviterCodeService = \Common\Service\UserInviterCodeService::get_instance();
+            $UserInviterCodeService->del_by_uids($ids);
+
             return result(TRUE);
         } else {
             return result(FALSE, $NfUser->getError());
@@ -247,4 +259,14 @@ class UserService extends BaseService{
         return result(TRUE);
     }
 
+    public function get_inviter_code($uid) {
+        return mt_rand(10,99) . $uid;
+    }
+
+    public function is_dealer($type) {
+        return $type == \Common\Model\NfUserModel::TYPE_DEALER;
+    }
+    public function is_normal($type) {
+        return $type == \Common\Model\NfUserModel::TYPE_NORMAL;
+    }
 }

@@ -22,4 +22,8 @@ class ItemController extends BaseController {
             $this->excute_api('Api\Lib\ItemDetailDefault');
         }
     }
+
+    public function skus() {
+        $this->excute_api('Api\Lib\ItemSkus');
+    }
 }

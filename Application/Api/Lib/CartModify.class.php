@@ -18,24 +18,32 @@ class CartModify extends BaseApi{
     public function excute() {
         $iid = $this->post_data['item_id'];
         $num = $this->post_data['num'];
+        $sku_id = $this->post_data['sku_id'];
 
-        if (!$iid || !$num) {
+        if (!$iid || !$sku_id || !$num) {
             return result_json(FALSE, '参数错误~');
         }
 
         //检测库存
         $ItemService = Service\ItemService::get_instance();
         $item = $ItemService->get_info_by_id($iid);
-        if (!$item) {
+        $ret_item_status = $ItemService->check_status([$iid], [$item]);
+        if (!$ret_item_status->success) {
+            return result_json(FALSE, $ret_item_status->message);
+        }
+        $ProductSkuService = Service\ProductSkuService::get_instance();
+        $sku = $ProductSkuService->get_info_by_id($sku_id);
+        if (!$sku) {
             return result_json(FALSE, '没有该商品~');
         }
-        $item['num'] = $num;
-        $ret = $ItemService->check_status_stock([$item]);
+        $sku['buy_num'] = $num;
+        $sku['item'] = $item;
+        $ret = $ProductSkuService->check_stock([$sku]);
         if (!$ret->success) {
             return result_json(FALSE, $ret->message);
         }
 
-        $ret = $this->CartService->add_one($this->uid, $iid, $num);
+        $ret = $this->CartService->add_one($this->uid, $iid, $num, $sku_id);
         if (!$ret->success) {
             return result_json(FALSE, $ret->message);
         }

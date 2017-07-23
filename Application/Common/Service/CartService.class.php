@@ -9,10 +9,10 @@ namespace Common\Service;
 class CartService extends BaseService{
     public static $page_size = 20;
 
-    public function add_one($uid, $iid, $num) {
+    public function add_one($uid, $iid, $num, $sku_id = 0) {
         $NfCart = D('NfCart');
         //查询有没有数据
-        $cart = $NfCart->where('uid = ' . $uid . ' and iid = ' . $iid)->find();
+        $cart = $NfCart->where('uid = ' . $uid . ' and iid = ' . $iid . ' and sku_id= ' . $sku_id)->find();
         if ($cart) {
             //修改
             $data = ['num' => intval($num)];
@@ -27,6 +27,7 @@ class CartService extends BaseService{
             $data['uid'] = $uid;
             $data['iid'] = $iid;
             $data['num'] = $num;
+            $data['sku_id'] = $sku_id;
 
             if ($NfCart->add($data)) {
                 return result(TRUE, '', $NfCart->getLastInsID());
@@ -103,6 +104,22 @@ class CartService extends BaseService{
         }
 
     }
+
+    public function del_by_uid_iids_skuids($uid, $iids, $sku_ids) {
+        if (!$uid || !check_num_ids($iids) || !check_num_ids($sku_ids)) {
+            return result(FALSE, '参数不合法');
+        }
+
+        $NfCart = D('NfCart');
+        $ret = $NfCart->where('uid=' . $uid . ' and iid in (' . join(',', $iids) . ')' . ' and sku_id in (' . join(',', $sku_ids) . ')')->delete();
+        if ($ret) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, '网络繁忙~');
+        }
+
+    }
+
 
     public function add_batch($data) {
         $NfCart = D('NfCart');

@@ -126,7 +126,7 @@ class ItemService extends BaseService{
         $status = isset(\Common\Model\NfItemModel::$status_map[$status]) ? \Common\Model\NfItemModel::$status_map[$status] : '未知';
         return $status;
     }
-
+    //废弃
     public function check_status_stock($items_num) {
         if ($items_num) {
             $ProductSkuService = \Common\Service\ProductSkuService::get_instance();
@@ -161,4 +161,23 @@ class ItemService extends BaseService{
         }
         return result(TRUE, '检测成功');
     }
+
+    public function check_status($iids, $items)
+    {
+        if (!$items) {
+            $items = $this->get_by_ids($iids);
+
+            if (count($items) != count($iids)) {
+                return result(FALSE, '商品异常');
+            }
+
+        }
+        foreach ($items as $key => $_item) {
+            if ($_item['status'] != \Common\Model\NfItemModel::STATUS_NORAML) {
+                return result(FALSE, $_item['title'] . '状态为' . $this->get_status_txt($_item['status']));
+            }
+        }
+        return result(TRUE, '检测成功');
+    }
+
 }

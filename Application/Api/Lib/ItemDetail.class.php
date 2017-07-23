@@ -33,22 +33,18 @@ class ItemDetail extends BaseApi{
         $list = [];
         if ($data) {
 
-            $ItemServicePricesService = \Common\Service\ItemServicePricesService::get_instance();
-            $iids = result_to_array($data);
-            $prices = $ItemServicePricesService->get_by_iids($iids);
-            $prices_map = result_to_complex_map($prices, 'iid');
 
             $UserService = Service\UserService::get_instance();
-
-            $user_info = $UserService->get_info_by_id($this->uid);
+            $user_info = $this->user_info;
             foreach ($data as $key => $_item) {
                 $_item['img'] = item_img(get_cover($_item['img'], 'path'));//todo 这种方式后期改掉
-                if (isset($prices_map[$_item['id']])) {
-                    $price = $ItemServicePricesService->get_price_by_service_id($user_info['service_id'], $prices_map[$_item['id']]);
-                    if ($price) {
-                        $_item['price'] = $price;
-                    }
+
+                if ($UserService->is_dealer($user_info['type'])) {
+                    $_item['price'] = (int) $_item['min_dealer_price'];
+                } elseif ($UserService->is_normal($user_info['type'])) {
+                    $_item['price'] = (int) $_item['min_normal_price'];
                 }
+
                 $_item['id'] = (int) $_item['id'];
                 $_item['pid'] = (int) $_item['pid'];
                 $_item['price'] = (int) $_item['price'];

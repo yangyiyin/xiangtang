@@ -17,12 +17,19 @@ class CartDel extends BaseApi{
 
     public function excute() {
         //$item_ids = I('post.item_ids');
-        $item_ids = $this->post_data['item_ids'];
+        $item_ids = $this->post_data['iids'];
+        $sku_ids = $this->post_data['sku_ids'];
+
         if (!$item_ids) {
             return result_json(FALSE, '参数错误');
         }
         $iids_arr = explode('_', $item_ids);
-        $ret = $this->CartService->del_by_uid_iids($this->uid, $iids_arr);
+        $sku_ids_arr = explode('_', $sku_ids);
+        if (count($iids_arr) != count($sku_ids_arr)) {
+            result_json(FALSE, '参数异常');
+        }
+
+        $ret = $this->CartService->del_by_uid_iids_skuids($this->uid, $iids_arr, $sku_ids_arr);
         if (!$ret->success) {
             result_json(FALSE, $ret->message);
         }

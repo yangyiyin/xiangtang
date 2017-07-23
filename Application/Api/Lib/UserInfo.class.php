@@ -20,6 +20,17 @@ class UserInfo extends BaseApi{
         $data = convert_obj($info, 'user_name,avatar,user_tel,sex,province,city,address,entity_name,verify_status');
         $data->verify_status = (int) $data->verify_status;
         $data->avatar = item_img(get_cover(46, 'path'));
+
+        if ($data->is_inviter) {
+            $UserInviterCodeService = \Common\Service\UserInviterCodeService::get_instance();
+            $inviter_info = $UserInviterCodeService->get_by_uid($this->uid);
+            if ($inviter_info) {
+                $data->inviter_code = $inviter_info['code'];
+            } else {
+                $data->inviter_code = '';
+            }
+        }
+
         return result_json(TRUE, '', $data);
     }
 }
