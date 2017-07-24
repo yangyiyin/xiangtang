@@ -1,67 +1,107 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>订单</title>
-    <!--[if lt IE 9]>
-    <script type="text/javascript" src="__STATIC__/jquery-1.10.2.min.js"></script>
-    <![endif]--><!--[if gte IE 9]><!-->
-    <script type="text/javascript" src="__STATIC__/jquery-2.0.3.min.js"></script>
-</head>
-<body>
 
-
-
-<tr>
-    <td>订单编号:{$vo.order_no} </td>
-    <td>
-        <p class="short_info">订单id:{$vo.id}</p>
-        <p class="short_info">总价:{$vo.sum|format_price}元</p>
-        <p class="short_info">总数量:{$vo.num}</p>
-        <p class="short_info">类型:{$vo.type_desc}</p>
-        <p class="short_info">企业名:{$vo.user_info.entity_name}</p>
-        <p class="short_info">创建时间:{$vo.create_time}</p>
-    </td>
-
-
-    <td>
-        <table>
-            <tr>
-                <th width="20%">商品</th>
-                <th width="20%">单价</th>
-                <th width="20%">数量</th>
-                <th width="20%">总价</th>
-            </tr>
-            <volist name="vo['order_snapshot']" id="order_item">
-                <tr>
-
-                    <td style="border: 1px solid #ddd;" class="iid">
-                        <p><img src="{$order_item['img']}" width="20" height="20"/></p>
-                        <p>{$order_item.title}</p>
-                    </td>
-                    <td style="border: 1px solid #ddd;" class="title">{$order_item.price|format_price}元</td>
-                    <td style="border: 1px solid #ddd" class="factory-price">{$order_item.num}{$order_item.unit_desc}</td>
-                    <td style="border: 1px solid #ddd" class="meituan-price">{$order_item.sum|format_price}元</td>
-
-
-                </tr>
-            </volist>
-        </table>
-    </td>
-
-    <td>
-        <p class="short_info">收货地址:{$vo.receiving_address}</p>
-        <p class="short_info">收货人:{$vo.receiving_name}</p>
-        <p class="short_info">联系电话:{$vo.receiving_tel}</p>
-    </td>
-
-    <td ><span>订单状态:{$vo.status_desc}</span></td>
-
-</tr>
-</body>
 <script>
-    $(document).ready(function () {
-       window.print();
-    });
+    var hkey_root,hkey_path,hkey_key;
+    hkey_root="HKEY_CURRENT_USER";
+    hkey_path="\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
+
+
+    //网页打印时清空页眉页脚
+    function pagesetup_null() {
+        try {
+            var RegWsh = new ActiveXObject("WScript.Shell")
+            hkey_key = "header"
+            RegWsh.RegWrite(hkey_root + hkey_path + hkey_key, "")
+            hkey_key = "footer"
+            RegWsh.RegWrite(hkey_root + hkey_path + hkey_key, "")
+        } catch (e) {}
+    }
+    pagesetup_null();
 </script>
-</html>
+<div style="position: relative;min-height: 600px;">
+<p style="width:1000;text-align: center;font-size: 20px;font-weight: bold;margin: 20px 0">宁波杭州湾新区绿锦食品贸易有限公司发货单</p>
+
+<div style="width:1000;margin: 0 auto">
+    <div style="margin-top: 10px">
+        <p style="width: 333px;float: left">订单日期:{$vo.create_time}<p/>
+        <p style="width: 333px;float: left">订单编号:{$vo.order_no}</p>
+        <p style="width: 333px;float: left">经手人:</p>
+        <div style="clear: both"></div>
+    </div>
+
+    <div style="margin: 10px 0">
+        <p style="width: 333px;">收货方::{$vo.user_info.entity_name}</p>
+    </div>
+</div>
+    <table style="margin:0 auto;width:1000px;">
+        <tr>
+            <th width="22%" style="border: 1px solid #ddd;">商品全名</th>
+            <th width="14%" style="border: 1px solid #ddd;">规格</th>
+            <th width="8%" style="border: 1px solid #ddd;">单位</th>
+            <th width="14%" style="border: 1px solid #ddd;">数量</th>
+            <th width="14%" style="border: 1px solid #ddd;">单价</th>
+            <th width="14%" style="border: 1px solid #ddd;">金额</th>
+            <th width="14%" style="border: 1px solid #ddd;">备注</th>
+        </tr>
+        <volist name="vo['order_snapshot']" id="order_item">
+            <tr>
+
+                <td style="border: 1px solid #ddd;" class="iid">
+                    <p style="display: none"><img src="{$order_item['img']}" width="20" height="20"/></p>
+                    <p>{$order_item.title}</p>
+                </td>
+                <td style="border: 1px solid #ddd;"></td>
+                <td style="border: 1px solid #ddd" class="factory-price">{$order_item.unit_desc}</td>
+                <td style="border: 1px solid #ddd;" class="title">{$order_item.num}</td>
+                <td style="border: 1px solid #ddd;" class="title">{$order_item.price|format_price}元</td>
+                <td style="border: 1px solid #ddd" class="meituan-price">{$order_item.sum|format_price}元</td>
+                <td style="border: 1px solid #ddd;"></td>
+
+            </tr>
+        </volist>
+
+        <tr>
+
+            <td style="border: 1px solid #ddd;">
+
+                合计
+            </td>
+            <td style="border: 1px solid #ddd;" ></td>
+            <td style="border: 1px solid #ddd;" ></td>
+            <td style="border: 1px solid #ddd;" >{$vo.num}</td>
+            <td style="border: 1px solid #ddd;" ></td>
+            <td style="border: 1px solid #ddd;" >{$vo.sum|format_price}元</td>
+            <td style="border: 1px solid #ddd;" ></td>
+        </tr>
+        <tr>
+            <td colspan="7">
+                <div style="width:1000px;margin: 0 auto">
+                <div style="margin-top: 10px">
+                    <p style="width: 500px;float: left">xxx:xxx<p/>
+                    <p style="width: 500px;float: left">总计金额:{$order_item.sum|format_price}元</p>
+                    <div style="clear: both"></div>
+                </div>
+
+                <div style="margin: 10px 0">
+                    <p style="width: 500px;float: left">xxx:xxx<p/>
+                    <p style="width: 500px;float: left">xxxx:xxx</p>
+                    <div style="clear: both"></div>
+                </div>
+            </div>
+            </td>
+        </tr>
+    </table>
+
+
+
+    <div style="position: absolute;bottom: -100px;left: 25px">
+        <div style="height: 1px;width: 1000px;margin: 0 auto;border-top: 1px solid #000"></div>
+        <div style="width:1000px;margin: 0 auto;">
+            <div style="margin: 10px 0">
+
+                <p style="width: 800px;float: left">宁波杭州湾新区绿锦食品贸易有限公司发货单 电话:0574-63098881<p/>
+                <p style="width: 200px;float: left">{:date('Y-m-d')}</p>
+                <div style="clear: both"></div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -125,12 +125,14 @@
 						</if>
 
 						<a class="u-btn print_btn" id="{$vo.id}">打印</a>
-
 					</td>
 				</tr>
 				</volist>
 			</tbody>
 		    </table> 
+		</div>
+		<div style="display: none">
+			<div id="print" >print</div>
 		</div>
 		<div class="btn_wrap">
 			<div class="btn_wrap_pd">
@@ -155,7 +157,9 @@
 <link href="__STATIC__/datetimepicker/css/dropdown.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
-<script type="text/javascript">
+	<script language="javascript" src="__STATIC__/dayin/jquery.jqprint-0.3.js"></script>
+	<script src="__STATIC__/dayin/jquery-migrate-1.2.1.min.js"></script>
+	<script type="text/javascript">
 $(function(){
 	//搜索功能
 	$("#search").click(function(){
@@ -209,25 +213,14 @@ $(function(){
         pickerPosition:'bottom-left'
     });
 
-
-
-	function preview(prnhtml)
-	{
-		bdhtml=window.document.body.innerHTML;//获取当前页的html代码
-		window.document.body.innerHTML=prnhtml;
-		window.print();
-		window.document.body.innerHTML=bdhtml;
-	}
-
 	$(document).on('click', '.print_btn', function () {
 		var id = $(this).attr('id');
 		var url = '{:U('order_info')}/id/' + id;
 
 		$.get(url, function (html) {
-			preview(html);
+			$("#print").html(html);
+			$("#print").jqprint();
 		})
-
-
 
 	});
 
