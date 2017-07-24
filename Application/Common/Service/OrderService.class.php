@@ -281,10 +281,20 @@ class OrderService extends BaseService{
             $items[$key]['num'] = $order_pre_items_map[$_item['id']]['num'];
             $items[$key]['sum'] = $order_pre_items_map[$_item['id']]['sum'];
         }
-        $ret = $ItemService->check_status_stock($items);
+        $ret = $ItemService->check_status($items);
         if (!$ret->success) {
             return result(FALSE, $ret->message);
         }
+        $ret = $ItemService->check_same_real($items);
+        if (!$ret) {
+            return result_json(FALSE, '商品类型不一致,虚拟商品和实物商品不能同时下单');
+        }
+
+        \Common\Service\ProductSkuService::get_instance();
+        $sku_ids = result_to_array($order_pre_items, 'sku_id');
+
+
+
 
         $userService = \Common\Service\UserService::get_instance();
         $user_info = $userService->get_info_by_id($uid);
@@ -294,8 +304,15 @@ class OrderService extends BaseService{
         $data_order['uid'] = $uid;
         $data_order['sum'] = $order_pre['sum'];
         $data_order['num'] = $order_pre['num'];
+        $data_order['is_real'] = $order_pre['is_real'];
+        $data_order['seller_uid'] = $order_pre['seller_uid'];
+
         $data_order['type'] = $user_info['type'];//用户type和订单type保持一致
         $data_order['inviter_id'] = $user_info['inviter_id'];
+
+        $data_order['receiving_type'] = $extra['receiving_type'];
+        $data_order['receiving_service_name'] = $extra['receiving_service_name'];
+
         $data_order['receiving_address'] = $extra['address'];
         $data_order['receiving_name'] = $extra['name'];
         $data_order['receiving_tel'] = $extra['tel'];

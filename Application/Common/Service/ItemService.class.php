@@ -180,4 +180,18 @@ class ItemService extends BaseService{
         return result(TRUE, '检测成功');
     }
 
+    public function check_same_real($items) {
+        $is_real = 99;
+        foreach ($items as $_item) {
+            if ($is_real == 99) {
+                $is_real = $_item['is_real'];
+            }
+
+            if ($is_real != 99 && $is_real != $_item['is_real']) {
+                return false;
+            }
+
+        }
+        return true;
+    }
 }

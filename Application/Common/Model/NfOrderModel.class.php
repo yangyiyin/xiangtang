@@ -23,6 +23,9 @@ class NfOrderModel extends Model {
     const TYPE_ORDER_SHOP = 3;
     const TYPE_ORDER_PEOPLE = 4;
 
+    const RECIEVE_TYPE_ARRIVE = 1;
+    const RECIEVE_TYPE_SERVER = 2;
+
     public static $type_map = [
         1 => '工厂订单',
         2 => '美团订单',

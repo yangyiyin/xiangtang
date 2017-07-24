@@ -108,4 +108,12 @@ class SkuPropertyService extends BaseService{
         return $NfModel->where($where)->delete();
     }
 
+    public function get_sku_props_map($props) {
+        $map = [];
+        foreach ($props as $prop) {
+            $map[$prop['sku_id']].= '[' . $prop['property_value_name'] . ']';
+        }
+        return $map;
+    }
+
 }

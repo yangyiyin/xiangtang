@@ -25,7 +25,6 @@ class ProductSkuService extends BaseService{
     public function add_batch($data) {
         $NfProductSku = D('NfProductSku');
         $ret =  $NfProductSku->addAll($data);
-        var_dump($ret);die();
         if ($NfProductSku->addAll($data)) {
             return result(TRUE);
         } else {
@@ -38,6 +37,12 @@ class ProductSkuService extends BaseService{
         return $NfProductSku->where('id = ' . $id)->find();
     }
 
+    public function get_by_ids($ids) {
+        $NfProductSku = D('NfProductSku');
+        $where = [];
+        $where['id'] = ['in', $ids];
+        return $NfProductSku->where($where)->select();
+    }
     public function update_by_id($id, $data) {
 
         if (!$id) {
@@ -102,11 +107,15 @@ class ProductSkuService extends BaseService{
 
     public function check_stock($skus_num) {
         if ($skus_num) {
+            $SkuPropertyService = \Common\Service\SkuPropertyService::get_instance();
+            $sku_ids = result_to_array($skus_num);
+            $sku_props = $SkuPropertyService->get_by_sku_ids($sku_ids);
+            $sku_props_map = $SkuPropertyService->get_sku_props_map($sku_props);
             foreach ($skus_num as $key => $_item) {
 
                 //检测库存
                 if ($_item['num'] < $_item['buy_num']) {
-                    return result(FALSE, $_item['item']['title'] . '库存不足~');
+                    return result(FALSE, $_item['item']['title'] . $sku_props_map[$_item['id']] .'库存不足~');
                 }
             }
 
