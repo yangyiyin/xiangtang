@@ -1,22 +1,4 @@
 
-<script>
-    var hkey_root,hkey_path,hkey_key;
-    hkey_root="HKEY_CURRENT_USER";
-    hkey_path="\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
-
-
-    //网页打印时清空页眉页脚
-    function pagesetup_null() {
-        try {
-            var RegWsh = new ActiveXObject("WScript.Shell")
-            hkey_key = "header"
-            RegWsh.RegWrite(hkey_root + hkey_path + hkey_key, "")
-            hkey_key = "footer"
-            RegWsh.RegWrite(hkey_root + hkey_path + hkey_key, "")
-        } catch (e) {}
-    }
-    pagesetup_null();
-</script>
 <div style="position: relative;min-height: 600px;">
 <p style="width:1000;text-align: center;font-size: 20px;font-weight: bold;margin: 20px 0">宁波杭州湾新区绿锦食品贸易有限公司发货单</p>
 
