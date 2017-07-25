@@ -5,8 +5,6 @@
 // +----------------------------------------------------------------------
 if(version_compare(PHP_VERSION,'5.3.0','<'))  die('require PHP > 5.3.0 !');
 
-ini_set('upload_max_filesize','200M');
-
 /**
  * 系统调试设置
  * 项目正式部署后请设置为false
