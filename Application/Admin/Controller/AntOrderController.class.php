@@ -17,7 +17,7 @@ class AntOrderController extends AdminController {
     public function index() {
 
         $where = [];
-        
+
         if (I('get.order_no')) {
             $where['order_no'] = ['EQ', I('get.order_no')];
         }
@@ -88,8 +88,8 @@ class AntOrderController extends AdminController {
             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
         }
         $page_html = $PageInstance->show();
-        var_dump($data);die();
-        $this->assign('list', $data);
+        //var_dump($data);die();
+        //$this->assign('list', $data);
         $this->assign('page_html', $page_html);
 
         $this->display('AntOrder/index');
