@@ -10,7 +10,6 @@ namespace Admin\Controller;
 class AntOrderController extends AdminController {
     protected $OrderService;
     protected function _initialize() {
-        echo 1;die();
         parent::_initialize();
         $this->OrderService = \Common\Service\OrderService::get_instance();
     }
@@ -18,8 +17,7 @@ class AntOrderController extends AdminController {
     public function index() {
 
         $where = [];
-
-
+        
         if (I('get.order_no')) {
             $where['order_no'] = ['EQ', I('get.order_no')];
         }
@@ -33,7 +31,7 @@ class AntOrderController extends AdminController {
         if (I('get.create_end')) {
             $where['create_time'][] = ['ELT', I('get.create_end')];
         }
-        echo 2;die();
+
         $UserService = \Common\Service\UserService::get_instance();
         if ($user_tel = I('get.user_tel')) {
             //$UserService = \Common\Service\UserService::get_instance();
@@ -90,7 +88,7 @@ class AntOrderController extends AdminController {
             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
         }
         $page_html = $PageInstance->show();
-       // var_dump($data);die();
+        var_dump($data);die();
         $this->assign('list', $data);
         $this->assign('page_html', $page_html);
 
