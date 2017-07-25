@@ -10,6 +10,7 @@ namespace Admin\Controller;
 class AntOrderController extends AdminController {
     protected $OrderService;
     protected function _initialize() {
+        echo 1;die();
         parent::_initialize();
         $this->OrderService = \Common\Service\OrderService::get_instance();
     }
