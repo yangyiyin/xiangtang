@@ -20,7 +20,8 @@ class AppVersionIndex extends BaseSapi{
         if ($data) {
             $data['apk_url'] = 'http://' . $_SERVER['HTTP_HOST'] . $data['apk_url'];
         }
-        return result_json(TRUE, '', $data);
+        echo json_encode($data);
+        exit();
     }
 
 }
