@@ -1,15 +1,15 @@
 <?php
 /**
  * Created by newModule.
- * Time: ___time___
+ * Time: 2017-07-25 13:48:08
  */
 namespace Admin\Controller;
 
-class Ant___name___Controller extends AdminController {
-    protected $___name___Service;
+class AntAppVersionController extends AdminController {
+    protected $AppVersionService;
     protected function _initialize() {
         parent::_initialize();
-        $this->___name___Service = \Common\Service\___name___Service::get_instance();
+        $this->AppVersionService = \Common\Service\AppVersionService::get_instance();
     }
 
     public function index() {
@@ -25,10 +25,10 @@ class Ant___name___Controller extends AdminController {
         }
         */
         $page = I('get.p', 1);
-        list($data, $count) = $this->___name___Service->get_by_where($where, 'id desc', $page);
+        list($data, $count) = $this->AppVersionService->get_by_where($where, 'id desc', $page);
         $this->convert_data($data);
-        $PageInstance = new \Think\Page($count, \Common\Service\___name___Service::$page_size);
-        if($total>\Common\Service\___name___Service::$page_size){
+        $PageInstance = new \Think\Page($count, \Common\Service\AppVersionService::$page_size);
+        if($total>\Common\Service\AppVersionService::$page_size){
             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
         }
         $page_html = $PageInstance->show();
@@ -46,20 +46,20 @@ class Ant___name___Controller extends AdminController {
         $ids = I('post.ids');
 
         if ($id) {
-            $ret = $this->___name___Service->del_by_id($id);
+            $ret = $this->AppVersionService->del_by_id($id);
         } else {
             $this->error('id没有');
         }
         if (!$ret->success) {
             $this->error($ret->message);
         }
-        action_user_log('删除___desc___');
+        action_user_log('删除App版本');
         $this->success('删除成功！');
     }
 
     public function add() {
         if ($id = I('get.id')) {
-            $info = $this->___name___Service->get_info_by_id($id);
+            $info = $this->AppVersionService->get_info_by_id($id);
             if ($info) {
 
                 $this->assign('info',$info);
@@ -75,17 +75,17 @@ class Ant___name___Controller extends AdminController {
             $id = I('get.id');
             $data = I('post.');
             if ($id) {
-                $ret = $this->___name___Service->update_by_id($id, $data);
+                $ret = $this->AppVersionService->update_by_id($id, $data);
                 if ($ret->success) {
-                    action_user_log('修改___desc___');
+                    action_user_log('修改App版本');
                     $this->success('修改成功！', U('index'));
                 } else {
                     $this->error($ret->message);
                 }
             } else {
-                $ret = $this->___name___Service->add_one($data);
+                $ret = $this->AppVersionService->add_one($data);
                 if ($ret->success) {
-                    action_user_log('添加___desc___');
+                    action_user_log('添加App版本');
                     $this->success('添加成功！', U('index'));
                 } else {
                     $this->error($ret->message);

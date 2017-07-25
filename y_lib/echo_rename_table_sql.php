@@ -9,7 +9,7 @@
  * */
 error_reporting (E_ALL & ~E_NOTICE & ~E_DEPRECATED );
 //设置好相关信息
-$dbserver='121.40.162.180';//连接的服务器一般为localhost
+$dbserver='192.168.38.29';//连接的服务器一般为localhost
 $dbname='gd_lvjin';//数据库名
 $dbuser='gd_lvjin_user';//数据库用户名
 $dbpassword='EcCJYrnxMAfy2vcz';//数据库密码

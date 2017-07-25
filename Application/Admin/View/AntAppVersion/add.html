@@ -1,0 +1,86 @@
+<extend name="Public/base"/>
+
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+		    <ul class="cc tab-nav">
+				<li><a href="{:U('index')}">所有App版本</a></li>
+				<if condition="I('get.id')">
+					<li class="current"><a href="javascript:;">编辑App版本</a></li>
+					<else/>
+					<li class="current"><a href="javascript:;">添加App版本</a></li>
+				</if>
+		    </ul>
+		</div>
+		<!-- 数据表格 -->
+		<div class="tab-content table_list">
+		<!-- 表单 -->
+		<form id="form" action="{:U('update')}/id/{:I('get.id')}" method="post" class="form-horizontal">
+				<div id="tab">
+					<table class="" width="100%">
+				    <tbody>
+
+							<tr>
+					            <td width="20%"><label class="item-label">appName</label></td>
+					            <td width="80%">
+									<input type="text" class="input input-medium" name="app_name" value="{$info.app_name}">
+								</td>
+							</tr>
+
+							<tr>
+								<td width="20%"><label class="item-label">versionCode</label></td>
+								<td width="80%">
+									<input type="text" class="input input-medium" name="verison_code" value="{$info.versionCode}">
+								</td>
+							</tr>
+							<tr>
+								<td width="20%"><label class="item-label">versionName</label></td>
+								<td width="80%">
+									<input type="text" class="input input-medium" name="version_name" value="{$info.version_name}">
+								</td>
+							</tr>
+							<tr>
+								<td width="20%"><label class="item-label">changeLog</label></td>
+								<td width="80%">
+
+								<textarea name="change_log">{$info.change_log}</textarea>
+								</td>
+							</tr>
+							<tr>
+								<td width="20%"><label class="item-label">updateTips</label></td>
+								<td width="80%">
+									<input type="text" class="input input-medium" name="update_tips" value="{$info.update_tips}">
+								</td>
+							</tr>
+
+							<tr>
+								<td width="20%"><label class="item-label">forceUpgrade</label></td>
+								<td width="80%">
+									<input placeholder="0或1" type="text" class="input input-medium" name="force_upgrade" value="{$info.force_upgrade}">
+								</td>
+							</tr>
+
+							<tr>
+								<td width="20%"><label class="item-label">上传apk</label></td>
+								<td width="80%">
+									<input placeholder="0或1" type="file" class="input input-medium" name="apk">
+								</td>
+							</tr>
+
+					</tbody>
+				    </table> 
+			     </div>
+
+			<div class="btn_wrap">
+	          <div class="btn_wrap_pd">
+	            	<button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">确 定</button>
+				  <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+	          </div>
+	        </div>
+	    </form>
+	    </div>
+	</div>
+</div>
+
+</block>
