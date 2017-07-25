@@ -24,6 +24,9 @@ class AntAppVersionController extends AdminController {
             $where['name'] = ['LIKE', '%' . I('get.name') . '%'];
         }
         */
+        if (I('get.app_name')) {
+            $where['app_name'] = ['LIKE', '%' . I('get.app_name') . '%'];
+        }
         $page = I('get.p', 1);
         list($data, $count) = $this->AppVersionService->get_by_where($where, 'id desc', $page);
         $this->convert_data($data);
@@ -95,6 +98,14 @@ class AntAppVersionController extends AdminController {
         }
     }
     public function convert_data(&$data) {
+
+    }
+
+    public function set_current (){
+        $id = I('get.id');
+
+        $this->AppVersionService->set_current($id);
+        $this->success('设置成功！', U('index'));
 
     }
 }

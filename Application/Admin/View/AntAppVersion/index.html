@@ -12,7 +12,7 @@
 	    <div class="search_type cc mb10 search-form">
 	      <div class="mb10">
 			  &nbsp;名称：
-			  <input type="text" class="input length_2" name="title" style="width:100px;" value="{:I('title')}" >
+			  <input type="text" class="input length_2" name="app_name" style="width:100px;" value="{:I('app_name')}" >
 
 			  <a class="u-btn" href="javascript:;" id="search" url="{:U('index')}">搜索</a>
 	        <!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
@@ -26,7 +26,12 @@
 		        <tr>
 					<th><input class="check-all" type="checkbox"/></th>
 					<th>id</th>
-					<th>名称</th>
+					<th>app_name</th>
+					<th>version_name</th>
+					<th>version_code</th>
+					<th>update_tips</th>
+					<th>force_upgrade</th>
+					<th>状态</th>
 					<th >操作</th>
 				</tr>
 		    </thead>
@@ -37,11 +42,28 @@
 					<td>{$vo.id} </td>
 
 					<td>
-						{$vo.title}
+						{$vo.app_name}
+					</td>
+					<td>
+						{$vo.version_name}
+					</td>
+					<td>
+						{$vo.version_code}
+					</td>
+					<td>
+						{$vo.update_tips}
+					</td>
+					<td>
+						{$vo.force_upgrade}
+					</td>
+
+					<td>
+						{$vo.status}
 					</td>
 					<td>
 						<a  class="u-btn" href="{:U('add')}/id/{$vo.id}" class="confirm J_ajax_get">编辑</a>|
-						<a  class="u-btn" href="{:U('del')}/id/{$vo.id}" class="confirm J_ajax_get">删除</a>
+						<a  class="u-btn" href="{:U('del')}/id/{$vo.id}" class="confirm J_ajax_get">删除</a>|
+						<a  class="u-btn confirm J_ajax_get" href="{:U('set_current')}/id/{$vo.id}" >设为当前</a>
 
 					</td>
 				</tr>
