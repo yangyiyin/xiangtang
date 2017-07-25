@@ -17,6 +17,9 @@ class AppVersionIndex extends BaseSapi{
     public function excute() {
 
         $data = $this->AppVersionService->get_current();
+        if ($data) {
+            $data['apk_url'] = 'http://' . $_SERVER['HTTP_HOST'] . $data['apk_url'];
+        }
         return result_json(TRUE, '', $data);
     }
 
