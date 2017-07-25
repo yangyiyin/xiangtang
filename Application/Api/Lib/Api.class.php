@@ -34,6 +34,10 @@ class Api{
         }
 
         $this->post_data = json_decode(file_get_contents('php://input'), true);
+
+        if (I('get.dev_y') == 'yyy') {
+            $this->post_data = $_POST;
+        }
         //echo_json_die($this->post_data);
     }
 }

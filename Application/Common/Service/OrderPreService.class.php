@@ -79,5 +79,10 @@ class OrderPreService extends BaseService{
         return 'P'.$uid.getMillisecond().mt_rand(0,9).mt_rand(0,9);
     }
 
-
+    public function get_by_ids($ids) {
+        $NfOrderPre = D('NfOrderPre');
+        $where = [];
+        $where['id'] = ['in', $ids];
+        return $NfOrderPre->where($where)->select();
+    }
 }

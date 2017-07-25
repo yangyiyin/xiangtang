@@ -19,7 +19,6 @@ class AlipayNotify extends BaseSapi{
     }
 
     public function excute() {
-        die();
         $data_notify = [];
         $data_notify['pay_no'] = isset($_POST['out_trade_no']) ? $_POST['out_trade_no'] : '';
         $data_notify['pay_agent'] = \Common\Model\NfPayModel::PAY_AGENT_ALIPAY;
@@ -32,11 +31,11 @@ class AlipayNotify extends BaseSapi{
         $aop->alipayrsaPublicKey = Service\PayService::AlipayPubKey;
         $flag = $aop->rsaCheckV1($_POST, NULL, "RSA2");
         if (!$flag) {
-            echo 'fail';
-            $data_notify['create_time'] = current_date();
-            $data_notify['remark'] = 'rsacheck_fail';
-            $this->PayNotifyLogService->add_one($data_notify);
-            exit();
+//            echo 'fail';
+//            $data_notify['create_time'] = current_date();
+//            $data_notify['remark'] = 'rsacheck_fail';
+//            $this->PayNotifyLogService->add_one($data_notify);
+//            exit();
         }
 
         //业务处理
@@ -59,24 +58,55 @@ class AlipayNotify extends BaseSapi{
                 $this->PayNotifyLogService->add_one($data_notify);
                 exit;
             }
+            $AccountLogService = \Common\Service\AccountLogService::get_instance();
             //更新订单状态
-            $order_id = $pay_info['order_id'];
-            $OrderService = Service\OrderService::get_instance();
-            $ret = $OrderService->is_available_payed($order_id, $pay_info['uid']);
-            if (!$ret->success) {
-                $data_notify['create_time'] = current_date();
-                $data_notify['remark'] = $ret->message;
-                $this->PayNotifyLogService->add_one($data_notify);
-                exit;
+            $order_ids = explode(',', $pay_info['order_ids']);
+            $account_data = [];
+            //获取加盟商的uids
+            $MemberService = \Common\Service\MemberService::get_instance();
+            $franchisee_uids = $MemberService->get_franchisee_uids();
+
+            foreach ($order_ids as $order_id) {
+                $OrderService = Service\OrderService::get_instance();
+                $ret = $OrderService->is_available_payed($order_id, $pay_info['uid']);
+                if (!$ret->success) {
+                    $data_notify['create_time'] = current_date();
+                    $data_notify['remark'] = $ret->message;
+                    $this->PayNotifyLogService->add_one($data_notify);
+                    exit;
+                }
+                $order = $ret->data;
+                $ret = $OrderService->payed($order);
+                if (!$ret->success) {
+                    $data_notify['create_time'] = current_date();
+                    $data_notify['remark'] = '订单状态更新失败';
+                    $this->PayNotifyLogService->add_one($data_notify);
+                    exit;
+                }
+                //财务记录
+                $account_data = [];
+                if (in_array($order['seller_uid'], $franchisee_uids)) {
+                    $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_FRANCHISEE_ADD;
+                } else {
+                    $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_PLATFORM_ADD;
+                }
+                $account_data['sum'] = $order['sum'];
+                $account_data['oid'] = $order_id;
+                $account_data['uid'] = $order['seller_uid'];
+                $account_data['pay_no'] = $data_notify['pay_no'];
+                $AccountLogService->add_one($account_data);
+
+                if ($order['inviter_id']) {
+                    $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_INVITER_ADD;
+                    $account_data['sum'] = intval($order['sum'] * C('INVITER_RATE'));
+                    $account_data['oid'] = $order_id;
+                    $account_data['uid'] = $order['inviter_id'];
+                    $account_data['pay_no'] = $data_notify['pay_no'];
+                    $AccountLogService->add_one($account_data);
+                }
+
             }
-            $order = $ret->data;
-            $ret = $OrderService->payed($order);
-            if (!$ret->success) {
-                $data_notify['create_time'] = current_date();
-                $data_notify['remark'] = '订单状态更新失败';
-                $this->PayNotifyLogService->add_one($data_notify);
-                exit;
-            }
+
             echo 'success';
             exit;
         } elseif ($_POST['trade_status'] == 'TRADE_FINISHED') {//完成

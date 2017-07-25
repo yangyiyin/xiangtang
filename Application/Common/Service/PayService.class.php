@@ -33,9 +33,11 @@ class PayService extends BaseService{
         return $NfPay->where('pay_no = "' . $no . '"')->find();
     }
 
-    public function get_info_by_oid($oid) {
+    public function get_info_by_oids($oids) {
         $NfPay = D('NfPay');
-        return $NfPay->where('order_id = ' . $oid)->find();
+        $where = [];
+        $where['order_ids'] = join(',', $oids);
+        return $NfPay->where($where)->find();
     }
 
     public function update_by_id($id, $data) {
@@ -94,24 +96,66 @@ class PayService extends BaseService{
         return 'T'.$uid.getMillisecond().mt_rand(0,9).mt_rand(0,9);
     }
 
-    public function create_by_order($order) {
-        if (!$order) {
+//    public function create_by_order($order) {
+//        if (!$order) {
+//            return result(FALSE, '订单不存在~');
+//        }
+//
+//        if ($pay = $this->get_info_by_oid($order['id'])) {
+//            if ($pay['status'] != \Common\Model\NfPayModel::STATUS_SUBMIT) {
+//                return result(FALSE, '该订单无法支付~');
+//            }
+//            return result(TRUE, '订单已创建支付', $pay);
+//        }
+//
+//        $data = [];
+//        $data['pay_no'] = $this->get_pay_no($order['uid']);
+//        $data['pay_agent'] = \Common\Model\NfPayModel::PAY_AGENT_ALIPAY;
+//        $data['uid'] = $order['uid'];
+//        $data['order_id'] = $order['id'];
+//        $data['sum'] = $order['sum'];
+//        $data['create_time'] = current_date();
+//
+//        $ret = $this->add_one($data);
+//
+//        if (!$ret->success) {
+//            return result(FALSE, $ret->message);
+//        }
+//        $data['id'] = $ret->data;
+//
+//        return result(TRUE, '创建成功', $data);
+//
+//    }
+
+    public function create_by_orders($orders) {
+        if (!$orders) {
             return result(FALSE, '订单不存在~');
         }
 
-        if ($pay = $this->get_info_by_oid($order['id'])) {
+        if (!$this->check_orders_same_uid($orders)) {
+            return result(FALSE, '订单异常~');
+        }
+
+        $order_ids = result_to_array($orders);
+        if ($pay = $this->get_info_by_oids($order_ids)) {
             if ($pay['status'] != \Common\Model\NfPayModel::STATUS_SUBMIT) {
                 return result(FALSE, '该订单无法支付~');
             }
             return result(TRUE, '订单已创建支付', $pay);
         }
 
+        $sum = 0;
+        foreach ($orders as $order) {
+            $sum += $order['sum'];
+        }
+
+
         $data = [];
-        $data['pay_no'] = $this->get_pay_no($order['uid']);
+        $data['pay_no'] = $this->get_pay_no($orders[0]['uid']);
         $data['pay_agent'] = \Common\Model\NfPayModel::PAY_AGENT_ALIPAY;
-        $data['uid'] = $order['uid'];
-        $data['order_id'] = $order['id'];
-        $data['sum'] = $order['sum'];
+        $data['uid'] = $orders[0]['uid'];
+        $data['order_ids'] = join(',', $order_ids);
+        $data['sum'] = $sum;
         $data['create_time'] = current_date();
 
         $ret = $this->add_one($data);
@@ -148,6 +192,23 @@ class PayService extends BaseService{
             return result(TRUE);
         } else {
             return result(FALSE, '网络繁忙~');
+        }
+    }
+
+    public function check_orders_same_uid($orders) {
+        foreach ($orders as $order) {
+            $is_same = 99;
+            foreach ($orders as $_item) {
+                if ($is_same == 99) {
+                    $is_same = $_item['uid'];
+                }
+
+                if ($is_same != 99 && $is_same != $_item['uid']) {
+                    return false;
+                }
+
+            }
+            return true;
         }
     }
 

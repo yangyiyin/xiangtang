@@ -15,7 +15,7 @@ class AntAccountLogController extends AdminController {
     public function platform() {
 
         $where = [];
-        $where['type'] = ['in', [\Common\Model\NfAccountLogModel::TYPE_FRANCHISEE_ADD, \Common\Model\NfAccountLogModel::TYPE_FRANCHISEE_MINUS,\Common\Model\NfAccountLogModel::TYPE_PLATFORM_ADD,\Common\Model\NfAccountLogModel::TYPE_PLATFORM_MINUS]];
+        $where['type'] = ['in', [\Common\Model\NfAccountLogModel::TYPE_PLATFORM_ADD,\Common\Model\NfAccountLogModel::TYPE_PLATFORM_MINUS]];
 
         $create_begin = I('get.create_begin');
         $create_end = I('get.create_end');

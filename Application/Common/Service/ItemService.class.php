@@ -194,4 +194,13 @@ class ItemService extends BaseService{
         }
         return true;
     }
+
+    public function add_sold_by_id($id, $num) {
+        $NfItem = D('NfItem');
+        if ($NfItem->where('id = ' . $id)->setInc('sold_num',$num)){
+            return result(TRUE);
+        } else {
+            return result(FALSE, $NfItem->getError());
+        }
+    }
 }

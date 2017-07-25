@@ -257,6 +257,7 @@ class OrderService extends BaseService{
         return $this->update_by_id($order['id'], ['status'=>\Common\Model\NfOrderModel::STATUS_CANCEL]);
     }
 
+
     public function create_by_pre_order_id($pre_order_id, $uid, $extra) {
 
         $OrderPreService = \Common\Service\OrderPreService::get_instance();
@@ -271,16 +272,11 @@ class OrderService extends BaseService{
         $iids = result_to_array($order_pre_items, 'iid');
         $ItemService = \Common\Service\ItemService::get_instance();
         $items = $ItemService->get_by_ids($iids);
-        if (!$items || (count($items) != count($order_pre_items))) {
+        if (!$items) {
             return result(FALSE, '订单商品异常~');
         }
-        $order_pre_items_map = result_to_map($order_pre_items, 'iid');
-        foreach ($items as $key => $_item) {
-            $items[$key]['num'] = $order_pre_items_map[$_item['id']]['num'];
-            $items[$key]['price'] = $order_pre_items_map[$_item['id']]['price'];
-            $items[$key]['num'] = $order_pre_items_map[$_item['id']]['num'];
-            $items[$key]['sum'] = $order_pre_items_map[$_item['id']]['sum'];
-        }
+        $order_pre_items_map = result_to_map($order_pre_items, 'sku_id');
+
         $ret = $ItemService->check_status($items);
         if (!$ret->success) {
             return result(FALSE, $ret->message);
@@ -290,11 +286,28 @@ class OrderService extends BaseService{
             return result_json(FALSE, '商品类型不一致,虚拟商品和实物商品不能同时下单');
         }
 
-        \Common\Service\ProductSkuService::get_instance();
+        $ProductSkuService = \Common\Service\ProductSkuService::get_instance();
         $sku_ids = result_to_array($order_pre_items, 'sku_id');
+        $skus = $ProductSkuService->get_by_ids($sku_ids);
 
+        $items_map = result_to_map($items);
+//        $skus_map = result_to_map($skus);
+//        $item_sku_num_map = result_to_map($items_num_arr, 'sku_id');
+        $skus_new = [];
+        foreach ($skus as $sku) {
+            if (isset($order_pre_items_map[$sku['id']])) {
+                $sku['buy_num'] = $order_pre_items_map[$sku['id']]['num'];
+            }
+            if (isset($items_map[$order_pre_items_map[$sku['id']]['iid']])) {
+                $sku['item'] = $items_map[$order_pre_items_map[$sku['id']]['iid']];
+            }
+            $skus_new[] = $sku;
 
-
+        }
+        $ret = $ProductSkuService->check_stock($skus_new);
+        if (!$ret->success) {
+            return result_json(FALSE, $ret->message);
+        }
 
         $userService = \Common\Service\UserService::get_instance();
         $user_info = $userService->get_info_by_id($uid);
@@ -329,6 +342,7 @@ class OrderService extends BaseService{
             $temp['order_id'] = $order_id;
             $temp['pid'] = $_item['pid'];
             $temp['iid'] = $_item['iid'];
+            $temp['sku_id'] = $_item['sku_id'];
             $temp['num'] = $_item['num'];
             $temp['sum'] = $_item['sum'];
             $temp['price'] = $_item['price'];
@@ -340,14 +354,41 @@ class OrderService extends BaseService{
             return result(FALSE, '创建订单详情失败');
         }
 
+        //扣库存
+        $item_nums = [];
+        foreach ($order_pre_items as $_item) {
+            $ProductSkuService->minus_stock_by_id($_item['sku_id'], $_item['num']);
+            $item_nums[$_item['iid']] += $_item['num'];
+        }
+
+        foreach ($item_nums as $iid => $num) {
+            $ItemService->add_sold_by_id($iid, $num);
+        }
+
+
+        $SkuPropertyService = \Common\Service\SkuPropertyService::get_instance();
+        $sku_props = $SkuPropertyService->get_by_sku_ids($sku_ids);
+        $sku_props_map = $SkuPropertyService->get_sku_props_map($sku_props);
+
         //插入快照
         $snap = [];
-        foreach ($items as $key => $_item) {
-            $_item['id'] = (int) $_item['id'];
+        foreach ($order_pre_items as $key => $_item) {
+            $_item['id'] = (int) $_item['iid'];
             $_item['pid'] = (int) $_item['pid'];
+            $_item['sku_id'] = (int) $_item['sku_id'];
             $_item['price'] = (int) $_item['price'];
-            $_item['img'] = item_img(get_cover($_item['img'], 'path'));
-            $snap[] = convert_obj($_item, 'id=iid,pid,title,img,desc,unit_desc,price,num,sum');
+            $_item['sum'] = (int) $_item['sum'];
+            $_item['num'] = (int) $_item['num'];
+            $_item['title'] = $items_map[$_item['iid']]['title'];
+            $_item['unit_desc'] = $items_map[$_item['iid']]['unit_desc'];
+            $_item['desc'] = $items_map[$_item['iid']]['desc'];
+            $_item['img'] = item_img(get_cover($items_map[$_item['iid']]['img'], 'path'));
+
+            if (isset($sku_props_map[$_item['sku_id']])) {
+                $_item['props'] = $sku_props_map[$_item['sku_id']];
+            }
+
+            $snap[] = convert_obj($_item, 'id=iid,pid,sku_id,title,img,desc,unit_desc,price,num,sum,props');
         }
         $snap_content = json_encode($snap);
         $OrderSnapshotService = \Common\Service\OrderSnapshotService::get_instance();

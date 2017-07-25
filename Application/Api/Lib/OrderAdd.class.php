@@ -16,7 +16,6 @@ class OrderAdd extends BaseApi{
     }
 
     public function excute() {
-        $this->can_order();
         $pre_order_id = I('post.pre_order_id');
         $address = I('post.address');
         $name = I('post.name');
@@ -50,14 +49,42 @@ class OrderAdd extends BaseApi{
         if (!is_tel_num($tel)) {
             return result_json(FALSE, '请检查联系电话');
         }
+
+        $OrderPreService = \Common\Service\OrderPreService::get_instance();
+        $pre_orders = $OrderPreService->get_by_ids($pre_order_ids);
+
+        if(count($pre_orders) != count($pre_order_ids)) {
+            return result_json(false, '订单异常,请稍后再试');
+        }
+
+        if (!$this->check_same_real($pre_orders)) {
+            return result_json(false, '订单性质不一致,请稍后再试');
+        }
+        $order_ids = [];
         foreach ($pre_order_ids as $pre_order_id) {
             $ret = $this->OrderService->create_by_pre_order_id($pre_order_id, $this->uid, ['receiving_type' => $receiving_type, 'receiving_service_name' => $receiving_service_name, 'address' => $address, 'name' => $name, 'tel' => $tel]);
             if (!$ret->success) {
                 return result_json(FALSE, $ret->message);
             }
+            $order_ids[] = $ret->data;
         }
-        $order_ids = $ret->data;
+        //$order_ids = $ret->data;
 
         return result_json(TRUE, '成功创建订单~', ['order_ids' => join(',', $order_ids), 'to_pay'=>true]);
+    }
+
+    public function check_same_real($items) {
+        $is_real = 99;
+        foreach ($items as $_item) {
+            if ($is_real == 99) {
+                $is_real = $_item['is_real'];
+            }
+
+            if ($is_real != 99 && $is_real != $_item['is_real']) {
+                return false;
+            }
+
+        }
+        return true;
     }
 }

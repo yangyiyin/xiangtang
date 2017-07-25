@@ -99,6 +99,27 @@ class ProductSkuService extends BaseService{
         }
     }
 
+
+
+    public function add_stock_by_id($id, $modify_num) {//方法只支持单个sku
+        $NfProductSku = D('NfProductSku');
+        if ($NfProductSku->where('id = ' . $id)->setInc('num',$modify_num)){
+            return result(TRUE);
+        } else {
+            return result(FALSE, $NfProductSku->getError());
+        }
+    }
+
+    public function minus_stock_by_id($id, $modify_num) {//方法只支持单个sku
+        $NfProductSku = D('NfProductSku');
+        if ($NfProductSku->where('id = ' . $id)->setDec('num',$modify_num)){
+            $NfProductSku->where('id = ' . $id)->setInc('sold',$modify_num);
+            return result(TRUE);
+        } else {
+            return result(FALSE, $NfProductSku->getError());
+        }
+    }
+
     public function del_by_pid($pid) {
         $NfProductSku = D('NfProductSku');
         return $NfProductSku->where('pid=' . $pid)->delete();

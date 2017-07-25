@@ -155,6 +155,12 @@ class OrderPre_order extends BaseApi{
 
             $UserService = Service\UserService::get_instance();
             $user_info = $this->user_info;
+
+            $SkuPropertyService = Service\SkuPropertyService::get_instance();
+            $sku_ids = result_to_array($skus_map);
+            $sku_props = $SkuPropertyService->get_by_sku_ids($sku_ids);
+            $sku_props_map = $SkuPropertyService->get_sku_props_map($sku_props);
+
             foreach ($data as $key => $_item) {
                 $_item['img'] = item_img(get_cover($items_map[$_item['item_id']]['img'], 'path'));//todo 这种方式后期改掉
 
@@ -173,7 +179,13 @@ class OrderPre_order extends BaseApi{
                 $_item['is_real'] =  $items_map[$_item['item_id']]['is_real'];
                 $_item['unit_desc'] = $items_map[$_item['item_id']]['unit_desc'];
                 $_item['sku_id'] = (int) $skus_map[$_item['sku_id']]['id'];
-                $list[] = convert_obj($_item, 'id=item_id,sku_id,pid,title,img,desc,unit_desc,price,num,is_real,seller_uid');
+
+                if (isset($sku_props_map[$_item['sku_id']])) {
+                    $_item['props'] = $sku_props_map[$_item['sku_id']];
+                }
+
+
+                $list[] = convert_obj($_item, 'id=item_id,sku_id,pid,title,img,desc,unit_desc,price,num,is_real,seller_uid,props');
             }
 
         }
