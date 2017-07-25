@@ -32,7 +32,7 @@ class AntOrderController extends AdminController {
         if (I('get.create_end')) {
             $where['create_time'][] = ['ELT', I('get.create_end')];
         }
-        //echo 1;die();
+        echo 1;die();
         $UserService = \Common\Service\UserService::get_instance();
         if ($user_tel = I('get.user_tel')) {
             //$UserService = \Common\Service\UserService::get_instance();
