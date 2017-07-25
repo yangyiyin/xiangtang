@@ -4,14 +4,14 @@
 
 <div style="width:1000;margin: 0 auto">
     <div style="margin-top: 10px">
-        <p style="width: 333px;float: left">订单日期:{$vo.create_time}<p/>
+        <p style="width: 333px;float: left">承单日期:{$vo.create_time}<p/>
         <p style="width: 333px;float: left">订单编号:{$vo.order_no}</p>
         <p style="width: 333px;float: left">经手人:</p>
         <div style="clear: both"></div>
     </div>
 
     <div style="margin: 10px 0">
-        <p style="width: 333px;">收货方::{$vo.user_info.entity_name}</p>
+        <p style="width: 333px;">购买单位::{$vo.user_info.entity_name}</p>
     </div>
 </div>
     <table style="margin:0 auto;width:1000px;">
@@ -58,14 +58,14 @@
             <td colspan="7">
                 <div style="width:1000px;margin: 0 auto">
                 <div style="margin-top: 10px">
-                    <p style="width: 500px;float: left">xxx:xxx<p/>
+                    <p style="width: 500px;float: left">收款金额:<p/>
                     <p style="width: 500px;float: left">总计金额:{$order_item.sum|format_price}元</p>
                     <div style="clear: both"></div>
                 </div>
 
                 <div style="margin: 10px 0">
-                    <p style="width: 500px;float: left">xxx:xxx<p/>
-                    <p style="width: 500px;float: left">xxxx:xxx</p>
+                    <p style="width: 500px;float: left">发货人:<p/>
+                    <p style="width: 500px;float: left">收货人:</p>
                     <div style="clear: both"></div>
                 </div>
             </div>
