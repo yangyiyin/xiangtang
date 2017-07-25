@@ -89,7 +89,7 @@ class AntOrderController extends AdminController {
         }
         $page_html = $PageInstance->show();
         //var_dump($data);die();
-        //$this->assign('list', $data);
+        $this->assign('list', $data);
         $this->assign('page_html', $page_html);
 
         $this->display('AntOrder/index');
