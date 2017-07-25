@@ -15,11 +15,29 @@ class ItemController extends BaseController {
         }
 
     }
+
     public function detail() {
         if (I('get.user_session')) {
             $this->excute_api('Api\Lib\ItemDetail');
         } else {
             $this->excute_api('Api\Lib\ItemDetailDefault');
+        }
+    }
+
+    public function unreal_list() {
+        if (I('get.user_session')) {
+            $this->excute_api('Api\Lib\ItemUnrealList');
+        } else {
+            $this->excute_api('Api\Lib\ItemUnrealListDefault');
+        }
+
+    }
+
+    public function unreal_detail() {
+        if (I('get.user_session')) {
+            $this->excute_api('Api\Lib\ItemUnrealDetail');
+        } else {
+            $this->excute_api('Api\Lib\ItemUnrealDetailDefault');
         }
     }
 
