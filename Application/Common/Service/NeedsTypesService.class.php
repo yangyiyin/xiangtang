@@ -134,4 +134,11 @@ class NeedsTypesService extends BaseService{
         return $NfModel->where($where)->select();
     }
 
+    public function get_all_types() {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
 }

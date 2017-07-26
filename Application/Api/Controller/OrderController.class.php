@@ -31,4 +31,8 @@ class OrderController extends BaseController {
         $this->excute_api('Api\Lib\OrderData');
     }
 
+    public function detail() {
+        $this->excute_api('Api\Lib\OrderDetail');
+    }
+
 }

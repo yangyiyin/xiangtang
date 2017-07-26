@@ -28,4 +28,10 @@ class UserController extends BaseController {
     public function extra_info() {
         $this->excute_api('Api\Lib\UserExtraInfo');
     }
+    public function disabled_verify() {
+        $this->excute_api('Api\Lib\UserDisabledVerify');
+    }
+    public function be_inviter() {
+        $this->excute_api('Api\Lib\UserBeInviter');
+    }
 }

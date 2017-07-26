@@ -7,7 +7,7 @@
  */
 namespace Api\Lib;
 use Common\Service;
-class ItemList extends BaseApi{
+class IndexIndex extends BaseSapi{
     protected $method = parent::API_METHOD_GET;
     private $ItemService;
     public function init() {
@@ -15,28 +15,29 @@ class ItemList extends BaseApi{
     }
 
     public function excute() {
-        $keyword = I('get.keyword');
-        $cid = I('get.cid');
-        $page = I('get.p', 1);
+
+        $result = new \stdClass();
+        //实物商品
         $where = [];
-        if ($cid) {
-            //获取cid下的所有cids
-            $CategoryService = Service\CategoryService::get_instance();
-            $cids = $CategoryService->get_cids_by_cid($cid);
-
-            $where['cid'] = ['IN', $cids];
-        }
-
-        if ($keyword) {
-            $where['keyword'] = ['LIKE', '%'.$keyword.'%'];
-        }
         $where['is_real'] = 1;
         $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
-        list($data, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc', $page);
-        $list = $this->convert_data($data);
-        $result = new \stdClass();
-        $result->list = $list;
-        $result->has_more = has_more($count, $page, Service\ItemService::$page_size);
+        list($data1, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc');
+        $result->list[] = ['items' => $this->convert_data($data1), 'title'=>'商城'];
+        //农家乐
+        $where = [];
+        $where['is_real'] = 0;
+        $where['cid'] = 19;
+        $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
+        list($data2, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc');
+        $result->list[] = ['items' => $this->convert_data($data2), 'title'=>'农家乐'];
+        //旅游
+        $where = [];
+        $where['is_real'] = 0;
+        $where['cid'] = 2;
+        $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
+        list($data3, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc');
+        $result->list[] = ['items' => $this->convert_data($data2), 'title'=>'旅游'];
+
         return result_json(TRUE, '', $result);
     }
 
@@ -63,4 +64,5 @@ class ItemList extends BaseApi{
         }
         return $list;
     }
+
 }

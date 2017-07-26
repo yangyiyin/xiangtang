@@ -29,6 +29,22 @@ class ItemCommentService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
+    public function get_by_iid($id) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['iid'] = ['EQ', $id];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
+    public function get_by_sku_id($id) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['sku_id'] = ['EQ', $id];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
     public function update_by_id($id, $data) {
 
         if (!$id) {
