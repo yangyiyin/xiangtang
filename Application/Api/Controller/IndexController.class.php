@@ -10,4 +10,8 @@ class IndexController extends BaseController {
     public function index() {
         $this->excute_api('Api\Lib\IndexIndex');
     }
+
+    public function sections() {
+        $this->excute_api('Api\Lib\IndexSections');
+    }
 }
