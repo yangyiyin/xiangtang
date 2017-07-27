@@ -41,7 +41,7 @@ class Api{
 
         if (API_DEBUG) {
             $LogService = \Common\Service\LogService::get_instance();
-            $content = 'action_name::' . ACTION_NAME . '|post::' . serialize($this->post_data) . '|get::' . serialize($_GET);
+            $content = 'action_name::' . ACTION_NAME . '|post::' . json_encode($this->post_data) . '|get::' . json_encode($_GET);
             $LogService->log($content);
         }
 
