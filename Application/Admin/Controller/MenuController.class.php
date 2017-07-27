@@ -22,10 +22,105 @@ class MenuController extends AdminController {
 
         $data = [];
         foreach ($arr as $_value) {
-            $data[] = ['title'=>$_value['title'], 'pid'=>157, 'module'=>'Admin', 'sort'=>99, 'url'=>$_value['url'], 'hide'=>1];
+            $data[] = ['title'=>$_value['title'], 'pid'=>157, 'module'=>'Admin', 'sort'=>99, 'url'=>$_value['url'], 'hide'=>1,'icon'=>'fa-square'];
         }
 
         M('menu')->addAll($data);
+    }
+
+
+    public function add_menu_direct_all() {
+
+        $arr = [
+            [
+                'title' => '担保公司',
+                'url'=>'FinancialVouch/index',
+                'child' => [
+                    ['title' => '担保公司月填报', 'url'=>'FinancialVouch/submit_monthly'],
+                    ['title' => '担保公司单位管理', 'url'=>'FinancialVouch/add_unit']
+                ]
+            ],
+            [
+                'title' => '股权投资机构',
+                'url'=>'FinancialInvestment/index',
+                'child' => [
+                    ['title' => '股权投资管理机构月填报', 'url'=>'FinancialInvestmentManager/submit_monthly'],
+                    ['title' => '股权投资和创业投资机构月填报', 'url'=>'FinancialInvestment/submit_monthly'],
+                    ['title' => '股权投资管理机构明细月填报', 'url'=>'FinancialInvestmentManager/detail_submit_monthly'],
+                    ['title' => '股权投资管理机构所投资公司明细月填报', 'url'=>'FinancialInvestment/detail_submit_monthly'],
+                    ['title' => '股权投资和创业投资机构退出项目明细月填报', 'url'=>'FinancialInvestment/exit_detail_submit_monthly'],
+                    ['title' => '股权投资管理机构单位管理', 'url'=>'FinancialInvestmentManager/add_unit'],
+                    ['title' => '股权投资和创业投资机构机构单位管理', 'url'=>'FinancialInvestment/add_unit']
+                ]
+            ],
+            [
+                'title' => '期货营业部',
+                'url'=>'FinancialFutures/index',
+                'child' => [
+                    ['title' => '期货业经营情况月填报', 'url'=>'FinancialFutures/submit_monthly'],
+                    ['title' => '期货营业部单位管理', 'url'=>'FinancialFutures/add_unit']
+                ]
+            ],
+            [
+                'title' => '融资租赁',
+                'url'=>'FinancialLease/index',
+                'child' => [
+                    ['title' => '融资租赁行业月填报', 'url'=>'FinancialLease/submit_monthly'],
+                    ['title' => '融资租赁单位管理', 'url'=>'FinancialLease/add_unit']
+                ]
+            ],
+            [
+                'title' => '小额贷款公司',
+                'url'=>'FinancialLoan/index',
+                'child' => [
+                    ['title' => '小额贷款公司月填报', 'url'=>'FinancialLoan/submit_monthly'],
+                    ['title' => '小额贷款单位管理', 'url'=>'FinancialLoan/add_unit']
+                ]
+            ],
+            [
+                'title' => '银行机构',
+                'url'=>'FinancialBank/index',
+                'child' => [
+                    ['title' => '银行机构不良贷款处置明细月填报', 'url'=>'FinancialBank/baddebt_dispose_submit_monthly'],
+                    ['title' => '银行机构信贷情况月填报', 'url'=>'FinancialBank/Credit_submit_monthly'],
+                    ['title' => '银行机构贷款明细月填报', 'url'=>'FinancialBank/loan_details_submit_monthly'],
+                    ['title' => '银行金融机构季度填报', 'url'=>'FinancialBank/quarterly_monthly'],
+                    ['title' => '银行机构逾期化解明细月填报', 'url'=>'FinancialBank/overdue_resolve_submit_monthly'],
+                    ['title' => '银行机构单位管理', 'url'=>'FinancialBank/add_unit']
+                ]
+            ],
+            [
+                'title' => '证券营业部',
+                'url'=>'FinancialSecurities/index',
+                'child' => [
+                    ['title' => '证券营业部经营情况月填报', 'url'=>'FinancialSecurities/submit_monthly'],
+                    ['title' => '证券营业部单位管理', 'url'=>'FinancialSecurities/add_unit']
+                ]
+            ],
+            [
+                'title' => '转贷',
+                'url'=>'FinancialTransferFunds/index',
+                'child' => [
+                    ['title' => '转贷资金月填报', 'url'=>'FinancialTransferFunds/submit_monthly'],
+                    ['title' => '转贷资金单位管理', 'url'=>'FinancialTransferFunds/add_unit']
+                ]
+            ]
+        ];
+
+
+        $data = [];
+        foreach ($arr as $k => $_value) {
+            $data_one = ['title'=>$_value['title'], 'pid'=>0, 'module'=>'Admin', 'sort'=>$k, 'url'=>$_value['url'], 'hide'=>0,'ico'=>'fa-square'];
+            M('menu')->add($data_one);
+            $id = M('menu')->getLastInsID();
+            $data = [];
+            foreach ($_value['child'] as $key => $child) {
+                $data[] = ['title'=>$child['title'], 'pid'=>$id, 'module'=>'Admin', 'sort'=>$key, 'url'=>$child['url'], 'hide'=>0];
+
+            }
+            M('menu')->addAll($data);
+        }
+
     }
 
     /**
