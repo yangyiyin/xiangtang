@@ -172,6 +172,15 @@
             background-color: #363739;
             color:#fff;
         }
+        .sidebar,.sidebar:before{
+            width: 250px;
+        }
+        .main-content {
+            margin-left: 251px;
+        }
+        .nav-list>li .submenu>li>a {
+            height: auto;
+        }
     </style>
 </head>
 <body style="" screen_capture_injected="true">
@@ -182,19 +191,19 @@
     </php>
     <div class="navbar">
         <div class="container-fluid navbar-inner">
-            <div class="logo">Gooduo.net</div>
+            <div class="logo">CIXIJINRONGBAN</div>
 
-            <div class="link">
+            <div class="link" >
                 <a href="{:U('Admin/Public/logout')}" class="logout"></a>
                 <a href="{:U('Index/index')}" target="_blank" class="home"></a>
                 <div>
                     <h2>{:session('user_auth.username')}</h2>
                     <h3>后台管理员</h3>
                 </div>
-                <a href="javascript:;" target="_blank" class="gooduo"></a>
+
             </div>
 
-            <div style="display: none" class="user-bar j_user_bar">
+            <div  class="user-bar j_user_bar">
                 <a href="#" class="dropdown-toggle">
                     <img class="nav-user-photo" src="{:C('ADMIN_IMG')}/user.jpg" alt="admin">
                     <span class="user-info">

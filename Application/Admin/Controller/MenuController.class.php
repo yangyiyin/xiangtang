@@ -33,6 +33,17 @@ class MenuController extends AdminController {
 
         $arr = [
             [
+                'title' => '统计',
+                'url'=>'FinancialStatistics/index',
+                'child' => [
+                    ['title' => '财产保险统计表', 'url'=>'FinancialInsuranceProperty/Statistics'],
+                    ['title' => '人身保险统计表', 'url'=>'FinancialInsuranceLife/Statistics'],
+                    ['title' => '保险互助社统计表', 'url'=>'FinancialInsuranceMutual/Statistics'],
+                    ['title' => '担保公司统计表', 'url'=>'FinancialVouch/Statistics'],
+                    ['title' => '担保公司统计表', 'url'=>'FinancialVouch/Statistics'],
+                ]
+            ],
+            [
                 'title' => '担保公司',
                 'url'=>'FinancialVouch/index',
                 'child' => [
