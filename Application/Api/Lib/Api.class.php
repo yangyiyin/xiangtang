@@ -38,6 +38,15 @@ class Api{
         if (I('get.dev_y') == 'yyy') {
             $this->post_data = $_POST;
         }
+
+        if (API_DEBUG) {
+            $LogService = \Common\Service\LogService::get_instance();
+
+            $content = 'post::' . json_encode($this->post_data) . '|get::' . json_encode($_GET);
+            $LogService->log($content);
+        }
+
+
         //echo_json_die($this->post_data);
     }
 }
