@@ -39,7 +39,7 @@ class AntProductController extends AdminController {
 
 
         $page = I('get.p', 1);
-        list($data, $count) = $this->ProductService->get_by_where($where, 'id desc', $page);
+        list($data, $count) = $this->ProductService->get_by_where($where, 'status asc, id desc', $page);
         $this->convert_data($data);
         $PageInstance = new \Think\Page($count, \Common\Service\ProductService::$page_size);
         if($total>\Common\Service\ProductService::$page_size){
