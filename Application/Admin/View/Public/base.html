@@ -209,11 +209,10 @@
                     <span class="user-info">
                         <small>欢迎,</small>{:session('user_auth.username')}
                     </span>
-                    <i class="fa fa-caret-down"></i>
+                    <i style="display: none" class="fa fa-caret-down"></i>
                 </a>
-                <ul class="j_user_menu user-menu hidden">
+                <ul style="display: none" class="j_user_menu user-menu hidden">
                     <li><a href="{:U('Admin/User/updatePassword')}"><i class="fa fa-cog"></i>修改密码</a></li>
-                    <li><a href="{:U('Admin/User/updateNickname')}"><i class="fa fa-user"></i>修改昵称</a></li>
                     <li class="divider"></li>
                     <li><a href="{:U('Admin/Public/logout')}">退出</a></li>
                 </ul>
@@ -333,7 +332,7 @@
     <script src="{:C('ADMIN_JS')}/ace.min.js"></script>
     
     <script type="text/javascript">
-        $(".j_pin").pin({containerSelector: ".main-container"});
+        //$(".j_pin").pin({containerSelector: ".main-container"});
         $(function() {
             window.prettyPrint && prettyPrint();
             $('#id-check-horizontal')
