@@ -70,6 +70,10 @@ class UserReceivingModify extends BaseApi{
             return result_json(FALSE, $ret->message);
         }
 
+        if ($this->post_data['set_default']) {
+            $this->UserReceivingService->set_default_by_id($id);
+        }
+
         return result_json(TRUE, '成功啦', $id);
     }
 }
