@@ -19,6 +19,7 @@ class UserInfo extends BaseApi{
         $info = $this->UserService->get_info_by_id($this->uid);
         $data = convert_obj($info, 'user_name,type,avatar,user_tel,sex,province,city,address,entity_name,verify_status');
         $data->verify_status = (int) $data->verify_status;
+        $data->type = (int) $data->type;
         $data->avatar = item_img(get_cover(46, 'path'));
 
         if ($data->is_inviter) {
