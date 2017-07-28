@@ -7,12 +7,19 @@
  */
 namespace Admin\Controller;
 
-class FinancialInsurancePropertyController extends FinancialBaseController  {
+class FinancialBaseController extends AdminController {
     protected function _initialize() {
         parent::_initialize();
     }
 
+    public function submit_monthly() {
 
+    }
 
+    public function statistics() {
+
+    }
+
+    
 
 }
