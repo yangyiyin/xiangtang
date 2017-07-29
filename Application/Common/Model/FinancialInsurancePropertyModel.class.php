@@ -57,4 +57,10 @@ class FinancialInsurancePropertyModel extends NfBaseModel {
         return $yoy;
     }
 
+    protected function get_payoff_rate($data) {
+        $rate = 0;
+
+
+        return $rate;
+    }
 }
