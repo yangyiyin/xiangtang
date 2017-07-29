@@ -22,7 +22,7 @@ class newModule {
         $content = file_get_contents('model');
         $content = str_replace('___name___', $this->name, $content);
         $content = str_replace('___time___', date('Y-m-d H:i:s'), $content);
-        file_put_contents($this->model_path . 'Nf' . $this->name . 'Model.class.php', $content);
+        file_put_contents($this->model_path . 'Financial' . $this->name . 'Model.class.php', $content);
     }
 
     public function gain_service() {
@@ -37,24 +37,35 @@ class newModule {
         $content = str_replace('___name___', $this->name, $content);
         $content = str_replace('___desc___', $this->desc, $content);
         $content = str_replace('___time___', date('Y-m-d H:i:s'), $content);
-        file_put_contents($this->controller_path . 'Ant' . $this->name . 'Controller.class.php', $content);
+        file_put_contents($this->controller_path . 'Financial' . $this->name . 'Controller.class.php', $content);
     }
 
     public function gain_view() {
-        $content = file_get_contents('view/add.html');
+        $content = file_get_contents('view/add_unit.html');
         $content = str_replace('___name___', $this->name, $content);
         $content = str_replace('___desc___', $this->desc, $content);
         $content = str_replace('___time___', date('Y-m-d H:i:s'), $content);
-        $path = $this->view_path . 'Ant'.$this->name;
+        $path = $this->view_path . 'Financial'.$this->name;
         mkdir($path, 777);
-        file_put_contents($path . '/add.html', $content);
+        file_put_contents($path . '/add_unit.html', $content);
+
+        $content = file_get_contents('view/statistics.html');
+        $content = str_replace('___name___', $this->name, $content);
+        $content = str_replace('___desc___', $this->desc, $content);
+        $content = str_replace('___time___', date('Y-m-d H:i:s'), $content);
+        file_put_contents($path . '/statistics.html', $content);
+
+        $content = file_get_contents('view/submit_monthly.html');
+        $content = str_replace('___name___', $this->name, $content);
+        $content = str_replace('___desc___', $this->desc, $content);
+        $content = str_replace('___time___', date('Y-m-d H:i:s'), $content);
+        file_put_contents($path . '/submit_monthly.html', $content);
 
         $content = file_get_contents('view/index.html');
         $content = str_replace('___name___', $this->name, $content);
         $content = str_replace('___desc___', $this->desc, $content);
         $content = str_replace('___time___', date('Y-m-d H:i:s'), $content);
         file_put_contents($path . '/index.html', $content);
-
 
     }
 
@@ -92,16 +103,16 @@ class newModule {
         if (isset($names['model'])) {
 
            // chmod($this->model_path . 'Nf' . $this->name . 'Model.class.php', 777);
-            echo 'sudo chmod 777 '.'Application/Common/Model/'. 'Nf' . $this->name . 'Model.class.php '. "\n";
+            echo 'sudo chmod 777 '.'Application/Common/Model/'. 'Financial' . $this->name . 'Model.class.php '. "\n";
         }
         if (isset($names['controller'])) {
 
             //chmod($this->controller_path . 'Ant' . $this->name . 'Controller.class.php', 777);
-            echo 'sudo chmod 777 '.'Application/Admin/Controller/' . 'Ant' . $this->name . 'Controller.class.php '. "\n";
+            echo 'sudo chmod 777 '.'Application/Admin/Controller/' . 'Financial' . $this->name . 'Controller.class.php '. "\n";
         }
 
         if (isset($names['view'])) {
-            echo 'sudo chmod -R 777 '.'Application/Admin/View/' . 'Ant' . $this->name . "\n";
+            echo 'sudo chmod -R 777 '.'Application/Admin/View/' . 'Financial' . $this->name . "\n";
 
             //chmod($this->view_path . 'Ant' . $this->name . '/add.html', 777);
            // echo 'sudo chmod 777 '.'Application/Admin/View/' . 'Ant' . $this->name . '/add.html '. "\n";
@@ -115,7 +126,7 @@ class newModule {
 }
 
 
-$newModule = new newModule('franchiseeItem', '商品评论');
+$newModule = new newModule('InsuranceLife', '人身保险公司单位');
 //['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]
-//$newModule->gain(['controller'=>1, 'view'=>1]);
-$newModule->gain_power(['controller'=>1, 'view'=>1]);
+//$newModule->gain(['controller'=>1, 'service'=>1, 'view'=>1]);
+$newModule->gain_power(['controller'=>1, 'service'=>1, 'view'=>1]);

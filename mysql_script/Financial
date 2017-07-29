@@ -1,0 +1,44 @@
+CREATE TABLE `shopy_financial_department` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` int(10) DEFAULT '1' COMMENT '单位类型 如互助社,担保公司,银行',
+  `all_name` VARCHAR(50) DEFAULT '' COMMENT '全称',
+  `address` VARCHAR(60) DEFAULT ''  COMMENT '地址',
+  `principal` VARCHAR(20) DEFAULT '' COMMENT '主要负责人',
+	`phone` VARCHAR(50) DEFAULT '' COMMENT '电话',
+	`fixed_phone` VARCHAR(50) DEFAULT '' COMMENT '固定电话',
+	`tel_phone` VARCHAR(50) DEFAULT '' COMMENT '手机',
+  `filler_man` VARCHAR(20) DEFAULT '' COMMENT '报表联系人',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+#财产保险公司月填报
+CREATE TABLE `shopy_financial_insurance_property` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT '0' COMMENT '用户id',
+  `all_name` VARCHAR(50) DEFAULT '' COMMENT '公司全称',
+  `filler_man` VARCHAR(50) DEFAULT ''  COMMENT '填报人',
+  `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
+  `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
+	`income` FLOAT(9,2) DEFAULT '0' COMMENT '保费收入 万元',
+	`income_yoy` FLOAT(6,2) DEFAULT '0' COMMENT '保费同比增长',
+	`income_a` FLOAT(9,2) DEFAULT '0' COMMENT '企业财产险 万元',
+ 	`income_b` FLOAT(9,2) DEFAULT '0' COMMENT '机动车险 万元',
+ 	`income_c` FLOAT(9,2) DEFAULT '0' COMMENT '其他险 万元',
+ 	`reserves` FLOAT(12,2) DEFAULT '0' COMMENT '储备金 万元',
+  `payoff` FLOAT(9,2) DEFAULT '0' COMMENT '赔付金额 万元',
+  `payoff_rate` FLOAT(6,2) DEFAULT '0' COMMENT '赔付率',
+  `payoff_a` FLOAT(9,2) DEFAULT '0' COMMENT '企业财产险 万元',
+  `payoff_a_rate` FLOAT(6,2) DEFAULT '0' COMMENT '企业财产险赔付率',
+  `payoff_b` FLOAT(9,2) DEFAULT '0' COMMENT '机动车险 万元',
+  `payoff_b_rate` FLOAT(6,2) DEFAULT '0' COMMENT '机动车险赔付率',
+  `payoff_c` FLOAT(9,2) DEFAULT '0' COMMENT '其他险 万元',
+  `payoff_c_rate` FLOAT(6,2) DEFAULT '0' COMMENT '其他险赔付率',
+  `staff` int(6) DEFAULT '0' COMMENT '在岗人数',
+  `Authorized` int(6) DEFAULT '0' COMMENT '持证人数',
+  `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

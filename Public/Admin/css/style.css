@@ -3158,3 +3158,20 @@ overflow: hidden;
 	font-weight: bold;padding:0 10px;
 }
 .check-tips{margin-left: 5px;color:rgba(226, 30, 30, 1);-webkit-text-size-adjust: none;font-size: 11px;}
+
+
+/**
+月填报表格
+*/
+.biaoge,  .biaoge td{
+	border: 1px solid #ccc;
+}
+.biaoge td{
+	text-align: center;
+	font-size: 12px;
+}
+
+.biaoge .title{
+	font-size: 20px;
+	line-height: 40px;
+}

@@ -6,48 +6,76 @@
 
 		    <ul class="cc">
 		      	<li class="current"><a href="javascript:;">所有___desc___</a></li>
-				<li ><a href="{:U('add')}">添加___desc___</a></li>
+				<li ><a href="{:U('add_unit')}">添加___desc___</a></li>
 		    </ul>
 		</div>
-	    <div class="search_type cc mb10 search-form">
-	      <div class="mb10">
-			  &nbsp;名称：
-			  <input type="text" class="input length_2" name="title" style="width:100px;" value="{:I('title')}" >
+		<div class="search_type cc mb10 search-form">
+			<div class="mb10">
+				&nbsp;公司名称：
+				<input type="text" class="input length_2" name="all_name" style="width:100px;" value="{:I('all_name')}" >
 
-			  <a class="u-btn" href="javascript:;" id="search" url="{:U('index')}">搜索</a>
-	        <!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
-	        </span>
-	      </div>
-	    </div>
+				<a class="u-btn" href="javascript:;" id="search" url="{:U('index')}">搜索</a>
+				<!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
+				</span>
+			</div>
+		</div>
 		<!-- 数据表格 -->
-	    <div class="table_list">
+		<div class="table_list">
 			<table class="" width="100%">
-		    <thead>
-		        <tr>
+				<thead>
+				<tr>
 					<th><input class="check-all" type="checkbox"/></th>
 					<th>id</th>
-					<th>名称</th>
+					<th>公司全称</th>
+					<th>地址</th>
+					<th>电话</th>
+					<th>固定电话</th>
+					<th>手机号</th>
+					<th>主要负责人</th>
+					<th>报表联系人</th>
+					<th>登录名</th>
 					<th >操作</th>
 				</tr>
-		    </thead>
-		    <tbody>
+				</thead>
+				<tbody>
 				<volist name="list" id="vo">
-				<tr>
-		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
-					<td>{$vo.id} </td>
+					<tr>
+						<td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
+						<td>{$vo.id} </td>
 
-					<td>
-						{$vo.title}
-					</td>
-					<td>
-						<a  class="u-btn" href="{:U('add')}/id/{$vo.id}" class="confirm J_ajax_get">编辑</a>|
-						<a  class="u-btn" href="{:U('del')}/id/{$vo.id}" class="confirm J_ajax_get">删除</a>
+						<td>
+							{$vo.all_name}
+						</td>
+						<td>
+							{$vo.address}
+						</td>
+						<td>
+							{$vo.phone}
+						</td>
+						<td>
+							{$vo.fixed_phone}
+						</td>
+						<td>
+							{$vo.tel_phone}
+						</td>
+						<td>
+							{$vo.principal}
+						</td>
+						<td>
+							{$vo.filler_man}
+						</td>
+						<td>
+							{$vo.user.username}
+						</td>
+						<td>
+							<a  class="u-btn" href="{:U('add_unit')}/id/{$vo.id}" class="confirm J_ajax_get">编辑</a>|
+							<a  href="{:U('del')}/id/{$vo.id}" class="u-btn confirm J_ajax_get">删除</a>
 
-					</td>
-				</tr>
+						</td>
+					</tr>
 				</volist>
-			</tbody>
-		    </table> 
+				</tbody>
+			</table>
 		</div>
 		<div class="btn_wrap">
 			<div class="btn_wrap_pd">
