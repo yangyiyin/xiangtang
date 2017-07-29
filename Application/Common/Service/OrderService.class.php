@@ -454,7 +454,7 @@ class OrderService extends BaseService{
     }
 
     public function get_to_pay($order) {
-        return ($this->get_people_type() == $order['type']) && ($order['status'] == \Common\Model\NfOrderModel::STATUS_SUBMIT);
+
     }
 
     public function get_my_status() {
