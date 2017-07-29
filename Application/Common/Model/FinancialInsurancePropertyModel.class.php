@@ -31,7 +31,12 @@ class FinancialInsurancePropertyModel extends NfBaseModel {
   );
 
     protected $_auto = array (
-        array('ip','set_ip',self::MODEL_BOTH,'callback'), // 对name字段在新增和编辑的时候回调getName方法
+        array('ip','set_ip',self::MODEL_BOTH,'callback'),
+        array('income_yoy','get_income_yoy',self::MODEL_BOTH,'callback'),
+        array('payoff_rate','get_payoff_rate',self::MODEL_BOTH,'callback'),
+        array('payoff_a_rate','get_payoff_a_rate',self::MODEL_BOTH,'callback'),
+        array('payoff_b_rate','get_payoff_b_rate',self::MODEL_BOTH,'callback'),
+        array('payoff_c_rate','get_payoff_c_rate',self::MODEL_BOTH,'callback'),
 
     );
 
@@ -39,5 +44,17 @@ class FinancialInsurancePropertyModel extends NfBaseModel {
         return $_SERVER["REMOTE_ADDR"];
     }
 
+    protected function get_income_yoy($data) {
+        //获得去年的income
+        $year = intval($data['year']);
+        $month = in_array($data['month']);
+        $InsurancePropertyService = \Common\Service\InsurancePropertyService::get_instance();
+        $last_year_data = $InsurancePropertyService->get_by_month_year($year - 1, $month);
+        $yoy = 0;
+        if ($last_year_data) {
+            $yoy = ceil((($data['income'] - $last_year_data['income']) / $last_year_data['income']) * 10000) / 100;
+        }
+        return $yoy;
+    }
 
 }
