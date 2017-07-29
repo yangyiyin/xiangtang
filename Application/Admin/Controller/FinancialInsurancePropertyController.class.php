@@ -44,11 +44,10 @@
 
              //获取所有相关的公司
              $DepartmentService = \Common\Service\DepartmentService::get_instance();
-             if (IS_ROOT) {
-                 $departments = $DepartmentService->get_all_list(\Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty);
 
-             } else {
-                 $departments = $DepartmentService->get_my_list(UID, \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty);
+             $departments = $DepartmentService->get_my_list(UID, \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty);
+             if (!$departments) {
+                 $departments = $DepartmentService->get_all_list(\Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty);
 
              }
              $departments = result_to_array($departments, 'all_name');
