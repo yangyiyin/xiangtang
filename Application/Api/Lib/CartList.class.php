@@ -80,6 +80,9 @@ class CartList extends BaseApi{
                             $_item['price'] = (int) $skus_map[$_item['sku_id']]['price'];
                         }
 
+                        $_item['normal_price'] = (int) $skus_map[$_item['sku_id']]['price'];
+                        $_item['dealer_price'] = (int) $skus_map[$_item['sku_id']]['dealer_price'];
+
                         $list[$cate_name]['item_list'][] = convert_obj($_item, 'id=item_id,sku_id,pid,title,img,desc,unit_desc,price,num,status_desc,props');
                     }
 

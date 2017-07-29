@@ -33,6 +33,9 @@ class ItemSkus extends BaseApi{
             } elseif ($UserService->is_normal($this->user_info['type'])) {
                 $temp['price'] = (int) $sku['price'];
             }
+
+            $temp['price'] = (int) $sku['price'];//这里显示高价格
+
             if (isset($prop_sku_map[$sku['id']])) {
                 $values = result_to_array($prop_sku_map[$sku['id']], 'property_value_id');
                 sort($values);

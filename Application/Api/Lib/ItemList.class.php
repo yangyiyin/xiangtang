@@ -57,7 +57,9 @@ class ItemList extends BaseApi{
                 $_item['pid'] = (int) $_item['pid'];
                 $_item['price'] = (int) $_item['price'];
                 $_item['sold_num'] = (int) $_item['sold_num'];
-                $list[] = convert_obj($_item, 'id=item_id,pid,title,img,desc,unit_desc,price,sold_num');
+                $_item['normal_price'] = (int) $_item['normal_price'];
+                $_item['dealer_price'] = (int) $_item['dealer_price'];
+                $list[] = convert_obj($_item, 'id=item_id,pid,title,img,desc,unit_desc,price,sold_num,normal_price,dealer_price');
             }
 
         }
