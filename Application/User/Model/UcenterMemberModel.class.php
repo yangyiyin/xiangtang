@@ -179,7 +179,20 @@ class UcenterMemberModel extends Model{
 		}
 	}
 
-	/**
+    /**
+     * 获取用户信息
+     * @param  string  $uid         用户ID或用户名
+     * @param  boolean $is_username 是否使用用户名查询
+     * @return array                用户信息
+     */
+    public function get_by_uids($uids){
+        $map = array();
+        $map['id'] = ['in', $uids];
+        return $this->where($map)->field('id,username,email,mobile,status')->select();
+    }
+
+
+    /**
 	 * 检测用户信息
 	 * @param  string  $field  用户名
 	 * @param  integer $type   用户名类型 1-用户名，2-用户邮箱，3-用户电话

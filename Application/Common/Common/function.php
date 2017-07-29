@@ -1262,6 +1262,12 @@ function is_tel_num($tel) {
     }
 }
 
+function is_fixed_phone_num($tel) {
+    $n = preg_match_all("/^(0[0-9]{2,3}\-)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/",$tel, $array);
+    return (bool) $n;
+}
+
+
 function convert_objs($obj_arr, $field_arr, $split_word = ',', $change_type = FALSE, $up_field = '') {
     $new_obj_arr = array();
     foreach ($obj_arr as $obj) {

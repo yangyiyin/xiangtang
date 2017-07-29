@@ -55,6 +55,11 @@ return array(
     'HOME_TPL' => '/Home/View/default',
 
     'GROUP_FRANCHISEE' => 4,
+
+    'GROUP_FinancialInsuranceProperty' => 7,
+
+
+
     'SERVER_CIDS' => [8,19],
     'INVITER_RATE' => 0.01
 );

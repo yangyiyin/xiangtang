@@ -49,6 +49,12 @@ class UserApi extends Api{
         return $this->model->info($uid, $is_username);
     }
 
+
+    public function get_by_uids($uids){
+        return $this->model->get_by_uids($uids);
+    }
+
+
     /**
      * 检测用户名
      * @param  string  $field  用户名
