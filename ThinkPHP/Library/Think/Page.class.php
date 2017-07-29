@@ -66,7 +66,8 @@ class Page{
      * @return string
      */
     private function url($page){
-        return str_replace(urlencode('[PAGE]'), $page, $this->url);
+        //return str_replace(urlencode('[PAGE]'), $page, $this->url);
+        return str_replace('[PAGE]', $page, $this->url);
     }
 
     /**
@@ -78,7 +79,15 @@ class Page{
 
         /* 生成URL */
         $this->parameter[$this->p] = '[PAGE]';
-        $this->url = U(ACTION_NAME, $this->parameter);
+        //$this->url = U(ACTION_NAME, $this->parameter);
+
+        $paramStr="";
+        foreach($this->parameter as $key => $value){
+            $paramStr = $paramStr.'&'.$key.'='.$value;
+        }
+        $paramStr = substr($paramStr,1,strlen($paramStr));
+        $this->url = U(ACTION_NAME).(strpos(U(),"?")?'&':'?').$paramStr;
+
         /* 计算分页信息 */
         $this->totalPages = ceil($this->totalRows / $this->listRows); //总页数
         if(!empty($this->totalPages) && $this->nowPage > $this->totalPages) {
