@@ -76,9 +76,10 @@ class InsurancePropertyService extends BaseService{
     }
 
 
-    public function get_by_month_year($year, $month) {
+    public function get_by_month_year($year, $month, $all_name) {
         $FinancialModel = D('Financial' . static::$name);
         $where = [];
+        $where['all_name'] = ['EQ', $all_name];
         $where['year'] = ['EQ', $year];
         $where['month'] = ['EQ', $month];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];

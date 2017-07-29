@@ -20,12 +20,13 @@ class FinancialBaseController extends AdminController {
         $this->local_service = $service::get_instance();
     }
 
-    public function submit_monthly() {
-        //$current = $this->get_current_monthly();
+    public function submit_monthly($data = []) {
         $this->assign('title', $this->title);
         //获取当期的数据
-        $info = $this->local_service->get_by_month_year(intval(date('Y')), intval(date('m')));
-       // var_dump($info);die();
+        $info = [];
+        if (isset($data['all_name']) && $data['all_name']) {
+            $info = $this->local_service->get_by_month_year(intval(date('Y')), intval(date('m')), $data['all_name']);
+        }
         $this->assign('info', $info);
     }
 
@@ -36,11 +37,11 @@ class FinancialBaseController extends AdminController {
         $this->assign('title', $this->title);
 
     }
-    public function check_by_month_year($year, $month) {
-        if (!$year || !$month) {
+    public function check_by_month_year($year, $month, $all_name) {
+        if (!$year || !$month || !$all_name) {
             return false;
         }
-        $ret = $this->local_service->get_by_month_year(intval(date('Y')), intval(date('m')));
+        $ret = $this->local_service->get_by_month_year(intval(date('Y')), intval(date('m')), $all_name);
         if (!$ret) {
             return false;
         }

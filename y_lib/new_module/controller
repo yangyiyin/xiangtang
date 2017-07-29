@@ -13,12 +13,48 @@
 
      public function submit_monthly()
      {
-         $this->title = '';
-         parent::submit_monthly();
+                if (IS_POST) {
+                     $id = I('get.id');
+                     $data = I('post.');
+                     $data['uid'] = UID;
+                     if ($id) {
+                         $ret = $this->local_service->update_by_id($id, $data);
+                         if ($ret->success) {
+                             action_user_log('修改___desc___月报表');
+                             $this->success('修改成功！');
+                         } else {
+                             $this->error($ret->message);
+                         }
+                     } else {
+                         if ($this->check_by_month_year($data['year'], $data['month'])){
+                             $this->error('该月报表已提交,不能重复提交');
+                         }
+                         $ret = $this->local_service->add_one($data);
+                         if ($ret->success) {
+                             action_user_log('新增___desc___月报表');
+                             $this->success('添加成功！');
+                         } else {
+                             $this->error($ret->message);
+                         }
+                     }
+                 } else {
+                     $this->title = '___desc___月填报('. date('Y-m') .'月)';
 
+                     //获取所有相关的公司
+                     $DepartmentService = \Common\Service\DepartmentService::get_instance();
 
+                     $departments = $DepartmentService->get_my_list(UID, \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty);
+                     parent::submit_monthly($departments[0]);
 
-         $this->display();
+                     if (!$departments) {
+                         $departments = $DepartmentService->get_all_list(\Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty);
+
+                     }
+                     $departments = result_to_array($departments, 'all_name');
+                     $this->assign('departments', $departments);
+
+                     $this->display();
+                 }
      }
 
      public function statistics()

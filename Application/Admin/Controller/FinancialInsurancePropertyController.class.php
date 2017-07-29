@@ -40,12 +40,13 @@
              }
          } else {
              $this->title = '财产保险公司月填报('. date('Y-m') .'月)';
-             parent::submit_monthly();
 
              //获取所有相关的公司
              $DepartmentService = \Common\Service\DepartmentService::get_instance();
 
              $departments = $DepartmentService->get_my_list(UID, \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty);
+             parent::submit_monthly($departments[0]);
+
              if (!$departments) {
                  $departments = $DepartmentService->get_all_list(\Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty);
 
