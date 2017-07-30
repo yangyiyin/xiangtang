@@ -5,37 +5,14 @@
 		<div class="u-tab">
 
 			<ul class="cc">
-				<li class="current"><a href="javascript:;">___desc___统计表</a></li>
+				<li class="current"><a href="javascript:;">财产保险公司报表记录</a></li>
 			</ul>
 		</div>
 		<div class="search_type cc mb10 search-form">
 			<div class="mb10">
 				&nbsp;公司名称：
 				<input type="text" class="input length_2" name="all_name" style="width:100px;" value="{:I('all_name')}" >
-				<select name="year">
-					<php>
-						$years = [];
-						$cur_year = I('get.year') ? I('get.year') : date('Y');
-						for($i = 2016;$i<=date('Y');$i++) {
-						$years[] = $i;
-						}
 
-						foreach($years as $year){
-						$selected = ($year == $cur_year) ? 'selected' : '';
-						echo '<option value="'.$year.'" '.$selected.'>'.$year.'</option>';
-						}
-					</php>
-				</select>年
-				<select name="month">
-					<php>
-						$months = [1,2,3,4,5,6,7,8,9,10,11,12];
-						$cur_month = I('get.month') ? I('get.month') : date('m');
-						foreach($months as $month){
-						$selected = ($month == $cur_month) ? 'selected' : '';
-						echo '<option value="'.$month.'" '.$selected.'>'.$month.'</option>';
-						}
-					</php>
-				</select>月
 				<a class="u-btn" href="javascript:;" id="search" url="{:U('')}">搜索</a>
 				<!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
 				</span>
@@ -44,14 +21,42 @@
 		<!-- 数据表格 -->
 		<div class="table_list">
 			<table class="biaoge">
+				<!--<thead>-->
+				<!--<tr>-->
+				<!--<th>id</th>-->
+				<!--<th>公司全称</th>-->
+				<!--<th>日期</th>-->
+				<!--<th>填表人</th>-->
+				<!--<th>保费收入</th>-->
+				<!--<th>同比%</th>-->
+				<!--<th>企业财产险收入</th>-->
+				<!--<th>机动车辆险收入</th>-->
+				<!--<th>其他险收入</th>-->
+				<!--<th>存储金额</th>-->
+				<!--<th>赔款支出</th>-->
+				<!--<th>赔款率</th>-->
+				<!--<th>企业财产险平支出</th>-->
+				<!--<th>企业财产险支出率</th>-->
+				<!--<th>机动车辆险支出</th>-->
+				<!--<th>机动车辆险支出率</th>-->
+				<!--<th>其他险支出</th>-->
+				<!--<th>其他险支出率</th>-->
+				<!--<th>期末在岗人数</th>-->
+				<!--<th>期末持证人数</th>-->
+				<!--<th>时间</th>-->
+				<!--</tr>-->
+				<!--</thead>-->
 				<tr>
+					<td rowspan="4">id</td>
 					<td rowspan="4">公司名称</td>
+					<td rowspan="4">填报月</td>
+					<td rowspan="4">填表人</td>
 					<td colspan="5">保费</td>
 					<td rowspan="4">存储金额</td>
 					<td colspan="8">赔付</td>
 					<td colspan="2">营销人员</td>
-					<td rowspan="4">保费排名</td>
-					<td rowspan="4">保费份额占比</td>
+					<td rowspan="4">提交时间</td>
+					<td rowspan="4">ip</td>
 				</tr>
 				<tr>
 					<td rowspan="3">保费收入</td>
@@ -76,22 +81,19 @@
 					<td rowspan="2">赔付率</</td>
 				</tr>
 				<tr></tr>
-				<if condition="empty($list)">
-					<tr>
-						<td colspan="19">
-							<if condition="empty($list)">
-								没有找到信息~
-							</if>
-						</td>
-					</tr>
-				</if>
 				<volist name="list" id="vo">
 					<tr>
+						<td>{$vo.id} </td>
 
 						<td>
 							{$vo.all_name}
 						</td>
-
+						<td>
+							{$vo.year}年{$vo.month}月
+						</td>
+						<td>
+							{$vo.filler_man}
+						</td>
 						<td>
 							{$vo.income}
 						</td>
@@ -142,15 +144,15 @@
 							{$vo.authorized}
 						</td>
 						<td>
-							{$vo.sort}
+							{$vo.gmt_create|date_time}
+						</td>
+						<td>
+							{$vo.ip}
 						</td>
 
-						<td>
-							{$vo.percent}%
-						</td>
 					</tr>
 				</volist>
-				</tbody>
+
 			</table>
 		</div>
 		<div class="btn_wrap">

@@ -9,6 +9,7 @@
  class FinancialInsurancePropertyController extends FinancialBaseController  {
      protected function _initialize() {
          parent::_initialize();
+         $this->type = \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty;
      }
 
      public function submit_monthly()
@@ -18,6 +19,16 @@
              $id = I('get.id');
              $data = I('post.');
              $data['uid'] = UID;
+
+             if (!$this->is_history) {
+                 $data['year'] = intval(date('Y'));
+                 $data['month'] = intval(date('m'));
+             } else {
+                 $time = intval(strtotime($data['year'] . '-' .$data['month']));
+                 if (!$time || $time > strtotime('201712')) {
+                     $this->error('历史数据时间必须小于201712');
+                 }
+             }
              if ($id) {
                  $ret = $this->local_service->update_by_id($id, $data);
                  if ($ret->success) {
@@ -27,8 +38,24 @@
                      $this->error($ret->message);
                  }
              } else {
-                 if ($this->check_by_month_year($data['year'], $data['month'])){
-                     $this->error('该月报表已提交,不能重复提交');
+                 $check_ret = $this->check_by_month_year($data['year'], $data['month'], $data['all_name']);
+                 if ($check_ret === true){
+                    //新增 不做处理
+                 } elseif($check_ret) {
+                     if ($data['force_modify']) {//强制修改
+                        $id = $check_ret['id'];
+                         $ret = $this->local_service->update_by_id($id, $data);
+                         if ($ret->success) {
+                             action_user_log('修改财产保险公司月报表');
+                             $this->success('修改成功！');
+                         } else {
+                             $this->error($ret->message);
+                         }
+                     } else {
+                         $this->error('该月已提交报表,请不要重复提交');
+                     }
+                 } else {
+                     $this->error('参数错误');
                  }
                  $ret = $this->local_service->add_one($data);
                  if ($ret->success) {
@@ -40,19 +67,11 @@
              }
          } else {
              $this->title = '财产保险公司月填报('. date('Y-m') .'月)';
-
-             //获取所有相关的公司
-             $DepartmentService = \Common\Service\DepartmentService::get_instance();
-
-             $departments = $DepartmentService->get_my_list(UID, \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty);
-             parent::submit_monthly($departments[0]);
-
-             if (!$departments) {
-                 $departments = $DepartmentService->get_all_list(\Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty);
-
+             if ($this->is_history) {
+                 $this->title = '财产保险公司月填报[正在编辑历史数据]';
              }
-             $departments = result_to_array($departments, 'all_name');
-             $this->assign('departments', $departments);
+
+             parent::submit_monthly();
 
              $this->display();
          }
@@ -62,7 +81,6 @@
      {
          $this->title = '财产保险统计表';
          parent::statistics();
-
 
          $this->display();
      }
@@ -92,7 +110,7 @@
         if (I('get.all_name')) {
             $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
         }
-        $where['type'] = \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty;
+        $where['type'] = $this->type;
         $page = I('get.p', 1);
         list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
         $this->convert_data($data);
@@ -197,7 +215,7 @@
                 } else { //注册失败，显示错误信息
                     $this->error('添加失败!'.$uid.',登录名可能重复,请重试');
                 }
-                $data['type'] = \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty;
+                $data['type'] = $this->type;
                 $ret = $this->local_service->add_one($data);
 
                 if ($ret->success) {
@@ -220,6 +238,22 @@
                 $data[$k]['user'] = $users_map[$v['uid']];
             }
         }
+    }
+
+    public function convert_data_statistics($data, $data_all) {
+        $incomes = result_to_array($data_all, 'income');
+        $income_sum = array_sum($incomes);
+        array_multisort($incomes, SORT_DESC, $data_all);
+        foreach ($data as $key => $value) {
+            $data[$key]['percent'] = fix_2($value['income'] / $income_sum);
+            foreach ($data_all as $k => $v) {
+                if ($v['id'] == $value['id']) {
+                    $data[$key]['sort'] = $k + 1;
+                    break;
+                }
+            }
+        }
+        return $data;
     }
 
 

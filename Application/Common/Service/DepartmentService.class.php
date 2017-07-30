@@ -11,6 +11,7 @@ class DepartmentService extends BaseService{
         $FinancialModel = D('Financial' . static::$name);
         $data['gmt_create'] = time();
          if (!$FinancialModel->create($data)) {
+             echo 1;
             return result(FALSE, $FinancialModel->getError());
          }
 
@@ -20,7 +21,7 @@ class DepartmentService extends BaseService{
         if ($FinancialModel->add()) {
             return result(TRUE, '', $FinancialModel->getLastInsID());
         } else {
-
+            echo $FinancialModel->getLastSql();die();
             return result(FALSE, '网络繁忙~');
         }
     }

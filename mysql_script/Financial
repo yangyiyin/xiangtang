@@ -13,6 +13,11 @@ CREATE TABLE `shopy_financial_department` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+alter table shopy_financial_department add capital FLOAT(9,2) DEFAULT '0' COMMENT '注册资本 万元';
+alter table shopy_financial_department add total_assets FLOAT(9,2) DEFAULT '0' COMMENT '总资产 万元';
+alter table shopy_financial_department add staffs FLOAT(7,2) DEFAULT '0' COMMENT '员工人数';
+
+
 #财产保险公司月填报
 CREATE TABLE `shopy_financial_insurance_property` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -36,7 +41,147 @@ CREATE TABLE `shopy_financial_insurance_property` (
   `payoff_c` FLOAT(9,2) DEFAULT '0' COMMENT '其他险 万元',
   `payoff_c_rate` FLOAT(6,2) DEFAULT '0' COMMENT '其他险赔付率',
   `staff` int(6) DEFAULT '0' COMMENT '在岗人数',
-  `Authorized` int(6) DEFAULT '0' COMMENT '持证人数',
+  `authorized` int(6) DEFAULT '0' COMMENT '持证人数',
+  `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+#人身保险公司月填报
+CREATE TABLE `shopy_financial_insurance_life` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT '0' COMMENT '用户id',
+  `all_name` VARCHAR(50) DEFAULT '' COMMENT '公司全称',
+  `filler_man` VARCHAR(50) DEFAULT ''  COMMENT '填报人',
+  `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
+  `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
+
+	`income` FLOAT(9,2) DEFAULT '0' COMMENT '保费收入 万元',
+	`income_a` FLOAT(6,2) DEFAULT '0' COMMENT '个人营销 万元',
+	`income_a_yoy` FLOAT(9,2) DEFAULT '0' COMMENT '个人营销同比',
+ 	`income_a_a` FLOAT(9,2) DEFAULT '0' COMMENT '新单首期 万元',
+ 	`income_a_b` FLOAT(9,2) DEFAULT '0' COMMENT '新单期缴 万元',
+ 	`income_b` FLOAT(9,2) DEFAULT '0' COMMENT '团体业务 万元',
+ 	`income_c` FLOAT(9,2) DEFAULT '0' COMMENT '银行代理 万元',
+  `payoff_a` FLOAT(9,2) DEFAULT '0' COMMENT '短险赔款金额 万元',
+  `payoff_a_rate` FLOAT(6,2) DEFAULT '0' COMMENT '短险赔付率%',
+  `payoff_b` FLOAT(9,2) DEFAULT '0' COMMENT '死伤医给付金额 万元',
+  `payoff_c` FLOAT(9,2) DEFAULT '0' COMMENT '满期给付金额 万元',
+   `payoff_d` FLOAT(9,2) DEFAULT '0' COMMENT '年金给付金额 万元',
+   `backoff` FLOAT(9,2) DEFAULT '0' COMMENT '退保金额 万元',
+
+  `staff` int(6) DEFAULT '0' COMMENT '在岗人数',
+  `authorized` int(6) DEFAULT '0' COMMENT '持证人数',
+  `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+#保险互助社月填报
+CREATE TABLE `shopy_financial_insurance_mutual` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT '0' COMMENT '用户id',
+  `all_name` VARCHAR(50) DEFAULT '' COMMENT '公司全称',
+  `filler_man` VARCHAR(50) DEFAULT ''  COMMENT '填报人',
+  `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
+  `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
+
+
+  Life_A int(11) NOT NULL DEFAULT 0,		#家财：承保件数
+	Life_B int NOT NULL DEFAULT 0,		#承保户数
+	Life_C FLOAT(7,2) NOT NULL DEFAULT 0,	#保费
+	Life_D FLOAT(7,2) NOT NULL DEFAULT 0,	#保险金额(万元）
+	Life_E int NOT NULL DEFAULT 0,		#赔付件数
+	Life_F FLOAT(7,2) NOT NULL DEFAULT 0,	#赔付金额
+	Casualty_A int NOT NULL DEFAULT 0,		#意外：承保件数
+	Casualty_B int NOT NULL DEFAULT 0,		#承保户数
+	Casualty_C FLOAT(7,2) NOT NULL DEFAULT 0,	#保费
+	Casualty_D FLOAT(7,2) NOT NULL DEFAULT 0,	#保险金额(万元）
+	Casualty_E int NOT NULL DEFAULT 0,		#赔付件数
+	Casualty_F FLOAT(7,2) NOT NULL DEFAULT 0,	#赔付金额
+	Medical_A int NOT NULL DEFAULT 0,		#医疗：承保件数
+	Medical_B int NOT NULL DEFAULT 0,		#承保户数
+	Medical_C FLOAT(7,2) NOT NULL DEFAULT 0,	#保费
+	Medical_D FLOAT(7,2) NOT NULL DEFAULT 0,	#保险金额(万元）
+	Medical_E int NOT NULL DEFAULT 0,		#赔付件数
+	Medical_F FLOAT(7,2) NOT NULL DEFAULT 0,	#赔付金额
+   
+   
+
+  `staff` int(6) DEFAULT '0' COMMENT '在岗人数',
+  `authorized` int(6) DEFAULT '0' COMMENT '持证人数',
+  `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+#保险互助社月填报
+CREATE TABLE `shopy_financial_insurance_mutual_st` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT '0' COMMENT '用户id',
+  `all_name` VARCHAR(50) DEFAULT '' COMMENT '公司全称',
+  `filler_man` VARCHAR(50) DEFAULT ''  COMMENT '填报人',
+  `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
+  `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
+  `type` TINYINT(3) DEFAULT 1,#1年度 2历史累计
+
+  Life_A int(11) NOT NULL DEFAULT 0,		#家财：承保件数
+	Life_B int NOT NULL DEFAULT 0,		#承保户数
+	Life_C FLOAT(7,2) NOT NULL DEFAULT 0,	#保费
+	Life_D FLOAT(7,2) NOT NULL DEFAULT 0,	#保险金额(万元）
+	Life_E int NOT NULL DEFAULT 0,		#赔付件数
+	Life_F FLOAT(7,2) NOT NULL DEFAULT 0,	#赔付金额
+	Casualty_A int NOT NULL DEFAULT 0,		#意外：承保件数
+	Casualty_B int NOT NULL DEFAULT 0,		#承保户数
+	Casualty_C FLOAT(7,2) NOT NULL DEFAULT 0,	#保费
+	Casualty_D FLOAT(7,2) NOT NULL DEFAULT 0,	#保险金额(万元）
+	Casualty_E int NOT NULL DEFAULT 0,		#赔付件数
+	Casualty_F FLOAT(7,2) NOT NULL DEFAULT 0,	#赔付金额
+	Medical_A int NOT NULL DEFAULT 0,		#医疗：承保件数
+	Medical_B int NOT NULL DEFAULT 0,		#承保户数
+	Medical_C FLOAT(7,2) NOT NULL DEFAULT 0,	#保费
+	Medical_D FLOAT(7,2) NOT NULL DEFAULT 0,	#保险金额(万元）
+	Medical_E int NOT NULL DEFAULT 0,		#赔付件数
+	Medical_F FLOAT(7,2) NOT NULL DEFAULT 0,	#赔付金额
+
+  `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+#担保公司月填报
+CREATE TABLE `shopy_financial_Vouch` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT '0' COMMENT '用户id',
+  `all_name` VARCHAR(50) DEFAULT '' COMMENT '公司全称',
+  `filler_man` VARCHAR(50) DEFAULT ''  COMMENT '填报人',
+  `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
+  `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
+  `type` TINYINT(3) DEFAULT 1,#1年度 2历史累计
+
+  C_Balance float(9,2) NOT NULL DEFAULT 0,	#本期余额
+	C_Quantity int NOT NULL DEFAULT 0,		#本期笔数
+	C_Balance_Ly float(9,2) NOT NULL DEFAULT 0,	#去年同期余额
+	C_Quantity_Ly int NOT NULL DEFAULT 0,		#去年同期笔数
+	G_Balance float(9,2) NOT NULL DEFAULT 0,	#本年余额
+	G_Quantity int NOT NULL DEFAULT 0,		#本年笔数
+	G_Balance_Ly float(9,2) NOT NULL DEFAULT 0,	#去年同期余额
+	G_Quantity_Ly int NOT NULL DEFAULT 0,		#去年同期笔数
+	C_Income float(7,2) NOT NULL DEFAULT 0,	#本月收入
+	G_Income float(7,2) NOT NULL DEFAULT 0,	#本年收入
+	C_Recover float(9,2) NOT NULL DEFAULT 0,	#本月收回
+	G_Recover float(9,2) NOT NULL DEFAULT 0,	#本年收回
+	C_Profit float(7,2) NOT NULL DEFAULT 0,	#本期利润
+	G_Profit float(7,2) NOT NULL DEFAULT 0,	#本年利润
+	C_Taxable float(7,2) NOT NULL DEFAULT 0,	#本期纳税总额
+	G_Taxable float(7,2) NOT NULL DEFAULT 0,	#本年纳税总额
+
   `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
   `gmt_create` int(11) DEFAULT 0,
   `deleted` TINYINT(3) DEFAULT 0,

@@ -43,10 +43,4 @@
 
 
 
-function is_fixed_phone_num($tel) {
-    $n = preg_match_all("/^(0[0-9]{2,3}\-)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/",$tel, $array);
-    return (bool) $n;
-}
-
-
-var_dump(is_fixed_phone_num('63227567'));
+echo strtotime('2017-8');

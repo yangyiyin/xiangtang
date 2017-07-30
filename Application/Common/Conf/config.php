@@ -57,8 +57,9 @@ return array(
     'GROUP_FRANCHISEE' => 4,
 
     'GROUP_FinancialInsuranceProperty' => 7,
-
-
+    'GROUP_FinancialInsuranceLife' => 8,
+    'GROUP_FinancialInsuranceMutual' => 9,
+    'GROUP_FinancialVouch' => 10,
 
     'SERVER_CIDS' => [8,19],
     'INVITER_RATE' => 0.01

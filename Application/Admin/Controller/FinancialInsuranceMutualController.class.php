@@ -1,15 +1,15 @@
 <?php
 /**
  * Created by newModule.
- * Time: ___time___
+ * Time: 2017-07-30 16:16:37
  */
  namespace Admin\Controller;
  use Admin\Model\MemberModel;
  use User\Api\UserApi;
- class Financial___name___Controller extends FinancialBaseController  {
+ class FinancialInsuranceMutualController extends FinancialBaseController  {
      protected function _initialize() {
          parent::_initialize();
-           $this->type = \Common\Model\FinancialDepartmentModel::TYPE_Financial___name___;
+           $this->type = \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceMutual;
      }
 
      public function submit_monthly()
@@ -31,7 +31,7 @@
                      if ($id) {
                          $ret = $this->local_service->update_by_id($id, $data);
                          if ($ret->success) {
-                             action_user_log('修改___desc___月报表');
+                             action_user_log('修改保险互助社单位月报表');
                              $this->success('修改成功！');
                          } else {
                              $this->error($ret->message);
@@ -45,7 +45,7 @@
                                 $id = $check_ret['id'];
                                  $ret = $this->local_service->update_by_id($id, $data);
                                  if ($ret->success) {
-                                     action_user_log('修改___desc___月报表');
+                                     action_user_log('修改保险互助社单位月报表');
                                      $this->success('修改成功！');
                                  } else {
                                      $this->error($ret->message);
@@ -58,16 +58,16 @@
                          }
                          $ret = $this->local_service->add_one($data);
                          if ($ret->success) {
-                             action_user_log('新增___desc___月报表');
+                             action_user_log('新增保险互助社单位月报表');
                              $this->success('添加成功！');
                          } else {
                              $this->error($ret->message);
                          }
                      }
                  } else {
-                     $this->title = '___desc___月填报('. date('Y-m') .'月)';
+                     $this->title = '保险互助社单位月填报('. date('Y-m') .'月)';
                      if ($this->is_history) {
-                         $this->title = '___desc___月填报[正在编辑历史数据]';
+                         $this->title = '保险互助社单位月填报[正在编辑历史数据]';
                      }
 
                      parent::submit_monthly();
@@ -142,7 +142,7 @@
         if (!$ret->success) {
             $this->error($ret->message);
         }
-        action_user_log('删除___desc___');
+        action_user_log('删除保险互助社单位');
         $this->success('删除成功！');
     }
 
@@ -169,7 +169,7 @@
                         if ($id) {
                             $ret = $this->local_service->update_by_id($id, $data);
                             if ($ret->success) {
-                                action_user_log('修改___desc___');
+                                action_user_log('修改保险互助社单位');
                                 $this->success('修改成功！', U('index'));
                             } else {
                                 $this->error($ret->message);
@@ -192,7 +192,7 @@
                                 if(!M('Member')->add($user)){
                                     $this->error('添加失败！');
                                 } else {
-                                    $gid = C('GROUP_Financial' . '___name___');
+                                    $gid = C('GROUP_Financial' . 'InsuranceMutual');
                                     if( empty($uid) ){
                                         $this->error('参数有误');
                                     }
@@ -215,7 +215,7 @@
                             $data['type'] = $this->type;
                             $ret = $this->local_service->add_one($data);
                             if ($ret->success) {
-                                action_user_log('添加___desc___');
+                                action_user_log('添加保险互助社单位');
                                 $this->success('添加成功！', U('index'));
                             } else {
                                 $this->error($ret->message);

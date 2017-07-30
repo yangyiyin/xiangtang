@@ -5,14 +5,15 @@
 		<!-- 按钮工具栏 -->
 		<div class="u-tab">
 		    <ul class="cc tab-nav">
+				<li ><a href="{:U('submit_monthly')}">返回当月填报</a></li>
 				<li class="current"><a href="javascript:;">{$title}</a></li>
-				<include file="Public/history_link"/>
+
 			</ul>
 		</div>
 		<!-- 数据表格 -->
 		<div class="tab-content table_list">
 		<!-- 表单 -->
-		<form id="form" action="{:U('submit_monthly')}/id/{$info.id}" method="post" class="form-horizontal">
+		<form id="form" action="{:U('add_history')}/id/{$info.id}" method="post" class="form-horizontal">
 			<div id="tab">
 				<table class="biaoge">
 					<tbody>
@@ -44,8 +45,26 @@
 					<tr>
 						<td colspan="3">项目</td>
 						<td>
-
-							{:date('Y')}年{:date('m')}月
+							<select name="year">
+								<php>
+									$years = [2015,2016,2017];
+									$cur_year = date('Y');
+									foreach($years as $year){
+										$selected = ($year == $cur_year) ? 'selected' : '';
+										echo '<option value="'.$year.'" '.$selected.'>'.$year.'</option>';
+									}
+								</php>
+							</select>年
+							<select name="month">
+								<php>
+									$months = [1,2,3,4,5,6,7,8,9,10,11,12];
+									$cur_month = date('m');
+									foreach($months as $month){
+									$selected = ($month == $cur_month) ? 'selected' : '';
+									echo '<option value="'.$month.'" '.$selected.'>'.$month.'</option>';
+									}
+								</php>
+							</select>月
 						</td>
 					</tr>
 
@@ -166,8 +185,10 @@
 
 			<div class="btn_wrap">
 	          <div class="btn_wrap_pd">
-	            	<if condition="$info['id']">已提交</if><button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal"><if condition="$info['id']">修 改<else/>提 交</if></button>
-	          </div>
+
+				  <button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">提 交</button>
+				  <input name="force_modify" type="checkbox"/>强制修改
+			  </div>
 	        </div>
 	    </form>
 	    </div>

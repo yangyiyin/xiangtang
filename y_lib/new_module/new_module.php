@@ -67,6 +67,18 @@ class newModule {
         $content = str_replace('___time___', date('Y-m-d H:i:s'), $content);
         file_put_contents($path . '/index.html', $content);
 
+        $content = file_get_contents('view/submit_log.html');
+        $content = str_replace('___name___', $this->name, $content);
+        $content = str_replace('___desc___', $this->desc, $content);
+        $content = str_replace('___time___', date('Y-m-d H:i:s'), $content);
+        file_put_contents($path . '/submit_log.html', $content);
+
+//        $content = file_get_contents('view/add_history.html');
+//        $content = str_replace('___name___', $this->name, $content);
+//        $content = str_replace('___desc___', $this->desc, $content);
+//        $content = str_replace('___time___', date('Y-m-d H:i:s'), $content);
+//        file_put_contents($path . '/index.html', $content);
+
     }
 
     public function gain($names) {
@@ -126,7 +138,7 @@ class newModule {
 }
 
 
-$newModule = new newModule('InsuranceLife', '人身保险公司单位');
+$newModule = new newModule('InsuranceMutual', '保险互助社单位');
 //['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]
 //$newModule->gain(['controller'=>1, 'service'=>1, 'view'=>1]);
 $newModule->gain_power(['controller'=>1, 'service'=>1, 'view'=>1]);

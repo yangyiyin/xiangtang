@@ -1381,3 +1381,6 @@ function tel_num_security($tel) {
 function fix_2($num) {
     return ceil($num * 10000) / 100;
 }
+function date_time($time){
+    return date('Y-m-d H:i:s', $time);
+}
