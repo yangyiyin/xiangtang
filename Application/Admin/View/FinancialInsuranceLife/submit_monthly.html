@@ -1,0 +1,191 @@
+<extend name="Public/base"/>
+
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+			<ul class="cc tab-nav">
+				<li class="current"><a href="javascript:;">{$title}</a></li>
+				<include file="Public/history_link"/>
+			</ul>
+		</div>
+		<!-- 数据表格 -->
+		<div class="tab-content table_list">
+			<!-- 表单 -->
+			<form id="form" action="{:U('submit_monthly')}/id/{$info.id}" method="post" class="form-horizontal">
+				<div id="tab">
+					<table class="biaoge">
+						<tbody>
+						<tr>
+							<td colspan="4"><span class="title">慈溪市寿险业务快报</span><span> (单位 万元)</span></td>
+
+						</tr>
+						<tr>
+							<td>公司全称:</td>
+							<td>
+								<select name="all_name">
+									<php>
+										$list = $departments;
+										$cur = $info['all_name'];
+										foreach($list as $li){
+										$selected = ($li == $cur) ? 'selected' : '';
+										echo '<option value="'.$li.'" '.$selected.'>'.$li.'</option>';
+										}
+									</php>
+								</select>
+
+							</td>
+							<td>填表人:</td>
+							<td>
+								<input type="text" class="input input-medium" name="filler_man" value="{$info.filler_man}">
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="3">项目</td>
+							<td>
+
+								{:date('Y')}年{:date('m')}月
+							</td>
+						</tr>
+
+						<tr>
+							<td rowspan="6">保费</td>
+							<td colspan="2">
+								保费收入:
+							</td>
+							<td>
+								<input type="text" class="input input-medium" name="income" value="{$info.income}">
+							</td>
+						</tr>
+
+
+						<tr>
+							<td colspan="2">
+								1.个人营销:
+							</td>
+							<td>
+								<input type="text" class="input input-medium" name="income_a" value="{$info.income_a}">
+							</td>
+						</tr>
+
+						<tr>
+							<td rowspan="2">
+								其中
+							</td>
+							<td>
+								新单首期:
+							</td>
+							<td>
+								<input type="text" class="input input-medium" name="income_a_a" value="{$info.income_a_a}">
+							</td>
+						</tr>
+						<tr>
+							<td>
+								新单期缴:
+							</td>
+							<td>
+								<input type="text" class="input input-medium" name="income_a_b" value="{$info.income_a_b}">
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="2">
+								2.团体业务
+							</td>
+							<td>
+								<input type="text" class="input input-medium" name="income_b" value="{$info.income_b}">
+							</td>
+						</tr>
+
+
+						<tr>
+							<td colspan="2">
+								3.银行代理
+							</td>
+							<td>
+								<input type="text" class="input input-medium" name="income_c" value="{$info.income_c}">
+							</td>
+						</tr>
+
+						<tr>
+							<td rowspan="4">赔付</td>
+							<td colspan="2">
+								短险赔款金额:
+							</td>
+							<td>
+								<input type="text" class="input input-medium" name="payoff_a" value="{$info.payoff_a}">
+							</td>
+						</tr>
+
+
+						<tr>
+							<td colspan="2">
+								死伤医给付金额
+							</td>
+							<td>
+								<input type="text" class="input input-medium" name="payoff_b" value="{$info.payoff_b}">
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="2">
+								满期给付金额
+							</td>
+							<td>
+								<input type="text" class="input input-medium" name="payoff_c" value="{$info.payoff_c}">
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="2">
+								年金给付金额
+							</td>
+							<td>
+								<input type="text" class="input input-medium" name="payoff_d" value="{$info.payoff_d}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								退保金额
+							</td>
+							<td>
+								<input type="text" class="input input-medium" name="backoff" value="{$info.backoff}">
+							</td>
+						</tr>
+						<tr>
+
+							<td colspan="3">
+								营销员人数:
+							</td>
+							<td>
+								<input type="text" class="input input-medium" name="staff" value="{$info.staff}">
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="3">
+								持证人数:
+							</td>
+							<td>
+								<input type="text" class="input input-medium" name="authorized" value="{$info.authorized}">
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+
+
+
+				<div class="btn_wrap">
+					<div class="btn_wrap_pd">
+						<if condition="$info['id']">已提交</if><button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal"><if condition="$info['id']">修 改<else/>提 交</if></button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	</div>
+
+</block>
