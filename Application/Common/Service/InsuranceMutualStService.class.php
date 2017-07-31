@@ -93,4 +93,15 @@ class InsuranceMutualStService extends BaseService{
         return $FinancialModel->where($where)->find();
     }
 
+    public function get_all_by_month_year($year, $month) {
+        $FinancialModel = D('Financial' . static::$name);
+        $where = [];
+        $where['type'] = ['EQ', $type];
+        $where['year'] = ['EQ', $year];
+        $where['month'] = ['EQ', $month];
+        $where['all_name'] = ['EQ', $all_name];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->find();
+    }
+
 }
