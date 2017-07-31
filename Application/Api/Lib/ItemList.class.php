@@ -50,15 +50,19 @@ class ItemList extends BaseApi{
                 $_item['img'] = item_img(get_cover($_item['img'], 'path'));//todo 这种方式后期改掉
                 if ($UserService->is_dealer($user_info['type'])) {
                     $_item['price'] = (int) $_item['min_dealer_price'];
+                    $_item['show_price'] = (int) $_item['min_normal_price'];
+                    $_item['pay_price'] = (int) $_item['min_dealer_price'];
                 } elseif ($UserService->is_normal($user_info['type'])) {
                     $_item['price'] = (int) $_item['min_normal_price'];
+                    $_item['show_price'] = (int) $_item['min_normal_price'];
+                    $_item['pay_price'] = (int) $_item['min_normal_price'];
                 }
                 $_item['id'] = (int) $_item['id'];
                 $_item['pid'] = (int) $_item['pid'];
                 $_item['price'] = (int) $_item['price'];
                 $_item['sold_num'] = (int) $_item['sold_num'];
-                $_item['normal_price'] = (int) $_item['normal_price'];
-                $_item['dealer_price'] = (int) $_item['dealer_price'];
+//                $_item['normal_price'] = (int) $_item['normal_price'];
+//                $_item['dealer_price'] = (int) $_item['dealer_price'];
                 $list[] = convert_obj($_item, 'id=item_id,pid,title,img,desc,unit_desc,price,sold_num,normal_price,dealer_price');
             }
 

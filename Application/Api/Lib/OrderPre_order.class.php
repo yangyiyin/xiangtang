@@ -166,8 +166,13 @@ class OrderPre_order extends BaseApi{
 
                 if ($UserService->is_dealer($user_info['type'])) {
                     $_item['price'] = (int) $skus_map[$_item['sku_id']]['dealer_price'];
+
+                    $_item['show_price'] = (int) $skus_map[$_item['sku_id']]['price'];
+                    $_item['pay_price'] = (int) $skus_map[$_item['sku_id']]['dealer_price'];
                 } elseif ($UserService->is_normal($user_info['type'])) {
                     $_item['price'] = (int) $skus_map[$_item['sku_id']]['price'];
+                    $_item['show_price'] = (int) $skus_map[$_item['sku_id']]['price'];
+                    $_item['pay_price'] = (int) $skus_map[$_item['sku_id']]['price'];
                 }
 
                 $_item['num'] = (int)  $_item['num'];

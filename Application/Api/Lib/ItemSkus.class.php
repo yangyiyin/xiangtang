@@ -34,7 +34,10 @@ class ItemSkus extends BaseApi{
                 $temp['price'] = (int) $sku['price'];
             }
 
-            $temp['price'] = (int) $sku['price'];//这里显示高价格
+            $temp['normal_price'] = (int) $sku['price'];//这里显示高价格
+            $temp['dealer_price'] = (int) $sku['dealer_price'];
+
+
 
             if (isset($prop_sku_map[$sku['id']])) {
                 $values = result_to_array($prop_sku_map[$sku['id']], 'property_value_id');

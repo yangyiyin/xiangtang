@@ -41,8 +41,12 @@ class ItemDetail extends BaseApi{
 
                 if ($UserService->is_dealer($user_info['type'])) {
                     $_item['price'] = (int) $_item['min_dealer_price'];
+                    $_item['show_price'] = (int) $_item['min_normal_price'];
+                    $_item['pay_price'] = (int) $_item['min_dealer_price'];
                 } elseif ($UserService->is_normal($user_info['type'])) {
                     $_item['price'] = (int) $_item['min_normal_price'];
+                    $_item['show_price'] = (int) $_item['min_normal_price'];
+                    $_item['pay_price'] = (int) $_item['min_normal_price'];
                 }
 
                 $_item['id'] = (int) $_item['id'];
