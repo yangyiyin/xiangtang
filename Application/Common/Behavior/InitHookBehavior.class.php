@@ -21,7 +21,6 @@ class InitHookBehavior extends Behavior {
         if(isset($_GET['m']) && $_GET['m'] === 'Install') return;
         
         $data = S('hooks');
-        var_dump($data);die();
         if(!$data){
             $hooks = M('Hooks')->getField('name,addons');
             foreach ($hooks as $key => $value) {
