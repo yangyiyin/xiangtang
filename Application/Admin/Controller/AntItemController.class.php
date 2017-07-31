@@ -66,7 +66,7 @@ class AntItemController extends AdminController {
 
                 if ($ret->success) {
                     action_user_log('修改商品价格');
-                    $this->success('修改成功！', U('index'));
+                    $this->success('修改成功！');
                 } else {
                     $this->error($ret->message);
                 }

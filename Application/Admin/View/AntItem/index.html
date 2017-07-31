@@ -242,11 +242,12 @@ $(function(){
 				}else{
 					updateAlert(data.info ,'alert-success');
 				}
+				//$('.show_box_temp').hide();
 				setTimeout(function(){
 					if (data.url) {
 						location.href=data.url;
 					}else if( $(that).hasClass('no-refresh')){
-						$('#top-alert').find('button').click();
+						$('#top-alert').find('.close').click();
 						$(that).removeClass('disabled').prop('disabled',false);
 					}else{
 						location.reload();
