@@ -40,7 +40,6 @@ class Hook {
      * @return void
      */
     static public function import($data,$recursive=true) {
-        var_dump($data);die();
         if(!$recursive){ // 覆盖导入
             self::$tags   =   array_merge(self::$tags,$data);
         }else{ // 合并导入
