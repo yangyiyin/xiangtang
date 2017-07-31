@@ -23,7 +23,7 @@
                          $data['year'] = intval(date('Y'));
                          $data['month'] = intval(date('m'));
                      } else {
-                         $time = intval(strtotime($data['year'] . $data['month']));
+                         $time = intval(strtotime($data['year'] . '-' . $data['month']));
                          if (!$time || $time > strtotime('201712')) {
                              $this->error('历史数据时间必须小于201712');
                          }

@@ -1,0 +1,244 @@
+<extend name="Public/base"/>
+
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+		    <ul class="cc tab-nav">
+				<li ><a href="{:U('submit_monthly')}">返回当月填报</a></li>
+				<li class="current"><a href="javascript:;">{$title}</a></li>
+
+			</ul>
+		</div>
+		<!-- 数据表格 -->
+		<div class="tab-content table_list">
+		<!-- 表单 -->
+		<form id="form" action="{:U('add_history')}/id/{$info.id}" method="post" class="form-horizontal">
+			<div id="tab">
+				<table class="biaoge">
+					<tbody>
+					<tr>
+						<td colspan="4"><span class="title">农村保险互助社业务发展统计表</span><span> (金额单位 万元)</span></td>
+
+					</tr>
+					<tr>
+						<td>公司全称:</td>
+						<td>
+							<select name="all_name">
+								<php>
+									$list = $departments;
+									$cur = $info['all_name'];
+									foreach($list as $li){
+									$selected = ($li == $cur) ? 'selected' : '';
+									echo '<option value="'.$li.'" '.$selected.'>'.$li.'</option>';
+									}
+								</php>
+							</select>
+
+						</td>
+						<td>填表人:</td>
+						<td>
+							<input type="text" class="input input-medium" name="filler_man" value="{$info.filler_man}">
+						</td>
+					</tr>
+
+					<tr>
+						<td colspan="3">项目</td>
+						<td>
+							<select name="year">
+								<php>
+									$years = [2015,2016,2017];
+									$cur_year = date('Y');
+									foreach($years as $year){
+										$selected = ($year == $cur_year) ? 'selected' : '';
+										echo '<option value="'.$year.'" '.$selected.'>'.$year.'</option>';
+									}
+								</php>
+							</select>年
+							<select name="month">
+								<php>
+									$months = [1,2,3,4,5,6,7,8,9,10,11,12];
+									$cur_month = date('m');
+									foreach($months as $month){
+									$selected = ($month == $cur_month) ? 'selected' : '';
+									echo '<option value="'.$month.'" '.$selected.'>'.$month.'</option>';
+									}
+								</php>
+							</select>月
+						</td>
+					</tr>
+
+					<tr>
+						<td rowspan="6" colspan="2">家庭财产保险</td>
+						<td>
+							承保件数:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Life_A" value="{$info.Life_A}">
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							承保户数:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Life_B" value="{$info.Life_B}">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							保费:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Life_C" value="{$info.Life_C}">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							保险金额:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Life_D" value="{$info.Life_D}">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							赔付件数:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Life_E" value="{$info.Life_E}">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							赔付金额:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Life_F" value="{$info.Life_F}">
+						</td>
+					</tr>
+
+					<tr>
+						<td rowspan="6" colspan="2">意外险</td>
+						<td>
+							承保件数:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Casualty_A" value="{$info.Casualty_A}">
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							承保户数:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Casualty_B" value="{$info.Casualty_B}">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							保费:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Casualty_C" value="{$info.Casualty_C}">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							保险金额:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Casualty_D" value="{$info.Casualty_D}">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							赔付件数:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Casualty_E" value="{$info.Casualty_E}">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							赔付金额:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Casualty_F" value="{$info.Casualty_F}">
+						</td>
+					</tr>
+
+					<tr>
+						<td rowspan="6" colspan="2">补充医疗互助保险</td>
+						<td>
+							承保件数:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Medical_A" value="{$info.Medical_A}">
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							承保户数:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Medical_B" value="{$info.Medical_B}">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							保费:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Medical_C" value="{$info.Medical_C}">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							保险金额:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Medical_D" value="{$info.Medical_D}">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							赔付件数:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Medical_E" value="{$info.Medical_E}">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							赔付金额:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Medical_F" value="{$info.Medical_F}">
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+
+
+
+
+
+
+			<div class="btn_wrap">
+	          <div class="btn_wrap_pd">
+
+				  <button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">提 交</button>
+				  <input name="force_modify" type="checkbox"/>强制修改
+			  </div>
+	        </div>
+	    </form>
+	    </div>
+	</div>
+</div>
+
+</block>

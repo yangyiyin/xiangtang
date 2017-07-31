@@ -138,7 +138,7 @@ class newModule {
 }
 
 
-$newModule = new newModule('InsuranceMutual', '保险互助社单位');
+$newModule = new newModule('InsuranceMutualSt', '保险互助社单位统计');
 //['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]
-//$newModule->gain(['controller'=>1, 'service'=>1, 'view'=>1]);
-$newModule->gain_power(['controller'=>1, 'service'=>1, 'view'=>1]);
+//$newModule->gain(['service'=>1, 'model'=>1]);
+$newModule->gain_power(['service'=>1, 'model'=>1]);

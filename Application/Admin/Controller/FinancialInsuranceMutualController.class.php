@@ -23,7 +23,9 @@
                          $data['year'] = intval(date('Y'));
                          $data['month'] = intval(date('m'));
                      } else {
-                         $time = intval(strtotime($data['year'] . $data['month']));
+
+                         $time = intval(strtotime($data['year'] . '-' .  $data['month']));
+
                          if (!$time || $time > strtotime('201712')) {
                              $this->error('历史数据时间必须小于201712');
                          }
@@ -32,6 +34,10 @@
                          $ret = $this->local_service->update_by_id($id, $data);
                          if ($ret->success) {
                              action_user_log('修改保险互助社单位月报表');
+                             $this->update_st($data);
+                             if (!$ret->success) {
+                                 $this->error('生成统计失败,请更新月报,以重新生成统计');
+                             }
                              $this->success('修改成功！');
                          } else {
                              $this->error($ret->message);
@@ -59,6 +65,10 @@
                          $ret = $this->local_service->add_one($data);
                          if ($ret->success) {
                              action_user_log('新增保险互助社单位月报表');
+                             $this->update_st($data);
+                             if (!$ret->success) {
+                                 $this->error('生成统计失败,请更新月报,以重新生成统计');
+                             }
                              $this->success('添加成功！');
                          } else {
                              $this->error($ret->message);
@@ -79,12 +89,51 @@
      public function statistics()
      {
          $this->title = '';
-         parent::statistics();
+         $get = I('get.');
+         $where = [];
+         if ($get['all_name']) {
+             $where['all_name'] = ['LIKE', '%' . $get['all_name'] . '%'];
+         }
+
+         if (!$get['year']) {
+             $get['year'] = intval(date('Y'));
+         }
+         if (!$get['month']) {
+             $get['month'] = intval(date('m'));
+         }
+         $where['year'] = $get['year'];
+         $where['month'] = $get['month'];
+         $service = '\Common\Service\\'.$this->local_service_name;
+         $page = I('get.p', 1);
+
+         list($data, $count) = $this->local_service->get_by_where([], 'income desc', $page);
+         $data = $this->convert_data_statistics($data);
+         $PageInstance = new \Think\Page($count, $service::$page_size);
+         if($total>$service::$page_size){
+             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+         }
+         $page_html = $PageInstance->show();
+
+         $this->assign('list', $data);
+         $this->assign('page_html', $page_html);
 
 
          $this->display();
      }
 
+     protected function convert_data_statistics($data) {
+         if ($data) {
+             foreach ($data as $key => $value) {
+                 $data[$key]['total_a'] = $value['Life_A'] + $value['Casualty_A'] + $value['Medical_A'];
+                 $data[$key]['total_b'] = $value['Life_B'] + $value['Casualty_B'] + $value['Medical_B'];
+                 $data[$key]['total_c'] = $value['Life_C'] + $value['Casualty_C'] + $value['Medical_C'];
+                 $data[$key]['total_d'] = $value['Life_D'] + $value['Casualty_D'] + $value['Medical_D'];
+                 $data[$key]['total_e'] = $value['Life_E'] + $value['Casualty_E'] + $value['Medical_E'];
+                 $data[$key]['total_f'] = $value['Life_F'] + $value['Casualty_F'] + $value['Medical_F'];
+             }
+         }
+         return $data;
+     }
      public function add_unit(){
          $this->title = '';
          parent::add_unit();
@@ -237,6 +286,122 @@
         }
     }
 
+     /**
+      * 生成历史数据和本年数据
+      * @param $data
+      */
+    protected function update_st($data) {
+        $service = \Common\Service\InsuranceMutualStService::get_instance();
+        $ret_a = $service->get_by_month_year($data['year'], $data['month'], $data['all_name'], \Common\Model\FinancialInsuranceMutualStModel::TYPE_A);
+        $ret_b = $service->get_by_month_year($data['year'], $data['month'], $data['all_name'], \Common\Model\FinancialInsuranceMutualStModel::TYPE_B);
 
+
+        $data_a = $this->get_data_st_a($data);
+        $data_b = $this->get_data_st_b($data);
+
+        if ($ret_a && $data_a) {
+            $ret = $service->update_by_id($ret_a['id'], $data_a);
+            if (!$ret->success) {
+                $this->error('更新年度保险互助社统计表失败~');
+            }
+            action_user_log('修改年度保险互助社统计表');
+        } else {
+            $ret = $service->add_one($data_a);
+            if (!$ret->success) {
+                $this->error('新增年度保险互助社统计表失败~');
+            }
+            action_user_log('新增年度保险互助社统计表');
+        }
+
+
+        if ($ret_b && $data_b) {
+            $ret = $service->update_by_id($ret_b['id'], $data_b);
+            if (!$ret->success) {
+                $this->error('修改历史保险互助社统计表失败~');
+            }
+            action_user_log('修改历史保险互助社统计表');
+
+        } else {
+            $ret = $service->add_one($data_b);
+            if (!$ret->success) {
+                $this->error('新增历史保险互助社统计表失败~');
+            }
+            action_user_log('新增历史保险互助社统计表');
+        }
+
+    }
+
+    protected function get_data_st_a($data) {
+        $ret = $this->local_service->get_type_a_data($data['year'], $data['month'], $data['all_name']);
+        $data_a = [];
+        if ($ret) {
+            $data_a['uid'] = $data['uid'];
+            $data_a['all_name'] = $data['all_name'];
+            $data_a['year'] = $data['year'];
+            $data_a['month'] = $data['month'];
+            $data_a['filler_man'] = $data['filler_man'];
+            $data_a['type'] = \Common\Model\FinancialInsuranceMutualStModel::TYPE_A;
+            $data_a['ip'] = $_SERVER["REMOTE_ADDR"];
+            foreach ($ret as $value) {
+                $data_a['Life_A'] += $value['Life_A'];
+                $data_a['Life_B'] += $value['Life_B'];
+                $data_a['Life_C'] += $value['Life_C'];
+                $data_a['Life_D'] += $value['Life_D'];
+                $data_a['Life_E'] += $value['Life_E'];
+                $data_a['Life_F'] += $value['Life_F'];
+                $data_a['Casualty_A'] += $value['Casualty_A'];
+                $data_a['Casualty_B'] += $value['Casualty_B'];
+                $data_a['Casualty_C'] += $value['Casualty_C'];
+                $data_a['Casualty_D'] += $value['Casualty_D'];
+                $data_a['Casualty_E'] += $value['Casualty_E'];
+                $data_a['Casualty_F'] += $value['Casualty_F'];
+                $data_a['Medical_A'] += $value['Medical_A'];
+                $data_a['Medical_B'] += $value['Medical_B'];
+                $data_a['Medical_C'] += $value['Medical_C'];
+                $data_a['Medical_D'] += $value['Medical_D'];
+                $data_a['Medical_E'] += $value['Medical_E'];
+                $data_a['Medical_F'] += $value['Medical_F'];
+
+            }
+        }
+        return $data_a;
+    }
+
+     protected function get_data_st_b($data) {
+         $ret = $this->local_service->get_type_b_data($data['year'], $data['month'], $data['all_name']);
+
+         $data_b = [];
+         if ($ret) {
+             $data_b['uid'] = $data['uid'];
+             $data_b['all_name'] = $data['all_name'];
+             $data_b['year'] = $data['year'];
+             $data_b['month'] = $data['month'];
+             $data_b['filler_man'] = $data['filler_man'];
+             $data_b['type'] = \Common\Model\FinancialInsuranceMutualStModel::TYPE_B;
+             $data_b['ip'] = $_SERVER["REMOTE_ADDR"];
+             foreach ($ret as $value) {
+                 $data_b['Life_A'] += $value['Life_A'];
+                 $data_b['Life_B'] += $value['Life_B'];
+                 $data_b['Life_C'] += $value['Life_C'];
+                 $data_b['Life_D'] += $value['Life_D'];
+                 $data_b['Life_E'] += $value['Life_E'];
+                 $data_b['Life_F'] += $value['Life_F'];
+                 $data_b['Casualty_A'] += $value['Casualty_A'];
+                 $data_b['Casualty_B'] += $value['Casualty_B'];
+                 $data_b['Casualty_C'] += $value['Casualty_C'];
+                 $data_b['Casualty_D'] += $value['Casualty_D'];
+                 $data_b['Casualty_E'] += $value['Casualty_E'];
+                 $data_b['Casualty_F'] += $value['Casualty_F'];
+                 $data_b['Medical_A'] += $value['Medical_A'];
+                 $data_b['Medical_B'] += $value['Medical_B'];
+                 $data_b['Medical_C'] += $value['Medical_C'];
+                 $data_b['Medical_D'] += $value['Medical_D'];
+                 $data_b['Medical_E'] += $value['Medical_E'];
+                 $data_b['Medical_F'] += $value['Medical_F'];
+
+             }
+         }
+         return $data_b;
+     }
 
  }

@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-07-30 16:16:37
+ * Time: 2017-07-31 07:08:43
  */
 namespace Common\Service;
-class InsuranceMutualService extends BaseService{
-    public static $name = 'InsuranceMutual';
+class InsuranceMutualStService extends BaseService{
+    public static $name = 'InsuranceMutualSt';
 
     public function add_one($data, $is_only_create = 0) {
         $FinancialModel = D('Financial' . static::$name);
@@ -82,49 +82,15 @@ class InsuranceMutualService extends BaseService{
     }
 
 
-  public function get_by_month_year($year, $month, $all_name) {
+  public function get_by_month_year($year, $month, $all_name, $type) {
         $FinancialModel = D('Financial' . static::$name);
         $where = [];
+        $where['type'] = ['EQ', $type];
         $where['year'] = ['EQ', $year];
         $where['month'] = ['EQ', $month];
         $where['all_name'] = ['EQ', $all_name];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $FinancialModel->where($where)->find();
     }
-
-    public function get_type_a_data($year, $month, $all_name) {
-        $FinancialModel = D('Financial' . static::$name);
-        $where = [];
-        $where['year'] = ['EQ', $year];
-        $where['month'] = ['elt', $month];
-        $where['all_name'] = ['EQ', $all_name];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $FinancialModel->where($where)->select();
-    }
-
-    public function get_type_b_data($year, $month, $all_name) {
-        $FinancialModel = D('Financial' . static::$name);
-        $where = [];
-        $where['year'] = ['EQ', $year];
-        $where['month'] = ['elt', $month];
-        $where['all_name'] = ['EQ', $all_name];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        $a = $FinancialModel->where($where)->select();
-        $where = [];
-        $where['year'] = ['lt', $year];
-        $where['all_name'] = ['EQ', $all_name];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        $b = $FinancialModel->where($where)->select();
-        if (!$a) {
-            return $b;
-        }
-
-        if (!$b) {
-            return $a;
-        }
-
-        return array_merge($a, $b);
-    }
-
 
 }
