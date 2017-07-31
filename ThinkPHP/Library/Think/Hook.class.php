@@ -119,6 +119,7 @@ class Hook {
             $class   =  $name.'Behavior';
             $tag    =   'run';
         }
+        var_dump($class);die();
         $addon   = new $class();
         return $addon->$tag($params);
     }

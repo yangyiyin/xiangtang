@@ -36,7 +36,6 @@ use Common\Controller\Addon;
 		 * @param array('name'=>'表单name','value'=>'表单对应的值')
 		 */
 		public function adminArticleEdit($data){
-		    echo 1;die();
 			$this->assign('addons_data', $data);
 			$this->assign('addons_config', $this->getConfig());
 			$this->display('content');
