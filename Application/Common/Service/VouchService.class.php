@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-07-31 07:08:43
+ * Time: 2017-07-31 14:53:05
  */
 namespace Common\Service;
-class InsuranceMutualStService extends BaseService{
-    public static $name = 'InsuranceMutualSt';
+class VouchService extends BaseService{
+    public static $name = 'Vouch';
 
     public function add_one($data, $is_only_create = 0) {
         $FinancialModel = D('Financial' . static::$name);
@@ -82,24 +82,14 @@ class InsuranceMutualStService extends BaseService{
     }
 
 
-  public function get_by_month_year($year, $month, $all_name, $type) {
+  public function get_by_month_year($year, $month, $all_name) {
         $FinancialModel = D('Financial' . static::$name);
         $where = [];
-        $where['type'] = ['EQ', $type];
         $where['year'] = ['EQ', $year];
         $where['month'] = ['EQ', $month];
         $where['all_name'] = ['EQ', $all_name];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $FinancialModel->where($where)->find();
-    }
-
-    public function get_all_by_month_year($year, $month) {
-        $FinancialModel = D('Financial' . static::$name);
-        $where = [];
-        $where['year'] = ['EQ', $year];
-        $where['month'] = ['EQ', $month];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $FinancialModel->where($where)->select();
     }
 
 }

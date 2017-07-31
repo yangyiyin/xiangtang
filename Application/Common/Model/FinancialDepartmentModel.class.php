@@ -10,7 +10,7 @@ class FinancialDepartmentModel extends NfBaseModel {
     const TYPE_FinancialInsuranceProperty = 1;
     const TYPE_FinancialInsuranceLife = 2;
     const TYPE_FinancialInsuranceMutual = 3;
-    const TYPE_FinancialInsuranceVouch = 4;
+    const TYPE_FinancialVouch = 4;
 
   protected $_validate = array(
         /**

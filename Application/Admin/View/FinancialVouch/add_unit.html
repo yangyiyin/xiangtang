@@ -1,0 +1,102 @@
+<extend name="Public/base"/>
+
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+			<ul class="cc tab-nav">
+				<li><a href="{:U('index')}">所有担保公司单位</a></li>
+				<if condition="I('get.id')">
+					<li class="current"><a href="javascript:;">编辑担保公司单位</a></li>
+					<else/>
+					<li class="current"><a href="javascript:;">添加担保公司单位</a></li>
+				</if>
+			</ul>
+		</div>
+		<!-- 数据表格 -->
+		<div class="tab-content table_list">
+			<!-- 表单 -->
+			<form id="form" action="{:U('update')}/id/{:I('get.id')}" method="post" class="form-horizontal">
+				<div id="tab">
+					<table class="" width="100%">
+						<tbody>
+						<tr>
+							<td width="20%"><label class="item-label">公司全称</label></td>
+							<td width="80%">
+								<input type="text" class="input input-medium" name="all_name" value="{$info.all_name}">
+							</td>
+						</tr>
+						<tr>
+							<td width="20%"><label class="item-label">地址</label></td>
+							<td width="80%">
+								<input type="text" class="input input-medium" name="address" value="{$info.address}">
+							</td>
+						</tr>
+						<tr>
+							<td width="20%"><label class="item-label">注册资本</label></td>
+							<td width="80%">
+								<input type="text" class="input input-medium" name="capital" value="{$info.capital}">
+							</td>
+						</tr>
+						<tr>
+							<td width="20%"><label class="item-label">主要负责人</label></td>
+							<td width="80%">
+								<input type="text" class="input input-medium" name="principal" value="{$info.principal}">
+							</td>
+						</tr>
+						<tr>
+							<td width="20%"><label class="item-label">电话</label></td>
+							<td width="80%">
+								<input type="text" class="input input-medium" name="phone" value="{$info.phone}">
+							</td>
+						</tr>
+						<tr>
+							<td width="20%"><label class="item-label">固定电话</label></td>
+							<td width="80%">
+								<input type="text" class="input input-medium" name="fixed_phone" value="{$info.fixed_phone}">
+							</td>
+						</tr>
+
+						<tr>
+							<td width="20%"><label class="item-label">移动电话</label></td>
+							<td width="80%">
+								<input type="text" class="input input-medium" name="tel_phone" value="{$info.tel_phone}">
+							</td>
+						</tr>
+						<tr>
+							<td width="20%"><label class="item-label">报表联系人</label></td>
+							<td width="80%">
+								<input type="text" class="input input-medium" name="filler_man" value="{$info.filler_man}">
+							</td>
+						</tr>
+						<if condition="!I('get.id')">
+							<tr>
+								<td width="20%"><label class="item-label">后台登录名</label></td>
+								<td width="80%">
+									<input type="text" class="input input-medium" name="username" value="">
+								</td>
+							</tr>
+							<tr>
+								<td width="20%"><label class="item-label">后台登录初始密码</label></td>
+								<td width="80%">
+									123456
+								</td>
+							</tr>
+						</if>
+
+						</tbody>
+					</table>
+				</div>
+
+				<div class="btn_wrap">
+					<div class="btn_wrap_pd">
+						<button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">确 定</button>
+						<button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	</div>
+
+</block>

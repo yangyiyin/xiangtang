@@ -187,3 +187,8 @@ CREATE TABLE `shopy_financial_Vouch` (
   `deleted` TINYINT(3) DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+alter table shopy_financial_Vouch add C_Vouch FLOAT(7,2) DEFAULT '0'; #本期担保额
+
+alter table shopy_financial_Vouch add G_Vouch FLOAT(7,2) DEFAULT '0'; #本年担保额
+alter table shopy_financial_Vouch add G_Vouch_Ly FLOAT(7,2) DEFAULT '0'; #本年同期担保额

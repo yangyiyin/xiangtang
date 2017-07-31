@@ -106,7 +106,7 @@
          $service = '\Common\Service\\'.$this->local_service_name;
          $page = I('get.p', 1);
 
-         list($data, $count) = $this->local_service->get_by_where([], 'id desc', $page);
+         list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
          //获取年度和历史累计
          $InsuranceMutualStService = \Common\Service\InsuranceMutualStService::get_instance();
          $st_all = $InsuranceMutualStService->get_all_by_month_year($where['year'], $where['month']);
@@ -115,9 +115,8 @@
          $type_b = \Common\Model\FinancialInsuranceMutualStModel::TYPE_B;
          $st_all_a_map = isset($st_all_map[$type_a]) ? $st_all_map[$type_a] : [];
          $st_all_b_map = isset($st_all_map[$type_b]) ? $st_all_map[$type_b] : [];
-
          $data = $this->convert_data_statistics($data, $st_all_a_map, $st_all_b_map);
-         //var_dump($data);die();
+
          $PageInstance = new \Think\Page($count, $service::$page_size);
          if($total>$service::$page_size){
              $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
@@ -143,7 +142,21 @@
                  $data[$key]['total_e'] = $value['Life_E'] + $value['Casualty_E'] + $value['Medical_E'];
                  $data[$key]['total_f'] = $value['Life_F'] + $value['Casualty_F'] + $value['Medical_F'];
                  $data[$key]['st_a'] = isset($data_a_map[$value['all_name']]) ? $data_a_map[$value['all_name']] : [];
+                 $data[$key]['st_a']['total_a'] = $data[$key]['st_a']['Life_A'] + $data[$key]['st_a']['Casualty_A'] + $data[$key]['st_a']['Medical_A'];
+                 $data[$key]['st_a']['total_b'] = $data[$key]['st_a']['Life_B'] + $data[$key]['st_a']['Casualty_B'] + $data[$key]['st_a']['Medical_B'];
+                 $data[$key]['st_a']['total_c'] = $data[$key]['st_a']['Life_C'] + $data[$key]['st_a']['Casualty_C'] + $data[$key]['st_a']['Medical_C'];
+                 $data[$key]['st_a']['total_d'] = $data[$key]['st_a']['Life_D'] + $data[$key]['st_a']['Casualty_D'] + $data[$key]['st_a']['Medical_D'];
+                 $data[$key]['st_a']['total_e'] = $data[$key]['st_a']['Life_E'] + $data[$key]['st_a']['Casualty_E'] + $data[$key]['st_a']['Medical_E'];
+                 $data[$key]['st_a']['total_f'] = $data[$key]['st_a']['Life_F'] + $data[$key]['st_a']['Casualty_F'] + $data[$key]['st_a']['Medical_F'];
+
                  $data[$key]['st_b'] = isset($data_b_map[$value['all_name']]) ? $data_b_map[$value['all_name']] : [];
+                 $data[$key]['st_b']['total_a'] = $data[$key]['st_b']['Life_A'] + $data[$key]['st_b']['Casualty_A'] + $data[$key]['st_b']['Medical_A'];
+                 $data[$key]['st_b']['total_b'] = $data[$key]['st_b']['Life_B'] + $data[$key]['st_b']['Casualty_B'] + $data[$key]['st_b']['Medical_B'];
+                 $data[$key]['st_b']['total_c'] = $data[$key]['st_b']['Life_C'] + $data[$key]['st_b']['Casualty_C'] + $data[$key]['st_b']['Medical_C'];
+                 $data[$key]['st_b']['total_d'] = $data[$key]['st_b']['Life_D'] + $data[$key]['st_b']['Casualty_D'] + $data[$key]['st_b']['Medical_D'];
+                 $data[$key]['st_b']['total_e'] = $data[$key]['st_b']['Life_E'] + $data[$key]['st_b']['Casualty_E'] + $data[$key]['st_b']['Medical_E'];
+                 $data[$key]['st_b']['total_f'] = $data[$key]['st_b']['Life_F'] + $data[$key]['st_b']['Casualty_F'] + $data[$key]['st_b']['Medical_F'];
+
 
              }
          }
