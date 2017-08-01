@@ -18,7 +18,7 @@ class OrderPre_order_info extends BaseApi{
     }
 
     public function excute() {
-        $pre_order_ids = I('get.pre_order_ids');
+        $pre_order_ids = explode(',', I('get.pre_order_ids'));
         $pre_orders = $this->OrderPreService->get_by_ids($pre_order_ids);
         if (!$pre_orders) {
             return result_json(FALSE, '没有预订单信息');
