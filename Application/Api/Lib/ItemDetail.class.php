@@ -54,7 +54,7 @@ class ItemDetail extends BaseApi{
                 $_item['price'] = (int) $_item['price'];
                 $_item['content'] = $_item['content'];
                 $_item['tips'] = $_item['tips'];
-                $list[] = convert_obj($_item, 'id=item_id,pid,title,img,desc,unit_desc,price,content,tips');
+                $list[] = convert_obj($_item, 'id=item_id,pid,title,img,desc,unit_desc,price,content,tips,show_price,pay_price');
             }
 
         }
