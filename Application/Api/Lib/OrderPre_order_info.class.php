@@ -68,14 +68,14 @@ class OrderPre_order_info extends BaseApi{
                     $_item['pay_price'] = (int) $skus_map[$_item['sku_id']]['price'];
                 }
 
-                $_item['img'] = item_img(get_cover($items_map[$_item['item_id']]['img'], 'path'));//todo 这种方式后期改掉
+                $_item['img'] = item_img(get_cover($items_map[$_item['iid']]['img'], 'path'));//todo 这种方式后期改掉
                 $_item['num'] = (int)  $_item['num'];
-                $_item['id'] = (int) $items_map[$_item['item_id']]['id'];
-                $_item['pid'] = (int) $items_map[$_item['item_id']]['pid'];
-                $_item['price'] = (int) $items_map[$_item['item_id']]['price'];
-                $_item['title'] = $items_map[$_item['item_id']]['title'];
-                $_item['desc'] =  $items_map[$_item['item_id']]['desc'];
-                $_item['unit_desc'] = $items_map[$_item['item_id']]['unit_desc'];
+                $_item['id'] = (int) $items_map[$_item['iid']]['id'];
+                $_item['pid'] = (int) $items_map[$_item['iid']]['pid'];
+                $_item['price'] = (int) $items_map[$_item['iid']]['price'];
+                $_item['title'] = $items_map[$_item['iid']]['title'];
+                $_item['desc'] =  $items_map[$_item['iid']]['desc'];
+                $_item['unit_desc'] = $items_map[$_item['iid']]['unit_desc'];
                 $list[] = convert_obj($_item, 'id=item_id,pid,title,img,desc,unit_desc,price,num,show_price,pay_price');
             }
 
