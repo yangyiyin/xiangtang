@@ -23,7 +23,7 @@ class OrderPre_order extends BaseApi{
         if (!$items_num) {
             return result_json(FALSE, '参数错误~');
         }
-        
+
         $items_num_arr = $items_num;
 
         if (!is_array($items_num_arr)) {
