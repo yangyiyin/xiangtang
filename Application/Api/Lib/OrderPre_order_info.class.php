@@ -36,8 +36,8 @@ class OrderPre_order_info extends BaseApi{
             $items_map  = result_to_map($items);
 
             //$item_num_map = result_to_map($pre_order_items, 'iid');
-            //$items = $this->add_item_num($pre_order_items, $skus_map);
-
+           // $items = $this->add_item_num($pre_order_items, $skus_map);
+            $items = $pre_order_items;
             $items = $this->convert_data($items, $items_map, $skus_map);
             $data = [];
             $data['pre_order_id'] = (int) $pre_order['id'];
