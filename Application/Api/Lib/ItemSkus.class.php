@@ -75,7 +75,7 @@ class ItemSkus extends BaseApi{
             $temp = [];
             $temp['id'] = $prop['id'];
             $temp['name'] = $prop['name'];
-            $temp['child'] = array_values($prop['child']);
+            $temp['values'] = array_values($prop['child']);
             $result_properties_new[] = $temp;
         }
 
