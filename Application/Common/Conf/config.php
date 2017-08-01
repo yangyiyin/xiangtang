@@ -60,6 +60,8 @@ return array(
     'GROUP_FinancialInsuranceLife' => 8,
     'GROUP_FinancialInsuranceMutual' => 9,
     'GROUP_FinancialVouch' => 10,
+    'GROUP_FinancialInvestment' => 11,
+    'GROUP_FinancialInvestmentManager' => 12,
 
     'SERVER_CIDS' => [8,19],
     'INVITER_RATE' => 0.01

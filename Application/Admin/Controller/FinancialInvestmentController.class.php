@@ -1,15 +1,15 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-07-31 14:53:05
+ * Time: 2017-08-01 08:14:09
  */
  namespace Admin\Controller;
  use Admin\Model\MemberModel;
  use User\Api\UserApi;
- class FinancialVouchController extends FinancialBaseController  {
+ class FinancialInvestmentController extends FinancialBaseController  {
      protected function _initialize() {
          parent::_initialize();
-           $this->type = \Common\Model\FinancialDepartmentModel::TYPE_FinancialVouch;
+           $this->type = \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestment;
      }
 
      public function submit_monthly()
@@ -31,7 +31,7 @@
                      if ($id) {
                          $ret = $this->local_service->update_by_id($id, $data);
                          if ($ret->success) {
-                             action_user_log('修改担保公司单位月报表');
+                             action_user_log('修改股权投资和创业投资机构单位月报表');
                              $this->success('修改成功！');
                          } else {
                              $this->error($ret->message);
@@ -45,7 +45,7 @@
                                 $id = $check_ret['id'];
                                  $ret = $this->local_service->update_by_id($id, $data);
                                  if ($ret->success) {
-                                     action_user_log('修改担保公司单位月报表');
+                                     action_user_log('修改股权投资和创业投资机构单位月报表');
                                      $this->success('修改成功！');
                                  } else {
                                      $this->error($ret->message);
@@ -58,16 +58,16 @@
                          }
                          $ret = $this->local_service->add_one($data);
                          if ($ret->success) {
-                             action_user_log('新增担保公司单位月报表');
+                             action_user_log('新增股权投资和创业投资机构单位月报表');
                              $this->success('添加成功！');
                          } else {
                              $this->error($ret->message);
                          }
                      }
                  } else {
-                     $this->title = '担保公司单位月填报('. date('Y-m') .'月)';
+                     $this->title = '股权投资和创业投资机构单位月填报('. date('Y-m') .'月)';
                      if ($this->is_history) {
-                         $this->title = '担保公司单位月填报[正在编辑历史数据]';
+                         $this->title = '股权投资和创业投资机构单位月填报[正在编辑历史数据]';
                      }
 
                      parent::submit_monthly();
@@ -79,32 +79,7 @@
      public function statistics()
      {
          $this->title = '';
-         $get = I('get.');
-         $where = [];
-         if ($get['all_name']) {
-             $where['all_name'] = ['LIKE', '%' . $get['all_name'] . '%'];
-         }
-
-         if (!$get['year']) {
-             $get['year'] = intval(date('Y'));
-         }
-         if (!$get['month']) {
-             $get['month'] = intval(date('m'));
-         }
-         $where['year'] = $get['year'];
-         $where['month'] = $get['month'];
-         $service = '\Common\Service\\'.$this->local_service_name;
-         $page = I('get.p', 1);
-         list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
-         //$data = $this->convert_data_statistics($data);
-         $PageInstance = new \Think\Page($count, $service::$page_size);
-         if($total>$service::$page_size){
-             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
-         }
-         $page_html = $PageInstance->show();
-
-         $this->assign('list', $data);
-         $this->assign('page_html', $page_html);
+         parent::statistics();
 
 
          $this->display();
@@ -167,7 +142,7 @@
         if (!$ret->success) {
             $this->error($ret->message);
         }
-        action_user_log('删除担保公司单位');
+        action_user_log('删除股权投资和创业投资机构单位');
         $this->success('删除成功！');
     }
 
@@ -194,7 +169,7 @@
                         if ($id) {
                             $ret = $this->local_service->update_by_id($id, $data);
                             if ($ret->success) {
-                                action_user_log('修改担保公司单位');
+                                action_user_log('修改股权投资和创业投资机构单位');
                                 $this->success('修改成功！', U('index'));
                             } else {
                                 $this->error($ret->message);
@@ -217,7 +192,7 @@
                                 if(!M('Member')->add($user)){
                                     $this->error('添加失败！');
                                 } else {
-                                    $gid = C('GROUP_Financial' . 'Vouch');
+                                    $gid = C('GROUP_Financial' . 'Investment');
                                     if( empty($uid) ){
                                         $this->error('参数有误');
                                     }
@@ -240,7 +215,7 @@
                             $data['type'] = $this->type;
                             $ret = $this->local_service->add_one($data);
                             if ($ret->success) {
-                                action_user_log('添加担保公司单位');
+                                action_user_log('添加股权投资和创业投资机构单位');
                                 $this->success('添加成功！', U('index'));
                             } else {
                                 $this->error($ret->message);

@@ -138,7 +138,7 @@ class newModule {
 }
 
 
-$newModule = new newModule('Vouch', '担保公司单位');
+$newModule = new newModule('investmentManager', '股权投资管理机构单位');
 //['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]
-//$newModule->gain(['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]);
-$newModule->gain_power(['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]);
+//$newModule->gain(['controller'=>1, 'service'=>1, 'view'=>1]);
+$newModule->gain_power(['controller'=>1, 'service'=>1, 'view'=>1]);

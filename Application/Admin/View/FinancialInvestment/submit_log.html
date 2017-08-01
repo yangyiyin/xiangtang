@@ -5,7 +5,7 @@
 		<div class="u-tab">
 
 			<ul class="cc">
-				<li class="current"><a href="javascript:;">担保公司报表记录</a></li>
+				<li class="current"><a href="javascript:;">财产保险公司报表记录</a></li>
 			</ul>
 		</div>
 		<div class="search_type cc mb10 search-form">
@@ -21,24 +21,65 @@
 		<!-- 数据表格 -->
 		<div class="table_list">
 			<table class="biaoge">
+				<!--<thead>-->
+				<!--<tr>-->
+				<!--<th>id</th>-->
+				<!--<th>公司全称</th>-->
+				<!--<th>日期</th>-->
+				<!--<th>填表人</th>-->
+				<!--<th>保费收入</th>-->
+				<!--<th>同比%</th>-->
+				<!--<th>企业财产险收入</th>-->
+				<!--<th>机动车辆险收入</th>-->
+				<!--<th>其他险收入</th>-->
+				<!--<th>存储金额</th>-->
+				<!--<th>赔款支出</th>-->
+				<!--<th>赔款率</th>-->
+				<!--<th>企业财产险平支出</th>-->
+				<!--<th>企业财产险支出率</th>-->
+				<!--<th>机动车辆险支出</th>-->
+				<!--<th>机动车辆险支出率</th>-->
+				<!--<th>其他险支出</th>-->
+				<!--<th>其他险支出率</th>-->
+				<!--<th>期末在岗人数</th>-->
+				<!--<th>期末持证人数</th>-->
+				<!--<th>时间</th>-->
+				<!--</tr>-->
+				<!--</thead>-->
 				<tr>
-					<td rowspan="2">id</td>
-					<td rowspan="2">公司名称</td>
-					<td rowspan="2">填报月</td>
-					<td rowspan="2">填表人</td>
-					<td rowspan="2">本期余额</td>
-					<td rowspan="2">本期笔数</td>
-					<td rowspan="2">本年余额</td>
-					<td rowspan="2">本年笔数</td>
-					<td rowspan="2">本月收回</td>
-					<td rowspan="2">担保费本月收入</td>
-					<td rowspan="2">本期利润</td>
-					<td rowspan="2">纳税总额</td>
-					<td rowspan="2">本期担保额</td>
-					<td rowspan="2">提交时间</td>
-					<td rowspan="2">ip</td>
+					<td rowspan="4">id</td>
+					<td rowspan="4">公司名称</td>
+					<td rowspan="4">填报月</td>
+					<td rowspan="4">填表人</td>
+					<td colspan="5">保费</td>
+					<td rowspan="4">存储金额</td>
+					<td colspan="8">赔付</td>
+					<td colspan="2">营销人员</td>
+					<td rowspan="4">提交时间</td>
+					<td rowspan="4">ip</td>
 				</tr>
+				<tr>
+					<td rowspan="3">保费收入</td>
+					<td rowspan="3">同比±%</td>
+					<td colspan="3">其中</td>
+					<td rowspan="3">赔付支出</td>
+					<td rowspan="3">简单赔付率</td>
+					<td colspan="6">其中</td>
+					<td rowspan="3">期末在岗人数</td>
+					<td rowspan="3">期末持证人数</td>
+				</tr>
+				<tr>
+					<td rowspan="2">企业财产险</td>
+					<td rowspan="2">机动车辆险</td>
+					<td rowspan="2">其他险</td>
 
+					<td rowspan="2">企业财产险</td>
+					<td rowspan="2">赔付率</td>
+					<td rowspan="2">机动车辆险</td>
+					<td rowspan="2">赔付率</</td>
+					<td rowspan="2">其他险</td>
+					<td rowspan="2">赔付率</</td>
+				</tr>
 				<tr></tr>
 				<volist name="list" id="vo">
 					<tr>
@@ -54,34 +95,54 @@
 							{$vo.filler_man}
 						</td>
 						<td>
-							{$vo.C_Balance}
+							{$vo.income}
 						</td>
 						<td>
-							{$vo.C_Quantity}
+							{$vo.income_yoy}
 						</td>
 						<td>
-							{$vo.G_Balance}
+							{$vo.income_a}
 						</td>
 						<td>
-							{$vo.G_Quantity}
+							{$vo.income_b}
 						</td>
 						<td>
-							{$vo.C_Income}
+							{$vo.income_c}
 						</td>
 
 						<td>
-							{$vo.C_Recover}
+							{$vo.reserves}
 						</td>
 						<td>
-							{$vo.C_Profit}
+							{$vo.payoff}
 						</td>
 						<td>
-							{$vo.C_Taxable}
+							{$vo.payoff_rate}
 						</td>
 						<td>
-							{$vo.C_Vouch}
+							{$vo.payoff_a}
 						</td>
-
+						<td>
+							{$vo.payoff_a_rate}
+						</td>
+						<td>
+							{$vo.payoff_b}
+						</td>
+						<td>
+							{$vo.payoff_b_rate}
+						</td>
+						<td>
+							{$vo.payoff_c}
+						</td>
+						<td>
+							{$vo.payoff_c_rate}
+						</td>
+						<td>
+							{$vo.staff}
+						</td>
+						<td>
+							{$vo.authorized}
+						</td>
 						<td>
 							{$vo.gmt_create|date_time}
 						</td>

@@ -11,7 +11,6 @@ class DepartmentService extends BaseService{
         $FinancialModel = D('Financial' . static::$name);
         $data['gmt_create'] = time();
          if (!$FinancialModel->create($data)) {
-             echo 1;
             return result(FALSE, $FinancialModel->getError());
          }
 
@@ -98,5 +97,15 @@ class DepartmentService extends BaseService{
         return [$data, $count];
     }
 
-
+    public function get_by_all_names($all_names, $type) {
+        if (!$all_names) {
+            return [];
+        }
+        $FinancialModel = D('Financial' . static::$name);
+        $where = [];
+        $where['all_name'] = ['in', $all_names];
+        $where['type'] = ['EQ', $type];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->select();
+    }
 }

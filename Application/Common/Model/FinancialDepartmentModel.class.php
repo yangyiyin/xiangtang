@@ -11,6 +11,8 @@ class FinancialDepartmentModel extends NfBaseModel {
     const TYPE_FinancialInsuranceLife = 2;
     const TYPE_FinancialInsuranceMutual = 3;
     const TYPE_FinancialVouch = 4;
+    const TYPE_FinancialInvestment = 5;
+    const TYPE_FinancialInvestmentManager = 6;
 
   protected $_validate = array(
         /**
@@ -19,7 +21,7 @@ class FinancialDepartmentModel extends NfBaseModel {
         array('img', 'require', '图片不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT),
         array('unit_desc', 'require', '单位不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT)
         */
-      array('all_name', 'require', '全称不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
+      array('all_name', 'require', '全称为空或该公司全称已录入', self::EXISTS_VALIDATE, 'unique', self::MODEL_BOTH),
       array('address', 'require', '地址不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
       array('principal', 'require', '主要负责人不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
       array('phone', 'require', '电话不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),

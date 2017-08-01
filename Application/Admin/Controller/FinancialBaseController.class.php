@@ -43,12 +43,15 @@ class FinancialBaseController extends AdminController {
         if (!$this->is_history) {
             if (isset($data['all_name']) && $data['all_name']) {
                 $info = $this->local_service->get_by_month_year(intval(date('Y')), intval(date('m')), $data['all_name']);
+                $this->convert_data_submit_monthly($info);
             }
         }
-
         $this->assign('info', $info);
     }
 
+    protected function convert_data_submit_monthly(&$info) {
+
+    }
     public function statistics() {
         $this->assign('title', $this->title);
         $get = I('get.');

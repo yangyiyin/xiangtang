@@ -5,7 +5,7 @@
 		<div class="u-tab">
 
 			<ul class="cc">
-				<li class="current"><a href="javascript:;">担保公司报表记录</a></li>
+				<li class="current"><a href="javascript:;">股权投资管理机构报表记录</a></li>
 			</ul>
 		</div>
 		<div class="search_type cc mb10 search-form">
@@ -22,23 +22,38 @@
 		<div class="table_list">
 			<table class="biaoge">
 				<tr>
-					<td rowspan="2">id</td>
-					<td rowspan="2">公司名称</td>
-					<td rowspan="2">填报月</td>
-					<td rowspan="2">填表人</td>
-					<td rowspan="2">本期余额</td>
-					<td rowspan="2">本期笔数</td>
-					<td rowspan="2">本年余额</td>
-					<td rowspan="2">本年笔数</td>
-					<td rowspan="2">本月收回</td>
-					<td rowspan="2">担保费本月收入</td>
-					<td rowspan="2">本期利润</td>
-					<td rowspan="2">纳税总额</td>
-					<td rowspan="2">本期担保额</td>
-					<td rowspan="2">提交时间</td>
-					<td rowspan="2">ip</td>
-				</tr>
+					<td rowspan="4">id</td>
+					<td rowspan="4">公司名称</td>
+					<td rowspan="4">填报月</td>
+					<td rowspan="4">填表人</td>
+					<td rowspan="4">管理资金规模</td>
+					<td rowspan="4">管理的机构数</td>
+					<td colspan="3">各类税费</td>
+					<td colspan="10">从业人员</td>
 
+					<td rowspan="4">提交时间</td>
+					<td rowspan="4">ip</td>
+				</tr>
+				<tr>
+					<td rowspan="2">营业税</td>
+					<td rowspan="2">所得税</td>
+					<td rowspan="2">其他税费</td>
+					<td colspan="2">按性别</td>
+					<td colspan="4">按学历</td>
+					<td rowspan="2">管理人员</td>
+					<td rowspan="2">劳务派遣制员工</td>
+					<td rowspan="2">持有国内高端从业资格证书的人员</td>
+					<td rowspan="2">持有国外高端从业资格证书的人员</td>
+				</tr>
+				<tr>
+					<td>男性</td>
+					<td>女性</td>
+					<td>大专及大专以下</td>
+					<td>本科</td>
+					<td>硕士研究生</td>
+					<td>博士及博士以上</td>
+
+				</tr>
 				<tr></tr>
 				<volist name="list" id="vo">
 					<tr>
@@ -54,32 +69,50 @@
 							{$vo.filler_man}
 						</td>
 						<td>
-							{$vo.C_Balance}
+							{$vo.Amount}
 						</td>
 						<td>
-							{$vo.C_Quantity}
+							{$vo.Projects}
 						</td>
 						<td>
-							{$vo.G_Balance}
+							{$vo.Tax_B}
 						</td>
 						<td>
-							{$vo.G_Quantity}
+							{$vo.Tax_I}
 						</td>
 						<td>
-							{$vo.C_Income}
+							{$vo.Tax_O}
 						</td>
 
 						<td>
-							{$vo.C_Recover}
+							{$vo['Staff_Sub'][0]}
 						</td>
 						<td>
-							{$vo.C_Profit}
+							{$vo['Staff_Sub'][1]}
 						</td>
 						<td>
-							{$vo.C_Taxable}
+							{$vo['Staff_Sub'][2]}
 						</td>
 						<td>
-							{$vo.C_Vouch}
+							{$vo['Staff_Sub'][3]}
+						</td>
+						<td>
+							{$vo['Staff_Sub'][4]}
+						</td>
+						<td>
+							{$vo['Staff_Sub'][5]}
+						</td>
+						<td>
+							{$vo['Staff_Sub'][6]}
+						</td>
+						<td>
+							{$vo['Staff_Sub'][7]}
+						</td>
+						<td>
+							{$vo['Staff_Sub'][8]}
+						</td>
+						<td>
+							{$vo['Staff_Sub'][9]}
 						</td>
 
 						<td>

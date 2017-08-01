@@ -43,4 +43,4 @@
 
 
 
-echo strtotime('2017-8');
+var_dump( is_numeric('201a'));

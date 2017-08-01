@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-07-31 14:53:05
+ * Time: 2017-08-01 08:14:09
  */
 namespace Common\Service;
-class VouchService extends BaseService{
-    public static $name = 'Vouch';
+class InvestmentService extends BaseService{
+    public static $name = 'Investment';
 
     public function add_one($data, $is_only_create = 0) {
         $FinancialModel = D('Financial' . static::$name);
@@ -13,6 +13,7 @@ class VouchService extends BaseService{
          if (!$FinancialModel->create($data)) {
             return result(FALSE, $FinancialModel->getError());
          }
+
          if ($is_only_create) {
             return result(true, 'success');
          }
@@ -20,6 +21,7 @@ class VouchService extends BaseService{
         if ($FinancialModel->add()) {
             return result(TRUE, '', $FinancialModel->getLastInsID());
         } else {
+
             return result(FALSE, '网络繁忙~');
         }
     }
@@ -88,16 +90,6 @@ class VouchService extends BaseService{
         $where['all_name'] = ['EQ', $all_name];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $FinancialModel->where($where)->find();
-    }
-
-    public function get_this_year_data($year, $month, $all_name) {
-        $FinancialModel = D('Financial' . static::$name);
-        $where = [];
-        $where['year'] = ['EQ', $year];
-        $where['month'] = ['elt', $month];
-        $where['all_name'] = ['EQ', $all_name];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $FinancialModel->where($where)->select();
     }
 
 }

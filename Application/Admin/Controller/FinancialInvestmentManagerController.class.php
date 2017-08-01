@@ -1,15 +1,15 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-07-31 14:53:05
+ * Time: 2017-08-01 08:17:41
  */
  namespace Admin\Controller;
  use Admin\Model\MemberModel;
  use User\Api\UserApi;
- class FinancialVouchController extends FinancialBaseController  {
+ class FinancialInvestmentManagerController extends FinancialBaseController  {
      protected function _initialize() {
          parent::_initialize();
-           $this->type = \Common\Model\FinancialDepartmentModel::TYPE_FinancialVouch;
+           $this->type = \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager;
      }
 
      public function submit_monthly()
@@ -18,7 +18,13 @@
                      $id = I('get.id');
                      $data = I('post.');
                      $data['uid'] = UID;
-
+                    $data['Types'] = \Common\Model\FinancialInvestmentModel::TYPE_B;
+                    foreach ($data['Staff_Sub'] as $sub) {
+                        if ($sub == '' || !is_numeric($sub)) {
+                            $this->error('请检查从业人员相关数据是否正确');
+                        }
+                    }
+                    $data['Staff_Sub'] = join(',', $data['Staff_Sub']);
                      if (!$this->is_history) {
                          $data['year'] = intval(date('Y'));
                          $data['month'] = intval(date('m'));
@@ -31,7 +37,7 @@
                      if ($id) {
                          $ret = $this->local_service->update_by_id($id, $data);
                          if ($ret->success) {
-                             action_user_log('修改担保公司单位月报表');
+                             action_user_log('修改股权投资管理机构单位月报表');
                              $this->success('修改成功！');
                          } else {
                              $this->error($ret->message);
@@ -45,7 +51,7 @@
                                 $id = $check_ret['id'];
                                  $ret = $this->local_service->update_by_id($id, $data);
                                  if ($ret->success) {
-                                     action_user_log('修改担保公司单位月报表');
+                                     action_user_log('修改股权投资管理机构单位月报表');
                                      $this->success('修改成功！');
                                  } else {
                                      $this->error($ret->message);
@@ -58,22 +64,28 @@
                          }
                          $ret = $this->local_service->add_one($data);
                          if ($ret->success) {
-                             action_user_log('新增担保公司单位月报表');
+                             action_user_log('新增股权投资管理机构单位月报表');
                              $this->success('添加成功！');
                          } else {
                              $this->error($ret->message);
                          }
                      }
                  } else {
-                     $this->title = '担保公司单位月填报('. date('Y-m') .'月)';
+                     $this->title = '股权投资管理机构单位月填报('. date('Y-m') .'月)';
                      if ($this->is_history) {
-                         $this->title = '担保公司单位月填报[正在编辑历史数据]';
+                         $this->title = '股权投资管理机构单位月填报[正在编辑历史数据]';
                      }
 
                      parent::submit_monthly();
 
                      $this->display();
                  }
+     }
+
+     protected function convert_data_submit_monthly(&$info) {
+         if ($info) {
+             $info['Staff_Sub'] = explode(',', $info['Staff_Sub']);
+         }
      }
 
      public function statistics()
@@ -95,8 +107,9 @@
          $where['month'] = $get['month'];
          $service = '\Common\Service\\'.$this->local_service_name;
          $page = I('get.p', 1);
+
          list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
-         //$data = $this->convert_data_statistics($data);
+         $this->convert_data_statistics($data);
          $PageInstance = new \Think\Page($count, $service::$page_size);
          if($total>$service::$page_size){
              $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
@@ -167,7 +180,7 @@
         if (!$ret->success) {
             $this->error($ret->message);
         }
-        action_user_log('删除担保公司单位');
+        action_user_log('删除股权投资管理机构单位');
         $this->success('删除成功！');
     }
 
@@ -189,12 +202,15 @@
         $this->local_service = \Common\Service\DepartmentService::get_instance();
         $this->local_service_name = 'DepartmentService';
         if (IS_POST) {
+
             $id = I('get.id');
                         $data = I('post.');
+            //var_dump($data);
                         if ($id) {
+
                             $ret = $this->local_service->update_by_id($id, $data);
                             if ($ret->success) {
-                                action_user_log('修改担保公司单位');
+                                action_user_log('修改股权投资管理机构单位');
                                 $this->success('修改成功！', U('index'));
                             } else {
                                 $this->error($ret->message);
@@ -217,7 +233,7 @@
                                 if(!M('Member')->add($user)){
                                     $this->error('添加失败！');
                                 } else {
-                                    $gid = C('GROUP_Financial' . 'Vouch');
+                                    $gid = C('GROUP_Financial' . 'InvestmentManager');
                                     if( empty($uid) ){
                                         $this->error('参数有误');
                                     }
@@ -240,7 +256,7 @@
                             $data['type'] = $this->type;
                             $ret = $this->local_service->add_one($data);
                             if ($ret->success) {
-                                action_user_log('添加担保公司单位');
+                                action_user_log('添加股权投资管理机构单位');
                                 $this->success('添加成功！', U('index'));
                             } else {
                                 $this->error($ret->message);
@@ -262,6 +278,28 @@
         }
     }
 
+     protected function convert_data_submit_log(&$data) {
+         if ($data) {
+             foreach ($data as $key => $info) {
+                 $data[$key]['Staff_Sub'] = explode(',', $info['Staff_Sub']);
+             }
 
+         }
 
+     }
+
+     protected function convert_data_statistics(&$data) {
+         if ($data) {
+             $all_names = result_to_array($data, 'all_name');
+             $DepartmentService = \Common\Service\DepartmentService::get_instance();
+             $departments = $DepartmentService->get_by_all_names($all_names, \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager);
+             $departments_map = result_to_map($departments, 'all_name');
+             foreach ($data as $key => $info) {
+                 $data[$key]['Staff_Sub'] = explode(',', $info['Staff_Sub']);
+                 $data[$key]['capital'] = isset($departments_map[$info['all_name']]['capital']) ? $departments_map[$info['all_name']]['capital'] : '未知';
+             }
+
+         }
+
+     }
  }
