@@ -95,7 +95,8 @@ class OrderPre_order extends BaseApi{
         //print_r($items);die();
         foreach ($items_by_sellers as $_seller_uid => $_items) {
             $order_pre_no = $this->OrderPreService->get_order_pre_no($this->uid);
-
+            $_total_num = 0;
+            $_total_price = 0;
             foreach ($_items as $_item) {
                 $_total_num += $_item->num;
                 $_total_price += $_item->num * $_item->price;
