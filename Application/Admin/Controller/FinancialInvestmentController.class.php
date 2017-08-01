@@ -18,7 +18,13 @@
                      $id = I('get.id');
                      $data = I('post.');
                      $data['uid'] = UID;
-
+                    $data['Types'] = \Common\Model\FinancialInvestmentModel::TYPE_A;
+                    foreach ($data['Staff_Sub'] as $sub) {
+                        if ($sub == '' || !is_numeric($sub)) {
+                            $this->error('请检查从业人员相关数据是否正确');
+                        }
+                    }
+                    $data['Staff_Sub'] = join(',', $data['Staff_Sub']);
                      if (!$this->is_history) {
                          $data['year'] = intval(date('Y'));
                          $data['month'] = intval(date('m'));
@@ -79,7 +85,34 @@
      public function statistics()
      {
          $this->title = '';
-         parent::statistics();
+         $get = I('get.');
+         $where = [];
+         if ($get['all_name']) {
+             $where['all_name'] = ['LIKE', '%' . $get['all_name'] . '%'];
+         }
+
+         if (!$get['year']) {
+             $get['year'] = intval(date('Y'));
+         }
+         if (!$get['month']) {
+             $get['month'] = intval(date('m'));
+         }
+         $where['year'] = $get['year'];
+         $where['month'] = $get['month'];
+         $service = '\Common\Service\\'.$this->local_service_name;
+         $page = I('get.p', 1);
+         $where['Types'] = ['eq', \Common\Model\FinancialInvestmentModel::TYPE_A];
+         list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
+         $this->convert_data_statistics($data);
+         $PageInstance = new \Think\Page($count, $service::$page_size);
+         if($total>$service::$page_size){
+             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+         }
+         $page_html = $PageInstance->show();
+
+         $this->assign('list', $data);
+         $this->assign('page_html', $page_html);
+
 
 
          $this->display();
@@ -225,7 +258,32 @@
 
         }
     }
-    public function convert_data(&$data) {
+
+     public function submit_log() {
+
+         $where = [];
+         if (I('get.all_name')) {
+             $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
+         }
+         $page = I('get.p', 1);
+         $where['Types'] = ['eq', \Common\Model\FinancialInvestmentModel::TYPE_A];
+         list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
+         $this->convert_data_submit_log($data);
+         $service = '\Common\Service\\'.$this->local_service_name;
+         $PageInstance = new \Think\Page($count, $service::$page_size);
+         if($total>$service::$page_size){
+             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+         }
+         $page_html = $PageInstance->show();
+
+         $this->assign('list', $data);
+         $this->assign('page_html', $page_html);
+
+         $this->display();
+     }
+
+
+     public function convert_data(&$data) {
         $uids = result_to_array($data, 'uid');
         $User   =   new UserApi();
         $users    =   $User->get_by_uids($uids);
@@ -238,5 +296,34 @@
     }
 
 
+     protected function convert_data_submit_monthly(&$info) {
+         if ($info) {
+             $info['Staff_Sub'] = explode(',', $info['Staff_Sub']);
+         }
+     }
 
+     protected function convert_data_submit_log(&$data) {
+         if ($data) {
+             foreach ($data as $key => $info) {
+                 $data[$key]['Staff_Sub'] = explode(',', $info['Staff_Sub']);
+             }
+
+         }
+
+     }
+
+     protected function convert_data_statistics(&$data) {
+         if ($data) {
+             $all_names = result_to_array($data, 'all_name');
+             $DepartmentService = \Common\Service\DepartmentService::get_instance();
+             $departments = $DepartmentService->get_by_all_names($all_names, \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestment);
+             $departments_map = result_to_map($departments, 'all_name');
+             foreach ($data as $key => $info) {
+                 $data[$key]['Staff_Sub'] = explode(',', $info['Staff_Sub']);
+                 $data[$key]['capital'] = isset($departments_map[$info['all_name']]['capital']) ? $departments_map[$info['all_name']]['capital'] : '未知';
+             }
+
+         }
+
+     }
  }

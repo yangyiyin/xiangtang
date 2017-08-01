@@ -107,7 +107,7 @@
          $where['month'] = $get['month'];
          $service = '\Common\Service\\'.$this->local_service_name;
          $page = I('get.p', 1);
-
+         $where['Types'] = ['eq', \Common\Model\FinancialInvestmentModel::TYPE_B];
          list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
          $this->convert_data_statistics($data);
          $PageInstance = new \Think\Page($count, $service::$page_size);
@@ -266,7 +266,35 @@
 
         }
     }
-    public function convert_data(&$data) {
+
+
+
+     public function submit_log() {
+
+         $where = [];
+         if (I('get.all_name')) {
+             $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
+         }
+         $page = I('get.p', 1);
+         $where['Types'] = ['eq', \Common\Model\FinancialInvestmentModel::TYPE_B];
+         list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
+         $this->convert_data_submit_log($data);
+         $service = '\Common\Service\\'.$this->local_service_name;
+         $PageInstance = new \Think\Page($count, $service::$page_size);
+         if($total>$service::$page_size){
+             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+         }
+         $page_html = $PageInstance->show();
+
+         $this->assign('list', $data);
+         $this->assign('page_html', $page_html);
+
+         $this->display();
+     }
+
+
+
+     public function convert_data(&$data) {
         $uids = result_to_array($data, 'uid');
         $User   =   new UserApi();
         $users    =   $User->get_by_uids($uids);

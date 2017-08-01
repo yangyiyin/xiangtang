@@ -15,8 +15,11 @@ class FinancialInvestmentModel extends NfBaseModel {
         array('month', 'number', '月份必须是数字', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
 
 
-        array('Amount', 'currency', '请检查资金规模格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
-        array('Projects', 'number', '请检机构数格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('Amount', 'currency', '请检查资金规模(投资项目总额)格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('Amount_su', 'currency', '请检查初创期投资金额格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('Projects', 'number', '请检查机构数(项目总数)格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('Projects_su', 'number', '请检查初创型项目数格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
+
         array('Tax_B', 'currency', '请检查营业税格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
         array('Tax_I', 'currency', '请检查所得税格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
         array('Tax_O', 'currency', '请检查其他税费格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
