@@ -20,7 +20,6 @@ class OrderPre_order extends BaseApi{
     public function excute() {
         $items_num = I('post.items');
         $items_num = $this->post_data['items'];
-        $items_num = '[{"item_id":29,"num":3,"sku_id":76},{"item_id":29,"num":2,"sku_id":77},{"item_id":31,"num":2,"sku_id":81}]';
         if (!$items_num) {
             return result_json(FALSE, '参数错误~');
         }
