@@ -56,6 +56,10 @@ class OrderPre_order_info extends BaseApi{
         if ($data) {
             $UserService = Service\UserService::get_instance();
             $user_info = $this->user_info;
+            $SkuPropertyService = Service\SkuPropertyService::get_instance();
+            $sku_ids = result_to_array($skus_map);
+            $sku_props = $SkuPropertyService->get_by_sku_ids($sku_ids);
+            $sku_props_map = $SkuPropertyService->get_sku_props_map($sku_props);
             foreach ($data as $key => $_item) {
 
                 if ($UserService->is_dealer($user_info['type'])) {
@@ -76,7 +80,11 @@ class OrderPre_order_info extends BaseApi{
                 $_item['title'] = $items_map[$_item['iid']]['title'];
                 $_item['desc'] =  $items_map[$_item['iid']]['desc'];
                 $_item['unit_desc'] = $items_map[$_item['iid']]['unit_desc'];
-                $list[] = convert_obj($_item, 'id=item_id,pid,title,img,desc,unit_desc,price,num,show_price,pay_price');
+                $_item['sku_id'] = (int) $skus_map[$_item['sku_id']]['id'];
+                if (isset($sku_props_map[$_item['sku_id']])) {
+                    $_item['props'] = $sku_props_map[$_item['sku_id']];
+                }
+                $list[] = convert_obj($_item, 'id=item_id,pid,sku_id,title,img,desc,unit_desc,price,num,show_price,pay_price,props');
             }
 
         }
