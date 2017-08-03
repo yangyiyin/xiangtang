@@ -1,0 +1,236 @@
+<extend name="Public/base"/>
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+
+			<ul class="cc">
+				<li class="current"><a href="javascript:;">融资租赁单位统计表</a></li>
+			</ul>
+		</div>
+		<div class="search_type cc mb10 search-form">
+			<div class="mb10">
+				&nbsp;公司名称：
+				<input type="text" class="input length_2" name="all_name" style="width:100px;" value="{:I('all_name')}" >
+				<select name="year">
+					<php>
+						$years = [];
+						$cur_year = I('get.year') ? I('get.year') : date('Y');
+						for($i = 2016;$i<=date('Y');$i++) {
+						$years[] = $i;
+						}
+
+						foreach($years as $year){
+						$selected = ($year == $cur_year) ? 'selected' : '';
+						echo '<option value="'.$year.'" '.$selected.'>'.$year.'</option>';
+						}
+					</php>
+				</select>年
+				<select name="month">
+					<php>
+						$months = [1,2,3,4,5,6,7,8,9,10,11,12];
+						$cur_month = I('get.month') ? I('get.month') : date('m');
+						foreach($months as $month){
+						$selected = ($month == $cur_month) ? 'selected' : '';
+						echo '<option value="'.$month.'" '.$selected.'>'.$month.'</option>';
+						}
+					</php>
+				</select>月
+				<a class="u-btn" href="javascript:;" id="search" url="{:U('')}">搜索</a>
+				<!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
+				</span>
+			</div>
+		</div>
+		<!-- 数据表格 -->
+		<div class="table_list">
+			<table class="biaoge">
+				<tr>
+					<td rowspan="4">公司名称</td>
+					<td colspan="5">保费</td>
+					<td rowspan="4">存储金额</td>
+					<td colspan="8">赔付</td>
+					<td colspan="2">营销人员</td>
+					<td rowspan="4">保费排名</td>
+					<td rowspan="4">保费份额占比</td>
+				</tr>
+				<tr>
+					<td rowspan="3">保费收入</td>
+					<td rowspan="3">同比±%</td>
+					<td colspan="3">其中</td>
+					<td rowspan="3">赔付支出</td>
+					<td rowspan="3">简单赔付率</td>
+					<td colspan="6">其中</td>
+					<td rowspan="3">期末在岗人数</td>
+					<td rowspan="3">期末持证人数</td>
+				</tr>
+				<tr>
+					<td rowspan="2">企业财产险</td>
+					<td rowspan="2">机动车辆险</td>
+					<td rowspan="2">其他险</td>
+
+					<td rowspan="2">企业财产险</td>
+					<td rowspan="2">赔付率</td>
+					<td rowspan="2">机动车辆险</td>
+					<td rowspan="2">赔付率</</td>
+					<td rowspan="2">其他险</td>
+					<td rowspan="2">赔付率</</td>
+				</tr>
+				<tr></tr>
+				<if condition="empty($list)">
+					<tr>
+						<td colspan="19">
+							<if condition="empty($list)">
+								没有找到信息~
+							</if>
+						</td>
+					</tr>
+				</if>
+				<volist name="list" id="vo">
+					<tr>
+
+						<td>
+							{$vo.all_name}
+						</td>
+
+						<td>
+							{$vo.income}
+						</td>
+						<td>
+							{$vo.income_yoy}
+						</td>
+						<td>
+							{$vo.income_a}
+						</td>
+						<td>
+							{$vo.income_b}
+						</td>
+						<td>
+							{$vo.income_c}
+						</td>
+
+						<td>
+							{$vo.reserves}
+						</td>
+						<td>
+							{$vo.payoff}
+						</td>
+						<td>
+							{$vo.payoff_rate}
+						</td>
+						<td>
+							{$vo.payoff_a}
+						</td>
+						<td>
+							{$vo.payoff_a_rate}
+						</td>
+						<td>
+							{$vo.payoff_b}
+						</td>
+						<td>
+							{$vo.payoff_b_rate}
+						</td>
+						<td>
+							{$vo.payoff_c}
+						</td>
+						<td>
+							{$vo.payoff_c_rate}
+						</td>
+						<td>
+							{$vo.staff}
+						</td>
+						<td>
+							{$vo.authorized}
+						</td>
+						<td>
+							{$vo.sort}
+						</td>
+
+						<td>
+							{$vo.percent}%
+						</td>
+					</tr>
+				</volist>
+				</tbody>
+			</table>
+		</div>
+		<div class="btn_wrap">
+			<div class="btn_wrap_pd">
+				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
+
+			</div>
+		</div>
+		<!-- 分页 -->
+		<div class="page">
+			{$page_html}
+		</div>
+	</div>
+	</div>
+
+</block>
+<block name="script">
+	<link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
+	<php>if(C('COLOR_STYLE')=='blue_color') echo '<link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css" rel="stylesheet" type="text/css">';</php>
+	<link href="__STATIC__/datetimepicker/css/dropdown.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+	<script type="text/javascript">
+		$(function(){
+			//搜索功能
+			$("#search").click(function(){
+				var url = $(this).attr('url');
+				var query  = $('.search-form').find('input,select').serialize();
+				query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+				query = query.replace(/^&/g,'');
+
+
+				if( url.indexOf('?')>0 ){
+					url += '&' + query;
+				}else{
+					url += '?' + query;
+				}
+				window.location.href = url;
+			});
+
+			/* 状态搜索子菜单 */
+			$(".search-form").find(".drop-down").hover(function(){
+				$("#sub-sch-menu").removeClass("hidden");
+			},function(){
+				$("#sub-sch-menu").addClass("hidden");
+			});
+			$("#sub-sch-menu li").find("a").each(function(){
+				$(this).click(function(){
+					var text = $(this).text();
+					$("#sch-sort-txt").text(text).attr("data",$(this).attr("value"));
+					$("#sub-sch-menu").addClass("hidden");
+				})
+			});
+
+			//回车自动提交
+			$('.search-form').find('input').keyup(function(event){
+				if(event.keyCode===13){
+					$("#search").click();
+				}
+			});
+
+			$('#time-start').datetimepicker({
+				format: 'yyyy-mm-dd',
+				language:"zh-CN",
+				minView:2,
+				autoclose:true
+			});
+
+			$('#datetimepicker').datetimepicker({
+				format: 'yyyy-mm-dd',
+				language:"zh-CN",
+				minView:2,
+				autoclose:true,
+				pickerPosition:'bottom-left'
+			});
+
+
+		});
+
+	</script>
+</block>
+
+
