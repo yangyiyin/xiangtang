@@ -78,10 +78,37 @@
 
      public function statistics()
      {
-         $this->title = '';
-         parent::statistics();
+         $this->assign('title', $this->title);
+         $get = I('get.');
+         $where = [];
+         if ($get['all_name']) {
+             $where['all_name'] = ['LIKE', '%' . $get['all_name'] . '%'];
+         }
 
+         if (!$get['year']) {
+             $get['year'] = intval(date('Y'));
+         }
+         if (!$get['month']) {
+             $get['month'] = intval(date('m'));
+         }
+         $where['year'] = $get['year'];
+         $where['month'] = $get['month'];
+         $service = '\Common\Service\\'.$this->local_service_name;
+         $page = I('get.p', 1);
+         $where_all = [];
+         $where_all['year'] = $get['year'];
+         $where_all['month'] = $get['month'];
+         $data_all = $this->local_service->get_by_where_all($where_all);
+         list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
+         $data = $this->convert_data_statistics($data, $data_all);
+         $PageInstance = new \Think\Page($count, $service::$page_size);
+         if($total>$service::$page_size){
+             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+         }
+         $page_html = $PageInstance->show();
 
+         $this->assign('list', $data);
+         $this->assign('page_html', $page_html);
          $this->display();
      }
 

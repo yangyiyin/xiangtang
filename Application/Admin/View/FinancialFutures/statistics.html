@@ -45,35 +45,25 @@
 		<div class="table_list">
 			<table class="biaoge">
 				<tr>
-					<td rowspan="4">公司名称</td>
-					<td colspan="5">保费</td>
-					<td rowspan="4">存储金额</td>
-					<td colspan="8">赔付</td>
-					<td colspan="2">营销人员</td>
-					<td rowspan="4">保费排名</td>
-					<td rowspan="4">保费份额占比</td>
+					<td rowspan="2">公司名称</td>
+					<td colspan="2" >成交量（万手）</td>
+					<td colspan="2" >成交额（亿）</td>
+					<td colspan="2" >新开户数（个）</td>
+					<td colspan="2" >资产总值（亿）</td>
+					<td colspan="2" >利润总额（万）</td>
 				</tr>
 				<tr>
-					<td rowspan="3">保费收入</td>
-					<td rowspan="3">同比±%</td>
-					<td colspan="3">其中</td>
-					<td rowspan="3">赔付支出</td>
-					<td rowspan="3">简单赔付率</td>
-					<td colspan="6">其中</td>
-					<td rowspan="3">期末在岗人数</td>
-					<td rowspan="3">期末持证人数</td>
-				</tr>
-				<tr>
-					<td rowspan="2">企业财产险</td>
-					<td rowspan="2">机动车辆险</td>
-					<td rowspan="2">其他险</td>
+					<td>本年累计</td>
+					<td>同比%</td>
+					<td>本年累计</td>
+					<td>同比%</td>
+					<td>本年累计</td>
+					<td>同比%</td>
+					<td>当月</td>
+					<td>同比%</td>
+					<td>当月</td>
+					<td>同比%</td>
 
-					<td rowspan="2">企业财产险</td>
-					<td rowspan="2">赔付率</td>
-					<td rowspan="2">机动车辆险</td>
-					<td rowspan="2">赔付率</</td>
-					<td rowspan="2">其他险</td>
-					<td rowspan="2">赔付率</</td>
 				</tr>
 				<tr></tr>
 				<if condition="empty($list)">
@@ -93,61 +83,37 @@
 						</td>
 
 						<td>
-							{$vo.income}
+							{$vo.G_Volume}
 						</td>
 						<td>
-							{$vo.income_yoy}
+							{$vo.G_Volume_yoy}%
 						</td>
 						<td>
-							{$vo.income_a}
+							{$vo.G_Turnover}
 						</td>
 						<td>
-							{$vo.income_b}
+							{$vo.G_Turnover_yoy}%
 						</td>
 						<td>
-							{$vo.income_c}
+							{$vo.G_Account}
 						</td>
 
 						<td>
-							{$vo.reserves}
+							{$vo.G_Account_yoy}%
 						</td>
 						<td>
-							{$vo.payoff}
+							{$vo.C_Assets}
 						</td>
 						<td>
-							{$vo.payoff_rate}
+							{$vo.C_Assets_yoy}%
 						</td>
 						<td>
-							{$vo.payoff_a}
+							{$vo.C_Profit}
 						</td>
 						<td>
-							{$vo.payoff_a_rate}
-						</td>
-						<td>
-							{$vo.payoff_b}
-						</td>
-						<td>
-							{$vo.payoff_b_rate}
-						</td>
-						<td>
-							{$vo.payoff_c}
-						</td>
-						<td>
-							{$vo.payoff_c_rate}
-						</td>
-						<td>
-							{$vo.staff}
-						</td>
-						<td>
-							{$vo.authorized}
-						</td>
-						<td>
-							{$vo.sort}
+							{$vo.C_Profit_yoy}%
 						</td>
 
-						<td>
-							{$vo.percent}%
-						</td>
 					</tr>
 				</volist>
 				</tbody>

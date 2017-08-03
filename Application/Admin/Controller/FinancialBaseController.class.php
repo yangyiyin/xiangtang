@@ -135,6 +135,6 @@ class FinancialBaseController extends AdminController {
     }
     protected function convert_data_statistics($data, $data_all) {
         //子类实现
-
+        return $data;
     }
 }

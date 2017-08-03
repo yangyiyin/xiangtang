@@ -1,15 +1,14 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-08-03 07:52:07
+ * Time: 2017-08-02 13:05:15
  */
 namespace Common\Service;
-class FuturesService extends BaseService{
-    public static $name = 'Futures';
+class AreaService extends BaseService{
+    public static $name = 'Area';
 
     public function add_one($data, $is_only_create = 0) {
         $FinancialModel = D('Financial' . static::$name);
-        $data['gmt_create'] = time();
          if (!$FinancialModel->create($data)) {
             return result(FALSE, $FinancialModel->getError());
          }
@@ -32,6 +31,14 @@ class FuturesService extends BaseService{
         $where['id'] = ['EQ', $id];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $FinancialModel->where($where)->find();
+    }
+
+
+    public function get_all() {
+        $FinancialModel = D('Financial' . static::$name);
+        $where = [];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->select();
     }
 
     public function update_by_id($id, $data) {
@@ -71,7 +78,7 @@ class FuturesService extends BaseService{
 
 
     public function get_by_where($where, $order = 'id desc', $page = 1) {
-         $FinancialModel = D('Financial' . static::$name);
+        $FinancialModel = D('Financial' . static::$name);
         $data = [];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         $count = $FinancialModel->where($where)->order($order)->count();
@@ -81,32 +88,33 @@ class FuturesService extends BaseService{
         return [$data, $count];
     }
 
-
-  public function get_by_month_year($year, $month, $all_name) {
+    public function set_area_options($infos = []){
         $FinancialModel = D('Financial' . static::$name);
         $where = [];
-        $where['year'] = ['EQ', $year];
-        $where['month'] = ['EQ', $month];
-        $where['all_name'] = ['EQ', $all_name];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $FinancialModel->where($where)->find();
-    }
+        $areas = $FinancialModel->where($where)->select();
+        if ($infos) {
+            foreach ($infos as $key => $info) {
+                $options = '';
+                foreach ($areas as $area) {
+                    if ($info['Area'] == $area['id']) {
+                        $options .= '<option selected="selected" value="'.$area['id'].'">'.$area['name'].'</option>';
+                    } else {
+                        $options .= '<option value="'.$area['id'].'">'.$area['name'].'</option>';
+                    }
+                }
 
-    public function get_this_year_data($year, $month, $all_name) {
-        $FinancialModel = D('Financial' . static::$name);
-        $where = [];
-        $where['year'] = ['EQ', $year];
-        $where['month'] = ['elt', $month];
-        $where['all_name'] = ['EQ', $all_name];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $FinancialModel->where($where)->select();
-    }
+                $infos[$key]['area_options'] = $options;
 
-    public function get_by_where_all($where) {
-        $FinancialModel = D('Financial' . static::$name);
-        $data = [];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $FinancialModel->where($where)->select();
-    }
+            }
+            return $infos;
+        } else {
+            $options = '';
+            foreach ($areas as $area) {
+                $options .= '<option value="'.$area['id'].'">'.$area['name'].'</option>';
+            }
+            return $options;
+        }
 
+    }
 }
