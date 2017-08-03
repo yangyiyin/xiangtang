@@ -62,6 +62,7 @@ return array(
     'GROUP_FinancialVouch' => 10,
     'GROUP_FinancialInvestment' => 11,
     'GROUP_FinancialInvestmentManager' => 12,
+    'GROUP_FinancialFutures' => 13,
 
     'SERVER_CIDS' => [8,19],
     'INVITER_RATE' => 0.01

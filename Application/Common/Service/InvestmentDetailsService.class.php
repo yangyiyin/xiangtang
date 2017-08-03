@@ -1,12 +1,12 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-08-01 08:14:09
+ * Time: 2017-08-02 11:11:25
  */
 namespace Common\Service;
-class InvestmentService extends BaseService{
-    public static $name = 'Investment';
-    protected static $type = \Common\Model\FinancialInvestmentModel::TYPE_A;
+class InvestmentDetailsService extends BaseService{
+    public static $name = 'InvestmentDetails';
+
     public function add_one($data, $is_only_create = 0) {
         $FinancialModel = D('Financial' . static::$name);
         $data['gmt_create'] = time();
@@ -25,6 +25,22 @@ class InvestmentService extends BaseService{
             return result(FALSE, '网络繁忙~');
         }
     }
+
+    public function add_batch($data) {
+        $FinancialModel = D('Financial' . static::$name);
+
+        if (!$FinancialModel->create($data)) {
+            return result(FALSE, json_encode($FinancialModel->getError()));
+        }
+
+
+        if ($FinancialModel->addAll($data)) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, '批量插入失败');
+        }
+    }
+
 
     public function get_info_by_id($id) {
         $FinancialModel = D('Financial' . static::$name);
@@ -82,15 +98,26 @@ class InvestmentService extends BaseService{
     }
 
 
-  public function get_by_month_year($year, $month, $all_name) {
+  public function get_by_month_year($year, $month, $all_name, $type) {
         $FinancialModel = D('Financial' . static::$name);
         $where = [];
-      $where['Types'] = ['EQ', static::$type];
+      $where['Types'] = ['EQ', $type];
         $where['year'] = ['EQ', $year];
         $where['month'] = ['EQ', $month];
         $where['all_name'] = ['EQ', $all_name];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $FinancialModel->where($where)->find();
+        return $FinancialModel->where($where)->select();
+    }
+
+    public function del_by_month_year($year, $month, $all_name, $type) {
+        $FinancialModel = D('Financial' . static::$name);
+        $where = [];
+        $where['Types'] = ['EQ', $type];
+        $where['year'] = ['EQ', $year];
+        $where['month'] = ['EQ', $month];
+        $where['all_name'] = ['EQ', $all_name];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->delete();
     }
 
 }

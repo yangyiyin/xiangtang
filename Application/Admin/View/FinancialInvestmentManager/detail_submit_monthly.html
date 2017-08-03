@@ -1,0 +1,139 @@
+<extend name="Public/base"/>
+
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+			<ul class="cc tab-nav">
+				<li class="current"><a href="javascript:;">{$title}</a></li>
+			</ul>
+		</div>
+		<!-- 数据表格 -->
+		<div class="tab-content table_list">
+			<!-- 表单 -->
+			<form id="form" action="{:U('')}" method="post" class="form-horizontal">
+				<div id="tab">
+					<table class="biaoge">
+						<tbody>
+						<tr>
+							<td colspan="4"><span class="title">股权投资管理机构所管理公司明细</span><span> (金额单位 万元)</span></td>
+
+						</tr>
+						<tr>
+
+							<td colspan="4">
+
+								{:date('Y')}年{:date('m')}月
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">公司全称:</td>
+
+							<td colspan="2">填表人:</td>
+
+						</tr>
+
+						<tr>
+							<td colspan="2">
+								<select name="all_name">
+									<php>
+										$list = $departments;
+										$cur = $infos[0]['all_name'];
+										foreach($list as $li){
+										$selected = ($li == $cur) ? 'selected' : '';
+										echo '<option value="'.$li.'" '.$selected.'>'.$li.'</option>';
+										}
+									</php>
+								</select>
+
+							</td>
+							<td colspan="2">
+								<input type="text" class="input input-medium" name="filler_man" value="{$infos[0]['filler_man']}">
+							</td>
+
+						</tr>
+						<tr>
+							<td colspan="4">明细</td>
+						</tr>
+						<tr>
+							<td>所管理公司名称:</td>
+							<td>管理公司注册地区域:</td>
+							<td>管理金额:</td>
+							<td>备注:</td>
+						</tr>
+						<volist name="infos" id="vo">
+							<tr>
+								<td>
+									<input type="text" class="input input-medium" name="logs1[]" value="{$vo.Name}">
+								</td>
+								<td>
+									<select name="logs2[]">
+										<if condition="$vo['area_options']">
+											{$vo['area_options']}
+											<else/>
+											{$area_options}
+										</if>
+									</select>
+								</td>
+								<td>
+									<input type="text" class="input input-medium" name="logs3[]" value="{$vo.Amount}">
+								</td>
+								<td>
+									<input type="text" class="input input-medium" name="logs4[]" value="{$vo.Remarks}">
+								</td>
+								<td><a class="btn del_log">删除</a></td>
+							</tr>
+						</volist>
+						<tr class="add_line"><td colspan="4"><a class="btn add_log">添加</a></td></tr>
+						</tbody>
+					</table>
+				</div>
+
+
+
+
+
+
+				<div class="btn_wrap">
+					<div class="btn_wrap_pd">
+						<if condition="$info['id']">已提交</if><button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal"><if condition="$info['id']">修 改<else/>提 交</if></button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	</div>
+
+	<script>
+		$(document).ready(function() {
+			$(document).on('click', '.add_log', function () {
+				var add_html = '<tr>'+
+						'<td>'+
+						'<input type="text" class="input input-medium" name="logs1[]">'+
+						'</td>'+
+						'<td>'+
+						'<select name="logs2[]">'+
+						'{$area_options}'+
+						'</select>'+
+						'</td>'+
+						'<td>'+
+						'<input type="text" class="input input-medium" name="logs3[]">'+
+						'</td>'+
+						'<td>'+
+						'<input type="text" class="input input-medium" name="logs4[]">'+
+						'</td>'+
+						'<td><a class="btn del_log">删除</a></td>'+
+						'</tr>'
+				$('.add_line').before(add_html);
+
+
+
+			});
+			$(document).on('click', '.del_log', function () {
+				$(this).parents('tr').remove();
+
+			});
+
+		});
+	</script>
+</block>

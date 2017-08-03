@@ -1,12 +1,12 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-08-01 08:14:09
+ * Time: 2017-08-03 07:52:07
  */
 namespace Common\Service;
-class InvestmentService extends BaseService{
-    public static $name = 'Investment';
-    protected static $type = \Common\Model\FinancialInvestmentModel::TYPE_A;
+class FuturesService extends BaseService{
+    public static $name = 'Futures';
+
     public function add_one($data, $is_only_create = 0) {
         $FinancialModel = D('Financial' . static::$name);
         $data['gmt_create'] = time();
@@ -85,12 +85,21 @@ class InvestmentService extends BaseService{
   public function get_by_month_year($year, $month, $all_name) {
         $FinancialModel = D('Financial' . static::$name);
         $where = [];
-      $where['Types'] = ['EQ', static::$type];
         $where['year'] = ['EQ', $year];
         $where['month'] = ['EQ', $month];
         $where['all_name'] = ['EQ', $all_name];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $FinancialModel->where($where)->find();
+    }
+
+    public function get_this_year_data($year, $month, $all_name) {
+        $FinancialModel = D('Financial' . static::$name);
+        $where = [];
+        $where['year'] = ['EQ', $year];
+        $where['month'] = ['elt', $month];
+        $where['all_name'] = ['EQ', $all_name];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->select();
     }
 
 }

@@ -73,11 +73,11 @@ class newModule {
         $content = str_replace('___time___', date('Y-m-d H:i:s'), $content);
         file_put_contents($path . '/submit_log.html', $content);
 
-//        $content = file_get_contents('view/add_history.html');
-//        $content = str_replace('___name___', $this->name, $content);
-//        $content = str_replace('___desc___', $this->desc, $content);
-//        $content = str_replace('___time___', date('Y-m-d H:i:s'), $content);
-//        file_put_contents($path . '/index.html', $content);
+        $content = file_get_contents('view/add_history.html');
+        $content = str_replace('___name___', $this->name, $content);
+        $content = str_replace('___desc___', $this->desc, $content);
+        $content = str_replace('___time___', date('Y-m-d H:i:s'), $content);
+        file_put_contents($path . '/index.html', $content);
 
     }
 
@@ -138,7 +138,7 @@ class newModule {
 }
 
 
-$newModule = new newModule('investmentManager', '股权投资管理机构单位');
+$newModule = new newModule('futures', '期货营业部单位');
 //['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]
-//$newModule->gain(['controller'=>1, 'service'=>1, 'view'=>1]);
-$newModule->gain_power(['controller'=>1, 'service'=>1, 'view'=>1]);
+//$newModule->gain(['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]);
+$newModule->gain_power(['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]);

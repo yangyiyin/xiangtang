@@ -265,3 +265,31 @@ create table shopy_financial_investment_exit (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+#期货
+create table shopy_financial_futures (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT '0' COMMENT '用户id',
+  `all_name` VARCHAR(50) DEFAULT '' COMMENT '公司全称',
+  `filler_man` VARCHAR(50) DEFAULT ''  COMMENT '填报人',
+  `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
+  `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
+
+  C_Volume int NOT NULL DEFAULT 0,			#成交量（万手）
+  G_Volume int NOT NULL DEFAULT 0,			#本年成交量（万手）
+	G_Volume_yoy decimal(5,2) NOT NULL DEFAULT 0,	#同比%
+	C_Turnover decimal(7,2) NOT NULL DEFAULT 0,	#成交额亿
+	G_Turnover decimal(7,2) NOT NULL DEFAULT 0,	#成交额亿
+	G_Turnover_yoy decimal(5,2) NOT NULL DEFAULT 0,	#同比%
+	C_Account int NOT NULL DEFAULT 0,			#新开户数
+	G_Account int NOT NULL DEFAULT 0,			#新开户数
+	G_Account_yoy decimal(5,2) NOT NULL DEFAULT 0,	#同比%
+	C_Assets decimal(7,2) NOT NULL DEFAULT 0,		#资产总值亿
+	C_Assets_yoy decimal(5,2) NOT NULL DEFAULT 0,	#同比%
+	C_Profit decimal(7,2) NOT NULL DEFAULT 0,		#利润万
+	C_Profit_yoy decimal(5,2) NOT NULL DEFAULT 0,	#同比%
+
+  `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

@@ -13,6 +13,7 @@ class FinancialDepartmentModel extends NfBaseModel {
     const TYPE_FinancialVouch = 4;
     const TYPE_FinancialInvestment = 5;
     const TYPE_FinancialInvestmentManager = 6;
+    const TYPE_FinancialFutures = 7;
 
   protected $_validate = array(
         /**

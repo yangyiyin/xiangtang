@@ -1384,3 +1384,7 @@ function fix_2($num) {
 function date_time($time){
     return date('Y-m-d H:i:s', $time);
 }
+
+function time_to_date($time){
+    return date('Y-m-d', $time);
+}

@@ -5,5 +5,5 @@
  */
 namespace Common\Service;
 class InvestmentManagerService extends InvestmentService {
-
+    protected static $type = \Common\Model\FinancialInvestmentModel::TYPE_B;
 }

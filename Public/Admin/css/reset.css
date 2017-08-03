@@ -144,6 +144,9 @@ textarea.autosize-transition {
 .input-medium{
     width:240px;
 }
+.input-xmedium{
+    width:120px;
+}
 .input-small{
     width:60px;
 }

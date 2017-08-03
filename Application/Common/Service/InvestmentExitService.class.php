@@ -1,12 +1,12 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-08-01 08:14:09
+ * Time: 2017-08-02 11:12:29
  */
 namespace Common\Service;
-class InvestmentService extends BaseService{
-    public static $name = 'Investment';
-    protected static $type = \Common\Model\FinancialInvestmentModel::TYPE_A;
+class InvestmentExitService extends BaseService{
+    public static $name = 'InvestmentExit';
+
     public function add_one($data, $is_only_create = 0) {
         $FinancialModel = D('Financial' . static::$name);
         $data['gmt_create'] = time();
@@ -25,6 +25,22 @@ class InvestmentService extends BaseService{
             return result(FALSE, '网络繁忙~');
         }
     }
+
+    public function add_batch($data) {
+        $FinancialModel = D('Financial' . static::$name);
+
+        if (!$FinancialModel->create($data)) {
+            return result(FALSE, json_encode($FinancialModel->getError()));
+        }
+
+
+        if ($FinancialModel->addAll($data)) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, '批量插入失败');
+        }
+    }
+
 
     public function get_info_by_id($id) {
         $FinancialModel = D('Financial' . static::$name);
@@ -85,12 +101,60 @@ class InvestmentService extends BaseService{
   public function get_by_month_year($year, $month, $all_name) {
         $FinancialModel = D('Financial' . static::$name);
         $where = [];
-      $where['Types'] = ['EQ', static::$type];
         $where['year'] = ['EQ', $year];
         $where['month'] = ['EQ', $month];
         $where['all_name'] = ['EQ', $all_name];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $FinancialModel->where($where)->find();
+        return $FinancialModel->where($where)->select();
+    }
+
+    public function del_by_month_year($year, $month, $all_name) {
+        $FinancialModel = D('Financial' . static::$name);
+        $where = [];
+        $where['year'] = ['EQ', $year];
+        $where['month'] = ['EQ', $month];
+        $where['all_name'] = ['EQ', $all_name];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->delete();
+    }
+
+    public function get_by_names_time($all_names, $year, $month) {
+        $FinancialModel = D('Financial' . static::$name);
+        $where = [];
+        $where['year'] = ['EQ', $year];
+        $where['month'] = ['EQ', $month];
+        $where['all_name'] = ['in', $all_names];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->select();
+    }
+
+
+    public function get_exit_method_options($infos) {
+
+        if ($infos) {
+            foreach ($infos as $k => $info) {
+                $options = '';
+                foreach (\Common\Model\FinancialInvestmentExitModel::$EXISTS_METHOD_MAP as $key => $name) {
+                    if ($info['ExitMethod'] == $key) {
+                        $options .= '<option selected="selected" value="'.$key.'">'.$name.'</option>';
+                    } else {
+                        $options .= '<option value="'.$key.'">'.$name.'</option>';
+                    }
+                }
+
+                $infos[$k]['exit_method_options'] = $options;
+
+            }
+            return $infos;
+        } else {
+            $options = '';
+            foreach (\Common\Model\FinancialInvestmentExitModel::$EXISTS_METHOD_MAP as $key => $name) {
+                $options .= '<option value="'.$key.'">'.$name.'</option>';
+            }
+            return $options;
+        }
+
+
     }
 
 }
