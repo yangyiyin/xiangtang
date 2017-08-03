@@ -58,7 +58,7 @@ class BaseApi extends Api {
 
     public function can_order() {
         if ($this->user_info && $this->user_info['verify_status'] != \Common\Model\NfUserModel::VERIFY_STATUS_OK) {
-            result_json(FALSE, '未实名认证', NULL);
+            //result_json(FALSE, '未实名认证', NULL);
         }
     }
 
