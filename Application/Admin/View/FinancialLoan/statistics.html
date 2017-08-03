@@ -5,14 +5,37 @@
 		<div class="u-tab">
 
 			<ul class="cc">
-				<li class="current"><a href="javascript:;">融资租赁报表记录</a></li>
+				<li class="current"><a href="javascript:;">小额贷款公司单位统计表</a></li>
 			</ul>
 		</div>
 		<div class="search_type cc mb10 search-form">
 			<div class="mb10">
 				&nbsp;公司名称：
 				<input type="text" class="input length_2" name="all_name" style="width:100px;" value="{:I('all_name')}" >
+				<select name="year">
+					<php>
+						$years = [];
+						$cur_year = I('get.year') ? I('get.year') : date('Y');
+						for($i = 2016;$i<=date('Y');$i++) {
+						$years[] = $i;
+						}
 
+						foreach($years as $year){
+						$selected = ($year == $cur_year) ? 'selected' : '';
+						echo '<option value="'.$year.'" '.$selected.'>'.$year.'</option>';
+						}
+					</php>
+				</select>年
+				<select name="month">
+					<php>
+						$months = [1,2,3,4,5,6,7,8,9,10,11,12];
+						$cur_month = I('get.month') ? I('get.month') : date('m');
+						foreach($months as $month){
+						$selected = ($month == $cur_month) ? 'selected' : '';
+						echo '<option value="'.$month.'" '.$selected.'>'.$month.'</option>';
+						}
+					</php>
+				</select>月
 				<a class="u-btn" href="javascript:;" id="search" url="{:U('')}">搜索</a>
 				<!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
 				</span>
@@ -21,105 +44,193 @@
 		<!-- 数据表格 -->
 		<div class="table_list">
 			<table class="biaoge">
-
 				<tr>
-					<td rowspan="2">id</td>
 					<td rowspan="2">公司名称</td>
-					<td rowspan="2">填报月</td>
-					<td rowspan="2">填表人</td>
-					<td rowspan="2">实缴注册资本</td>
-					<td rowspan="2">所有者权益</td>
-					<td >租赁资产额</td>
-					<td colspan="2">业务笔数</td>
-					<td colspan="2">服务客户数</td>
-					<td colspan="3">经营情况（%）</td>
-					<td colspan="4">盈利情况</td>
-					<td rowspan="2">提交时间</td>
-					<td rowspan="2">ip</td>
+					<td rowspan="2">注册资本</td>
+					<td colspan="2">可放贷资金</td>
+					<td colspan="4">月末贷款</td>
+					<td colspan="4">本年贷款累放</td>
+					<td colspan="4">开业以来贷款累放</td>
+					<td rowspan="2">年利率(%)</td>
+					<td rowspan="2">不良贷款</td>
+					<td rowspan="2">净利润</td>
+					<td rowspan="2">总收入</td>
+
 				</tr>
 				<tr>
-					<td >月末余额</td>
-					<td >月末留存笔数</td>
-					<td >当月新增笔数</td>
-					<td >月末留存户数</td>
-					<td >当月新增户数</td>
-					<td >售后回租占比</td>
-					<td >平均收益率</td>
-					<td >租金回收率</td>
-					<td >当月营业收入</td>
-					<td >当月累计净利润</td>
-					<td >当月应缴增值税</td>
-					<td >当月应缴所得税</td>
-				</tr>
+					<td >所有者权益</td>
+					<td >银行融资</td>
+					<td >余额</td>
+					<td >笔 数</td>
+					<td >小额贷款</td>
+					<td >笔 数</td>
 
+					<td >余额</td>
+					<td >笔 数</td>
+					<td >小额贷款</td>
+					<td >笔 数</td>
+					<td >余额</td>
+					<td >笔 数</td>
+					<td >小额贷款</td>
+					<td >笔 数</td>
+				</tr>
 				<tr></tr>
+				<if condition="empty($list)">
+					<tr>
+						<td colspan="19">
+							<if condition="empty($list)">
+								没有找到信息~
+							</if>
+						</td>
+					</tr>
+				</if>
 				<volist name="list" id="vo">
 					<tr>
-						<td>{$vo.id} </td>
 
 						<td>
 							{$vo.all_name}
 						</td>
+
 						<td>
-							{$vo.year}年{$vo.month}月
+							{$vo.capital}
 						</td>
 						<td>
-							{$vo.filler_man}
+							{$vo.Funds_Owner}
 						</td>
 						<td>
-							{$vo.Capital}
+							{$vo.Funds_Bank}
 						</td>
 						<td>
-							{$vo.Owner}
+							{$vo.Month_Amount}
 						</td>
 						<td>
-							{$vo.Assets_M}
+							{$vo.Month_Amount_N}
 						</td>
 						<td>
-							{$vo.Business_Stay}
-						</td>
-						<td>
-							{$vo.Business_M_New}
+							{$vo.Month_Small}
 						</td>
 
 						<td>
-							{$vo.Client_Stay}
-						</td>
-						<td>
-							{$vo.Client_M_New}
-						</td>
-						<td>
-							{$vo.Business_C1}
-						</td>
-						<td>
-							{$vo.Business_C2}
-						</td>
-						<td>
-							{$vo.Business_C3}
-						</td>
-						<td>
-							{$vo.Profit_A}
-						</td>
-						<td>
-							{$vo.Profit_B}
-						</td>
-						<td>
-							{$vo.Profit_C}
-						</td>
-						<td>
-							{$vo.Profit_D}
+							{$vo.Month_Small_N}
 						</td>
 
 						<td>
-							{$vo.gmt_create|date_time}
+							{$vo.Year_Amount}
 						</td>
 						<td>
-							{$vo.ip}
+							{$vo.Year_Amount_N}
+						</td>
+						<td>
+							{$vo.Year_Small}
 						</td>
 
+						<td>
+							{$vo.Year_Small_N}
+						</td>
+
+						<td>
+							{$vo.Total_Amount}
+						</td>
+						<td>
+							{$vo.Total_Amount_N}
+						</td>
+						<td>
+							{$vo.Total_Small}
+						</td>
+
+						<td>
+							{$vo.Total_Small_N}
+						</td>
+
+
+						<td>
+							{$vo.Interest_Rate}
+						</td>
+						<td>
+							{$vo.Bad_Debt}
+						</td>
+						<td>
+							{$vo.Net_Profit}
+						</td>
+						<td>
+							{$vo.Revenue}
+						</td>
 					</tr>
-				</volist>
 
+
+				</volist>
+				<tr>
+
+					<td>
+						合计
+					</td>
+
+					<td>
+
+					</td>
+					<td>
+						{$total.Funds_Owner}
+					</td>
+					<td>
+						{$total.Funds_Bank}
+					</td>
+					<td>
+						{$total.Month_Amount}
+					</td>
+					<td>
+						{$total.Month_Amount_N}
+					</td>
+					<td>
+						{$total.Month_Small}
+					</td>
+
+					<td>
+						{$total.Month_Small_N}
+					</td>
+
+					<td>
+						{$total.Year_Amount}
+					</td>
+					<td>
+						{$total.Year_Amount_N}
+					</td>
+					<td>
+						{$total.Year_Small}
+					</td>
+
+					<td>
+						{$total.Year_Small_N}
+					</td>
+
+					<td>
+						{$total.Total_Amount}
+					</td>
+					<td>
+						{$total.Total_Amount_N}
+					</td>
+					<td>
+						{$total.Total_Small}
+					</td>
+
+					<td>
+						{$total.Total_Small_N}
+					</td>
+
+
+					<td>
+						{$total.Interest_Rate}
+					</td>
+					<td>
+						{$total.Bad_Debt}
+					</td>
+					<td>
+						{$total.Net_Profit}
+					</td>
+					<td>
+						{$total.Revenue}
+					</td>
+				</tr>
+				</tbody>
 			</table>
 		</div>
 		<div class="btn_wrap">

@@ -335,3 +335,36 @@ create table shopy_financial_lease (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+#小额贷款
+create table shopy_financial_loan (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT '0' COMMENT '用户id',
+  `all_name` VARCHAR(50) DEFAULT '' COMMENT '公司全称',
+  `filler_man` VARCHAR(50) DEFAULT ''  COMMENT '填报人',
+  `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
+  `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
+
+	Funds_Owner decimal(9,2) NOT NULL DEFAULT 0,	#所者权益
+	Funds_Bank decimal(9,2) NOT NULL DEFAULT 0,	#银行融资
+	Month_Amount decimal(9,2) NOT NULL DEFAULT 0,	#月末贷款余额
+	Month_Amount_N int NOT NULL DEFAULT 0,		#月末贷款笔数
+	Month_Small decimal(9,2) NOT NULL DEFAULT 0,	#小额贷款
+	Month_Small_N int NOT NULL DEFAULT 0,		#笔数
+	Year_Amount decimal(9,2) NOT NULL DEFAULT 0,	#本年贷款金额
+	Year_Amount_N int NOT NULL DEFAULT 0,		#本年贷款笔数
+	Year_Small decimal(9,2) NOT NULL DEFAULT 0,	#小额贷款
+	Year_Small_N int NOT NULL DEFAULT 0,		#笔数
+	Total_Amount decimal(9,2) NOT NULL DEFAULT 0,	#开业以来贷款金额
+	Total_Amount_N int NOT NULL DEFAULT 0,		#开业以来贷款笔数
+	Total_Small decimal(9,2) NOT NULL DEFAULT 0,	#小额贷款
+	Total_Small_N int NOT NULL DEFAULT 0,		#笔数
+	Interest_Rate decimal(5,2) NOT NULL DEFAULT 0,	#年利率%
+	Bad_Debt decimal(9,2) NOT NULL DEFAULT 0,	#不良贷款
+	Net_Profit decimal(9,2) NOT NULL DEFAULT 0,	#净利润
+	Revenue decimal(9,2) NOT NULL DEFAULT 0,	#总收入
+
+  `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

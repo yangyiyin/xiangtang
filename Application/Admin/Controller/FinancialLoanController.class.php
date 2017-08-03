@@ -1,15 +1,15 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-08-03 09:09:56
+ * Time: 2017-08-03 12:47:42
  */
  namespace Admin\Controller;
  use Admin\Model\MemberModel;
  use User\Api\UserApi;
- class FinancialLeaseController extends FinancialBaseController  {
+ class FinancialLoanController extends FinancialBaseController  {
      protected function _initialize() {
          parent::_initialize();
-           $this->type = \Common\Model\FinancialDepartmentModel::TYPE_FinancialLease;
+           $this->type = \Common\Model\FinancialDepartmentModel::TYPE_FinancialLoan;
      }
 
      public function submit_monthly()
@@ -31,7 +31,7 @@
                      if ($id) {
                          $ret = $this->local_service->update_by_id($id, $data);
                          if ($ret->success) {
-                             action_user_log('修改融资租赁单位月报表');
+                             action_user_log('修改小额贷款公司单位月报表');
                              $this->success('修改成功！');
                          } else {
                              $this->error($ret->message);
@@ -45,7 +45,7 @@
                                 $id = $check_ret['id'];
                                  $ret = $this->local_service->update_by_id($id, $data);
                                  if ($ret->success) {
-                                     action_user_log('修改融资租赁单位月报表');
+                                     action_user_log('修改小额贷款公司单位月报表');
                                      $this->success('修改成功！');
                                  } else {
                                      $this->error($ret->message);
@@ -56,19 +56,18 @@
                          } else {
                              $this->error('参数错误');
                          }
-                         //var_dump($data);die();
                          $ret = $this->local_service->add_one($data);
                          if ($ret->success) {
-                             action_user_log('新增融资租赁单位月报表');
+                             action_user_log('新增小额贷款公司单位月报表');
                              $this->success('添加成功！');
                          } else {
                              $this->error($ret->message);
                          }
                      }
                  } else {
-                     $this->title = '融资租赁单位月填报('. date('Y-m') .'月)';
+                     $this->title = '小额贷款公司单位月填报('. date('Y-m') .'月)';
                      if ($this->is_history) {
-                         $this->title = '融资租赁单位月填报[正在编辑历史数据]';
+                         $this->title = '小额贷款公司单位月填报[正在编辑历史数据]';
                      }
 
                      parent::submit_monthly();
@@ -111,50 +110,53 @@
          $this->assign('list', $data);
          $this->assign('page_html', $page_html);
 
-         //获取平均值
-         $average = [];
+         //获取合计
          $total = [];
          foreach ($data_all as $data) {
-             $total['Assets_M'][] = $data['Assets_M'];
-             $total['Assets_Y'][] = $data['Assets_Y'];
-             $total['Business_Stay'][] = $data['Business_Stay'];
-             $total['Business_M_New'][] = $data['Business_M_New'];
-             $total['Business_Y_New'][] = $data['Business_Y_New'];
-             $total['Business_T_New'][] = $data['Business_T_New'];
-             $total['Client_Stay'][] = $data['Client_Stay'];
-             $total['Client_M_New'][] = $data['Client_M_New'];
-             $total['Client_Y_New'][] = $data['Client_Y_New'];
-             $total['Client_T_New'][] = $data['Client_T_New'];
-             $total['Business_C1'][] = $data['Business_C1'];
-             $total['Business_C2'][] = $data['Business_C2'];
-             $total['Business_C3'][] = $data['Business_C3'];
-             $total['Profit_AY'][] = $data['Profit_AY'];
-             $total['Profit_BY'][] = $data['Profit_BY'];
-             $total['Profit_CY'][] = $data['Profit_CY'];
-             $total['Profit_DY'][] = $data['Profit_DY'];
+             $total['Funds_Owner'] += $data['Funds_Owner'];
+             $total['Funds_Bank'] += $data['Funds_Bank'];
+             $total['Month_Amount'] += $data['Month_Amount'];
+             $total['Month_Amount_N'] += $data['Month_Amount_N'];
+             $total['Month_Small'] += $data['Month_Small'];
+             $total['Month_Small_N'] += $data['Month_Small_N'];
+             $total['Year_Amount'] += $data['Year_Amount'];
+             $total['Year_Amount_N'] += $data['Year_Amount_N'];
+             $total['Year_Small'] += $data['Year_Small'];
+             $total['Year_Small_N'] += $data['Year_Small_N'];
+             $total['Total_Amount'] += $data['Total_Amount'];
+             $total['Total_Amount_N'] += $data['Total_Amount_N'];
+             $total['Total_Small'] += $data['Total_Small'];
+             $total['Total_Small_N'] += $data['Total_Small_N'];
+             $total['Interest_Rate'] += $data['Interest_Rate'];
+             $total['Bad_Debt'] += $data['Bad_Debt'];
+             $total['Net_Profit'] += $data['Net_Profit'];
+             $total['Revenue'] += $data['Revenue'];
          }
 
-         $average['Assets_M'] = fix_2_float(array_sum($total['Assets_M']) / count($total['Assets_M']));
-         $average['Assets_Y'] = fix_2_float(array_sum($total['Assets_Y']) / count($total['Assets_Y']));
-         $average['Business_Stay'] = fix_2_float(array_sum($total['Business_Stay']) / count($total['Business_Stay']));
-         $average['Business_M_New'] = fix_2_float(array_sum($total['Business_M_New']) / count($total['Business_M_New']));
-         $average['Business_Y_New'] = fix_2_float(array_sum($total['Business_Y_New']) / count($total['Business_Y_New']));
-         $average['Business_T_New'] = fix_2_float(array_sum($total['Business_T_New']) / count($total['Business_T_New']));
-         $average['Client_Stay'] = fix_2_float(array_sum($total['Client_Stay']) / count($total['Client_Stay']));
-         $average['Client_M_New'] = fix_2_float(array_sum($total['Client_M_New']) / count($total['Client_M_New']));
-         $average['Client_Y_New'] = fix_2_float(array_sum($total['Client_Y_New']) / count($total['Client_Y_New']));
-         $average['Client_T_New'] = fix_2_float(array_sum($total['Client_T_New']) / count($total['Client_T_New']));
-         $average['Business_C1'] = fix_2_float(array_sum($total['Business_C1']) / count($total['Business_C1']));
-         $average['Business_C2'] = fix_2_float(array_sum($total['Business_C2']) / count($total['Business_C2']));
-         $average['Business_C3'] = fix_2_float(array_sum($total['Business_C3']) / count($total['Business_C3']));
-         $average['Profit_AY'] = fix_2_float(array_sum($total['Profit_AY']) / count($total['Profit_AY']));
-         $average['Profit_BY'] = fix_2_float(array_sum($total['Profit_BY']) / count($total['Profit_BY']));
-         $average['Profit_CY'] = fix_2_float(array_sum($total['Profit_CY']) / count($total['Profit_CY']));
-         $average['Profit_DY'] = fix_2_float(array_sum($total['Profit_DY']) / count($total['Profit_DY']));
+         $this->assign('total', $total);
 
-
-         $this->assign('average', $average);
          $this->display();
+     }
+
+     protected function convert_data_statistics($data, $data_all)
+     {
+         if ($data) {
+             $all_names = result_to_array($data, 'all_name');
+             $DepartmentService = \Common\Service\DepartmentService::get_instance();
+             $departments = $DepartmentService->get_by_all_names($all_names, \Common\Model\FinancialDepartmentModel::TYPE_FinancialLoan);
+             $departments_map = result_to_map($departments, 'all_name');
+             foreach ($data as $key => $info) {
+                 if (isset($departments_map[$info['all_name']])) {
+                     $data[$key]['capital'] = $departments_map[$info['all_name']]['capital'];
+                 } else {
+                     $data[$key]['capital'] = '未知';
+                 }
+             }
+         }
+         return $data;
+
+
+
      }
 
      public function add_unit(){
@@ -214,7 +216,7 @@
         if (!$ret->success) {
             $this->error($ret->message);
         }
-        action_user_log('删除融资租赁单位');
+        action_user_log('删除小额贷款公司单位');
         $this->success('删除成功！');
     }
 
@@ -241,7 +243,7 @@
                         if ($id) {
                             $ret = $this->local_service->update_by_id($id, $data);
                             if ($ret->success) {
-                                action_user_log('修改融资租赁单位');
+                                action_user_log('修改小额贷款公司单位');
                                 $this->success('修改成功！', U('index'));
                             } else {
                                 $this->error($ret->message);
@@ -264,7 +266,7 @@
                                 if(!M('Member')->add($user)){
                                     $this->error('添加失败！');
                                 } else {
-                                    $gid = C('GROUP_Financial' . 'Lease');
+                                    $gid = C('GROUP_Financial' . 'Loan');
                                     if( empty($uid) ){
                                         $this->error('参数有误');
                                     }
@@ -287,7 +289,7 @@
                             $data['type'] = $this->type;
                             $ret = $this->local_service->add_one($data);
                             if ($ret->success) {
-                                action_user_log('添加融资租赁单位');
+                                action_user_log('添加小额贷款公司单位');
                                 $this->success('添加成功！', U('index'));
                             } else {
                                 $this->error($ret->message);

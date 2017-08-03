@@ -5,7 +5,7 @@
 		<div class="u-tab">
 
 			<ul class="cc">
-				<li class="current"><a href="javascript:;">融资租赁报表记录</a></li>
+				<li class="current"><a href="javascript:;">财产保险公司报表记录</a></li>
 			</ul>
 		</div>
 		<div class="search_type cc mb10 search-form">
@@ -27,29 +27,25 @@
 					<td rowspan="2">公司名称</td>
 					<td rowspan="2">填报月</td>
 					<td rowspan="2">填表人</td>
-					<td rowspan="2">实缴注册资本</td>
-					<td rowspan="2">所有者权益</td>
-					<td >租赁资产额</td>
-					<td colspan="2">业务笔数</td>
-					<td colspan="2">服务客户数</td>
-					<td colspan="3">经营情况（%）</td>
-					<td colspan="4">盈利情况</td>
+
+					<td colspan="2">可放贷资金</td>
+					<td colspan="4">月末贷款</td>
+					<td rowspan="2">年利率(%)</td>
+					<td rowspan="2">不良贷款</td>
+					<td rowspan="2">净利润</td>
+					<td rowspan="2">总收入</td>
 					<td rowspan="2">提交时间</td>
 					<td rowspan="2">ip</td>
 				</tr>
 				<tr>
-					<td >月末余额</td>
-					<td >月末留存笔数</td>
-					<td >当月新增笔数</td>
-					<td >月末留存户数</td>
-					<td >当月新增户数</td>
-					<td >售后回租占比</td>
-					<td >平均收益率</td>
-					<td >租金回收率</td>
-					<td >当月营业收入</td>
-					<td >当月累计净利润</td>
-					<td >当月应缴增值税</td>
-					<td >当月应缴所得税</td>
+					<td >所有者权益</td>
+					<td >银行融资</td>
+					<td >余额</td>
+					<td >笔 数</td>
+					<td >小额贷款</td>
+					<td >笔 数</td>
+
+
 				</tr>
 
 				<tr></tr>
@@ -67,47 +63,35 @@
 							{$vo.filler_man}
 						</td>
 						<td>
-							{$vo.Capital}
+							{$vo.Funds_Owner}
 						</td>
 						<td>
-							{$vo.Owner}
+							{$vo.Funds_Bank}
 						</td>
 						<td>
-							{$vo.Assets_M}
+							{$vo.Month_Amount}
 						</td>
 						<td>
-							{$vo.Business_Stay}
+							{$vo.Month_Amount_N}
 						</td>
 						<td>
-							{$vo.Business_M_New}
+							{$vo.Month_Small}
 						</td>
 
 						<td>
-							{$vo.Client_Stay}
+							{$vo.Month_Small_N}
 						</td>
 						<td>
-							{$vo.Client_M_New}
+							{$vo.Interest_Rate}
 						</td>
 						<td>
-							{$vo.Business_C1}
+							{$vo.Bad_Debt}
 						</td>
 						<td>
-							{$vo.Business_C2}
+							{$vo.Net_Profit}
 						</td>
 						<td>
-							{$vo.Business_C3}
-						</td>
-						<td>
-							{$vo.Profit_A}
-						</td>
-						<td>
-							{$vo.Profit_B}
-						</td>
-						<td>
-							{$vo.Profit_C}
-						</td>
-						<td>
-							{$vo.Profit_D}
+							{$vo.Revenue}
 						</td>
 
 						<td>

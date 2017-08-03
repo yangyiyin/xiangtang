@@ -138,7 +138,7 @@ class newModule {
 }
 
 
-$newModule = new newModule('lease', '融资租赁单位');
+$newModule = new newModule('loan', '小额贷款公司单位');
 //['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]
-//$newModule->gain(['view'=>1]);
-$newModule->gain_power(['view'=>1]);
+//$newModule->gain(['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]);
+$newModule->gain_power(['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]);

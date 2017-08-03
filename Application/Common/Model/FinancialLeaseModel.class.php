@@ -14,7 +14,7 @@ class FinancialLeaseModel extends NfBaseModel {
 
         array('Capital', 'currency', '请检成实缴注册资本格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
         array('Owner', 'currency', '请检查所有者权益格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
-        array('Assets_M', 'number', '请检查月末余额格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('Assets_M', 'currency', '请检查月末余额格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
         array('Business_Stay', 'number', '请检查月末留存笔数格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
         array('Business_M_New', 'number', '请检查当月新增笔数格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
         array('Client_Stay', 'number', '请检成月末留存户数格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
@@ -31,14 +31,15 @@ class FinancialLeaseModel extends NfBaseModel {
 
     protected $_auto = array (
         array('ip','set_ip',self::MODEL_BOTH,'callback'),
-        array('G_Volume','set_G_Volume',self::MODEL_BOTH,'callback'),
-        array('G_Volume_yoy','set_G_Volume_yoy',self::MODEL_BOTH,'callback'),
-        array('G_Turnover','set_G_Turnover',self::MODEL_BOTH,'callback'),
-        array('G_Turnover_yoy','set_G_Turnover_yoy',self::MODEL_BOTH,'callback'),
-        array('G_Account','set_G_Account',self::MODEL_BOTH,'callback'),
-        array('G_Account_yoy','set_G_Account_yoy',self::MODEL_BOTH,'callback'),
-        array('C_Assets_yoy','set_C_Assets_yoy',self::MODEL_BOTH,'callback'),
-        array('C_Profit_yoy','set_C_Profit_yoy',self::MODEL_BOTH,'callback'),
+        array('Assets_Y','set_Assets_Y',self::MODEL_BOTH,'callback'),
+        array('Business_Y_New','set_Business_Y_New',self::MODEL_BOTH,'callback'),
+        array('Business_T_New','set_Business_T_New',self::MODEL_BOTH,'callback'),
+        array('Client_Y_New','set_Client_Y_New',self::MODEL_BOTH,'callback'),
+        array('Client_T_New','set_Client_T_New',self::MODEL_BOTH,'callback'),
+        array('Profit_AY','set_Profit_AY',self::MODEL_BOTH,'callback'),
+        array('Profit_BY','set_Profit_BY',self::MODEL_BOTH,'callback'),
+        array('Profit_CY','set_Profit_CY',self::MODEL_BOTH,'callback'),
+        array('Profit_DY','set_Profit_DY',self::MODEL_BOTH,'callback'),
 
     );
 
@@ -46,73 +47,13 @@ class FinancialLeaseModel extends NfBaseModel {
         return $_SERVER["REMOTE_ADDR"];
     }
 
-    protected function set_G_Volume_yoy($data) {
+
+
+    protected function set_Assets_Y($data) {
         //获得去年的income
         $year = intval($data['year']);
         $month = intval($data['month']);
-        $InsurancePropertyService = \Common\Service\FuturesService::get_instance();
-        $last_year_data = $InsurancePropertyService->get_by_month_year($year - 1, $month, $data['all_name']);
-        if (isset($last_year_data['G_Volume']) && $last_year_data['G_Volume']) {
-            return ($data['G_Volume'] / $last_year_data['G_Volume'] - 1) * 100;
-        }
-        return 0;
-    }
-
-    protected function set_G_Turnover_yoy($data) {
-        //获得去年的income
-        $year = intval($data['year']);
-        $month = intval($data['month']);
-        $InsurancePropertyService = \Common\Service\FuturesService::get_instance();
-        $last_year_data = $InsurancePropertyService->get_by_month_year($year - 1, $month, $data['all_name']);
-        if (isset($last_year_data['G_Turnover']) && $last_year_data['G_Turnover']) {
-            return ($data['G_Turnover'] / $last_year_data['G_Turnover'] - 1) * 100;
-        }
-        return 0;
-    }
-
-    protected function set_G_Account_yoy($data) {
-        //获得去年的income
-        $year = intval($data['year']);
-        $month = intval($data['month']);
-        $InsurancePropertyService = \Common\Service\FuturesService::get_instance();
-        $last_year_data = $InsurancePropertyService->get_by_month_year($year - 1, $month, $data['all_name']);
-        if (isset($last_year_data['G_Account']) && $last_year_data['G_Account']) {
-            return ($data['G_Account'] / $last_year_data['G_Account'] - 1) * 100;
-        }
-        return 0;
-    }
-
-
-    protected function set_C_Assets_yoy($data) {
-        //获得去年的income
-        $year = intval($data['year']);
-        $month = intval($data['month']);
-        $InsurancePropertyService = \Common\Service\FuturesService::get_instance();
-        $last_year_data = $InsurancePropertyService->get_by_month_year($year - 1, $month, $data['all_name']);
-        if (isset($last_year_data['C_Assets']) && $last_year_data['C_Assets']) {
-            return ($data['C_Assets'] / $last_year_data['C_Assets'] - 1) * 100;
-        }
-        return 0;
-    }
-
-    protected function set_C_Profit_yoy($data) {
-        //获得去年的income
-        $year = intval($data['year']);
-        $month = intval($data['month']);
-        $Service = \Common\Service\FuturesService::get_instance();
-        $last_year_data = $Service->get_by_month_year($year - 1, $month, $data['all_name']);
-        if (isset($last_year_data['C_Profit']) && $last_year_data['C_Profit']) {
-            return ($data['C_Profit'] / $last_year_data['C_Profit'] - 1) * 100;
-        }
-        return 0;
-    }
-
-
-    protected function set_G_Volume($data) {
-        //获得去年的income
-        $year = intval($data['year']);
-        $month = intval($data['month']);
-        $Service = \Common\Service\FuturesService::get_instance();
+        $Service = \Common\Service\LeaseService::get_instance();
         $ret = $Service->get_this_year_data($year, $month, $data['all_name']);
         $G_value = 0;
         $has_this_data = 0;
@@ -121,20 +62,20 @@ class FinancialLeaseModel extends NfBaseModel {
                 if ($year == $value['year'] && $month == $value['month']) {
                     $has_this_data = 1;
                 }
-                $G_value += $value['C_Volume'];
+                $G_value += $value['Assets_M'];
             }
         }
         if (!$has_this_data) {
-            $G_value += $data['C_Volume'];
+            $G_value += $data['Assets_M'];
         }
         return $G_value;
     }
 
-    protected function set_G_Turnover($data) {
+    protected function set_Profit_AY($data) {
         //获得去年的income
         $year = intval($data['year']);
         $month = intval($data['month']);
-        $Service = \Common\Service\FuturesService::get_instance();
+        $Service = \Common\Service\LeaseService::get_instance();
         $ret = $Service->get_this_year_data($year, $month, $data['all_name']);
         $G_value = 0;
         $has_this_data = 0;
@@ -143,20 +84,21 @@ class FinancialLeaseModel extends NfBaseModel {
                 if ($year == $value['year'] && $month == $value['month']) {
                     $has_this_data = 1;
                 }
-                $G_value += $value['C_Turnover'];
+                $G_value += $value['Profit_A'];
             }
         }
         if (!$has_this_data) {
-            $G_value += $data['C_Turnover'];
+            $G_value += $data['Profit_A'];
         }
         return $G_value;
     }
 
-    protected function set_G_Account($data) {
+
+    protected function set_Profit_BY($data) {
         //获得去年的income
         $year = intval($data['year']);
         $month = intval($data['month']);
-        $Service = \Common\Service\FuturesService::get_instance();
+        $Service = \Common\Service\LeaseService::get_instance();
         $ret = $Service->get_this_year_data($year, $month, $data['all_name']);
         $G_value = 0;
         $has_this_data = 0;
@@ -165,14 +107,145 @@ class FinancialLeaseModel extends NfBaseModel {
                 if ($year == $value['year'] && $month == $value['month']) {
                     $has_this_data = 1;
                 }
-                $G_value += $value['C_Account'];
+                $G_value += $value['Profit_B'];
             }
         }
         if (!$has_this_data) {
-            $G_value += $data['C_Account'];
+            $G_value += $data['Profit_B'];
         }
         return $G_value;
     }
 
+    protected function set_Profit_CY($data) {
+        //获得去年的income
+        $year = intval($data['year']);
+        $month = intval($data['month']);
+        $Service = \Common\Service\LeaseService::get_instance();
+        $ret = $Service->get_this_year_data($year, $month, $data['all_name']);
+        $G_value = 0;
+        $has_this_data = 0;
+        if ($ret) {
+            foreach ($ret as $value) {
+                if ($year == $value['year'] && $month == $value['month']) {
+                    $has_this_data = 1;
+                }
+                $G_value += $value['Profit_C'];
+            }
+        }
+        if (!$has_this_data) {
+            $G_value += $data['Profit_C'];
+        }
+        return $G_value;
+    }
+
+    protected function set_Profit_DY($data) {
+        //获得去年的income
+        $year = intval($data['year']);
+        $month = intval($data['month']);
+        $Service = \Common\Service\LeaseService::get_instance();
+        $ret = $Service->get_this_year_data($year, $month, $data['all_name']);
+        $G_value = 0;
+        $has_this_data = 0;
+        if ($ret) {
+            foreach ($ret as $value) {
+                if ($year == $value['year'] && $month == $value['month']) {
+                    $has_this_data = 1;
+                }
+                $G_value += $value['Profit_D'];
+            }
+        }
+        if (!$has_this_data) {
+            $G_value += $data['Profit_D'];
+        }
+        return $G_value;
+    }
+
+    protected function set_Business_Y_New($data) {
+        //获得去年的income
+        $year = intval($data['year']);
+        $month = intval($data['month']);
+        $Service = \Common\Service\LeaseService::get_instance();
+        $ret = $Service->get_this_year_data($year, $month, $data['all_name']);
+        $G_value = 0;
+        $has_this_data = 0;
+        if ($ret) {
+            foreach ($ret as $value) {
+                if ($year == $value['year'] && $month == $value['month']) {
+                    $has_this_data = 1;
+                }
+                $G_value += $value['Business_M_New'];
+            }
+        }
+        if (!$has_this_data) {
+            $G_value += $data['Business_M_New'];
+        }
+        return $G_value;
+    }
+
+    protected function set_Business_T_New($data) {
+        //获得去年的income
+        $year = intval($data['year']);
+        $month = intval($data['month']);
+        $Service = \Common\Service\LeaseService::get_instance();
+        $ret = $Service->get_all_history_data($year, $month, $data['all_name']);
+        $G_value = 0;
+        $has_this_data = 0;
+        if ($ret) {
+            foreach ($ret as $value) {
+                if ($year == $value['year'] && $month == $value['month']) {
+                    $has_this_data = 1;
+                }
+                $G_value += $value['Business_M_New'];
+            }
+        }
+        if (!$has_this_data) {
+            $G_value += $data['Business_M_New'];
+        }
+        return $G_value;
+    }
+
+    protected function set_Client_Y_New($data) {
+        //获得去年的income
+        $year = intval($data['year']);
+        $month = intval($data['month']);
+        $Service = \Common\Service\LeaseService::get_instance();
+        $ret = $Service->get_this_year_data($year, $month, $data['all_name']);
+        $G_value = 0;
+        $has_this_data = 0;
+        if ($ret) {
+            foreach ($ret as $value) {
+                if ($year == $value['year'] && $month == $value['month']) {
+                    $has_this_data = 1;
+                }
+                $G_value += $value['Client_M_New'];
+            }
+        }
+        if (!$has_this_data) {
+            $G_value += $data['Client_M_New'];
+        }
+        return $G_value;
+    }
+
+    protected function set_Client_T_New($data) {
+        //获得去年的income
+        $year = intval($data['year']);
+        $month = intval($data['month']);
+        $Service = \Common\Service\LeaseService::get_instance();
+        $ret = $Service->get_all_history_data($year, $month, $data['all_name']);
+        $G_value = 0;
+        $has_this_data = 0;
+        if ($ret) {
+            foreach ($ret as $value) {
+                if ($year == $value['year'] && $month == $value['month']) {
+                    $has_this_data = 1;
+                }
+                $G_value += $value['Client_M_New'];
+            }
+        }
+        if (!$has_this_data) {
+            $G_value += $data['Client_M_New'];
+        }
+        return $G_value;
+    }
 
 }

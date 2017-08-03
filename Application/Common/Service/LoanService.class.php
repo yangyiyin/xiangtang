@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-08-03 09:09:56
+ * Time: 2017-08-03 12:47:42
  */
 namespace Common\Service;
-class LeaseService extends BaseService{
-    public static $name = 'Lease';
+class LoanService extends BaseService{
+    public static $name = 'Loan';
 
     public function add_one($data, $is_only_create = 0) {
         $FinancialModel = D('Financial' . static::$name);
@@ -50,7 +50,6 @@ class LeaseService extends BaseService{
         if ($FinancialModel->where($where)->save()) {
             return result(TRUE);
         } else {
-            echo $FinancialModel->getLastSql();die();
             return result(FALSE, '网络繁忙~');
         }
     }
@@ -134,5 +133,4 @@ class LeaseService extends BaseService{
 
         return array_merge($a, $b);
     }
-
 }
