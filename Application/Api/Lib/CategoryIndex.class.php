@@ -19,7 +19,7 @@ class CategoryIndex extends BaseSapi{
         $level = I('get.level');
         $tree = $this->CategoryService->get_all_tree();
         $result = $this->make_tree($tree, $level, $cid);
-        return result_json(TRUE, '', ['categories' => $result]);
+        return result_json(TRUE, '', ['categories' => $result, 'level' => intval($level)]);
     }
 
     private function make_tree($tree_old, $level, $cid) {
@@ -27,7 +27,7 @@ class CategoryIndex extends BaseSapi{
         $tree = [];
         foreach ($tree_old as $_tree1) {
             $tmp_tree = [];
-            $tmp_tree['level'] = 1;
+
             $tmp_tree['cid'] = (int) $_tree1['content']['id'];
             $tmp_tree['name'] = $_tree1['content']['name'];
             $tmp_tree['img'] = item_img(get_cover($_tree1['content']['icon'], 'path'));
@@ -35,7 +35,7 @@ class CategoryIndex extends BaseSapi{
             if ($tmp_tree['has_child'] && (($level && $level > 1) || !$level)) {
                 foreach ($_tree1['child'] as $_child) {
                     $tmp_tree_2 = [];
-                    $tmp_tree_2['level'] = 2;
+
                     $tmp_tree_2['cid'] = (int) $_child['content']['id'];
                     $tmp_tree_2['name'] = $_child['content']['name'];
                     $tmp_tree_2['img'] = item_img(get_cover($_child['content']['icon'], 'path'));
@@ -43,7 +43,7 @@ class CategoryIndex extends BaseSapi{
                     if ($tmp_tree_2['has_child'] && (($level && $level > 2) || !$level)) {
                         foreach ($_child['child'] as $__child) {
                             $tmp_tree_3 = [];
-                            $tmp_tree_3['level'] = 3;
+
                             $tmp_tree_3['cid'] = (int) $__child['content']['id'];
                             $tmp_tree_3['name'] = $__child['content']['name'];
                             $tmp_tree_3['img'] = item_img(get_cover($__child['content']['icon'], 'path'));
