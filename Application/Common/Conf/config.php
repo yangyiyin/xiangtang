@@ -65,6 +65,9 @@ return array(
     'GROUP_FinancialFutures' => 13,
     'GROUP_FinancialLease' => 14,
     'GROUP_FinancialLoan' => 15,
+    'GROUP_FinancialSecurities' => 16,
+    'GROUP_FinancialTransferFunds' => 17,
+    'GROUP_FinancialBank' => 18,
 
     'SERVER_CIDS' => [8,19],
     'INVITER_RATE' => 0.01

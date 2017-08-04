@@ -105,6 +105,9 @@
              $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name'], \Common\Model\FinancialInvestmentDetailsModel::TYPE_A);
              if ($ret){
                  //删除
+                 if ($this->is_history && !$data['force_modify']) {
+                     $this->error('该月报表已经提交,如需修改,请勾选强制修改');
+                 }
                  $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name'], \Common\Model\FinancialInvestmentDetailsModel::TYPE_A);
              }
              $batch_data = [];
@@ -204,6 +207,9 @@
              $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name']);
              if ($ret){
                  //删除
+                 if ($this->is_history && !$data['force_modify']) {
+                     $this->error('该月报表已经提交,如需修改,请勾选强制修改');
+                 }
                  $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name']);
              }
              $batch_data = [];

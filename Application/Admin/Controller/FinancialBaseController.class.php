@@ -7,6 +7,8 @@
  */
 namespace Admin\Controller;
 
+use Think\Exception;
+
 class FinancialBaseController extends AdminController {
     protected $title = '';
     protected $local_service;
@@ -15,10 +17,18 @@ class FinancialBaseController extends AdminController {
     protected function _initialize() {
         parent::_initialize();
         //FinancialInsuranceMutual
-        $service_name = str_replace('Financial', '', CONTROLLER_NAME) . 'Service';
-        $service = '\Common\Service\\'.$service_name;
-        $this->local_service_name = $service_name;
-        $this->local_service = $service::get_instance();
+        try{
+            $service_name = str_replace('Financial', '', CONTROLLER_NAME) . 'Service';
+            $service = '\Common\Service\\'.$service_name;
+            $this->local_service_name = $service_name;
+            if (class_exists($service)) {
+                $this->local_service = $service::get_instance();
+            }
+
+        } catch (Exception $e) {
+
+        }
+
     }
 
     public function submit_monthly() {

@@ -1,15 +1,15 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-08-01 08:17:41
+ * Time: 2017-08-03 16:31:36
  */
  namespace Admin\Controller;
  use Admin\Model\MemberModel;
  use User\Api\UserApi;
- class FinancialInvestmentManagerController extends FinancialBaseController  {
+ class FinancialSecuritiesController extends FinancialBaseController  {
      protected function _initialize() {
          parent::_initialize();
-           $this->type = \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager;
+           $this->type = \Common\Model\FinancialDepartmentModel::TYPE_FinancialSecurities;
      }
 
      public function submit_monthly()
@@ -18,13 +18,7 @@
                      $id = I('get.id');
                      $data = I('post.');
                      $data['uid'] = UID;
-                    $data['Types'] = \Common\Model\FinancialInvestmentModel::TYPE_B;
-                    foreach ($data['Staff_Sub'] as $sub) {
-                        if ($sub == '' || !is_numeric($sub)) {
-                            $this->error('请检查从业人员相关数据是否正确');
-                        }
-                    }
-                    $data['Staff_Sub'] = join(',', $data['Staff_Sub']);
+
                      if (!$this->is_history) {
                          $data['year'] = intval(date('Y'));
                          $data['month'] = intval(date('m'));
@@ -37,7 +31,7 @@
                      if ($id) {
                          $ret = $this->local_service->update_by_id($id, $data);
                          if ($ret->success) {
-                             action_user_log('修改股权投资管理机构单位月报表');
+                             action_user_log('修改证券营业部单位月报表');
                              $this->success('修改成功！');
                          } else {
                              $this->error($ret->message);
@@ -51,7 +45,7 @@
                                 $id = $check_ret['id'];
                                  $ret = $this->local_service->update_by_id($id, $data);
                                  if ($ret->success) {
-                                     action_user_log('修改股权投资管理机构单位月报表');
+                                     action_user_log('修改证券营业部单位月报表');
                                      $this->success('修改成功！');
                                  } else {
                                      $this->error($ret->message);
@@ -64,16 +58,16 @@
                          }
                          $ret = $this->local_service->add_one($data);
                          if ($ret->success) {
-                             action_user_log('新增股权投资管理机构单位月报表');
+                             action_user_log('新增证券营业部单位月报表');
                              $this->success('添加成功！');
                          } else {
                              $this->error($ret->message);
                          }
                      }
                  } else {
-                     $this->title = '股权投资管理机构单位月填报('. date('Y-m') .'月)';
+                     $this->title = '证券营业部单位月填报('. date('Y-m') .'月)';
                      if ($this->is_history) {
-                         $this->title = '股权投资管理机构单位月填报[正在编辑历史数据]';
+                         $this->title = '证券营业部单位月填报[正在编辑历史数据]';
                      }
 
                      parent::submit_monthly();
@@ -82,15 +76,10 @@
                  }
      }
 
-     protected function convert_data_submit_monthly(&$info) {
-         if ($info) {
-             $info['Staff_Sub'] = explode(',', $info['Staff_Sub']);
-         }
-     }
-
      public function statistics()
      {
          $this->title = '';
+         $this->assign('title', $this->title);
          $get = I('get.');
          $where = [];
          if ($get['all_name']) {
@@ -107,9 +96,12 @@
          $where['month'] = $get['month'];
          $service = '\Common\Service\\'.$this->local_service_name;
          $page = I('get.p', 1);
-         $where['Types'] = ['eq', \Common\Model\FinancialInvestmentModel::TYPE_B];
+         $where_all = [];
+         $where_all['year'] = $get['year'];
+         $where_all['month'] = $get['month'];
+         $data_all = $this->local_service->get_by_where_all($where_all);
          list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
-         $this->convert_data_statistics($data);
+         $data = $this->convert_data_statistics($data, $data_all);
          $PageInstance = new \Think\Page($count, $service::$page_size);
          if($total>$service::$page_size){
              $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
@@ -165,103 +157,6 @@
     }
 
 
-    public function detail_submit_monthly() {
-        $this->local_service = \Common\Service\InvestmentDetailsService::get_instance();
-        if (IS_POST) {
-            $id = I('get.id');
-            $data = I('post.');
-            $data['uid'] = UID;
-            $data['Types'] = \Common\Model\FinancialInvestmentDetailsModel::TYPE_B;
-            if (!$data['logs1']) {
-                $this->error('请填写完整的信息~');
-            }
-            if (!$this->is_history) {
-                $data['year'] = intval(date('Y'));
-                $data['month'] = intval(date('m'));
-            } else {
-                $time = intval(strtotime($data['year'] . '-' . $data['month']));
-                if (!$time || $time > strtotime('201712')) {
-                    $this->error('历史数据时间必须小于201712');
-                }
-            }
-
-            $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name'], \Common\Model\FinancialInvestmentDetailsModel::TYPE_B);
-            if ($ret){
-                //删除
-                if ($this->is_history && !$data['force_modify']) {
-                    $this->error('该月报表已经提交,如需修改,请勾选强制修改');
-                }
-                $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name'], \Common\Model\FinancialInvestmentDetailsModel::TYPE_B);
-            }
-            $batch_data = [];
-            foreach ($data['logs1'] as $k => $v) {
-                if ($v) {
-                    $temp = [];
-                    $temp['all_name'] = $data['all_name'];
-                    $temp['year'] = $data['year'];
-                    $temp['month'] = $data['month'];
-                    $temp['Types'] = $data['Types'];
-                    $temp['uid'] = $data['uid'];
-                    $temp['filler_man'] = $data['filler_man'];
-                    $temp['gmt_create'] = time();
-                    $temp['Name'] = $v;
-                    $temp['Area'] = isset($data['logs2'][$k]) ? $data['logs2'][$k] : 0;
-                    $temp['Amount'] = isset($data['logs3'][$k]) ? $data['logs3'][$k] : 0;
-                    $temp['Remarks'] = isset($data['logs4'][$k]) ? $data['logs4'][$k] : '';
-                    $temp['ip'] = $_SERVER["REMOTE_ADDR"];
-                    $batch_data[] = $temp;
-                }
-
-            }
-            $ret = $this->local_service->add_batch($batch_data);
-            if ($ret->success) {
-                action_user_log('新增股权投资管理机构明细月报表');
-                $this->success('添加成功！');
-            } else {
-                $this->error($ret->message);
-            }
-        } else {
-            $this->title = '股权投资管理机构所管理公司明细月填报('. date('Y-m') .'月)';
-            if ($this->is_history) {
-                $this->title = '股权投资管理机构所管理公司明细月填报[正在编辑历史数据]';
-            }
-
-            $this->assign('title', $this->title);
-
-            //获取所有相关的公司
-            $DepartmentService = \Common\Service\DepartmentService::get_instance();
-
-            $departments = $DepartmentService->get_my_list(UID, $this->type);
-
-
-            if (!$departments) {
-                $departments = $DepartmentService->get_all_list($this->type);
-            } else {
-                $data = $departments[0];
-            }
-            $departments = result_to_array($departments, 'all_name');
-            $this->assign('departments', $departments);
-
-            //获取当期的数据
-            $infos = [];
-            if (!$this->is_history) {
-                if (isset($data['all_name']) && $data['all_name']) {
-                    $infos = $this->local_service->get_by_month_year(intval(date('Y')), intval(date('m')), $data['all_name'], \Common\Model\FinancialInvestmentDetailsModel::TYPE_B);
-                    //$this->convert_data_detail_submit_monthly($infos);
-                }
-            }
-
-            //获取区域
-            $AreaService = \Common\Service\AreaService::get_instance();
-            if ($infos) {
-                $infos = $AreaService->set_area_options($infos);
-            }
-            $this->assign('infos', $infos);
-            $this->assign('area_options', $AreaService->set_area_options());
-
-            $this->display();
-        }
-    }
 
     public function del() {
         $this->local_service = \Common\Service\DepartmentService::get_instance();
@@ -277,7 +172,7 @@
         if (!$ret->success) {
             $this->error($ret->message);
         }
-        action_user_log('删除股权投资管理机构单位');
+        action_user_log('删除证券营业部单位');
         $this->success('删除成功！');
     }
 
@@ -299,15 +194,12 @@
         $this->local_service = \Common\Service\DepartmentService::get_instance();
         $this->local_service_name = 'DepartmentService';
         if (IS_POST) {
-
             $id = I('get.id');
                         $data = I('post.');
-            //var_dump($data);
                         if ($id) {
-
                             $ret = $this->local_service->update_by_id($id, $data);
                             if ($ret->success) {
-                                action_user_log('修改股权投资管理机构单位');
+                                action_user_log('修改证券营业部单位');
                                 $this->success('修改成功！', U('index'));
                             } else {
                                 $this->error($ret->message);
@@ -330,7 +222,7 @@
                                 if(!M('Member')->add($user)){
                                     $this->error('添加失败！');
                                 } else {
-                                    $gid = C('GROUP_Financial' . 'InvestmentManager');
+                                    $gid = C('GROUP_Financial' . 'Securities');
                                     if( empty($uid) ){
                                         $this->error('参数有误');
                                     }
@@ -353,7 +245,7 @@
                             $data['type'] = $this->type;
                             $ret = $this->local_service->add_one($data);
                             if ($ret->success) {
-                                action_user_log('添加股权投资管理机构单位');
+                                action_user_log('添加证券营业部单位');
                                 $this->success('添加成功！', U('index'));
                             } else {
                                 $this->error($ret->message);
@@ -363,58 +255,7 @@
 
         }
     }
-
-
-
-     public function submit_log() {
-
-         $where = [];
-         if (I('get.all_name')) {
-             $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
-         }
-         $page = I('get.p', 1);
-         $where['Types'] = ['eq', \Common\Model\FinancialInvestmentModel::TYPE_B];
-         list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
-         $this->convert_data_submit_log($data);
-         $service = '\Common\Service\\'.$this->local_service_name;
-         $PageInstance = new \Think\Page($count, $service::$page_size);
-         if($total>$service::$page_size){
-             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
-         }
-         $page_html = $PageInstance->show();
-
-         $this->assign('list', $data);
-         $this->assign('page_html', $page_html);
-
-         $this->display();
-     }
-
-
-
-     public function detail_log() {
-         $this->local_service =\Common\Service\InvestmentDetailsService::get_instance();
-         $where = [];
-         if (I('get.all_name')) {
-             $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
-         }
-         $page = I('get.p', 1);
-         $where['Types'] = ['eq', \Common\Model\FinancialInvestmentDetailsModel::TYPE_B];
-         list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
-         $data = $this->convert_data_detail_log($data);
-         $service = '\Common\Service\\'.$this->local_service_name;
-         $PageInstance = new \Think\Page($count, $service::$page_size);
-         if($total>$service::$page_size){
-             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
-         }
-         $page_html = $PageInstance->show();
-         $this->assign('list', $data);
-         $this->assign('page_html', $page_html);
-
-         $this->display();
-     }
-
-
-     public function convert_data(&$data) {
+    public function convert_data(&$data) {
         $uids = result_to_array($data, 'uid');
         $User   =   new UserApi();
         $users    =   $User->get_by_uids($uids);
@@ -426,42 +267,6 @@
         }
     }
 
-     protected function convert_data_submit_log(&$data) {
-         if ($data) {
-             foreach ($data as $key => $info) {
-                 $data[$key]['Staff_Sub'] = explode(',', $info['Staff_Sub']);
-             }
 
-         }
 
-     }
-
-     protected function convert_data_detail_log($data) {
-         if ($data) {
-             $AreaService = \Common\Service\AreaService::get_instance();
-             $areas = $AreaService->get_all();
-             $areas_map = result_to_map($areas);
-             foreach ($data as $key => $info) {
-                 $data[$key]['area_name'] = isset($areas_map[$info['Area']]['name']) ? $areas_map[$info['Area']]['name'] : '未知';
-             }
-
-         }
-         return $data;
-
-     }
-
-     protected function convert_data_statistics(&$data) {
-         if ($data) {
-             $all_names = result_to_array($data, 'all_name');
-             $DepartmentService = \Common\Service\DepartmentService::get_instance();
-             $departments = $DepartmentService->get_by_all_names($all_names, \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager);
-             $departments_map = result_to_map($departments, 'all_name');
-             foreach ($data as $key => $info) {
-                 $data[$key]['Staff_Sub'] = explode(',', $info['Staff_Sub']);
-                 $data[$key]['capital'] = isset($departments_map[$info['all_name']]['capital']) ? $departments_map[$info['all_name']]['capital'] : '未知';
-             }
-
-         }
-
-     }
  }

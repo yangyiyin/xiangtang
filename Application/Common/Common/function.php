@@ -1391,5 +1391,8 @@ function date_time($time){
 }
 
 function time_to_date($time){
+    if (!$time) {
+        return '';
+    }
     return date('Y-m-d', $time);
 }

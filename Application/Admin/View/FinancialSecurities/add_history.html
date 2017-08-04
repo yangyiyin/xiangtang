@@ -1,0 +1,129 @@
+<extend name="Public/base"/>
+
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+		    <ul class="cc tab-nav">
+				<li ><a href="{:U('submit_monthly')}">返回当月填报</a></li>
+				<li class="current"><a href="javascript:;">{$title}</a></li>
+
+			</ul>
+		</div>
+		<!-- 数据表格 -->
+		<div class="tab-content table_list">
+		<!-- 表单 -->
+		<form id="form" action="{:U('add_history')}/id/{$info.id}" method="post" class="form-horizontal">
+			<div id="tab">
+				<table class="biaoge">
+					<tbody>
+					<tr>
+						<td colspan="4"><span class="title">慈溪市证券业经营情况统计表</td>
+
+					</tr>
+					<tr>
+						<td>公司全称:</td>
+						<td>
+							<select name="all_name">
+								<php>
+									$list = $departments;
+									$cur = $info['all_name'];
+									foreach($list as $li){
+									$selected = ($li == $cur) ? 'selected' : '';
+									echo '<option value="'.$li.'" '.$selected.'>'.$li.'</option>';
+									}
+								</php>
+							</select>
+
+						</td>
+						<td>填表人:</td>
+						<td>
+							<input type="text" class="input input-medium" name="filler_man" value="{$info.filler_man}">
+						</td>
+					</tr>
+
+					<tr>
+						<td colspan="3">项目</td>
+						<td>
+							<select name="year">
+								<php>
+									$years = [2015,2016,2017];
+									$cur_year = date('Y');
+									foreach($years as $year){
+										$selected = ($year == $cur_year) ? 'selected' : '';
+										echo '<option value="'.$year.'" '.$selected.'>'.$year.'</option>';
+									}
+								</php>
+							</select>年
+							<select name="month">
+								<php>
+									$months = [1,2,3,4,5,6,7,8,9,10,11,12];
+									$cur_month = date('m');
+									foreach($months as $month){
+									$selected = ($month == $cur_month) ? 'selected' : '';
+									echo '<option value="'.$month.'" '.$selected.'>'.$month.'</option>';
+									}
+								</php>
+							</select>月
+						</td>
+					</tr>
+
+					<tr>
+						<td >成交额（亿）</td>
+						<td colspan="2">
+							本月:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Volume" value="{$info.Volume}">
+						</td>
+					</tr>
+
+					<tr>
+						<td >新开户数（个）</td>
+						<td colspan="2">
+							本月:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="New_Account" value="{$info.New_Account}">
+						</td>
+					</tr>
+					<tr>
+						<td >资产总值（亿）</td>
+						<td colspan="2">
+							当期:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Assets" value="{$info.Assets}">
+						</td>
+					</tr>
+					<tr>
+						<td >利润（万）</td>
+						<td colspan="2">
+							当期:
+						</td>
+						<td>
+							<input type="text" class="input input-medium" name="Profit" value="{$info.Profit}">
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+
+
+
+
+
+
+			<div class="btn_wrap">
+	          <div class="btn_wrap_pd">
+
+				  <button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">提 交</button>
+				  <input name="force_modify" type="checkbox"/>强制修改
+			  </div>
+	        </div>
+	    </form>
+	    </div>
+	</div>
+</div>
+
+</block>

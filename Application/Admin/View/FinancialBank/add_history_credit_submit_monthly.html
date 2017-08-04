@@ -1,0 +1,255 @@
+<extend name="Public/base"/>
+
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+			<ul class="cc tab-nav">
+				<li ><a href="{:U('credit_submit_monthly')}">返回当月填报</a></li>
+				<li class="current"><a href="javascript:;">{$title}</a></li>
+			</ul>
+		</div>
+		<!-- 数据表格 -->
+		<div class="tab-content table_list">
+			<!-- 表单 -->
+			<form id="form" action="{:U('')}/id/{$info.id}" method="post" class="form-horizontal">
+				<div id="tab">
+					<table class="biaoge">
+						<tbody>
+						<tr>
+							<td colspan="4"><span class="title">银行机构信贷情况月报表</span><span> (单位 万元)</span></td>
+
+						</tr>
+						<tr>
+							<td colspan="4">
+
+								<select name="year">
+									<php>
+										$years = [2015,2016,2017];
+										$cur_year = date('Y');
+										foreach($years as $year){
+										$selected = ($year == $cur_year) ? 'selected' : '';
+										echo '<option value="'.$year.'" '.$selected.'>'.$year.'</option>';
+										}
+									</php>
+								</select>年
+								<select name="month">
+									<php>
+										$months = [1,2,3,4,5,6,7,8,9,10,11,12];
+										$cur_month = date('m');
+										foreach($months as $month){
+										$selected = ($month == $cur_month) ? 'selected' : '';
+										echo '<option value="'.$month.'" '.$selected.'>'.$month.'</option>';
+										}
+									</php>
+								</select>月
+							</td>
+						</tr>
+						<tr>
+							<td>公司全称:</td>
+							<td>
+								<select name="all_name">
+									<php>
+										$list = $departments;
+										$cur = $info['all_name'];
+										foreach($list as $li){
+										$selected = ($li == $cur) ? 'selected' : '';
+										echo '<option value="'.$li.'" '.$selected.'>'.$li.'</option>';
+										}
+									</php>
+								</select>
+
+							</td>
+							<td>填表人:</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="filler_man" value="{$info.filler_man}">
+							</td>
+						</tr>
+
+						<tr>
+							<td>项目</td>
+							<td>本期余额</td>
+							<td>项目</td>
+							<td>本期余额</td>
+						</tr>
+						<tr>
+							<td>（一）境内存款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Deposit_A" value="{$info.Deposit_A}">
+							</td>
+							<td>（一）境内贷款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Loan_A" value="{$info.Loan_A}">
+							</td>
+						</tr>
+						<tr>
+							<td>  1、住户存款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Deposit_A1" value="{$info.Deposit_A1}">
+							</td>
+							<td>  1、住户贷款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Loan_A1" value="{$info.Loan_A1}">
+							</td>
+						</tr>
+
+						<tr>
+							<td> （1）活期存款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Deposit_A11" value="{$info.Deposit_A11}">
+							</td>
+							<td>  （1）短期贷款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Loan_A11" value="{$info.Loan_A11}">
+							</td>
+						</tr>
+						<tr>
+							<td>   （2）定期及其他存款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Deposit_A12" value="{$info.Deposit_A12}">
+							</td>
+							<td>  消费贷款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Loan_A111" value="{$info.Loan_A111}">
+							</td>
+						</tr>
+						<tr>
+							<td>    2、非金融企业存款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Deposit_A2" value="{$info.Deposit_A2}">
+							</td>
+							<td> 经营贷款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Loan_A112" value="{$info.Loan_A112}">
+							</td>
+						</tr>
+						<tr>
+							<td>   （1）活期存款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Deposit_A21" value="{$info.Deposit_A21}">
+							</td>
+							<td>  （2）中长期贷款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Loan_A12" value="{$info.Loan_A12}">
+							</td>
+						</tr>
+						<tr>
+							<td>   （2）定期及其他存款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Deposit_A22" value="{$info.Deposit_A22}">
+							</td>
+							<td>  消费贷款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Loan_A121" value="{$info.Loan_A121}">
+							</td>
+						</tr>
+						<tr>
+							<td>  3、广义政府存款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Deposit_A3" value="{$info.Deposit_A3}">
+							</td>
+							<td>  经营贷款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Loan_A122" value="{$info.Loan_A122}">
+							</td>
+						</tr>
+						<tr>
+							<td>   （1）活期存款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Deposit_A31" value="{$info.Deposit_A31}">
+							</td>
+							<td>  2、非金融企业及机关团体贷款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Loan_A2" value="{$info.Loan_A2}">
+							</td>
+						</tr>
+						<tr>
+							<td>   （2）定期及其他存款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Deposit_A32" value="{$info.Deposit_A32}">
+							</td>
+							<td> （1）短期贷款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Loan_A21" value="{$info.Loan_A21}">
+							</td>
+						</tr>
+						<tr>
+							<td>  4、非银行业金融机构存款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Deposit_A4" value="{$info.Deposit_A4}">
+							</td>
+							<td>  （2）中长期贷款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Loan_A22" value="{$info.Loan_A22}">
+							</td>
+						</tr>
+						<tr>
+							<td>  （二）境外存款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Deposit_B" value="{$info.Deposit_B}">
+							</td>
+							<td>  （3）票据融资</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Loan_A23" value="{$info.Loan_A23}">
+							</td>
+						</tr>
+						<tr>
+							<td> </td>
+							<td>
+
+							</td>
+							<td>  （4）融资租赁</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Loan_A24" value="{$info.Loan_A24}">
+							</td>
+						</tr>
+						<tr>
+							<td> </td>
+							<td>
+
+							</td>
+							<td>  （5）各项垫款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Loan_A25" value="{$info.Loan_A25}">
+							</td>
+						</tr>
+						<tr>
+							<td> </td>
+							<td>
+
+							</td>
+							<td>  3、非银行业金融机构贷款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Loan_A3" value="{$info.Loan_A3}">
+							</td>
+						</tr>
+						<tr>
+							<td> </td>
+							<td>
+
+							</td>
+							<td> （二）境外贷款</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="Loan_B" value="{$info.Loan_B}">
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+
+
+
+
+
+				<div class="btn_wrap">
+					<div class="btn_wrap_pd">
+						<button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">提 交</button>
+						<input name="force_modify" type="checkbox"/>强制修改					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	</div>
+
+</block>
