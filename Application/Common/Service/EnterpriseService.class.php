@@ -1,14 +1,15 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-08-02 13:05:15
+ * Time: 2017-08-04 20:44:24
  */
 namespace Common\Service;
-class AreaService extends BaseService{
-    public static $name = 'Area';
+class EnterpriseService extends BaseService{
+    public static $name = 'Enterprise';
 
     public function add_one($data, $is_only_create = 0) {
         $FinancialModel = D('Financial' . static::$name);
+        $data['gmt_create'] = time();
          if (!$FinancialModel->create($data)) {
             return result(FALSE, $FinancialModel->getError());
          }
@@ -33,21 +34,13 @@ class AreaService extends BaseService{
         return $FinancialModel->where($where)->find();
     }
 
-    public function get_like_name($name) {
+    public function get_info_by_name($name) {
         $FinancialModel = D('Financial' . static::$name);
         $where = [];
-        $where['name'] = ['like', '%'.$name.'%'];
+        $where['Name'] = ['EQ', $name];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $FinancialModel->where($where)->find();
     }
-
-    public function get_all() {
-        $FinancialModel = D('Financial' . static::$name);
-        $where = [];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $FinancialModel->where($where)->select();
-    }
-
     public function update_by_id($id, $data) {
 
         if (!$id) {
@@ -85,7 +78,7 @@ class AreaService extends BaseService{
 
 
     public function get_by_where($where, $order = 'id desc', $page = 1) {
-        $FinancialModel = D('Financial' . static::$name);
+         $FinancialModel = D('Financial' . static::$name);
         $data = [];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         $count = $FinancialModel->where($where)->order($order)->count();
@@ -95,33 +88,14 @@ class AreaService extends BaseService{
         return [$data, $count];
     }
 
-    public function set_area_options($infos = []){
-        $FinancialModel = D('Financial' . static::$name);
-        $where = [];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        $areas = $FinancialModel->where($where)->select();
-        if ($infos) {
-            foreach ($infos as $key => $info) {
-                $options = '';
-                foreach ($areas as $area) {
-                    if ($info['Area'] == $area['id']) {
-                        $options .= '<option selected="selected" value="'.$area['id'].'">'.$area['name'].'</option>';
-                    } else {
-                        $options .= '<option value="'.$area['id'].'">'.$area['name'].'</option>';
-                    }
-                }
 
-                $infos[$key]['area_options'] = $options;
 
-            }
-            return $infos;
-        } else {
-            $options = '';
-            foreach ($areas as $area) {
-                $options .= '<option value="'.$area['id'].'">'.$area['name'].'</option>';
-            }
-            return $options;
+
+      public function get_by_where_all($where) {
+            $FinancialModel = D('Financial' . static::$name);
+            $data = [];
+            $where['deleted'] = ['EQ', static::$NOT_DELETED];
+            return $FinancialModel->where($where)->select();
         }
 
-    }
 }

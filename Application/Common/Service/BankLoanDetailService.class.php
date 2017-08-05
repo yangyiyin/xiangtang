@@ -26,6 +26,21 @@ class BankLoanDetailService extends BaseService{
         }
     }
 
+    public function add_batch($data) {
+        $FinancialModel = D('Financial' . static::$name);
+
+        if (!$FinancialModel->create($data)) {
+            return result(FALSE, json_encode($FinancialModel->getError()));
+        }
+
+
+        if ($FinancialModel->addAll($data)) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, '批量插入失败');
+        }
+    }
+
     public function get_info_by_id($id) {
         $FinancialModel = D('Financial' . static::$name);
         $where = [];
@@ -89,14 +104,50 @@ class BankLoanDetailService extends BaseService{
         $where['month'] = ['EQ', $month];
         $where['all_name'] = ['EQ', $all_name];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $FinancialModel->where($where)->find();
+        return $FinancialModel->where($where)->select();
     }
 
-      public function get_by_where_all($where) {
-            $FinancialModel = D('Financial' . static::$name);
-            $data = [];
-            $where['deleted'] = ['EQ', static::$NOT_DELETED];
-            return $FinancialModel->where($where)->select();
+    public function del_by_month_year($year, $month, $all_name) {
+        $FinancialModel = D('Financial' . static::$name);
+        $where = [];
+        $where['year'] = ['EQ', $year];
+        $where['month'] = ['EQ', $month];
+        $where['all_name'] = ['EQ', $all_name];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->delete();
+    }
+
+    public function get_by_where_all($where) {
+        $FinancialModel = D('Financial' . static::$name);
+        $data = [];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->select();
+    }
+
+    public function pattern_options($infos = []){
+        $arr = \Common\Model\FinancialBankLoanDetailModel::$PATTERN_MAP;
+        if ($infos) {
+            foreach ($infos as $key => $info) {
+                $options = '';
+                foreach ($arr as $k => $v) {
+                    if ($info['Pattern'] == $k) {
+                        $options .= '<option selected="selected" value="'.$k.'">'.$v.'</option>';
+                    } else {
+                        $options .= '<option value="'.$k.'">'.$v.'</option>';
+                    }
+                }
+
+                $infos[$key]['pattern_options'] = $options;
+
+            }
+            return $infos;
+        } else {
+            $options = '';
+            foreach ($arr as $k => $v) {
+                $options .= '<option value="'.$k.'">'.$v.'</option>';
+            }
+            return $options;
         }
 
+    }
 }

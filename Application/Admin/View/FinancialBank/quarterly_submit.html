@@ -1,0 +1,460 @@
+<extend name="Public/base"/>
+
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+			<ul class="cc tab-nav">
+				<li class="current"><a href="javascript:;">{$title}</a></li>
+=			</ul>
+		</div>
+		<!-- 数据表格 -->
+		<div class="tab-content table_list">
+			<!-- 表单 -->
+			<form id="form" action="{:U('')}/id/{$info.id}" method="post" class="form-horizontal">
+				<div id="tab">
+					<table class="biaoge">
+						<tbody>
+						<tr>
+							<td colspan="4"><span class="title">银行金融机构季度报表</span><span> (单位 万元)</span></td>
+
+						</tr>
+						<tr>
+							<td colspan="4">
+
+								{:date('Y')}年{:date('m')}月
+							</td>
+						</tr>
+						<tr>
+							<td>公司全称:</td>
+							<td>
+								<select name="all_name">
+									<php>
+										$list = $departments;
+										$cur = $info['all_name'];
+										foreach($list as $li){
+										$selected = ($li == $cur) ? 'selected' : '';
+										echo '<option value="'.$li.'" '.$selected.'>'.$li.'</option>';
+										}
+									</php>
+								</select>
+
+							</td>
+							<td>填表人:</td>
+							<td>
+								<input type="text" class="input input-xmedium" name="filler_man" value="{$info.filler_man}">
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="2">项目</td>
+							<td colspan="2">本期</td>
+						</tr>
+
+						<tr >
+							<td colspan="2">一、各项存款</td>
+							<td colspan="2">
+
+								<if condition="$vo['Deposits']">
+									<input type="text" class="input input-xmedium" name="Loans" value="{$vo.Deposits}">
+									<elseif condition="$deposits">
+										<input type="text" class="input input-xmedium" name="Loans" value="{$deposits}">
+									</elseif>
+									<else/>
+									<input type="text" class="input input-xmedium" name="Deposits" value="">
+								</if>
+							</td>
+						</tr>
+						<tr >
+							<td colspan="2">二、各项贷款</td>
+							<td colspan="2">
+								<if condition="$vo['Loans']">
+									<input type="text" class="input input-xmedium" name="Loans" value="{$vo.Loans}">
+									<elseif condition="$loans">
+										<input type="text" class="input input-xmedium" name="Loans" value="{$loans}">
+									</elseif>
+									<else/>
+									<input type="text" class="input input-xmedium" name="Loans" value="">
+								</if>
+
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">1、公司贷款</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_A" value="{$vo.Loans_A}">
+							</td>
+						</tr><tr>
+							<td colspan="2">其中:政府性重点项目贷款</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_A_Sub[]" value="{$vo.Loans_A_Sub[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">     中小微企业贷款</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_A_Sub[]" value="{$vo.Loans_A_Sub[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">2.按期限分</td>
+							<td colspan="2">
+							--
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  短期贷款</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_B[]" value="{$vo.Loans_B[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  中长期贷款</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_B[]" value="{$vo.Loans_B[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">3.按产业分</td>
+							<td colspan="2">
+								--
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  第一产业</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_C[]" value="{$vo.Loans_C[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  第二产业</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_C[]" value="{$vo.Loans_C[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2"> 其中：</td>
+							<td colspan="2">
+							--
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  #纺织服装、化纤</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_C[]" value="{$vo.Loans_C[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  #家用电器、电子电器、电工电器</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_C[]" value="{$vo.Loans_C[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2"> #装备制造、精密仪器、模具、文体设备</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_C[]" value="{$vo.Loans_C[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">#汽车零配件</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_C[]" value="{$vo.Loans_C[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2"> #生物制药、医疗器械</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_C[]" value="{$vo.Loans_C[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  第三产业</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_C[]" value="{$vo.Loans_C[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">4.按担保方式分</td>
+							<td colspan="2">
+								--
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  抵（质）押贷款</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_D[]" value="{$vo.Loans_D[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">其中：动产抵押贷款</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_D[]" value="{$vo.Loans_D[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  金贝壳贷款</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_D[]" value="{$vo.Loans_D[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">    保证贷款</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_D[]" value="{$vo.Loans_D[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">    信用贷款</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_D[]" value="{$vo.Loans_D[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  5.个人贷款</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_E" value="{$vo.Deposits}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">    个人消费贷款</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_E[]" value="{$vo.Loans_E[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  其中：个人住房贷款 </td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_E[]" value="{$vo.Loans_E[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">    个人经营性贷款</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_E[]" value="{$vo.Loans_E[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  6.房地产贷款</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_F" value="{$vo.Loans_F}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">    其中：房地产开发贷款</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_F[]" value="{$vo.Loans_F[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  7.支持地方经济发展贷款</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_G" value="{$vo.Loans_G}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">    其中：支持新区政府性重点项目</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_G[]" value="{$vo.Loans_G[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  8．贷款质量</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_H" value="{$vo.Loans_H}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">    风险贷款余额</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_H[]" value="{$vo.Loans_H[]}">
+							</td>
+						</tr>
+						<tr style="display: none">
+							<td colspan="2">  9.存贷比</td>
+							<td colspan="2">
+								--
+							</td>
+						</tr>
+						<tr style="display: none">
+							<td colspan="2">  存贷款比例（%）</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Loans_Ratio" value="{$vo.Loans_Ratio}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  三、主要资产负债项目</td>
+							<td colspan="2">
+							--
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  资产总计</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Assets_Total" value="{$vo.Assets_Total}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  负债总计</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Debt_Total" value="{$vo.Debt_Total}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  所有者权益</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Owner_Total" value="{$vo.Owner_Total}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">     本年累计利润</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Profit_Total" value="{$vo.Profit_Total}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  各类税费</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Tax_Total" value="{$vo.Tax_Total}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  四、主要表外项目余额</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Other_Item" value="{$vo.Other_Item}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  1、承兑汇票</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Other_Item_Sub[]" value="{$vo.Other_Item_Sub[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  2、票据</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Other_Item_Sub[]" value="{$vo.Other_Item_Sub[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  3、信用证</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Other_Item_Sub[]" value="{$vo.Other_Item_Sub[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  4、信托</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Other_Item_Sub[]" value="{$vo.Other_Item_Sub[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  5、其他</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Other_Item_Sub[]" value="{$vo.Other_Item_Sub[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  五、从业人员（人）</td>
+							<td colspan="2">
+								--
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">  从业人员总数</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Staff" value="{$vo.Staff}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">     按性别</td>
+							<td colspan="2">
+								--
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">      其中：男性</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Staff_Sub[]" value="{$vo.Staff_Sub[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">            女性</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Staff_Sub[]" value="{$vo.Staff_Sub[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">     按学历</td>
+							<td colspan="2">
+								--
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">      其中：大专及大专以下</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Staff_Sub[]" value="{$vo.Staff_Sub[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">            本科</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Staff_Sub[]" value="{$vo.Staff_Sub[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">                      硕士研究生</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Staff_Sub[]" value="{$vo.Staff_Sub[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">                      博士及博士以上</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Staff_Sub[]" value="{$vo.Staff_Sub[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">               管理人员</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Staff_Sub[]" value="{$vo.Staff_Sub[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">               劳务派遣制员工数</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Staff_Sub[]" value="{$vo.Staff_Sub[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">               持有国内高端从业资格证书的人员数</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Staff_Sub[]" value="{$vo.Staff_Sub[]}">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">               持有国外高端从业资格证书的人员数</td>
+							<td colspan="2">
+								<input type="text" class="input input-xmedium" name="Staff_Sub[]" value="{$vo.Staff_Sub[]}">
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+
+
+
+
+
+				<div class="btn_wrap">
+					<div class="btn_wrap_pd">
+						<if condition="$info['id']">已提交</if><button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal"><if condition="$info['id']">修 改<else/>提 交</if></button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	</div>
+
+</block>

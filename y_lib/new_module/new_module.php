@@ -138,7 +138,7 @@ class newModule {
 }
 
 
-$newModule = new newModule('bankQuarterly', '银行机构单位');
+$newModule = new newModule('enterprise', '银行机构单位');
 //['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]
 //$newModule->gain(['model'=>1, 'service'=>1]);
 //sleep(1);

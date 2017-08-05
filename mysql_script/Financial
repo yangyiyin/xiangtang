@@ -746,3 +746,35 @@ create table shopy_financial_bank_quarterly (
   `deleted` TINYINT(3) DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+
+create table shopy_financial_enterprise (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+
+RegNum varchar(50)NULL,
+CreditCode varchar(50) NULL,
+Name varchar(50) NULL,
+Legal varchar(20) NULL,
+Founded varchar(20) NULL,
+Jurisdictions varchar(50) NULL,
+Type varchar(50) NULL,
+Capital varchar(20) NULL,
+Approval varchar(20) NULL,
+Industry varchar(50) NULL,
+Scope varchar(1024) NULL,
+Address varchar(50) NULL,
+Phone varchar(20) NULL,
+IDcard varchar(30) NULL,
+Contacts varchar(10) NULL,
+Mobile varchar(20) NULL,
+Circle varchar(10) NULL,
+RemoveTag varchar(10) NULL,
+SyncMark varchar(20) NULL,
+
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+

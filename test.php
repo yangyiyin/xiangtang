@@ -41,6 +41,28 @@
 //echo 'deocde: ', $_str, '=', decode_big_endian($_str), "\n";
 
 
+$content = file_get_contents('./123.csv');
 
+$content_arr = explode("\n", $content);
+//print_r($content_arr);die();
+$sql = '';
+foreach ($content_arr as $key => $line) {
+    if ($key == 0) {
+        continue;
+    }
+    $arr = explode(',', $line);
+    $arr[count($arr) -1] = '';
+    //var_dump($arr);die();
+    $values = [];
+    foreach ($arr as $a) {
+        $values[] = '"' . $a . '"';
+    }
 
-var_dump( is_numeric('201a'));
+    $values = join(',',$values);
+
+    $sql .= 'insert into shopy_financial_enterprise (RegNum,CreditCode,Name,Legal,Founded,Jurisdictions,Type,Capital,Approval,Industry,Scope,Address,Phone,IDcard,Contacts,Mobile,Circle,RemoveTag,SyncMark) values ('.$values.');' . "\n";
+
+}
+
+echo $sql;
+
