@@ -9,8 +9,7 @@
 		<div class="u-tab">
 			<ul class="cc tab-nav">
 				<li class="current"><a href="javascript:;">{$title}</a></li>
-				<li ><a href="{:U('add_history_baddebt_dispose_submit_monthly')}">添加历史数据</a></li>
-
+				<li ><a href="{:U('add_history_overdue_resolve_submit_monthly')}">添加历史数据</a></li>
 			</ul>
 		</div>
 		<!-- 数据表格 -->
@@ -21,7 +20,7 @@
 					<table class="biaoge">
 						<tbody>
 						<tr>
-							<td colspan="9"><span class="title">不良贷款处置明细报表</span><span> (金额单位 万元)</span></td>
+							<td colspan="9"><span class="title">逾期化解明细报表</span><span> (金额单位 万元)</span></td>
 
 						</tr>
 						<tr>
@@ -64,9 +63,8 @@
 							<td>企业名称:</td>
 							<td>法人代表或实际控制人:</td>
 							<td>企业所属乡镇（街道）:</td>
-							<td>收回不良贷款金额:</td>
-							<td>收回不良贷款时间:</td>
-							<td>收回方式:</td>
+							<td>逾期贷款金额:</td>
+							<td>化解金额:</td>
 							<td>备注:</td>
 						</tr>
 						<volist name="infos" id="vo">
@@ -87,25 +85,14 @@
 									</select>
 								</td>
 								<td>
-									<input type="text" class="input input-xmedium" name="logs4[]" value="{$vo.Recover}">
+									<input type="text" class="input input-xmedium" name="logs4[]" value="{$vo.Overdue}">
+								</td>
+								<td>
+									<input type="text" class="input input-xmedium" name="logs5[]" value="{$vo.Resolve}">
 								</td>
 
 								<td>
-									<input type="text" class="input input-xmedium time-start" name="logs5[]" value="{$vo.Recover_Time|time_to_date}">
-								</td>
-
-								<td>
-									<select name="logs6[]">
-										<if condition="$vo['recover_method_options']">
-											{$vo['recover_method_options']}
-											<else/>
-											{$recover_method_options}
-										</if>
-									</select>
-
-								</td>
-								<td>
-									<input type="text" class="input input-xmedium" name="logs7[]" value="{$vo.Remarks}">
+									<input type="text" class="input input-xmedium" name="logs6[]" value="{$vo.Remarks}">
 								</td>
 								<td><a class="btn del_log">删除</a></td>
 							</tr>
@@ -122,12 +109,11 @@
 
 				<div class="btn_wrap">
 					<div class="btn_wrap_pd">
-
 						<if condition="$infos[0]['status'] == 0">
 							<if condition="$infos[0]['id']">已提交</if><button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal"><if condition="$infos[0]['id']">修 改<else/>提 交</if></button>
 
 							<if condition="$infos[0]['id']">
-								<a class="u-btn confirm J_ajax_get" href="{:U('submit_verify')}/id/{$infos[0]['id']}/type/baddebt_dispose/year/{$infos[0]['year']}/month/{$infos[0]['month']}/all_name/{$infos[0]['all_name']}" >提交审核</a>
+								<a class="u-btn confirm J_ajax_get" href="{:U('submit_verify')}/id/{$infos[0]['id']}/type/overdue/year/{$infos[0]['year']}/month/{$infos[0]['month']}/all_name/{$infos[0]['all_name']}" >提交审核</a>
 							</if>
 						</if>
 						<if condition="$infos[0]['status'] == 2">
@@ -136,7 +122,6 @@
 						<if condition="$infos[0]['status'] == 1">
 							审核中
 						</if>
-
 						<div style="position: fixed;right: 0;bottom: 0px;" id="filePicker">导入excel</div>
 					</div>
 				</div>
@@ -166,13 +151,11 @@
 						'<input type="text" class="input input-xmedium" name="logs4[]">'+
 						'</td>'+
 						'<td>'+
-						'<input type="text" id="time-start" class="input input-xmedium" name="logs5[]">'+
+						'<input type="text" class="input input-xmedium" name="logs5[]">'+
 						'</td>'+
+
 						'<td>'+
-						'<select name="logs6[]">{$recover_method_options}</select>'+
-						'</td>'+
-						'<td>'+
-						'<input type="text" class="input input-xmedium" name="logs7[]">'+
+						'<input type="text" class="input input-xmedium" name="logs6[]">'+
 						'</td>'+
 						'<td><a class="btn del_log">删除</a></td>'+
 						'</tr>'
@@ -227,7 +210,7 @@
 			swf: '__STATIC__/webuploader/Uploader.swf',
 
 			// 文件接收服务端。
-			server: "{:U('FinancialBank/upload_excel',array('session_id'=>session_id(), 'type'=>'baddebt_dispose'))}",
+			server: "{:U('FinancialBank/upload_excel',array('session_id'=>session_id(), 'type'=>'overdue_resolve'))}",
 			fileNumLimit: 1,
 			// 选择文件的按钮。可选。
 			// 内部根据当前运行是创建，可能是input元素，也可能是flash.
@@ -266,26 +249,17 @@
 							'<input type="text" class="input input-xmedium" name="logs4[]" value="'+line[3]+'">'+
 							'</td>'+
 							'<td>'+
-							'<input type="text" id="time-start" class="input input-xmedium" name="logs5[]" value="'+line[4]+'">'+
+							'<input type="text" class="input input-xmedium" name="logs5[]" value="'+line[4]+'">'+
 							'</td>'+
+
 							'<td>'+
-							'<select name="logs6[]">{$recover_method_options}</select>'+
-							'</td>'+
-							'<td>'+
-							'<input type="text" class="input input-xmedium" name="logs7[]" value="'+line[6]+'">'+
+							'<input type="text" class="input input-xmedium" name="logs6[]" value="'+line[5]+'">'+
 							'</td>'+
 							'<td><a class="btn del_log">删除</a></td>'+
 							'</tr>'
 					$('.add_line').before(add_html);
 
-					$('.add_line').prev().find("#time-start").datetimepicker({
-						format: 'yyyy-mm-dd',
-						language:"zh-CN",
-						minView:2,
-						autoclose:true
-					});
 					$('.add_line').prev().find('select[name="logs3[]"]').val(line[2]);
-					$('.add_line').prev().find('select[name="logs6[]"]').val(line[5]);
 				}
 
 				if (data.key) {

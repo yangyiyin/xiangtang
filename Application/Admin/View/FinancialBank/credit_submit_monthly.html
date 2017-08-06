@@ -225,7 +225,19 @@
 
 				<div class="btn_wrap">
 					<div class="btn_wrap_pd">
-						<if condition="$info['id']">已提交</if><button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal"><if condition="$info['id']">修 改<else/>提 交</if></button>
+						<if condition="$info['status'] == 0">
+							<if condition="$info['id']">已提交</if><button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal"><if condition="$info['id']">修 改<else/>提 交</if></button>
+
+							<if condition="$info['id']">
+								<a class="u-btn confirm J_ajax_get" href="{:U('submit_verify')}/id/{$info['id']}/type/credit" >提交审核</a>
+							</if>
+						</if>
+						<if condition="$vo['status'] == 2">
+							已通过
+						</if>
+						<if condition="$vo['status'] == 1">
+							审核中
+						</if>
 					</div>
 				</div>
 			</form>

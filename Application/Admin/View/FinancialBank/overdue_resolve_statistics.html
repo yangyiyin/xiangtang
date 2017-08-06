@@ -5,14 +5,37 @@
 		<div class="u-tab">
 
 			<ul class="cc">
-				<li class="current"><a href="javascript:;">本外币信贷报表记录</a></li>
+				<li class="current"><a href="javascript:;">逾期贷款分乡镇统计表</a></li>
 			</ul>
 		</div>
 		<div class="search_type cc mb10 search-form">
 			<div class="mb10">
 				&nbsp;公司名称：
 				<input type="text" class="input length_2" name="all_name" style="width:100px;" value="{:I('all_name')}" >
+				<select name="year">
+					<php>
+						$years = [];
+						$cur_year = I('get.year') ? I('get.year') : date('Y');
+						for($i = 2016;$i<=date('Y');$i++) {
+						$years[] = $i;
+						}
 
+						foreach($years as $year){
+						$selected = ($year == $cur_year) ? 'selected' : '';
+						echo '<option value="'.$year.'" '.$selected.'>'.$year.'</option>';
+						}
+					</php>
+				</select>年
+				<select name="month">
+					<php>
+						$months = [1,2,3,4,5,6,7,8,9,10,11,12];
+						$cur_month = I('get.month') ? I('get.month') : date('m');
+						foreach($months as $month){
+						$selected = ($month == $cur_month) ? 'selected' : '';
+						echo '<option value="'.$month.'" '.$selected.'>'.$month.'</option>';
+						}
+					</php>
+				</select>月
 				<a class="u-btn" href="javascript:;" id="search" url="{:U('')}">搜索</a>
 				<!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
 				</span>
@@ -21,172 +44,55 @@
 		<!-- 数据表格 -->
 		<div class="table_list">
 			<table class="biaoge">
-
 				<tr>
-					<td rowspan="2">id</td>
-					<td rowspan="2">公司名称</td>
-					<td rowspan="2">填报月</td>
-					<td rowspan="2">填表人</td>
-
-					<td colspan="12">存款</td>
-					<td colspan="16">贷款</td>
-
-					<td rowspan="2">提交时间</td>
-					<td rowspan="2">ip</td>
-					<td rowspan="2">操作</td>
-				</tr>
-
-				<tr>
-					<td>（一）境内存款</td>
-					<td>1、住户存款</td>
-					<td>（1）活期存款</td>
-					<td>（2）定期及其他存款	</td>
-					<td>2、非金融企业存款	</td>
-					<td>（1）活期存款	</td>
-					<td>（2）定期及其他存款	</td>
-					<td>3、广义政府存款	</td>
-					<td>（1）活期存款	</td>
-					<td>（2）定期及其他存款	</td>
-					<td>4、非银行业金融机构存款	</td>
-					<td>（二）境外存款	</td>
-					<td>（一）境内贷款	</td>
-					<td>1、住户贷款	</td>
-					<td>（1）短期贷款	</td>
-					<td>消费贷款	</td>
-					<td>经营贷款	</td>
-					<td>（2）中长期贷款	</td>
-					<td>消费贷款	</td>
-					<td>经营贷款	</td>
-					<td>2、非金融企业及机关团体贷款	</td>
-					<td>（1）短期贷款	</td>
-					<td>（2）中长期贷款	</td>
-					<td>（3）票据融资	</td>
-					<td>（4）融资租赁	</td>
-					<td>（5）各项垫款	</td>
-					<td>3、非银行业金融机构贷款		</td>
-					<td>（二）境外贷款	</td>
-
-
+					<td>镇（街道、园区）</td>
+					<td>截至本月末逾期贷款企业数</td>
+					<td>截至本月末逾期贷款余额</td>
+					<td>本月新增逾期贷款企业数</td>
+					<td>本月新增逾期贷款额</td>
+					<td>本月化解逾期贷款企业数</td>
+					<td>本月化解逾期贷款额</td>
 				</tr>
 
 				<tr></tr>
+				<if condition="empty($list)">
+					<tr>
+						<td colspan="19">
+							<if condition="empty($list)">
+								没有找到信息~
+							</if>
+						</td>
+					</tr>
+				</if>
 				<volist name="list" id="vo">
 					<tr>
-						<td>{$vo.id} </td>
 
 						<td>
-							{$vo.all_name}
-						</td>
-						<td>
-							{$vo.year}年{$vo.month}月
-						</td>
-						<td>
-							{$vo.filler_man}
-						</td>
-						<td>
-							{$vo.Deposit_A}
-						</td>
-						<td>
-							{$vo.Deposit_A1}
-						</td>
-						<td>
-							{$vo.Deposit_A11}
-						</td>
-						<td>
-							{$vo.Deposit_A12}
-						</td>
-						<td>
-							{$vo.Deposit_A2}
+							{$vo.area_name}
 						</td>
 
 						<td>
-							{$vo.Deposit_A21}
+							{$vo.Overdue_Firms}
 						</td>
 						<td>
-							{$vo.Deposit_A22}
+							{$vo.Overdue_Balance}
 						</td>
 						<td>
-							{$vo.Deposit_A3}
+							{$vo.Overdue_Firms_add}
 						</td>
 						<td>
-							{$vo.Deposit_A31}
+							{$vo.Overdue_Balance_add}
 						</td>
 						<td>
-							{$vo.Deposit_A32}
-						</td>
-						<td>
-							{$vo.Deposit_A4}
-						</td>
-						<td>
-							{$vo.Deposit_B}
-						</td>
-						<td>
-							{$vo.Loan_A}
-						</td>
-						<td>
-							{$vo.Loan_A1}
-						</td>
-						<td>
-							{$vo.Loan_A11}
-						</td>
-						<td>
-							{$vo.Loan_A111}
-						</td>
-						<td>
-							{$vo.Loan_A112}
-						</td>
-						<td>
-							{$vo.Loan_A12}
-						</td>
-						<td>
-							{$vo.Loan_A121}
-						</td>
-						<td>
-							{$vo.Loan_A122}
-						</td>
-						<td>
-							{$vo.Loan_A2}
-						</td>
-						<td>
-							{$vo.Loan_A21}
-						</td>
-						<td>
-							{$vo.Loan_A22}
-						</td>
-						<td>
-							{$vo.Loan_A23}
-						</td>
-						<td>
-							{$vo.Loan_A24}
-						</td>
-						<td>
-							{$vo.Loan_A25}
-						</td>
-						<td>
-							{$vo.Loan_A3}
-						</td>
-						<td>
-							{$vo.Loan_B}
-						</td>
-						<td>
-							{$vo.gmt_create|date_time}
-						</td>
-						<td>
-							{$vo.ip}
-						</td>
-						<td>
-							<if condition="$vo['status'] == 1">
-								<a class="u-btn confirm J_ajax_get" href="{:U('approve')}/id/{$vo.id}/type/credit" >通过</a>
-								<a class="u-btn confirm J_ajax_get" href="{:U('reject')}/id/{$vo.id}/type/credit" >退回修改</a>
-							</if>
-							<if condition="$vo['status'] == 2">
-								已通过
-							</if>
+							{$vo.Resolve_Firms}
 						</td>
 
+						<td>
+							{$vo.Resolve_Amount}
+						</td>
 					</tr>
 				</volist>
-
+				</tbody>
 			</table>
 		</div>
 		<div class="btn_wrap">

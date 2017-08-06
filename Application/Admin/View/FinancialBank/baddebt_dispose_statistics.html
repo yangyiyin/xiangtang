@@ -5,14 +5,37 @@
 		<div class="u-tab">
 
 			<ul class="cc">
-				<li class="current"><a href="javascript:;">不良贷款处置明细记录</a></li>
+				<li class="current"><a href="javascript:;">不良贷款处置汇总表</a></li>
 			</ul>
 		</div>
 		<div class="search_type cc mb10 search-form">
 			<div class="mb10">
 				&nbsp;公司名称：
 				<input type="text" class="input length_2" name="all_name" style="width:100px;" value="{:I('all_name')}" >
+				<select name="year">
+					<php>
+						$years = [];
+						$cur_year = I('get.year') ? I('get.year') : date('Y');
+						for($i = 2016;$i<=date('Y');$i++) {
+						$years[] = $i;
+						}
 
+						foreach($years as $year){
+						$selected = ($year == $cur_year) ? 'selected' : '';
+						echo '<option value="'.$year.'" '.$selected.'>'.$year.'</option>';
+						}
+					</php>
+				</select>年
+				<select name="month">
+					<php>
+						$months = [1,2,3,4,5,6,7,8,9,10,11,12];
+						$cur_month = I('get.month') ? I('get.month') : date('m');
+						foreach($months as $month){
+						$selected = ($month == $cur_month) ? 'selected' : '';
+						echo '<option value="'.$month.'" '.$selected.'>'.$month.'</option>';
+						}
+					</php>
+				</select>月
 				<a class="u-btn" href="javascript:;" id="search" url="{:U('')}">搜索</a>
 				<!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
 				</span>
@@ -22,79 +45,102 @@
 		<div class="table_list">
 			<table class="biaoge">
 				<tr>
-					<td >id</td>
-					<td >公司名称</td>
-					<td >填报月</td>
-					<td >填表人</td>
-					<td >企业名称:</td>
-					<td >法人代表或实际控制人:</td>
-					<td >企业所属乡镇（街道）:</td>
-					<td >收回不良贷款金额:</td>
-					<td >收回不良贷款时间:</td>
-					<td >收回方式:</td>
-					<td >备注:</td>
-					<td >提交时间</td>
-					<td >ip</td>
-					<td >操作</td>
+					<td rowspan="3">类型</td>
+					<td rowspan="3">金融机构名称</td>
+					<td rowspan="3">年初不良贷款约</td>
+					<td rowspan="3">当年新发生不良贷款额</td>
+					<td colspan="9">减少不良贷款</td>
+					<td rowspan="3">备注</td>
 				</tr>
-				<tr></tr>
-				<volist name="list" id="vo">
-					<tr>
-						<td>{$vo.id} </td>
+				<tr>
+					<td rowspan="2">收回不良贷款金额</td>
+					<td rowspan="2">其中：现金收回</td>
+					<td colspan="7">其他方式收回方式</td>
 
-						<td>
-							{$vo.all_name}
-						</td>
-						<td>
-							{$vo.year}年{$vo.month}月
-						</td>
-						<td>
-							{$vo.filler_man}
-						</td>
-						<td>
-							{$vo.Enterprise}
-						</td>
-						<td>
-							{$vo.Principal}
-						</td>
-						<td>
-							{$vo.area_name}
-						</td>
-						<td>
-							{$vo.Recover}
-						</td>
-						<td>
-							{$vo.recover_time}
-						</td>
-						<td>
-							{$vo.recover_method}
-						</td>
-						<td>
-							{$vo.Remarks}
-						</td>
-						<td>
-							{$vo.gmt_create|date_time}
-						</td>
-						<td>
-							{$vo.ip}
-						</td>
-						<td>
-							<if condition="$vo['status'] == 1">
-								<a class="u-btn confirm J_ajax_get" href="{:U('approve')}/id/{$vo.id}/type/baddebt_dispose/year/{$vo.year}/month/{$vo.month}/all_name/{$vo.all_name}" >通过</a>
-								<a class="u-btn confirm J_ajax_get" href="{:U('reject')}/id/{$vo.id}/type/baddebt_dispose/year/{$vo.year}/month/{$vo.month}/all_name/{$vo.all_name}" >退回修改</a>
-							</if>
-							<if condition="$vo['status'] == 2">
-								已通过
+				</tr>
+
+				<tr>
+					<td >上划</td>
+					<td >以资抵债</td>
+					<td >重组上调</td>
+					<td >资产证券化</td>
+					<td >转让</td>
+					<td >核销</td>
+					<td >其他</td>
+
+				</tr>
+
+				<tr></tr>
+				<if condition="empty($list)">
+					<tr>
+						<td colspan="19">
+							<if condition="empty($list)">
+								没有找到信息~
 							</if>
 						</td>
 					</tr>
+				</if>
+				<volist name="list" id="type" key="key">
+					<tr>
+						<td rowspan="<php>echo (count($type) + 1);</php>">
+							{$key}
+						</td>
+					</tr>
+					<volist name="type" id="vo">
+						<tr>
+							<td>
+								{$vo.all_name}
+							</td>
+
+							<td>
+								{$vo.Baddebt_Initial}
+							</td>
+							<td>
+								{$vo.Baddebt_add}
+							</td>
+							<td>
+								{$vo.recover}
+							</td>
+
+							<td>
+								{$vo.recover_a}
+							</td>
+							<td>
+								{$vo.recover_b}
+							</td>
+							<td>
+								{$vo.recover_c}
+							</td>
+							<td>
+								{$vo.recover_d}
+							</td>
+							<td>
+								{$vo.recover_e}
+							</td>
+							<td>
+								{$vo.recover_f}
+							</td>
+							<td>
+								{$vo.recover_g}
+							</td>
+							<td>
+								{$vo.recover_h}
+							</td>
+							<td>
+								{$vo.remarks}
+							</td>
+						</tr>
+
+					</volist>
 				</volist>
+
+				</tbody>
 			</table>
 		</div>
 		<div class="btn_wrap">
 			<div class="btn_wrap_pd">
 				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
-				<a class="btn btn_small" href="{:U('log_export_excel')}/type/baddebt_dispose">导出当月数据</a>
+
 			</div>
 		</div>
 		<!-- 分页 -->

@@ -5,7 +5,7 @@
 		<!-- 按钮工具栏 -->
 		<div class="u-tab">
 			<ul class="cc tab-nav">
-				<li ><a href="{:U('baddebt_dispose_submit_monthly')}">返回当月填报</a></li>
+				<li ><a href="{:U('overdue_resolve_submit_monthly')}">返回当月填报</a></li>
 				<li class="current"><a href="javascript:;">{$title}</a></li>
 			</ul>
 		</div>
@@ -17,7 +17,7 @@
 					<table class="biaoge">
 						<tbody>
 						<tr>
-							<td colspan="9"><span class="title">不良贷款处置明细报表</span><span> (金额单位 万元)</span></td>
+							<td colspan="9"><span class="title">逾期化解明细报表</span><span> (金额单位 万元)</span></td>
 
 						</tr>
 						<tr>
@@ -79,9 +79,8 @@
 							<td>企业名称:</td>
 							<td>法人代表或实际控制人:</td>
 							<td>企业所属乡镇（街道）:</td>
-							<td>收回不良贷款金额:</td>
-							<td>收回不良贷款时间:</td>
-							<td>收回方式:</td>
+							<td>逾期贷款金额:</td>
+							<td>化解金额:</td>
 							<td>备注:</td>
 						</tr>
 						<volist name="infos" id="vo">
@@ -102,25 +101,14 @@
 									</select>
 								</td>
 								<td>
-									<input type="text" class="input input-xmedium" name="logs4[]" value="{$vo.Recover}">
+									<input type="text" class="input input-xmedium" name="logs4[]" value="{$vo.Overdue}">
+								</td>
+								<td>
+									<input type="text" class="input input-xmedium" name="logs5[]" value="{$vo.Resolve}">
 								</td>
 
 								<td>
-									<input type="text" class="input input-xmedium time-start" name="logs5[]" value="{$vo.Recover_Time|time_to_date}">
-								</td>
-
-								<td>
-									<select name="logs6[]">
-										<if condition="$vo['recover_method_options']">
-											{$vo['recover_method_options']}
-											<else/>
-											{$recover_method_options}
-										</if>
-									</select>
-
-								</td>
-								<td>
-									<input type="text" class="input input-xmedium" name="logs7[]" value="{$vo.Remarks}">
+									<input type="text" class="input input-xmedium" name="logs6[]" value="{$vo.Remarks}">
 								</td>
 								<td><a class="btn del_log">删除</a></td>
 							</tr>
@@ -167,13 +155,11 @@
 						'<input type="text" class="input input-xmedium" name="logs4[]">'+
 						'</td>'+
 						'<td>'+
-						'<input type="text" id="time-start" class="input input-xmedium" name="logs5[]">'+
+						'<input type="text" class="input input-xmedium" name="logs5[]">'+
 						'</td>'+
+
 						'<td>'+
-						'<select name="logs6[]">{$recover_method_options}</select>'+
-						'</td>'+
-						'<td>'+
-						'<input type="text" class="input input-xmedium" name="logs7[]">'+
+						'<input type="text" class="input input-xmedium" name="logs6[]">'+
 						'</td>'+
 						'<td><a class="btn del_log">删除</a></td>'+
 						'</tr>'

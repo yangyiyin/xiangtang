@@ -13,6 +13,7 @@
 				&nbsp;公司名称：
 				<input type="text" class="input length_2" name="all_name" style="width:100px;" value="{:I('all_name')}" >
 
+
 				<a class="u-btn" href="javascript:;" id="search" url="{:U('')}">搜索</a>
 				<!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
 				</span>
@@ -51,6 +52,7 @@
 
 					<td >提交时间</td>
 					<td >ip</td>
+					<td>操作</td>
 				</tr>
 				<tr></tr>
 				<volist name="list" id="vo">
@@ -137,7 +139,15 @@
 						<td>
 							{$vo.ip}
 						</td>
-
+						<td>
+							<if condition="$vo['status'] == 1">
+								<a class="u-btn confirm J_ajax_get" href="{:U('approve')}/id/{$vo.id}/type/loan_details/year/{$vo.year}/month/{$vo.month}/all_name/{$vo.all_name}" >通过</a>
+								<a class="u-btn confirm J_ajax_get" href="{:U('reject')}/id/{$vo.id}/type/loan_details/year/{$vo.year}/month/{$vo.month}/all_name/{$vo.all_name}" >退回修改</a>
+							</if>
+							<if condition="$vo['status'] == 2">
+								已通过
+							</if>
+						</td>
 					</tr>
 				</volist>
 			</table>
@@ -145,7 +155,7 @@
 		<div class="btn_wrap">
 			<div class="btn_wrap_pd">
 				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
-
+				<a class="btn btn_small" href="{:U('log_export_excel')}/type/loan_details">导出当月数据</a>
 			</div>
 		</div>
 		<!-- 分页 -->

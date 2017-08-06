@@ -1,6 +1,8 @@
 <extend name="Public/base"/>
 
 <block name="body">
+	<link rel="stylesheet" type="text/css" href="__STATIC__/webuploader/webuploader.css">
+	<script type="text/javascript" src="__STATIC__/webuploader/webuploader.min.js"></script>
 	<div class="g-wrap">
 		<!-- 按钮工具栏 -->
 		<div class="u-tab">
@@ -199,7 +201,20 @@
 
 				<div class="btn_wrap">
 					<div class="btn_wrap_pd">
-						<if condition="$info['id']">已提交</if><button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal"><if condition="$info['id']">修 改<else/>提 交</if></button>
+						<if condition="$infos[0]['status'] == 0">
+							<if condition="$infos[0]['id']">已提交</if><button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal"><if condition="$infos[0]['id']">修 改<else/>提 交</if></button>
+
+							<if condition="$infos[0]['id']">
+								<a class="u-btn confirm J_ajax_get" href="{:U('submit_verify')}/id/{$infos[0]['id']}/type/loan_details/year/{$infos[0]['year']}/month/{$infos[0]['month']}/all_name/{$infos[0]['all_name']}" >提交审核</a>
+							</if>
+						</if>
+						<if condition="$infos[0]['status'] == 2">
+							已通过
+						</if>
+						<if condition="$infos[0]['status'] == 1">
+							审核中
+						</if>
+						<div style="position: fixed;right: 0;bottom: 0px;" id="filePicker">导入excel</div>
 					</div>
 				</div>
 			</form>
@@ -346,4 +361,148 @@
 
 		});
 	</script>
+
+
+	<script type="text/javascript">
+		//上传图片
+		var uploader = WebUploader.create({
+
+			// 选完文件后，是否自动上传。
+			auto: true,
+
+			// swf文件路径
+			swf: '__STATIC__/webuploader/Uploader.swf',
+
+			// 文件接收服务端。
+			server: "{:U('FinancialBank/upload_excel',array('session_id'=>session_id(), 'type'=>'loan_details'))}",
+			fileNumLimit: 1,
+			// 选择文件的按钮。可选。
+			// 内部根据当前运行是创建，可能是input元素，也可能是flash.
+			pick: '#filePicker',
+			resize : false,
+			duplicate: true,
+			// 只允许选择图片文件。
+			accept: {
+				title : 'Applications',
+				extensions : 'xls',
+				mimeTypes : 'application/xls'
+			}
+		});
+		uploader.on( 'uploadSuccess', function(file, response) {
+			upload(file, response);
+		});
+
+		function upload(file, data){
+
+			if(data.status){
+				updateAlert('导入成功','alert-success');
+				//conosle.log(data.data);
+				for(var i in data.data) {
+					var line  = data.data[i];
+					var add_html = '<tr>'+
+							'<td>'+
+							'<input type="text" class="input input-xmedium" name="logs1[]" value="'+line[0]+'">'+
+							'</td>'+
+							'<td>'+
+							'<input type="text" class="input input-xmedium name" name="logs2[]" value="'+line[1]+'">'+
+							'</td>'+
+							'<td>'+
+							'<input type="text" class="input input-xmedium" name="logs3[]" value="'+line[2]+'">'+
+							'</td>'+
+							'<td>'+
+							'<input type="text" class="input input-xmedium" name="logs4[]" value="'+line[3]+'">'+
+							'</td>'+
+							'<td>'+
+							''+
+							'</td>'+
+							'<td>'+
+							'<input type="text" class="input input-xmedium" name="logs5[]" value="'+line[4]+'">'+
+							'</td>'+
+							'<td>'+
+							'<input type="text" class="input input-xmedium" name="logs6[]" value="'+line[5]+'">'+
+							'</td>'+
+							'<td>'+
+							'<input type="text" class="input input-xmedium" name="logs7[]" value="'+line[6]+'">'+
+							'</td>'+
+							'<td>'+
+							'<select name="logs8[]">{$area_options}</select>'+
+							'</td>'+
+							'<td>'+
+							'<input type="text" class="input input-xmedium" name="logs9[]" value="'+line[8]+'">'+
+							'</td>'+
+							'<td>'+
+							'<input type="text" id="time-start" class="input input-xmedium" name="logs10[]" value="'+line[9]+'">'+
+							'</td>'+
+							'<td>'+
+							'<input type="text" id="time-end" class="input input-xmedium" name="logs11[]" value="'+line[10]+'">'+
+							'</td>'+
+							'<td>'+
+							'<input type="text" class="input input-xmedium" name="logs12[]" value="'+line[11]+'">'+
+							'</td>'+
+							'<td>'+
+							'<input type="text" class="input input-xmedium" name="logs13[]" value="'+line[12]+'">'+
+							'</td>'+
+							'<td>'+
+							'<input type="text" class="input input-xmedium" name="logs14[]" value="'+line[13]+'">'+
+							'</td>'+
+							'<td>'+
+							'<input type="text" class="input input-xmedium" name="logs15[]" value="'+line[14]+'">'+
+							'</td>'+
+							'<td>'+
+							'<input type="text" class="input input-xmedium" name="logs16[]" value="'+line[15]+'">'+
+							'</td>'+
+							'<td>'+
+							'<input type="text" class="input input-xmedium" name="logs17[]" value="'+line[16]+'">'+
+							'</td>'+
+							'<td>'+
+							'<select name="logs18[]">{$pattern_options}</select>'+
+							'</td>'+
+							'<td>'+
+							'<input type="text" class="input input-xmedium" name="logs19[]" value="'+line[18]+'">'+
+							'</td>'+
+							'<td>'+
+							'<input placeholder="是或否" type="text" class="input input-xmedium" name="logs20[]" value="'+line[19]+'">'+
+							'</td>'+
+							'<td>'+
+							'<input type="text" class="input input-xmedium" name="logs21[]" value="'+line[20]+'">'+
+							'</td>'+
+
+							'<td><a class="btn del_log">删除</a></td>'+
+							'</tr>';
+					$('.add_line').before(add_html);
+
+					$('.add_line').prev().find("#time-start").datetimepicker({
+						format: 'yyyy-mm-dd',
+						language:"zh-CN",
+						minView:2,
+						autoclose:true
+					});
+
+					$('.add_line').prev().find("#time-end").datetimepicker({
+						format: 'yyyy-mm-dd',
+						language:"zh-CN",
+						minView:2,
+						autoclose:true,
+						pickerPosition:'bottom-left'
+					});
+
+
+					$('.add_line').prev().find('select[name="logs8[]"]').val(line[7]);
+					$('.add_line').prev().find('select[name="logs18[]"]').val(line[17]);
+				}
+
+				if (data.key) {
+					alert('部分数据不符合要求,我们将以excel的形式退回给您');
+					window.open("{:U('get_excel')}/key/"+data.key);
+				}
+
+
+
+			} else {
+				updateAlert(data.info);
+
+			}
+		}
+	</script>
+
 </block>

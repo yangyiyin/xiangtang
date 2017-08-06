@@ -26,6 +26,21 @@ class BankAreaStService extends BaseService{
         }
     }
 
+    public function add_batch($data) {
+        $FinancialModel = D('Financial' . static::$name);
+
+        if (!$FinancialModel->create($data)) {
+            return result(FALSE, json_encode($FinancialModel->getError()));
+        }
+
+
+        if ($FinancialModel->addAll($data)) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, '批量插入失败');
+        }
+    }
+
     public function get_info_by_id($id) {
         $FinancialModel = D('Financial' . static::$name);
         $where = [];
@@ -82,14 +97,24 @@ class BankAreaStService extends BaseService{
     }
 
 
-  public function get_by_month_year($year, $month, $all_name) {
+  public function get_by_month_year($year, $month, $type) {
         $FinancialModel = D('Financial' . static::$name);
         $where = [];
         $where['year'] = ['EQ', $year];
         $where['month'] = ['EQ', $month];
-        $where['all_name'] = ['EQ', $all_name];
+      $where['type'] = ['EQ', $type];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $FinancialModel->where($where)->find();
+        return $FinancialModel->where($where)->select();
+    }
+
+    public function delete_by_month_year($year, $month, $type) {
+        $FinancialModel = D('Financial' . static::$name);
+        $where = [];
+        $where['year'] = ['EQ', $year];
+        $where['month'] = ['EQ', $month];
+        $where['type'] = ['EQ', $type];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->delete();
     }
 
       public function get_by_where_all($where) {

@@ -76,7 +76,7 @@ class BankBaddebtStService extends BaseService{
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         $count = $FinancialModel->where($where)->order($order)->count();
         if ($count > 0) {
-            $data = $FinancialModel->where($where)->order($order)->page($page . ',' . static::$page_size)->select();
+            $data = $FinancialModel->where($where)->order($order)->select();
         }
         return [$data, $count];
     }

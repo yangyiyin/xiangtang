@@ -25,7 +25,20 @@ class BankOverdueResolveService extends BaseService{
             return result(FALSE, '网络繁忙~');
         }
     }
+    public function add_batch($data) {
+        $FinancialModel = D('Financial' . static::$name);
 
+        if (!$FinancialModel->create($data)) {
+            return result(FALSE, json_encode($FinancialModel->getError()));
+        }
+
+
+        if ($FinancialModel->addAll($data)) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, '批量插入失败');
+        }
+    }
     public function get_info_by_id($id) {
         $FinancialModel = D('Financial' . static::$name);
         $where = [];
@@ -53,7 +66,28 @@ class BankOverdueResolveService extends BaseService{
             return result(FALSE, '网络繁忙~');
         }
     }
+    public function update_by_year_month_all_name($year, $month, $all_name, $data) {
 
+        if (!$year || !$month || !$all_name) {
+            return result(FALSE, '参数错误');
+        }
+
+        $FinancialModel = D('Financial' . static::$name);
+
+        $where[] = ['year' => $year];
+        $where[] = ['month' => $month];
+        $where[] = ['all_name' => $all_name];
+
+        if (!$FinancialModel->create($data)) {
+            return result(FALSE, $FinancialModel->getError());
+        }
+        if ($FinancialModel->where($where)->save()) {
+            return result(TRUE);
+        } else {
+            echo $FinancialModel->getLastSql();
+            return result(FALSE, '网络繁忙~');
+        }
+    }
 
     public function del_by_id($id) {
         if (!check_num_ids([$id])) {
@@ -89,7 +123,33 @@ class BankOverdueResolveService extends BaseService{
         $where['month'] = ['EQ', $month];
         $where['all_name'] = ['EQ', $all_name];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $FinancialModel->where($where)->find();
+        return $FinancialModel->where($where)->select();
+    }
+
+    public function get_by_month_year_all_names($year, $month, $all_names, $extra = []) {
+        $FinancialModel = D('Financial' . static::$name);
+        $where = [];
+        $where['year'] = ['EQ', $year];
+        $where['month'] = ['EQ', $month];
+        if ($all_names) {
+            $where['all_name'] = ['IN', $all_names];
+        }
+        if (isset($extra['status'])) {
+            $where['status'] = $extra['status'];
+        }
+
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->select();
+    }
+
+    public function del_by_month_year($year, $month, $all_name) {
+        $FinancialModel = D('Financial' . static::$name);
+        $where = [];
+        $where['year'] = ['EQ', $year];
+        $where['month'] = ['EQ', $month];
+        $where['all_name'] = ['EQ', $all_name];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->delete();
     }
 
       public function get_by_where_all($where) {

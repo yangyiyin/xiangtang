@@ -398,6 +398,8 @@ create table shopy_financial_securities (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+
+
 #转贷明细
 create table shopy_financial_transfer_funds (
  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -777,4 +779,9 @@ SyncMark varchar(20) NULL,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
-
+alter table shopy_financial_transfer_funds add status INT (3) DEFAULT '0' ;
+alter table shopy_financial_bank_credit add status INT (3) DEFAULT '0' ;
+alter table shopy_financial_bank_loan_detail add status INT (3) DEFAULT '0' ;
+alter table shopy_financial_bank_overdue_resolve add status INT (3) DEFAULT '0' ;
+alter table shopy_financial_bank_baddebt_dispose add status INT (3) DEFAULT '0' ;
+alter table shopy_financial_bank_quarterly add status INT (3) DEFAULT '0' ;

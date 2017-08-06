@@ -70,13 +70,20 @@ class BankCreditService extends BaseService{
     }
 
 
-    public function get_by_where($where, $order = 'id desc', $page = 1) {
+    public function get_by_where($where, $order = 'id desc', $page = 1, $is_all = '') {
          $FinancialModel = D('Financial' . static::$name);
         $data = [];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        $page_size = static::$page_size;
         $count = $FinancialModel->where($where)->order($order)->count();
         if ($count > 0) {
-            $data = $FinancialModel->where($where)->order($order)->page($page . ',' . static::$page_size)->select();
+            if ($is_all) {
+                $data = $FinancialModel->where($where)->order($order)->select();
+
+            } else {
+                $data = $FinancialModel->where($where)->order($order)->page($page . ',' . $page_size)->select();
+
+            }
         }
         return [$data, $count];
     }
@@ -92,6 +99,22 @@ class BankCreditService extends BaseService{
         return $FinancialModel->where($where)->find();
     }
 
+    public function get_quarterly_data($all_name) {
+        $FinancialModel = D('Financial' . static::$name);
+        $year = intval(date('Y'));
+        $month = intval(date('m'));
+        $where = [];
+        $where['all_name'] = ['EQ', $all_name];
+        if ($month > 2) {
+            $where['year'] = ['EQ', $year];
+            $where['month'] = ['lt', $month + 1];
+            $where['month'] = ['gt', $month - 3];
+            $where['deleted'] = ['EQ', static::$NOT_DELETED];
+            return $FinancialModel->where($where)->select();
+        } else {
+           return [];
+        }
+    }
       public function get_by_where_all($where) {
             $FinancialModel = D('Financial' . static::$name);
             $data = [];

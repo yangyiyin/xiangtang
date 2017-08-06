@@ -41,28 +41,7 @@
 //echo 'deocde: ', $_str, '=', decode_big_endian($_str), "\n";
 
 
-$content = file_get_contents('./123.csv');
+$a = 'id	公司名称	填报月	填表人	企业名称:	法人代表或实际控制人:	企业所属乡镇（街道）:	逾期金额:	化解金额:	备注:	提交时间	ip	操作';
+echo $a = str_replace('	','","', $a);
 
-$content_arr = explode("\n", $content);
-//print_r($content_arr);die();
-$sql = '';
-foreach ($content_arr as $key => $line) {
-    if ($key == 0) {
-        continue;
-    }
-    $arr = explode(',', $line);
-    $arr[count($arr) -1] = '';
-    //var_dump($arr);die();
-    $values = [];
-    foreach ($arr as $a) {
-        $values[] = '"' . $a . '"';
-    }
-
-    $values = join(',',$values);
-
-    $sql .= 'insert into shopy_financial_enterprise (RegNum,CreditCode,Name,Legal,Founded,Jurisdictions,Type,Capital,Approval,Industry,Scope,Address,Phone,IDcard,Contacts,Mobile,Circle,RemoveTag,SyncMark) values ('.$values.');' . "\n";
-
-}
-
-echo $sql;
 

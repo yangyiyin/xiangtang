@@ -70,6 +70,29 @@ class BankBaddebtDisposeService extends BaseService{
     }
 
 
+    public function update_by_year_month_all_name($year, $month, $all_name, $data) {
+
+        if (!$year || !$month || !$all_name) {
+            return result(FALSE, '参数错误');
+        }
+
+        $FinancialModel = D('Financial' . static::$name);
+
+        $where[] = ['year' => $year];
+        $where[] = ['month' => $month];
+        $where[] = ['all_name' => $all_name];
+
+        if (!$FinancialModel->create($data)) {
+            return result(FALSE, $FinancialModel->getError());
+        }
+        if ($FinancialModel->where($where)->save()) {
+            return result(TRUE);
+        } else {
+            echo $FinancialModel->getLastSql();
+            return result(FALSE, '网络繁忙~');
+        }
+    }
+
     public function del_by_id($id) {
         if (!check_num_ids([$id])) {
             return false;
@@ -85,13 +108,19 @@ class BankBaddebtDisposeService extends BaseService{
     }
 
 
-    public function get_by_where($where, $order = 'id desc', $page = 1) {
+    public function get_by_where($where, $order = 'id desc', $page = 1, $is_all=false) {
          $FinancialModel = D('Financial' . static::$name);
         $data = [];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        $page_size = static::$page_size;
         $count = $FinancialModel->where($where)->order($order)->count();
         if ($count > 0) {
-            $data = $FinancialModel->where($where)->order($order)->page($page . ',' . static::$page_size)->select();
+            if ($is_all) {
+                $data = $FinancialModel->where($where)->order($order)->select();
+            } else {
+                $data = $FinancialModel->where($where)->order($order)->page($page . ',' . $page_size)->select();
+            }
+
         }
         return [$data, $count];
     }
@@ -107,6 +136,24 @@ class BankBaddebtDisposeService extends BaseService{
         return $FinancialModel->where($where)->select();
     }
 
+    public function get_by_month_year_all_names($year, $month, $all_names, $is_baddbet = false, $extra=[]) {
+        $FinancialModel = D('Financial' . static::$name);
+        $where = [];
+        $where['year'] = ['EQ', $year];
+        $where['month'] = ['EQ', $month];
+        if ($all_names) {
+            $where['all_name'] = ['IN', $all_names];
+        }
+        if ($is_baddbet) {
+            $where['Pattern'] = ['gt', 2];
+        }
+
+        if (isset($extra['status'])) {
+            $where['status'] = $extra['status'];
+        }
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->select();
+    }
     public function del_by_month_year($year, $month, $all_name) {
         $FinancialModel = D('Financial' . static::$name);
         $where = [];
