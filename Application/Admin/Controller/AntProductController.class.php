@@ -19,6 +19,7 @@ class AntProductController extends AdminController {
         $catetree = $categoryService->get_all_tree_option(I('get.cid'));
         $this->assign('catetree', $catetree);
 
+
         $where = [];
         if (I('get.cid')) {
             $where['cid'] = ['EQ', I('get.cid')];
@@ -111,13 +112,14 @@ class AntProductController extends AdminController {
 
     public function add() {
         $product_no = time();//默认
-        $provider_id = $cate_id = 0;
+        $provider_id = $cate_id = $brand_id = 0;
 
         if ($id = I('get.id')) {
             $product = $this->ProductService->get_info_by_id($id);
             if ($product) {
                 $cate_id = $product['cid'];
                 $provider_id = $product['provider_id'];
+                $brand_id = $product['brand_id'];
                 $this->assign('product',$product);
             } else {
                 $this->error('没有找到对应的产品信息~');
@@ -154,6 +156,11 @@ class AntProductController extends AdminController {
         $providers = $providerService->get_all_provider_option($provider_id);
         $categoryService = \Common\Service\CategoryService::get_instance();
         $catetree = $categoryService->get_all_tree_option($cate_id);
+
+        $BrandService = \Common\Service\BrandService::get_instance();
+        $brand_options = $BrandService->get_all_options($brand_id);
+        $this->assign('brand_options', $brand_options);
+
         $this->assign('product_no',$product_no);
         $this->assign('providers',$providers);
         $this->assign('catetree',$catetree);
@@ -472,6 +479,7 @@ class AntProductController extends AdminController {
             $data['uid'] = $product['uid'];
             $data['title'] = $product['title'];
             $data['cid'] = $product['cid'];
+            $data['brand_id'] = $product['brand_id'];
             $data['img'] = $product['img'];
             $data['desc'] = $product['desc'];
             $data['price'] = $product['price'];

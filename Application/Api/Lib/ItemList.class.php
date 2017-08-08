@@ -17,6 +17,7 @@ class ItemList extends BaseApi{
     public function excute() {
         $keyword = I('get.keyword');
         $cid = I('get.cid');
+        $brand_id = I('get.brand_id');
         $page = I('get.p', 1);
         $where = [];
         if ($cid) {
@@ -27,12 +28,22 @@ class ItemList extends BaseApi{
             $where['cid'] = ['IN', $cids];
         }
 
+        if ($brand_id) {
+            $where['brand_id'] = ['eq', $brand_id];
+        }
+
         if ($keyword) {
             $where['keyword'] = ['LIKE', '%'.$keyword.'%'];
         }
         $where['is_real'] = 1;
         $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
-        list($data, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc', $page);
+        $order_by = 'sort asc, id desc';
+        $order = I('get.order');
+        $sort = I('get.sort');
+        if ($order && $sort) {
+            $order_by = $order . ' ' . $sort;
+        }
+        list($data, $count) = $this->ItemService->get_by_where($where, $order_by, $page);
         $list = $this->convert_data($data);
         $result = new \stdClass();
         $result->list = $list;

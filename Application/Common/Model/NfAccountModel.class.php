@@ -1,19 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-07-22 15:56:48
+ * Time: 2017-08-08 20:55:34
  */
 namespace Common\Model;
 use Think\Model;
-class NfAccountLogModel extends NfBaseModel {
-    const TYPE_PLATFORM_ADD = 1;
-    const TYPE_PLATFORM_MINUS = 2;
-    const TYPE_FRANCHISEE_ADD = 3;
-    const TYPE_FRANCHISEE_MINUS = 4;
-    const TYPE_INVITER_ADD = 5;
-    const TYPE_INVITER_MINUS = 6;
-    const TYPE_DEALER_ADD = 7;
-    const TYPE_DEALER_MINUS = 8;
+class NfAccountModel extends NfBaseModel {
   protected $_validate = array(
         /**
         array('title', 'require', '名称不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT),

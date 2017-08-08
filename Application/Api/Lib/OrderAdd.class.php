@@ -29,6 +29,8 @@ class OrderAdd extends BaseApi{
         $receiving_type = $this->post_data['receiving_type'];
         $receiving_service_name = $this->post_data['receiving_service_name'];
 
+        $account_money = $this->post_data['account_money'];
+
 
         if (!$pre_order_ids) {
             return result_json(FALSE, '参数错误~');

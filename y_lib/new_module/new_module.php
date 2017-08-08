@@ -115,7 +115,7 @@ class newModule {
 }
 
 
-$newModule = new newModule('userInviterCode', '用户邀请码');
+$newModule = new newModule('account', '品牌');
 //['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]
-//$newModule->gain(['service'=>1]);
-$newModule->gain_power(['service'=>1]);
+//$newModule->gain(['model'=>1, 'service'=>1]);
+$newModule->gain_power(['model'=>1, 'service'=>1]);

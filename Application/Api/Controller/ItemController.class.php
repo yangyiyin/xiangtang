@@ -44,4 +44,8 @@ class ItemController extends BaseController {
     public function skus() {
         $this->excute_api('Api\Lib\ItemSkus');
     }
+
+    public function brands() {
+        $this->excute_api('Api\Lib\ItemBrands');
+    }
 }

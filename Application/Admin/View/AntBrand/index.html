@@ -5,14 +5,14 @@
 		<div class="u-tab">
 
 		    <ul class="cc">
-		      	<li class="current"><a href="javascript:;">所有___desc___</a></li>
-				<li ><a href="{:U('add')}">添加___desc___</a></li>
+		      	<li class="current"><a href="javascript:;">所有品牌</a></li>
+				<li ><a href="{:U('add')}">添加品牌</a></li>
 		    </ul>
 		</div>
 	    <div class="search_type cc mb10 search-form">
 	      <div class="mb10">
 			  &nbsp;名称：
-			  <input type="text" class="input length_2" name="title" style="width:100px;" value="{:I('title')}" >
+			  <input type="text" class="input length_2" name="name" style="width:100px;" value="{:I('name')}" >
 
 			  <a class="u-btn" href="javascript:;" id="search" url="{:U('index')}">搜索</a>
 	        <!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
@@ -27,6 +27,7 @@
 					<th><input class="check-all" type="checkbox"/></th>
 					<th>id</th>
 					<th>名称</th>
+					<th>图标</th>
 					<th >操作</th>
 				</tr>
 		    </thead>
@@ -37,7 +38,10 @@
 					<td>{$vo.id} </td>
 
 					<td>
-						{$vo.title}
+						{$vo.name}
+					</td>
+					<td>
+						<img width="50" src="{$vo.logo|get_cover}"/>
 					</td>
 					<td>
 						<a  href="{:U('add')}/id/{$vo.id}" class="u-btn">编辑</a>|

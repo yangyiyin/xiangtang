@@ -1,0 +1,108 @@
+<extend name="Public/base"/>
+
+<block name="body">	<!--百度webuploader-->
+	<link rel="stylesheet" type="text/css" href="__STATIC__/webuploader/webuploader.css">
+	<script type="text/javascript" src="__STATIC__/webuploader/webuploader.min.js"></script>
+
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+		    <ul class="cc tab-nav">
+				<li><a href="{:U('index')}">所有品牌</a></li>
+				<if condition="I('get.id')">
+					<li class="current"><a href="javascript:;">编辑品牌</a></li>
+					<else/>
+					<li class="current"><a href="javascript:;">添加品牌</a></li>
+				</if>
+		    </ul>
+		</div>
+		<!-- 数据表格 -->
+		<div class="tab-content table_list">
+		<!-- 表单 -->
+		<form id="form" action="{:U('update')}/id/{:I('get.id')}" method="post" class="form-horizontal">
+				<div id="tab">
+					<table class="" width="100%">
+				    <tbody>
+							<tr>
+					            <td width="20%"><label class="item-label">名称</label></td>
+					            <td width="80%">
+									<input type="text" class="input input-medium" name="name" value="{$info.name}">
+								</td>
+							</tr>
+							<tr>
+								<td width="20%"><label class="item-label">图标</label></td>
+								<td>
+									<div id="filePicker">选择图片</div>
+									<input type="hidden" name="logo" id="logo" value="{$info['logo']|default=''}"/>
+									<div class="upload-img-box">
+										<notempty name="info.logo">
+											<div class="upload-pre-item"><img src="{$info.logo|get_cover}"/><a title="删除" href="javascript:;" class="j_delpic" onclick="delpic()"><i class="fa fa-times-circle u-close"></i></a></div>
+										</notempty>
+									</div>
+									<script type="text/javascript">
+										var uploader = WebUploader.create({
+
+											// 选完文件后，是否自动上传。
+											auto: true,
+
+											// swf文件路径
+											swf: '__STATIC__/webuploader/Uploader.swf',
+
+											// 文件接收服务端。
+											server: "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+
+											// 选择文件的按钮。可选。
+											// 内部根据当前运行是创建，可能是input元素，也可能是flash.
+											pick: '#filePicker',
+											fileVal: 'download',
+											duplicate: true,
+											// 只允许选择图片文件。
+											accept: {
+												title: 'Images',
+												extensions: 'gif,jpg,jpeg,bmp,png',
+												mimeTypes: 'image/*'
+											}
+										});
+										uploader.on( 'uploadSuccess', function(file, response) {
+											uploadPicture(file, response);
+										});
+										function delpic(){
+											$("#logo").attr("value",'');
+											$("#logo").parent().find('.upload-img-box').html('');
+										}
+										function uploadPicture(file, data){
+											//var data = $.parseJSON(data);
+//							    	var data = window["eval"]("(" + data + ")");
+											var src = '';
+											if(data.status){
+												$("#logo").val(data.path);
+												src = data.url || '__ROOT__' + data.path;
+												$("#logo").parent().find('.upload-img-box').html(
+														'<div class="upload-pre-item"><img src="' + src + '"/><a title="删除" href="javascript:;" onclick="delpic()"><i class="fa fa-times-circle u-close"></i></a></div>'
+												);
+											} else {
+												updateAlert(data.info);
+												setTimeout(function(){
+													$('#top-alert').find('button').click();
+												},1500);
+											}
+										}
+									</script>
+								</td>
+							</tr>
+					</tbody>
+				    </table> 
+			     </div>
+
+			<div class="btn_wrap">
+	          <div class="btn_wrap_pd">
+	            	<button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">确 定</button>
+				  <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+	          </div>
+	        </div>
+	    </form>
+	    </div>
+	</div>
+</div>
+
+</block>

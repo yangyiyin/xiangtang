@@ -97,9 +97,11 @@ class OrderPre_order extends BaseApi{
             $order_pre_no = $this->OrderPreService->get_order_pre_no($this->uid);
             $_total_num = 0;
             $_total_price = 0;
+            $_total_dealer_profit = 0;
             foreach ($_items as $_item) {
                 $_total_num += $_item->num;
                 $_total_price += $_item->num * $_item->price;
+                $_total_dealer_profit += $_item->dealer_profit;
             }
 
             //插入order_pre
@@ -109,6 +111,7 @@ class OrderPre_order extends BaseApi{
             $data_order_pre['pre_order_no'] = $order_pre_no;
             $data_order_pre['sum'] = $_total_price;
             $data_order_pre['num'] = $_total_num;
+            $data_order_pre['dealer_profit'] = $_total_dealer_profit / 100;
             $data_order_pre['is_real'] =$_item->is_real;
             $data_order_pre['create_time'] = current_date();
             $ret = $this->OrderPreService->add_one($data_order_pre);
@@ -173,6 +176,9 @@ class OrderPre_order extends BaseApi{
                     $_item['show_price'] = (int) $skus_map[$_item['sku_id']]['price'];
                     $_item['pay_price'] = (int) $skus_map[$_item['sku_id']]['price'];
                 }
+                $_item['price'] = (int) $skus_map[$_item['sku_id']]['price']; //订单价格都按照普通价格
+                $_item['dealer_profit'] = $_item['show_price'] - $_item['pay_price']; //经销商利润
+                $_item['pay_price'] = $_item['show_price'];
 
                 $_item['num'] = (int)  $_item['num'];
                 $_item['id'] = (int) $_item['item_id'];

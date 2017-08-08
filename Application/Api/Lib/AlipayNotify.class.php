@@ -59,6 +59,7 @@ class AlipayNotify extends BaseSapi{
                 exit;
             }
             $AccountLogService = \Common\Service\AccountLogService::get_instance();
+            $AccountService = \Common\Service\AccountService::get_instance();
             //更新订单状态
             $order_ids = explode(',', $pay_info['order_ids']);
             $account_data = [];
@@ -98,11 +99,24 @@ class AlipayNotify extends BaseSapi{
 
                 if ($order['inviter_id']) {
                     $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_INVITER_ADD;
-                    $account_data['sum'] = intval($order['sum'] * C('INVITER_RATE'));
+                    //$account_data['sum'] = intval($order['sum'] * C('INVITER_RATE'));
+                    $account_data['sum'] = $order['dealer_profit'];
                     $account_data['oid'] = $order_id;
                     $account_data['uid'] = $order['inviter_id'];
                     $account_data['pay_no'] = $data_notify['pay_no'];
                     $AccountLogService->add_one($account_data);
+                    $AccountService->add_account($order['inviter_id'], $order['dealer_profit']);
+                }
+                $UserService = \Common\Service\UserService::get_instance();
+                if ($UserService->is_dealer($order['uid'])) {
+                    $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_DEALER_ADD;
+                    //$account_data['sum'] = intval($order['sum'] * C('INVITER_RATE'));
+                    $account_data['sum'] = $order['dealer_profit'];
+                    $account_data['oid'] = $order_id;
+                    $account_data['uid'] = $order['uid'];
+                    $account_data['pay_no'] = $data_notify['pay_no'];
+                    $AccountLogService->add_one($account_data);
+                    $AccountService->add_account($order['uid'], $order['dealer_profit']);
                 }
 
             }

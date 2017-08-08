@@ -317,6 +317,7 @@ class OrderService extends BaseService{
         $data_order['uid'] = $uid;
         $data_order['sum'] = $order_pre['sum'];
         $data_order['num'] = $order_pre['num'];
+        $data_order['dealer_profit'] = $order_pre['dealer_profit'];
         $data_order['is_real'] = $order_pre['is_real'];
         $data_order['seller_uid'] = $order_pre['seller_uid'];
 
