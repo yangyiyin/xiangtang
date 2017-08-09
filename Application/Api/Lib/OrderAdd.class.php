@@ -71,6 +71,29 @@ class OrderAdd extends BaseApi{
             $order_ids[] = $ret->data;
         }
         //$order_ids = $ret->data;
+        if ($account_money) {
+            //账户支付--优惠方式
+            $AccountService = \Common\Service\AccountService::get_instance();
+            $sum = array_sum(result_to_array($pre_orders, 'sum'));
+            if ($sum < $account_money) {
+                return result_json(FALSE, '参数错误');
+            }
+            $ret = $AccountService->check_is_available($this->uid, $account_money);
+            if (!$ret->success) {
+                return result_json(FALSE, $ret->message);
+            }
+
+            //记录订单优惠
+            $OrderBenefitService = \Common\Service\OrderBenefitService::get_instance();
+            $data = [];
+            $data['oids'] = join(',', sort($order_ids));
+            $data['type'] = \Common\Model\NfOrderBenefitModel::TYPE_ACCOUNT;
+            $data['rule'] = $account_money;
+            $ret = $OrderBenefitService->add_one($data);
+            if (!$ret->success) {
+                return result_json(FALSE, $ret->message);
+            }
+        }
 
         return result_json(TRUE, '成功创建订单~', ['order_ids' => join(',', $order_ids), 'to_pay'=>true]);
     }

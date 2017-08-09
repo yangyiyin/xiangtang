@@ -38,7 +38,7 @@ class AlipayCreate extends BaseApi{
 
 
 
-        $ret = $this->PayService->create_by_order($orders);
+        $ret = $this->PayService->create_by_orders($orders);
         if (!$ret->success) {
             return result_json(FALSE, $ret->message);
         }

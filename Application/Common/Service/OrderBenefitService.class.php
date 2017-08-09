@@ -93,5 +93,12 @@ class OrderBenefitService extends BaseService{
         return [$data, $count];
     }
 
+    public function get_info_by_oids($oids) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['oids'] = ['EQ', $oids];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->find();
+    }
 
 }

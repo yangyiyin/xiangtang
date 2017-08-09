@@ -28,6 +28,14 @@ class AccountService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
+    public function get_info_by_uid($uid) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['uid'] = ['EQ', $uid];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->find();
+    }
+
     public function update_by_id($id, $data) {
 
         if (!$id) {
@@ -114,6 +122,62 @@ class AccountService extends BaseService{
 
                 return result(FALSE, '网络繁忙~');
             }
+        }
+    }
+
+    public function check_is_available($uid, $sum) {
+        $info = $this->get_info_by_uid($uid);
+        if (!$info) {
+            return result(FALSE, '您还没有开通账户~');
+        }
+
+        if ($info['sum'] < $sum) {
+            return result(FALSE, '余额不足~');
+        }
+        return result(TRUE, '');
+
+    }
+
+    public function pay($uid, $sum) {
+        $info = $this->get_info_by_uid($uid);
+        if (!$info) {
+            return result(FALSE, '您还没有开通账户~');
+        }
+
+        if ($info['sum'] < $sum) {
+            return result(FALSE, '余额不足~');
+        }
+
+        $data = [];
+        $data['sum'] = $info['sum'] - $sum;
+        return $this->update_by_id($info['id'], $data);
+
+    }
+
+
+    public function hold($uid, $hold_value) {
+        $info = $this->get_info_by_uid($uid);
+        if ($info) {
+            $data = [];
+            $data['sum'] = $info['sum'] - $hold_value;
+            $data['hold'] = $info['hold'] + $hold_value;
+            return $this->update_by_id($info['id'], $data);
+        } else {
+            return result(FALSE, '您还没有开通个人账户~');
+        }
+    }
+
+    public function unhold($uid, $hold_value) {
+        $info = $this->get_info_by_uid($uid);
+        if ($info) {
+            if ($info['hold'] < $hold_value) {
+                return result(FALSE, '账户锁定余额不足以扣款,系统异常~');
+            }
+            $data = [];
+            $data['hold'] = $info['hold'] - $hold_value;
+            return $this->update_by_id($info['id'], $data);
+        } else {
+            return result(FALSE, '您还没有开通个人账户~');
         }
     }
 

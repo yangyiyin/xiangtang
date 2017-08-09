@@ -149,6 +149,26 @@ class PayService extends BaseService{
             $sum += $order['sum'];
         }
 
+        //检测优惠
+        sort($order_ids);
+        $OrderBenefitService = \Common\Service\OrderBenefitService::get_instance();
+        $benefit = $OrderBenefitService->get_info_by_oids(join(',', $order_ids));
+        if ($benefit) {
+            if ($benefit['type'] == \Common\Model\NfOrderBenefitModel::TYPE_ACCOUNT) {
+
+                $AccountService = \Common\Service\AccountService::get_instance();
+                $ret = $AccountService->check_is_available($this->uid, $benefit['rule']);
+                if (!$ret->success) {
+                    return result_json(FALSE, $ret->message);
+                }
+
+                $sum -=  $benefit['rule'];
+            }
+        }
+        if ($sum <= 0) {
+            return result(FALSE, '该订单支付异常~');
+        }
+
 
         $data = [];
         $data['pay_no'] = $this->get_pay_no($orders[0]['uid']);

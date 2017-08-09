@@ -34,4 +34,7 @@ class UserController extends BaseController {
     public function be_inviter() {
         $this->excute_api('Api\Lib\UserBeInviter');
     }
+    public function my_account() {
+        $this->excute_api('Api\Lib\UserMyAccount');
+    }
 }

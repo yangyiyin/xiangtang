@@ -6,6 +6,7 @@
 namespace Common\Model;
 use Think\Model;
 class NfOrderBenefitModel extends NfBaseModel {
+    const TYPE_ACCOUNT = 1;
   protected $_validate = array(
         /**
         array('title', 'require', '名称不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT),
