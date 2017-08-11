@@ -17,7 +17,7 @@ class IndexIndex extends BaseSapi{
     public function excute() {
 
         $result = new \stdClass();
-
+        $ItemBlockService = \Common\Service\ItemBlockService::get_instance();
 
         //分类
         $CategoryService = \Common\Service\CategoryService::get_instance();
@@ -26,18 +26,31 @@ class IndexIndex extends BaseSapi{
         $result->list[] = ['items' => $cats, 'title'=>'商城', 'icon'=>item_img('/Uploads/Picture/12.png'),'type'=>'cats'];
 
         //促销商品
-        $where = [];
-        $where['is_real'] = 1;
-        $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
-        list($data, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc');
-        $result->list[] = ['items' => $this->convert_data($data), 'title'=>'促销商品', 'icon'=>item_img('/Uploads/Picture/12.png'),'type'=>'mall'];
+        //获取促销商品iids
+        $where_block = [];
+        $where_block['type'] = \Common\Model\NfItemBlockModel::TYPE_PROMOTION;
+        list($item_blocks, $count) = $ItemBlockService->get_by_where($where_block);
+        if ($item_blocks) {
+            $where = [];
+            $where['is_real'] = 1;
+            $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
+            $where['id'] = ['in', result_to_array($item_blocks, 'iid')];
+            list($data, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc');
+            $result->list[] = ['items' => $this->convert_data($data), 'title'=>'促销商品', 'icon'=>item_img('/Uploads/Picture/12.png'),'type'=>'mall'];
+        }
 
         //推荐商品
-        $where = [];
-        $where['is_real'] = 1;
-        $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
-        list($data, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc');
-        $result->list[] = ['items' => $this->convert_data($data), 'title'=>'推荐商品', 'icon'=>item_img('/Uploads/Picture/12.png'),'type'=>'mall'];
+        $where_block = [];
+        $where_block['type'] = \Common\Model\NfItemBlockModel::TYPE_RECOMMEND;
+        list($item_blocks, $count) = $ItemBlockService->get_by_where($where_block);
+        if ($item_blocks) {
+            $where = [];
+            $where['is_real'] = 1;
+            $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
+            $where['id'] = ['in', result_to_array($item_blocks, 'iid')];
+            list($data, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc');
+            $result->list[] = ['items' => $this->convert_data($data), 'title' => '推荐商品', 'icon' => item_img('/Uploads/Picture/12.png'), 'type' => 'mall'];
+        }
 
         //农家乐
         $where = [];

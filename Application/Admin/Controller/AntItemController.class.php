@@ -143,6 +143,12 @@ class AntItemController extends AdminController {
             $prices = $itemServicePricesService->get_by_iids($iids);
             $prices_map = result_to_complex_map($prices, 'iid');
 
+            $ItemBlockService = \Common\Service\ItemBlockService::get_instance();
+            $item_promotion = $ItemBlockService->get_by_iids_type($iids, \Common\Model\NfItemBlockModel::TYPE_PROMOTION);
+            $item_recommend = $ItemBlockService->get_by_iids_type($iids, \Common\Model\NfItemBlockModel::TYPE_RECOMMEND);
+            $item_promotion_iids = result_to_array($item_promotion, 'iid');
+            $item_recommend_iids = result_to_array($item_recommend, 'iid');
+
             foreach ($data as $key => $_product) {
                 if (isset($cates_map[$_product['cid']])) {
                     $data[$key]['cate'] = $cates_map[$_product['cid']];
@@ -154,6 +160,14 @@ class AntItemController extends AdminController {
                 }
 
                 $data[$key]['status_text'] = $this->ItemService->get_status_txt($_product['status']);
+
+                if (in_array($_product['id'], $item_promotion_iids)) {
+                    $data[$key]['is_promotion'] = TRUE;
+                }
+                if (in_array($_product['id'], $item_recommend_iids)) {
+                    $data[$key]['is_recommend'] = TRUE;
+                }
+
             }
         }
     }
@@ -309,5 +323,26 @@ class AntItemController extends AdminController {
         }
     }
 
+
+    public function set_block() {
+        $ids = I('post.ids');
+        $id = I('get.id');
+        $type = I('get.type');
+        $ItemBlockService = \Common\Service\ItemBlockService::get_instance();
+
+        if ($id) {
+            $ret = $ItemBlockService->set_block([$id], $type);
+        }
+
+        if ($ids) {
+            $ret = $ItemBlockService->set_block($ids, $type);
+        }
+
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        action_user_log('批量设置活动商品');
+        $this->success('设置成功！');
+    }
 
 }

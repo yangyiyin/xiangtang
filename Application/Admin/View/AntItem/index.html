@@ -47,6 +47,7 @@
 					<th width="10%">排序</th>
 					<th  style="display: none"width="5%">状态</th>
 					<th width="12%">操作</th>
+					<th width="12%">设置</th>
 				</tr>
 		    </thead>
 		    <tbody>
@@ -81,8 +82,24 @@
 							<else/>
 							<a  class="u-btn confirm J_ajax_get" href="{:U('on_shelf')}/id/{$vo.id}" >上架</a>
 						</if>
-
 					</td>
+
+					<td>
+						<if condition="$vo['is_promotion']">
+							<a style="border-radius:3px;padding: 2px;width:30px;background-color: red;color: #fff">促销</a>
+						</if>
+						<if condition="$vo['is_recommend']">
+							<a style="border-radius:3px;padding: 2px;width:30px;background-color: #0CA818;color: #fff">推荐</a>
+						</if>
+						<if condition="!$vo['is_promotion']">
+
+						<a  class="u-btn confirm J_ajax_get" href="{:U('set_block')}/type/1/id/{$vo.id}">设置为促销</a>
+						</if>
+						<if condition="!$vo['is_recommend']">
+							<a  class="u-btn confirm J_ajax_get" href="{:U('set_block')}/type/2//id/{$vo.id}">设置为推荐</a>
+						</if>
+					</td>
+
 				</tr>
 				</volist>
 			</tbody>
@@ -97,8 +114,11 @@
 
 				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("on_shelf")}'>批量上架</button>
 
+				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("set_block")}/type/1'>批量设置为促销商品</button>
 
-		    </div>
+				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("set_block")}/type/2'>批量设置为推荐商品</button>
+
+			</div>
 		</div>
 		<!-- 分页 -->
 	    <div class="page">
