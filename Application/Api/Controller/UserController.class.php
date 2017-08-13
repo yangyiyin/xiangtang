@@ -37,4 +37,10 @@ class UserController extends BaseController {
     public function my_account() {
         $this->excute_api('Api\Lib\UserMyAccount');
     }
+    public function my_commission() {
+        $this->excute_api('Api\Lib\UserMyCommission');
+    }
+    public function my_commission_detail() {
+        $this->excute_api('Api\Lib\UserMyCommissionDetail');
+    }
 }

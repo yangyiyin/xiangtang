@@ -14,6 +14,18 @@ class NfAccountLogModel extends NfBaseModel {
     const TYPE_INVITER_MINUS = 6;
     const TYPE_DEALER_ADD = 7;
     const TYPE_DEALER_MINUS = 8;
+
+    public static $TYPE_MAP = [
+        self::TYPE_PLATFORM_ADD => '',
+        self::TYPE_PLATFORM_MINUS => '',
+        self::TYPE_FRANCHISEE_ADD => '',
+        self::TYPE_FRANCHISEE_MINUS => '',
+        self::TYPE_INVITER_ADD => '分佣者收入',
+        self::TYPE_INVITER_MINUS => '分佣者支出',
+        self::TYPE_DEALER_ADD => '经销商佣金收入',
+        self::TYPE_DEALER_MINUS => '经销商佣金支出'
+    ];
+
   protected $_validate = array(
         /**
         array('title', 'require', '名称不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT),

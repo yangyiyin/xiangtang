@@ -97,7 +97,6 @@ class AccountLogService extends BaseService{
 
     public function get_totals($where) {
         $NfModel = D('Nf' . static::$name);
-        $data = [];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         $sum = $NfModel->where($where)->sum('sum');
         $count = $NfModel->where($where)->count();
