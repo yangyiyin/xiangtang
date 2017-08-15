@@ -59,7 +59,7 @@ class AntUserDealerController extends AntUserController {
                     $this->error($ret->message);
                 }
 
-                $data['password_md5'] = md5('123123');
+                $data['password_md5'] = md5('123456');
                 $data['type'] = \Common\Model\NfUserModel::TYPE_DEALER;
                 $data['verify_status'] = \Common\Model\NfUserModel::VERIFY_STATUS_OK;
                 $data['is_inviter'] = \Common\Model\NfUserModel::IS_INVITER_SUBMIT;

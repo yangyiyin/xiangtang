@@ -93,7 +93,13 @@ class UsersessionService extends BaseService{
     public function update_session_by_uid($uid) {
         $data = [];
         $data['session'] = $this->encode_user_session($uid);
-        $ret = $this->update_by_uid($uid, $data);
+        $info = $this->get_info_by_uid($uid);
+        if ($info) {
+            $ret = $this->update_by_uid($uid, $data);
+        } else {
+            $data['uid'] = $uid;
+            $ret = $this->add_one($data);
+        }
         if ($ret->success) {
             return result(TRUE, '', $data['session']);
         } else {
