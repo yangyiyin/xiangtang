@@ -8,7 +8,7 @@
 namespace Api\Lib;
 use Common\Model;
 use Common\Service;
-class UserInfo extends BaseApi{
+class UserMyAccount extends BaseApi{
     protected $method = parent::API_METHOD_GET;
     private $AccountService;
     public function init() {
