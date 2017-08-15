@@ -27,6 +27,14 @@ class ServicesService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
+    public function get_info_by_name($name) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['title'] = ['EQ', $name];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->find();
+    }
+
     public function get_by_ids($ids) {
         $NfModel = D('Nf' . static::$name);
         $where = [];

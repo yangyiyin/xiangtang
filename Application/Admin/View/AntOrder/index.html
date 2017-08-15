@@ -98,11 +98,11 @@
 
 					<td>
 
-						<if condition="$vo.receiving_type == 1">
+						<if condition="$vo.receiving_type == 2">
 							<p class="short_info">收货方式:自提</p>
 							<p class="short_info">网点:{$vo.receiving_service_name}</p>
 						</if>
-						<if condition="$vo.receiving_type == 2">
+						<if condition="$vo.receiving_type == 1">
 							<p class="short_info">收货方式:送货上门</p>
 							<p class="short_info">收货地址:{$vo.receiving_address}</p>
 							<p class="short_info">收货人:{$vo.receiving_name}</p>

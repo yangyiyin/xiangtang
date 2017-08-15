@@ -325,6 +325,13 @@ class OrderService extends BaseService{
         $data_order['inviter_id'] = $user_info['inviter_id'];
 
         $data_order['receiving_type'] = $extra['receiving_type'];
+
+        if ($extra['receiving_service_name']) {
+            $ServicesService = \Common\Service\ServicesService::get_instance();
+            $info = $ServicesService->get_info_by_name($extra['receiving_service_name']);
+            $data_order['receiving_service_address'] = isset($info['address']) ? $info['address'] : '未知地址';
+        }
+
         $data_order['receiving_service_name'] = $extra['receiving_service_name'];
 
         $data_order['receiving_address'] = $extra['address'];
