@@ -84,7 +84,7 @@ class AntItemController extends AdminController {
 
         $where['is_real'] = 0;
         $page = I('get.p', 1);
-        list($data, $count) = $this->ItemService->get_by_where($where, 'id desc', $page);
+        list($data, $count) = $this->ItemService->get_by_where($where, 'status asc, id desc', $page);
         $this->convert_data($data);
         $PageInstance = new \Think\Page($count, \Common\Service\ItemService::$page_size);
         if($total>\Common\Service\ItemService::$page_size){
