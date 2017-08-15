@@ -18,7 +18,7 @@ class NeedsIndex extends BaseApi{
         $page = I('get.p') ? I('get.p') : 1;
         $type = I('get.type');
         $where = ['type' => $type];
-        $list = $this->NeedsService->get_by_where($where, 'id desc', $page);
+        list($list, $count) = $this->NeedsService->get_by_where($where, 'id desc', $page);
         $list = convert_objs($list, 'id,type,title,content,create_time');
         return result_json(TRUE, '', $list);
     }
