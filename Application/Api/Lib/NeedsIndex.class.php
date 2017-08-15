@@ -20,7 +20,8 @@ class NeedsIndex extends BaseApi{
         $where = ['type' => $type];
         list($list, $count) = $this->NeedsService->get_by_where($where, 'id desc', $page);
         $list = convert_objs($list, 'id,type,title,content,create_time');
-        return result_json(TRUE, '', $list);
+        $has_more = has_more($count, $page, Service\NeedsService::$page_size);
+        return result_json(TRUE, '', ['list' => $list, 'has_more' => $has_more);
     }
 
 }
