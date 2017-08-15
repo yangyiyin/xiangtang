@@ -17,4 +17,8 @@ class NeedsController extends BaseController {
     public function index() {
         $this->excute_api('Api\Lib\NeedsIndex');
     }
+
+    public function detail() {
+        $this->excute_api('Api\Lib\NeedsDetail');
+    }
 }
