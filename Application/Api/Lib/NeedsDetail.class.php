@@ -18,7 +18,13 @@ class NeedsDetail extends BaseApi{
 
         $id = I('get.id');
         $data = $this->NeedsService->get_info_by_id($id);
-        $data = convert_obj($data, 'id,type,title,content,create_time');
+
+        if ($data) {
+            $map = \Common\Model\NfNeedsModel::$status_map;
+            $data['status_desc'] = isset($map[$data['status']]) ? $map[$data['status']] : '未知';
+        }
+
+        $data = convert_obj($data, 'id,type,title,content,create_time,status_desc,remark');
         return result_json(TRUE, '', $data);
     }
 
