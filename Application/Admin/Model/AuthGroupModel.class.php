@@ -103,7 +103,17 @@ class AuthGroupModel extends Model {
         $groups[$uid]=$user_groups?$user_groups:array();
         return $groups[$uid];
     }
-    
+
+    public function getUsersGroup($uids){
+        $prefix = C('DB_PREFIX');
+        $user_groups = M()
+            ->field('uid,group_id,title,description,rules')
+            ->table($prefix.self::AUTH_GROUP_ACCESS.' a')
+            ->join ($prefix.self::AUTH_GROUP." g on a.group_id=g.id")
+            ->where("a.uids in (".join(',', $uids).") and g.status='1'")
+            ->select();
+        return $user_groups;
+    }
     /**
      * 返回用户拥有管理权限的扩展数据id列表
      * 

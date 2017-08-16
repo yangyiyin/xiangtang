@@ -28,17 +28,17 @@
 
 <div id="loginmodal2" style="display:none;">
 
-    <h1>添加用户</h1>
+    <h1>修改信息</h1>
 
     <form id="loginform2" name="loginform" method="post" action="index.html">
 
         <label for="username">登录用户名(姓名):</label>
 
-        <label for="username">[username]</label>
+        <label for="username" id="username2"></label>
 
         <label for="username">联系号码:</label>
 
-        <input type="text" value="[entity_tel]" name="entity_tel" id="entity_tel" class="txtfield" tabindex="1">
+        <input type="text" value="" name="entity_tel" id="entity_tel2" class="txtfield" tabindex="1">
 
 
         <label for="password">所属组:</label>
@@ -57,18 +57,23 @@
 
     $(function(){
         var did = 0;
-        var id,username,entity_tel;
+        var id,username,entity_tel,gid;
         $(document).on('click', '.add_user', function () {
+
             did = $(this).attr('did');
             id = $(this).attr('id');
-            username = $(this).attr('id');
+            username = $(this).attr('username');
             entity_tel = $(this).attr('entity_tel');
+            gid = $(this).attr('gid');
+            $('#username2').html(username);
+            $('#entity_tel2').val(entity_tel);
+            $('#gid2').val(gid);
 
         });
 
         $('#loginform').submit(function(e){
             e.preventDefault()
-            $.post('{:U("add_user")}',{did:did, username:$('#username').val(), gid:$('#gid').val()}).success(function(data){
+            $.post('{:U("add_user")}',{did:did, entity_tel:$('#entity_tel').val(), username:$('#username').val(), gid:$('#gid').val()}).success(function(data){
                 e.preventDefault();
                 if (data.status==1) {
                     if (data.url) {
@@ -93,7 +98,7 @@
 
         $('#loginform2').submit(function(e){
             e.preventDefault()
-            $.post('{:U("add_user")}',{id:id, entity_tel:$('#entity_tel').val(), gid:$('#gid2').val()}).success(function(data){
+            $.post('{:U("add_user")}',{id:id, entity_tel:$('#entity_tel2').val(), gid:$('#gid2').val()}).success(function(data){
                 e.preventDefault();
                 if (data.status==1) {
                     if (data.url) {

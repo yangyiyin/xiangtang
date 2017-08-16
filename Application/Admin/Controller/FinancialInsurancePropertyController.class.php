@@ -215,15 +215,23 @@
          $uids = result_to_array($DepartmentUids, 'uid');
          //$uids = result_to_array($data, 'uid');
          $DepartmentUids_map = result_to_complex_map($DepartmentUids, 'did');
-         $User   =   new UserApi();
+         $User   =   \Common\Service\MemberService::get_instance();
          $users    =   $User->get_by_uids($uids);
-         $users_map = result_to_map($users, 'id');
+         $users_map = result_to_map($users, 'uid');
+
+         $AuthGroup = D('AuthGroup');
+         $groups = $AuthGroup->getUsersGroup($uids);
+         var_dump($groups);die();
+         $groups_map = result_to_map($groups, 'uid');
         // var_dump($DepartmentUids);die();
          foreach ($data as $k=>$v) {
              if (isset($DepartmentUids_map[$v['id']]) && $DepartmentUids_map[$v['id']]) {
                  $data[$k]['user'] = [];
                  foreach ($DepartmentUids_map[$v['id']] as $_DepartmentUids) {
                      if (isset($users_map[$_DepartmentUids['uid']])){
+                         if (isset($groups_map[$_DepartmentUids['uid']])) {
+                             $users_map[$_DepartmentUids['uid']]['gid'] = $groups_map[$_DepartmentUids['uid']]['group_id'];
+                         }
                          $data[$k]['user'][] = $users_map[$_DepartmentUids['uid']];
                      }
                  }

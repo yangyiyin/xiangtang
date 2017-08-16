@@ -189,47 +189,60 @@ class FinancialBaseController extends AdminController {
     public function add_user() {
 
         $data = I('post.');
-        $password = '123456';
-        $username = $data['username'];
-        if (!$username) {
-            $this->error('后台登录名不能为空');
-        }
-        if (!$data['gid']) {
-            $this->error('请选择组');
-        }
-        /* 调用注册接口注册用户 */
-        $User   =   new UserApi();
-        $uid    =   $User->register($username, $password, '');
-        if(0 < $uid){ //注册成功
-            $user = array('uid' => $uid, 'nickname' => $username, 'entity_tel'=>$data['entity_tel'], 'status' => 1, 'reg_time' => time());
-            if(!M('Member')->add($user)){
-                $this->error('添加失败！');
-            } else {
-                $gid = $data['gid'];
-                if( empty($uid) ){
-                    $this->error('参数有误');
-                }
-                $AuthGroup = D('AuthGroup');
-                if( $gid && !$AuthGroup->checkGroupId($gid)){
-                    $this->error($AuthGroup->error);
-                }
-                if ( $AuthGroup->addToGroup($uid,$gid) ){
+        if ($data['id']) {//修改
+            $MemberService = \Common\Service\MemberService::get_instance();
+            $data_update = [];
+            $data_update['entity_tel'] = $data['entity_tel'];
+            $MemberService->update_by_id($data['id'], $data_update);
 
-                }else{
-                    $this->error($AuthGroup->getError());
-                }
 
-                //添加部门和uid的联系
-                $data_department_uid = [];
-                $data_department_uid['did'] = $data['did'];
-                $data_department_uid['uid'] = $uid;
-                D('FinancialDepartmentUid')->add($data_department_uid);
 
-                $this->success('添加成功');
 
+        } else {//新增
+            $password = '123456';
+            $username = $data['username'];
+            if (!$username) {
+                $this->error('后台登录名不能为空');
             }
-        } else { //注册失败，显示错误信息
-            $this->error('添加失败!'.$uid.',登录名可能重复,请重试');
+            if (!$data['gid']) {
+                $this->error('请选择组');
+            }
+            /* 调用注册接口注册用户 */
+            $User   =   new UserApi();
+            $uid    =   $User->register($username, $password, '');
+            if(0 < $uid){ //注册成功
+                $user = array('uid' => $uid, 'nickname' => $username, 'entity_tel'=>$data['entity_tel'], 'status' => 1, 'reg_time' => time());
+                if(!M('Member')->add($user)){
+                    $this->error('添加失败！');
+                } else {
+                    $gid = $data['gid'];
+                    if( empty($uid) ){
+                        $this->error('参数有误');
+                    }
+                    $AuthGroup = D('AuthGroup');
+                    if( $gid && !$AuthGroup->checkGroupId($gid)){
+                        $this->error($AuthGroup->error);
+                    }
+                    if ( $AuthGroup->addToGroup($uid,$gid) ){
+
+                    }else{
+                        $this->error($AuthGroup->getError());
+                    }
+
+                    //添加部门和uid的联系
+                    $data_department_uid = [];
+                    $data_department_uid['did'] = $data['did'];
+                    $data_department_uid['uid'] = $uid;
+                    D('FinancialDepartmentUid')->add($data_department_uid);
+
+                    $this->success('添加成功');
+
+                }
+            } else { //注册失败，显示错误信息
+                $this->error('添加失败!'.$uid.',登录名可能重复,请重试');
+            }
         }
+
+
     }
 }
