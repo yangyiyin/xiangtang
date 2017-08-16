@@ -224,7 +224,7 @@
                  $data[$k]['user'] = [];
                  foreach ($DepartmentUids_map[$v['id']] as $_DepartmentUids) {
                      if (isset($users_map[$_DepartmentUids['uid']])){
-                         $data[$k]['user']['username'] .= '['. $users_map[$_DepartmentUids['uid']]['username'] .']';
+                         $data[$k]['user'][] = $users_map[$_DepartmentUids['uid']];
                      }
                  }
                  //$data[$k]['user'] = $users_map[$v['uid']];

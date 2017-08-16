@@ -201,7 +201,7 @@ class FinancialBaseController extends AdminController {
         $User   =   new UserApi();
         $uid    =   $User->register($username, $password, '');
         if(0 < $uid){ //注册成功
-            $user = array('uid' => $uid, 'nickname' => $username, 'status' => 1, 'reg_time' => time());
+            $user = array('uid' => $uid, 'nickname' => $username, 'entity_tel'=>$data['entity_tel'], 'status' => 1, 'reg_time' => time());
             if(!M('Member')->add($user)){
                 $this->error('添加失败！');
             } else {
