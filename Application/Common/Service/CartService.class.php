@@ -15,7 +15,7 @@ class CartService extends BaseService{
         $cart = $NfCart->where('uid = ' . $uid . ' and iid = ' . $iid . ' and sku_id= ' . $sku_id)->find();
         if ($cart) {
             //修改
-            $data = ['num' => intval($num)];
+            $data = ['num' => intval($num) + $cart['num']];
             if ($NfCart->where('id = ' . $cart['id'])->save($data)) {
                 return result(TRUE, '', $cart['id']);
             } else {
