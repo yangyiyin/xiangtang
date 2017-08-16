@@ -192,9 +192,10 @@ class PayService extends BaseService{
             //获取加盟商的uids
             $MemberService = \Common\Service\MemberService::get_instance();
             $franchisee_uids = $MemberService->get_franchisee_uids();
-
+            $OrderService = \Common\Service\OrderService::get_instance();
+            $UserService = \Common\Service\UserService::get_instance();
             foreach ($order_ids as $order_id) {
-                $OrderService = \Common\Service\OrderService::get_instance();
+
                 $ret = $OrderService->is_available_payed($order_id, $data['uid']);
                 if (!$ret->success) {
                     return result(FALSE, '订单不可支付');
@@ -227,7 +228,7 @@ class PayService extends BaseService{
                     $AccountLogService->add_one($account_data);
                     $AccountService->add_account($order['inviter_id'], $order['dealer_profit']);
                 }
-                $UserService = \Common\Service\UserService::get_instance();
+
                 if ($UserService->is_dealer($order['uid'])) {
                     $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_DEALER_ADD;
                     //$account_data['sum'] = intval($order['sum'] * C('INVITER_RATE'));
