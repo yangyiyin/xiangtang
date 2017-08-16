@@ -10,17 +10,14 @@ use Common\Model;
 use Common\Service;
 class UserMyCommission extends BaseApi{
     protected $method = parent::API_METHOD_GET;
-    private $AccountLogService;
+    private $AccountService;
     public function init() {
-        $this->AccountLogService = Service\AccountLogService::get_instance();
+        $this->AccountService = Service\AccountService::get_instance();
     }
 
     public function excute() {
-        $where = [];
-        $where['type'] = ['in', [\Common\Model\NfAccountLogModel::TYPE_INVITER_ADD, \Common\Model\NfAccountLogModel::TYPE_INVITER_MINUS, \Common\Model\NfAccountLogModel::TYPE_DEALER_ADD, \Common\Model\NfAccountLogModel::TYPE_DEALER_MINUS]];
-        $where['uid'] = $this->uid;
-        list($sum, $count) = $this->AccountLogService->get_totals($where);
-
+        $info = $this->AccountService->get_info_by_uid($this->uid);
+        $sum = isset($info['sum']) ? $info['sum'] : 0;
         return result_json(TRUE, '', ['sum' => intval($sum)]);
     }
 }

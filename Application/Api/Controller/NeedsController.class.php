@@ -21,4 +21,12 @@ class NeedsController extends BaseController {
     public function detail() {
         $this->excute_api('Api\Lib\NeedsDetail');
     }
+
+    public function out_cash() {
+        $this->excute_api('Api\Lib\NeedsOutCash');
+    }
+
+    public function bank_list() {
+        $this->excute_api('Api\Lib\NeedsBankList');
+    }
 }

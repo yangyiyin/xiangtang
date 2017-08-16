@@ -5,20 +5,13 @@
 		<div class="u-tab">
 
 		    <ul class="cc">
-		      	<li class="current"><a href="javascript:;">所有预定需求</a></li>
+		      	<li class="current"><a href="javascript:;">所有提现</a></li>
 		    </ul>
 		</div>
 	    <div class="search_type cc mb10 search-form">
 	      <div class="mb10">
-			  <span class="mr20">种类：
-	        <select class="select_2 select" name="type">
-	          	<option value='' >全部</option>
-	          	{$types}
-	        </select>
-
-			  &nbsp;名称：
-			  <input type="text" class="input length_2" name="title" style="width:100px;" value="{:I('title')}" >
-
+			  &nbsp; 姓名：
+			  <input type="text" class="input length_2" name="name" style="width:100px;" value="{:I('name')}" >
 			  <span class="mr20">状态：
         	<php>
         		$all = (I('get.status'))?'selected':'';
@@ -34,7 +27,6 @@
 				<option value="99" {$third}>已拒绝</option>
 				<option value="3" {$forth}>已完成</option>
 	        </select>
-
 			  <a class="u-btn" href="javascript:;" id="search" url="{:U('index')}">搜索</a>
 	        <!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
 	        </span>
@@ -46,38 +38,31 @@
 		    <thead>
 		        <tr>
 					<th><input class="check-all" type="checkbox"/></th>
-					<th>id</th>
-					<th>种类</th>
-					<th>名称</th>
-					<th width="30%">内容</th>
-					<th>额外的</th>
-					<th>申请时间</th>
+					<th>用户id</th>
+					<th>银行</th>
+					<th>姓名</th>
+					<th>卡号</th>
+					<th>金额(元)</th>
 					<th >操作</th>
-					<th >备注</th>
 				</tr>
 		    </thead>
 		    <tbody>
 				<volist name="list" id="vo">
 				<tr>
 		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
-					<td>{$vo.id} </td>
+					<td>{$vo.uid} </td>
 					<td>
-						{$vo.type.title}
-					</td>
-
-					<td>
-						{$vo.title}
+						{$vo.bank_name}
 					</td>
 					<td>
-						{$vo.content}
+						{$vo.name}
 					</td>
 					<td>
-						{$vo.extra}
+						{$vo.bank_code}
 					</td>
 					<td>
-						{$vo.create_time}
+						{$vo.sum|format_price}
 					</td>
-
 					<td>
 						<if condition="$vo.status == 0">
 							<a class="u-btn confirm J_ajax_get" href="{:U('approve')}/id/{$vo.id}">通过</a>|
@@ -86,6 +71,7 @@
 
 						<if condition="$vo.status == 1">
 							<a  class="u-btn confirm J_ajax_get" href="{:U('complete')}/id/{$vo.id}">完成</a>
+							<a class="u-btn" href="{:U('out_cash')}/uid/{$vo.uid}">提现</a>
 						</if>
 
 						<if condition="$vo.status == 1">
@@ -101,14 +87,6 @@
 						</if>
 
 					</td>
-
-					<td>
-						<span class="sort_text">备注:{$vo.remark}</span>
-						<div style="display: none" class="modify_sort">
-							<textarea  class="sort_value" style="width: 150px">{$vo.remark}</textarea>
-							<input iid="{$vo.id}" class="sort_submit" type="button" value="确定"/>
-						</div>
-					</td>
 				</tr>
 				</volist>
 			</tbody>
@@ -117,9 +95,7 @@
 		<div class="btn_wrap">
 			<div class="btn_wrap_pd">
 				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
-				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("approve")}'>批量通过</button>
-				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("reject")}'>批量拒绝</button>
-				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("complete")}'>批量完成</button>
+
 		    </div>
 		</div>
 		<!-- 分页 -->
@@ -190,29 +166,7 @@ $(function(){
         pickerPosition:'bottom-left'
     });
 
-	$('.sort_text').on('click',function(){
-		$(this).css('display', 'none');
-		$(this).next().css('display', '');
-	});
-	$('.sort_submit').on('click',function(){
-		var url = '{:U("remark")}';
-		var value = $(this).prev().val();
-		var query = {
-			id:$(this).attr('iid'),
-			remark:value
-		}
-		$.post(url,query).success(function(data){
-			if (data.status==1) {
-				updateAlert(data.info ,'alert-success');
-				$(this).parent().css('display', 'none');
-				$(this).parent().prev().html(value);
-				$(this).parent().prev().css('display', '');
-			}else{
-				updateAlert('网络繁忙~请稍后再试~');
-			}
-		}.bind(this));
 
-	});
 });
 
 </script>

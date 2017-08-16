@@ -14,6 +14,7 @@ class NfAccountLogModel extends NfBaseModel {
     const TYPE_INVITER_MINUS = 6;
     const TYPE_DEALER_ADD = 7;
     const TYPE_DEALER_MINUS = 8;
+    const TYPE_OUT_CASH_MINUS = 9;
 
     public static $TYPE_MAP = [
         self::TYPE_PLATFORM_ADD => '',

@@ -125,6 +125,32 @@ class AccountService extends BaseService{
         }
     }
 
+    public function minus_account($uid, $sum) {
+        if (!$uid || !$sum) {
+            return result(FALSE, '参数错误');
+        }
+        //查询是否存在该账户
+        $NfModel = D('Nf' . static::$name);
+        $where = ['uid', $uid].
+            $ret = $NfModel->where($where)->find();
+        if (!$ret) {
+            //创建账户
+            return result(FALSE, '该账户不存在~');
+        } else {
+            if ($sum > $ret['sum']) {
+                return result(FALSE, '账户余额不足~');
+            }
+            $ret_inc = $NfModel->where(['id'=>$ret['id']])->setDec('sum', $sum);
+            if ($ret_inc) {
+                return result(TRUE, '');
+            } else {
+
+                return result(FALSE, '网络繁忙~');
+            }
+        }
+    }
+
+
     public function check_is_available($uid, $sum) {
         $info = $this->get_info_by_uid($uid);
         if (!$info) {
