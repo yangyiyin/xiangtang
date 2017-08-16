@@ -220,13 +220,32 @@
         }
     }
     public function convert_data(&$data) {
-        $uids = result_to_array($data, 'uid');
-        $User   =   new UserApi();
+        //根据部门获取多有uid
+        $DepartmentUids = D('FinancialDepartmentUid')->where(['did'=>['in', result_to_array($data)]])->select();
+        $uids = result_to_array($DepartmentUids, 'uid');
+        //$uids = result_to_array($data, 'uid');
+        $DepartmentUids_map = result_to_complex_map($DepartmentUids, 'did');
+        $User   =   \Common\Service\MemberService::get_instance();
         $users    =   $User->get_by_uids($uids);
-        $users_map = result_to_map($users, 'id');
+        $users_map = result_to_map($users, 'uid');
+
+        $AuthGroup = D('AuthGroup');
+        $groups = $AuthGroup->getUsersGroup($uids);
+
+        $groups_map = result_to_map($groups, 'uid');
+        // var_dump($DepartmentUids);die();
         foreach ($data as $k=>$v) {
-            if (isset($users_map[$v['uid']])) {
-                $data[$k]['user'] = $users_map[$v['uid']];
+            if (isset($DepartmentUids_map[$v['id']]) && $DepartmentUids_map[$v['id']]) {
+                $data[$k]['user'] = [];
+                foreach ($DepartmentUids_map[$v['id']] as $_DepartmentUids) {
+                    if (isset($users_map[$_DepartmentUids['uid']])){
+                        if (isset($groups_map[$_DepartmentUids['uid']])) {
+                            $users_map[$_DepartmentUids['uid']]['gid'] = $groups_map[$_DepartmentUids['uid']]['group_id'];
+                        }
+                        $data[$k]['user'][] = $users_map[$_DepartmentUids['uid']];
+                    }
+                }
+                //$data[$k]['user'] = $users_map[$v['uid']];
             }
         }
     }

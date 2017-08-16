@@ -221,7 +221,7 @@
 
          $AuthGroup = D('AuthGroup');
          $groups = $AuthGroup->getUsersGroup($uids);
-         var_dump($groups);die();
+
          $groups_map = result_to_map($groups, 'uid');
         // var_dump($DepartmentUids);die();
          foreach ($data as $k=>$v) {

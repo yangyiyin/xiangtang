@@ -195,8 +195,18 @@ class FinancialBaseController extends AdminController {
             $data_update['entity_tel'] = $data['entity_tel'];
             $MemberService->update_by_id($data['id'], $data_update);
 
+            $gid = $data['gid'];
+            $AuthGroup = D('AuthGroup');
+            if( $gid && !$AuthGroup->checkGroupId($gid)){
+                $this->error($AuthGroup->error);
+            }
 
-
+            $AuthGroup->removeFromGroup($data['id'], $gid);
+            if ( $AuthGroup->addToGroup($data['id'],$gid) ){
+                $this->success('修改成功');
+            }else{
+                $this->error($AuthGroup->getError());
+            }
 
         } else {//新增
             $password = '123456';

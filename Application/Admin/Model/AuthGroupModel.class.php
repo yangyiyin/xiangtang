@@ -110,7 +110,7 @@ class AuthGroupModel extends Model {
             ->field('uid,group_id,title,description,rules')
             ->table($prefix.self::AUTH_GROUP_ACCESS.' a')
             ->join ($prefix.self::AUTH_GROUP." g on a.group_id=g.id")
-            ->where("a.uids in (".join(',', $uids).") and g.status='1'")
+            ->where("a.uid in (".join(',', $uids).") and g.status='1'")
             ->select();
         return $user_groups;
     }
