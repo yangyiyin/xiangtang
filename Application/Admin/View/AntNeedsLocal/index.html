@@ -105,9 +105,7 @@
 					<td>
 						<span class="sort_text">备注:{$vo.remark}</span>
 						<div style="display: none" class="modify_sort">
-							<textarea  class="sort_value" style="width: 200px">
-								{$vo.remark}
-							</textarea>
+							<textarea  class="sort_value" style="width: 150px">{$vo.remark}</textarea>
 							<input iid="{$vo.id}" class="sort_submit" type="button" value="确定"/>
 						</div>
 					</td>
@@ -192,7 +190,29 @@ $(function(){
         pickerPosition:'bottom-left'
     });
 
+	$('.sort_text').on('click',function(){
+		$(this).css('display', 'none');
+		$(this).next().css('display', '');
+	});
+	$('.sort_submit').on('click',function(){
+		var url = '{:U("remark")}';
+		var value = $(this).prev().val();
+		var query = {
+			id:$(this).attr('iid'),
+			remark:value
+		}
+		$.post(url,query).success(function(data){
+			if (data.status==1) {
+				updateAlert(data.info ,'alert-success');
+				$(this).parent().css('display', 'none');
+				$(this).parent().prev().html(value);
+				$(this).parent().prev().css('display', '');
+			}else{
+				updateAlert('网络繁忙~请稍后再试~');
+			}
+		}.bind(this));
 
+	});
 });
 
 </script>

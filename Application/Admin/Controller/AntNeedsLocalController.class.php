@@ -15,4 +15,17 @@ class AntNeedsLocalController extends AntNeedsController {
         $types_all = $NeedsTypesService->get_unnormal_types();
         $this->types_all = result_to_array($types_all);
     }
+
+    public function remark() {
+        $id = I('post.id');
+        $remark = I('post.remark');
+
+        $ret = $this->NeedsService->update_by_id($id, ['remark'=> $remark]);
+
+        if ($ret->success) {
+            $this->ajaxReturn(['status'=>1]);
+        } else {
+            $this->error('备注失败！');
+        }
+    }
 }
