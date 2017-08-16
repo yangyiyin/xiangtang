@@ -25,12 +25,45 @@
     </form>
 
 </div>
+
+<div id="loginmodal2" style="display:none;">
+
+    <h1>添加用户</h1>
+
+    <form id="loginform2" name="loginform" method="post" action="index.html">
+
+        <label for="username">登录用户名(姓名):</label>
+
+        <label for="username">[username]</label>
+
+        <label for="username">联系号码:</label>
+
+        <input type="text" value="[entity_tel]" name="entity_tel" id="entity_tel" class="txtfield" tabindex="1">
+
+
+        <label for="password">所属组:</label>
+
+        <select id='gid2' name="gid">[group_options]</select>
+
+
+
+        <div class="center"><input type="submit" name="loginbtn" id="loginbtn" class="flatbtn-blu" value="添加" tabindex="3"></div>
+
+    </form>
+
+</div>
+
 <script type="text/javascript">
 
     $(function(){
         var did = 0;
+        var id,username,entity_tel;
         $(document).on('click', '.add_user', function () {
             did = $(this).attr('did');
+            id = $(this).attr('id');
+            username = $(this).attr('id');
+            entity_tel = $(this).attr('entity_tel');
+
         });
 
         $('#loginform').submit(function(e){
@@ -58,7 +91,30 @@
 
         });
 
+        $('#loginform2').submit(function(e){
+            e.preventDefault()
+            $.post('{:U("add_user")}',{id:id, entity_tel:$('#entity_tel').val(), gid:$('#gid2').val()}).success(function(data){
+                e.preventDefault();
+                if (data.status==1) {
+                    if (data.url) {
+                        updateAlert(data.info + ' 页面即将自动跳转~','alert-success');
+                    }else{
+                        updateAlert(data.info ,'alert-success');
+                    }
+                    setTimeout(function(){
+                        if (data.url) {
+                            location.href=data.url;
+                        }else{
+                            location.reload();
+                        }
+                    },200);
+                }else{
+                    alert(data.info);
+                }
+            });
+            return;
 
+        });
 
         $('.modaltrigger').leanModal({ top: 110, overlay: 0.45, closeButton: ".hidemodal" });
 

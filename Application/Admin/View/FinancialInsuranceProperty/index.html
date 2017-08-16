@@ -65,7 +65,9 @@
 						{$vo.filler_man}
 					</td>
 					<td>
-						{$vo.user.username}
+						<volist name="vo.user" id="user">
+							|<a username="{$user.username}" tel="{$user.entity_tel}" id="{$user.uid}" href="#loginmodal2"class="modaltrigger edit_user u-btn confirm">{$user.username}</a>
+						</volist>
 					</td>
 					<td>
 						<a  class="u-btn" href="{:U('add_unit')}/id/{$vo.id}" class="confirm J_ajax_get">编辑</a>|
