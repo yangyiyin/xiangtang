@@ -17,7 +17,10 @@ class NeedsIndex extends BaseSapi{
     public function excute() {
         $page = I('get.p') ? I('get.p') : 1;
         $type = I('get.type');
-        $where = ['type' => $type];
+        if ($type) {
+            $where = ['type' => $type];
+        }
+
         $is_mine = I('get.is_mine');
         if ($is_mine) {
             $where['uid'] = $this->uid;
