@@ -38,7 +38,7 @@ class NeedsOutCash extends BaseApi{
             return result_json(FALSE, $ret->message);
         }
 
-        return result_json(TRUE, '发布成功');
+        return result_json(TRUE, '申请成功');
     }
 
 }
