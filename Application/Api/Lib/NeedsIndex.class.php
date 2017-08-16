@@ -7,7 +7,7 @@
  */
 namespace Api\Lib;
 use Common\Service;
-class NeedsIndex extends BaseSapi{
+class NeedsIndex extends BaseApi{
     protected $method = parent::API_METHOD_GET;
     private $NeedsService;
     public function init() {
