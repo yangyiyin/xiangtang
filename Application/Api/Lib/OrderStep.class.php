@@ -38,6 +38,16 @@ class OrderStep extends BaseApi{
                     $AccountService = \Common\Service\AccountService::get_instance();
                     $ret = $AccountService->pay($this->uid, $benefit['rule']);
                     if (!$ret->success) {
+                        $PayNotifyLogService = \Common\Service\PayNotifyLogService::get_instance();
+                        $data_notify = [];
+                        $data_notify['pay_no'] = 'oids::'. join(',', $order_ids);
+                        $data_notify['pay_agent'] = \Common\Model\NfPayModel::PAY_AGENT_ALIPAY;
+                        $data_notify['content'] = '订单账户支付异常';
+                        $data_notify['create_time'] = current_date();
+                        $data_notify['code'] = '';
+                        $data_notify['remark'] = '订单账户支付异常::'.$ret->message;
+                        $PayNotifyLogService->add_one($data_notify);
+
                         return result(FALSE, $ret->message);
                     }
                 }

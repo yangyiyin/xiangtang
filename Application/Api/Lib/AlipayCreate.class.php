@@ -42,6 +42,10 @@ class AlipayCreate extends BaseApi{
         if (!$ret->success) {
             return result_json(FALSE, $ret->message);
         }
+        if ($ret->message == 'all_by_account') {//全部账户支付
+            return result_json(TRUE, '', 1);
+        }
+
         $pay_info = $ret->data;
 
         $aop = new \AopClient;

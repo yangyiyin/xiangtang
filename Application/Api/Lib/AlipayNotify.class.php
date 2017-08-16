@@ -31,11 +31,11 @@ class AlipayNotify extends BaseSapi{
         $aop->alipayrsaPublicKey = Service\PayService::AlipayPubKey;
         $flag = $aop->rsaCheckV1($_POST, NULL, "RSA2");
         if (!$flag) {
-//            echo 'fail';
-//            $data_notify['create_time'] = current_date();
-//            $data_notify['remark'] = 'rsacheck_fail';
-//            $this->PayNotifyLogService->add_one($data_notify);
-//            exit();
+            echo 'fail';
+            $data_notify['create_time'] = current_date();
+            $data_notify['remark'] = 'rsacheck_fail';
+            $this->PayNotifyLogService->add_one($data_notify);
+            exit();
         }
 
         //业务处理
@@ -118,7 +118,6 @@ class AlipayNotify extends BaseSapi{
                     $AccountLogService->add_one($account_data);
                     $AccountService->add_account($order['uid'], $order['dealer_profit']);
                 }
-
             }
 
             echo 'success';

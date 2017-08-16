@@ -15,5 +15,6 @@ class NfPayModel extends Model {
     const STATUS_DELETE = 99;//已删除
 
     const PAY_AGENT_ALIPAY = 'alipay';
+    const PAY_AGENT_ACCOUNT = 'account';
 
 }
