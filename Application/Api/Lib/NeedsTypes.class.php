@@ -16,7 +16,7 @@ class NeedsTypes extends BaseApi{
 
     public function excute() {
         $types = $this->NeedsTypesService->get_all_types();
-        $types = convert_objs($types, 'id,title');
+        $types = convert_objs($types, 'id,title,tips');
         return result_json(TRUE, '', $types);
     }
 

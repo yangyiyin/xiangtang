@@ -53,6 +53,7 @@
 					<th>备注</th>
 					<th>申请时间</th>
 					<th >操作</th>
+					<th >备注</th>
 				</tr>
 		    </thead>
 		    <tbody>
@@ -99,6 +100,16 @@
 							已完成
 						</if>
 
+					</td>
+
+					<td>
+						<span class="sort_text">备注:{$vo.remark}</span>
+						<div style="display: none" class="modify_sort">
+							<textarea  class="sort_value" style="width: 200px">
+								{$vo.remark}
+							</textarea>
+							<input iid="{$vo.id}" class="sort_submit" type="button" value="确定"/>
+						</div>
 					</td>
 				</tr>
 				</volist>

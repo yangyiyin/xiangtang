@@ -41,3 +41,8 @@ CREATE TABLE `shopy_nf_item_block` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+
+-------------------
+alter table shopy_nf_needs add remark VARCHAR (1024) DEFAULT '';
+alter table shopy_nf_needs_type add tips VARCHAR (1024) DEFAULT '';
+

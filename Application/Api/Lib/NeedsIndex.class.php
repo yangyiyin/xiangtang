@@ -7,7 +7,7 @@
  */
 namespace Api\Lib;
 use Common\Service;
-class NeedsIndex extends BaseApi{
+class NeedsIndex extends BaseSapi{
     protected $method = parent::API_METHOD_GET;
     private $NeedsService;
     public function init() {
@@ -18,8 +18,18 @@ class NeedsIndex extends BaseApi{
         $page = I('get.p') ? I('get.p') : 1;
         $type = I('get.type');
         $where = ['type' => $type];
+        $is_mine = I('get.is_mine');
+        if ($is_mine) {
+            $where['uid'] = $this->uid;
+        }
         list($list, $count) = $this->NeedsService->get_by_where($where, 'id desc', $page);
-        $list = convert_objs($list, 'id,type,title,create_time');
+        $list = convert_objs($list, 'id,type,title,create_time,remark,status');
+        if ($list) {
+            $map = \Common\Model\NfNeedsModel::$status_map;
+            foreach ($list as $key => $li) {
+                $list[$key]['status_desc'] = isset($map[$li['status']]) ? $map[$li['status']] : '未知';
+            }
+        }
         $has_more = has_more($count, $page, Service\NeedsService::$page_size);
         return result_json(TRUE, '', ['list' => $list, 'has_more' => $has_more]);
     }
