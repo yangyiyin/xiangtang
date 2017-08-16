@@ -12,7 +12,7 @@ class NeedsBankList extends BaseSapi{
 
 
     public function excute() {
-        $data = ['农业银行','商业银行'];
+        $data = ['中国邮储银行'];
         return result_json(TRUE, '发布成功', $data);
     }
 
