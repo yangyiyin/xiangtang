@@ -24,7 +24,8 @@ class NfAccountLogModel extends NfBaseModel {
         self::TYPE_INVITER_ADD => '分佣者收入',
         self::TYPE_INVITER_MINUS => '分佣者支出',
         self::TYPE_DEALER_ADD => '经销商佣金收入',
-        self::TYPE_DEALER_MINUS => '经销商佣金支出'
+        self::TYPE_DEALER_MINUS => '经销商佣金支出',
+         self::TYPE_OUT_CASH_MINUS => '提现'
     ];
 
   protected $_validate = array(
