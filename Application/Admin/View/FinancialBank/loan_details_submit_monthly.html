@@ -54,17 +54,19 @@
 							</td>
 
 						</tr>
+
 						<tr>
-							<td colspan="22">明细</td>
-						</tr>
-						<tr>
-							<td colspan="22"><div id="filePicker">导入excel</div></td>
+							<if condition="!$infos || $infos[0]['status'] == 0">
+								<td colspan="22"><div id="filePicker">导入excel</div></td>
+							</if>
+							<input type="hidden" name="good_key" value="" id="good_key"/>
 						</tr>
 						<tr>
 							<td colspan="22" class="result">
 								<if condition="$infos">
 									已上报数据
 								</if>
+
 							</td>
 						</tr>
 						<tr style="display: none">
@@ -91,6 +93,7 @@
 							<td>是否需要地方政府协调配合（逾期、不良贷款需填写）:</td>
 							<td>备注:</td>
 						</tr>
+
 						<volist name="infos" id="vo">
 							<tr style="display: none">
 								<td>
@@ -408,6 +411,11 @@
 					alert('部分数据不符合要求,我们将以excel的形式退回给您');
 					window.open("{:U('get_excel')}/key/"+response.key);
 				}
+				if (response.good_key) {
+					alert('数据已导入成功,如10分钟内未提交,则导入数据将自动清空');
+					$('#good_key').val(response.good_key);
+				}
+
 			} else {
 				updateAlert(response.info);
 			}

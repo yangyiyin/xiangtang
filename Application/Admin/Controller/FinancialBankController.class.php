@@ -24,9 +24,9 @@
              $id = I('get.id');
              $data = I('post.');
              $data['uid'] = UID;
-             if (!$data['logs1']) {
-                 $this->error('请填写完整的信息~');
-             }
+//             if (!$data['logs1']) {
+//                 $this->error('请填写完整的信息~');
+//             }
              if (!$this->is_history) {
                  $data['year'] = intval(date('Y'));
                  $data['month'] = intval(date('m'));
@@ -46,8 +46,10 @@
              }
 
              $batch_data = [];
-             foreach ($data['logs1'] as $k => $v) {
-                 if ($v) {
+             $good_key = I('post.good_key');
+             $cache_data = S($good_key);
+             if ($cache_data) {
+                 foreach ($cache_data as $value) {
                      $temp = [];
                      $temp['all_name'] = $data['all_name'];
                      $temp['year'] = $data['year'];
@@ -55,19 +57,40 @@
                      $temp['uid'] = $data['uid'];
                      $temp['filler_man'] = $data['filler_man'];
                      $temp['gmt_create'] = time();
-                     $temp['Enterprise'] = $v;
-                     $temp['Principal'] = isset($data['logs2'][$k]) ? $data['logs2'][$k] : '';
-                     $temp['Area'] = isset($data['logs3'][$k]) ? $data['logs3'][$k] : 0;
-                     $temp['Recover'] = isset($data['logs4'][$k]) ? $data['logs4'][$k] : 0;
-                     $temp['Recover_Time'] = isset($data['logs5'][$k]) ? strtotime($data['logs5'][$k]) : 0;
-                     $temp['Recover_Method'] = isset($data['logs6'][$k]) ? $data['logs6'][$k] : 0;
-                     $temp['Remarks'] = isset($data['logs7'][$k]) ? $data['logs7'][$k] : '';
-
+                     $temp['Enterprise'] = $value[0];
+                     $temp['Principal'] = $value[1];
+                     $temp['Area'] = $value[2];
+                     $temp['Recover'] = $value[3];
+                     $temp['Recover_Time'] = strtotime($value[4]);
+                     $temp['Recover_Method'] = $value[5];
+                     $temp['Remarks'] = (string) $value[6];
                      $temp['ip'] = $_SERVER["REMOTE_ADDR"];
+
                      $batch_data[] = $temp;
                  }
-
              }
+//             foreach ($data['logs1'] as $k => $v) {
+//                 if ($v) {
+//                     $temp = [];
+//                     $temp['all_name'] = $data['all_name'];
+//                     $temp['year'] = $data['year'];
+//                     $temp['month'] = $data['month'];
+//                     $temp['uid'] = $data['uid'];
+//                     $temp['filler_man'] = $data['filler_man'];
+//                     $temp['gmt_create'] = time();
+//                     $temp['Enterprise'] = $v;
+//                     $temp['Principal'] = isset($data['logs2'][$k]) ? $data['logs2'][$k] : '';
+//                     $temp['Area'] = isset($data['logs3'][$k]) ? $data['logs3'][$k] : 0;
+//                     $temp['Recover'] = isset($data['logs4'][$k]) ? $data['logs4'][$k] : 0;
+//                     $temp['Recover_Time'] = isset($data['logs5'][$k]) ? strtotime($data['logs5'][$k]) : 0;
+//                     $temp['Recover_Method'] = isset($data['logs6'][$k]) ? $data['logs6'][$k] : 0;
+//                     $temp['Remarks'] = isset($data['logs7'][$k]) ? $data['logs7'][$k] : '';
+//
+//                     $temp['ip'] = $_SERVER["REMOTE_ADDR"];
+//                     $batch_data[] = $temp;
+//                 }
+//
+//             }
              $ret = $this->local_service->add_batch($batch_data);
              if ($ret->success) {
                  //$this->update_st($batch_data);
@@ -135,7 +158,9 @@
      public function baddebt_dispose_submit_log() {
          $this->local_service = \Common\Service\BankBaddebtDisposeService::get_instance();
          $where = [];
+         $all_name = '';
          if (I('get.all_name')) {
+             $all_name = I('get.all_name');
              $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
          }
          //获取所有相关的公司
@@ -145,10 +170,13 @@
 
          if ($departments) {
              $where['all_name'] = $departments[0]['all_name'];
+             $all_name = $departments[0]['all_name'];
              $this->assign('only_my_department', false);
          } else {
              $this->assign('only_my_department', true);
          }
+
+         $this->assign('all_name', $all_name);
          $page = I('get.p', 1);
          list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
          $this->convert_data_baddebt_dispose_submit_log($data);
@@ -317,9 +345,9 @@
              $id = I('get.id');
              $data = I('post.');
              $data['uid'] = UID;
-             if (!$data['logs1']) {
-                 $this->error('请填写完整的信息~');
-             }
+//             if (!$data['logs1']) {
+//                 $this->error('请填写完整的信息~');
+//             }
              if (!$this->is_history) {
                  $data['year'] = intval(date('Y'));
                  $data['month'] = intval(date('m'));
@@ -339,8 +367,10 @@
              }
 
              $batch_data = [];
-             foreach ($data['logs1'] as $k => $v) {
-                 if ($v) {
+             $good_key = I('post.good_key');
+             $cache_data = S($good_key);
+             if ($cache_data) {
+                 foreach ($cache_data as $value) {
                      $temp = [];
                      $temp['all_name'] = $data['all_name'];
                      $temp['year'] = $data['year'];
@@ -348,34 +378,69 @@
                      $temp['uid'] = $data['uid'];
                      $temp['filler_man'] = $data['filler_man'];
                      $temp['gmt_create'] = time();
-                     $temp['Contract'] = $v;
-                     $temp['Enterprise'] = isset($data['logs2'][$k]) ? $data['logs2'][$k] : '';
-                     $temp['Loans'] = isset($data['logs3'][$k]) ? $data['logs3'][$k] : 0;
-                     $temp['Interest'] = isset($data['logs4'][$k]) ? $data['logs4'][$k] : 0;
-                     $temp['Principal'] = isset($data['logs5'][$k]) ? $data['logs5'][$k] : 0;
-                     $temp['Phone'] = isset($data['logs6'][$k]) ? $data['logs6'][$k] : 0;
-                     $temp['Address'] = isset($data['logs7'][$k]) ? $data['logs7'][$k] : 0;
-                     $temp['Area'] = isset($data['logs8'][$k]) ? $data['logs8'][$k] : 0;
-                     $temp['Industry'] = isset($data['logs9'][$k]) ? $data['logs9'][$k] : '';
-                     $temp['Startdate'] = isset($data['logs10'][$k]) ? strtotime($data['logs10'][$k]) : '';
-                     $temp['Enddate'] = isset($data['logs11'][$k]) ? strtotime($data['logs11'][$k]) : '';
-                     $temp['Guarantee'] = isset($data['logs12'][$k]) ? $data['logs12'][$k] : '';
-                     $temp['Over_Credit'] = isset($data['logs13'][$k]) ? $data['logs13'][$k] : '';
-                     $temp['Over_Mortgage'] = isset($data['logs14'][$k]) ? $data['logs14'][$k] : '';
-                     $temp['Over_Pledge'] = isset($data['logs15'][$k]) ? $data['logs15'][$k] : '';
-                     $temp['Over_Margin'] = isset($data['logs16'][$k]) ? $data['logs16'][$k] : '';
-                     $temp['Guarantor'] = isset($data['logs17'][$k]) ? $data['logs17'][$k] : '';
-                     $temp['Pattern'] = isset($data['logs18'][$k]) ? $data['logs18'][$k] : '';
-                     $temp['OverdueDays'] = isset($data['logs19'][$k]) ? $data['logs19'][$k] : '';
-                     $temp['Coordination'] = isset($data['logs20'][$k]) ? $data['logs20'][$k] : '';
-                     $temp['Remarks'] = isset($data['logs21'][$k]) ? $data['logs21'][$k] : '';
-
-
+                     $temp['Contract'] = $value[0];
+                     $temp['Enterprise'] = $value[1];
+                     $temp['Loans'] = $value[2];
+                     $temp['Interest'] = $value[3];
+                     $temp['Principal'] = $value[4];
+                     $temp['Phone'] = $value[5];
+                     $temp['Address'] = $value[6];
+                     $temp['Area'] = $value[7];
+                     $temp['Industry'] = $value[8];
+                     $temp['Startdate'] = strtotime($value[9]);
+                     $temp['Enddate'] = strtotime($value[10]);
+                     $temp['Guarantee'] = $value[11];
+                     $temp['Over_Credit'] = $value[12];
+                     $temp['Over_Mortgage'] = $value[13];
+                     $temp['Over_Pledge'] = $value[14];
+                     $temp['Over_Margin'] = $value[15];
+                     $temp['Guarantor'] = $value[16];
+                     $temp['Pattern'] = $value[17];
+                     $temp['OverdueDays'] = $value[18];
+                     $temp['Coordination'] = (string) $value[19];
+                     $temp['Remarks'] = (string) $value[20];
                      $temp['ip'] = $_SERVER["REMOTE_ADDR"];
                      $batch_data[] = $temp;
                  }
-
              }
+//             foreach ($data['logs1'] as $k => $v) {
+//                 if ($v) {
+//                     $temp = [];
+//                     $temp['all_name'] = $data['all_name'];
+//                     $temp['year'] = $data['year'];
+//                     $temp['month'] = $data['month'];
+//                     $temp['uid'] = $data['uid'];
+//                     $temp['filler_man'] = $data['filler_man'];
+//                     $temp['gmt_create'] = time();
+//                     $temp['Contract'] = $v;
+//                     $temp['Enterprise'] = isset($data['logs2'][$k]) ? $data['logs2'][$k] : '';
+//                     $temp['Loans'] = isset($data['logs3'][$k]) ? $data['logs3'][$k] : 0;
+//                     $temp['Interest'] = isset($data['logs4'][$k]) ? $data['logs4'][$k] : 0;
+//                     $temp['Principal'] = isset($data['logs5'][$k]) ? $data['logs5'][$k] : 0;
+//                     $temp['Phone'] = isset($data['logs6'][$k]) ? $data['logs6'][$k] : 0;
+//                     $temp['Address'] = isset($data['logs7'][$k]) ? $data['logs7'][$k] : 0;
+//                     $temp['Area'] = isset($data['logs8'][$k]) ? $data['logs8'][$k] : 0;
+//                     $temp['Industry'] = isset($data['logs9'][$k]) ? $data['logs9'][$k] : '';
+//                     $temp['Startdate'] = isset($data['logs10'][$k]) ? strtotime($data['logs10'][$k]) : '';
+//                     $temp['Enddate'] = isset($data['logs11'][$k]) ? strtotime($data['logs11'][$k]) : '';
+//                     $temp['Guarantee'] = isset($data['logs12'][$k]) ? $data['logs12'][$k] : '';
+//                     $temp['Over_Credit'] = isset($data['logs13'][$k]) ? $data['logs13'][$k] : '';
+//                     $temp['Over_Mortgage'] = isset($data['logs14'][$k]) ? $data['logs14'][$k] : '';
+//                     $temp['Over_Pledge'] = isset($data['logs15'][$k]) ? $data['logs15'][$k] : '';
+//                     $temp['Over_Margin'] = isset($data['logs16'][$k]) ? $data['logs16'][$k] : '';
+//                     $temp['Guarantor'] = isset($data['logs17'][$k]) ? $data['logs17'][$k] : '';
+//                     $temp['Pattern'] = isset($data['logs18'][$k]) ? $data['logs18'][$k] : '';
+//                     $temp['OverdueDays'] = isset($data['logs19'][$k]) ? $data['logs19'][$k] : '';
+//                     $temp['Coordination'] = isset($data['logs20'][$k]) ? $data['logs20'][$k] : '';
+//                     $temp['Remarks'] = isset($data['logs21'][$k]) ? $data['logs21'][$k] : '';
+//
+//
+//                     $temp['ip'] = $_SERVER["REMOTE_ADDR"];
+//                     $batch_data[] = $temp;
+//                 }
+//
+//             }
+            // var_dump($batch_data);die();
              $ret = $this->local_service->add_batch($batch_data);
              if ($ret->success) {
 //                 $this->update_loan_st($batch_data);
@@ -731,7 +796,9 @@
      public function loan_details_submit_log() {
          $this->local_service = \Common\Service\BankLoanDetailService::get_instance();
          $where = [];
+         $all_name = '';
          if (I('get.all_name')) {
+             $all_name = I('get.all_name');
              $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
          }
          //获取所有相关的公司
@@ -741,10 +808,12 @@
 
          if ($departments) {
              $where['all_name'] = $departments[0]['all_name'];
+             $all_name = $departments[0]['all_name'];
              $this->assign('only_my_department', false);
          } else {
              $this->assign('only_my_department', true);
          }
+         $this->assign('all_name', $all_name);
          $page = I('get.p', 1);
          list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
          $this->convert_data_loan_details_submit_log($data);
@@ -1003,9 +1072,9 @@
              $id = I('get.id');
              $data = I('post.');
              $data['uid'] = UID;
-             if (!$data['logs1']) {
-                 $this->error('请填写完整的信息~');
-             }
+//             if (!$data['logs1']) {
+//                 $this->error('请填写完整的信息~');
+//             }
              if (!$this->is_history) {
                  $data['year'] = intval(date('Y'));
                  $data['month'] = intval(date('m'));
@@ -1025,8 +1094,10 @@
              }
 
              $batch_data = [];
-             foreach ($data['logs1'] as $k => $v) {
-                 if ($v) {
+             $good_key = I('post.good_key');
+             $cache_data = S($good_key);
+             if ($cache_data) {
+                 foreach ($cache_data as $value) {
                      $temp = [];
                      $temp['all_name'] = $data['all_name'];
                      $temp['year'] = $data['year'];
@@ -1034,18 +1105,38 @@
                      $temp['uid'] = $data['uid'];
                      $temp['filler_man'] = $data['filler_man'];
                      $temp['gmt_create'] = time();
-                     $temp['Enterprise'] = $v;
-                     $temp['Principal'] = isset($data['logs2'][$k]) ? $data['logs2'][$k] : '';
-                     $temp['Area'] = isset($data['logs3'][$k]) ? $data['logs3'][$k] : 0;
-                     $temp['Overdue'] = isset($data['logs4'][$k]) ? $data['logs4'][$k] : 0;
-                     $temp['Resolve'] = isset($data['logs5'][$k]) ? $data['logs5'][$k] : 0;
-                     $temp['Remarks'] = isset($data['logs6'][$k]) ? $data['logs6'][$k] : '';
-
+                     $temp['Enterprise'] = $value[0];
+                     $temp['Principal'] = $value[1];
+                     $temp['Area'] = $value[2];
+                     $temp['Overdue'] = $value[3];
+                     $temp['Resolve'] = $value[4];
+                     $temp['Remarks'] = (string) $value[5];
                      $temp['ip'] = $_SERVER["REMOTE_ADDR"];
+
                      $batch_data[] = $temp;
                  }
-
              }
+//             foreach ($data['logs1'] as $k => $v) {
+//                 if ($v) {
+//                     $temp = [];
+//                     $temp['all_name'] = $data['all_name'];
+//                     $temp['year'] = $data['year'];
+//                     $temp['month'] = $data['month'];
+//                     $temp['uid'] = $data['uid'];
+//                     $temp['filler_man'] = $data['filler_man'];
+//                     $temp['gmt_create'] = time();
+//                     $temp['Enterprise'] = $v;
+//                     $temp['Principal'] = isset($data['logs2'][$k]) ? $data['logs2'][$k] : '';
+//                     $temp['Area'] = isset($data['logs3'][$k]) ? $data['logs3'][$k] : 0;
+//                     $temp['Overdue'] = isset($data['logs4'][$k]) ? $data['logs4'][$k] : 0;
+//                     $temp['Resolve'] = isset($data['logs5'][$k]) ? $data['logs5'][$k] : 0;
+//                     $temp['Remarks'] = isset($data['logs6'][$k]) ? $data['logs6'][$k] : '';
+//
+//                     $temp['ip'] = $_SERVER["REMOTE_ADDR"];
+//                     $batch_data[] = $temp;
+//                 }
+//
+//             }
              $ret = $this->local_service->add_batch($batch_data);
              if ($ret->success) {
                  //$this->update_st($batch_data);
@@ -1112,7 +1203,9 @@
      public function overdue_resolve_submit_log() {
          $this->local_service = \Common\Service\BankOverdueResolveService::get_instance();
          $where = [];
+         $all_name = '';
          if (I('get.all_name')) {
+             $all_name = I('get.all_name');
              $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
          }
          //获取所有相关的公司
@@ -1122,10 +1215,12 @@
 
          if ($departments) {
              $where['all_name'] = $departments[0]['all_name'];
+             $all_name = $departments[0]['all_name'];
              $this->assign('only_my_department', false);
          } else {
              $this->assign('only_my_department', true);
          }
+         $this->assign('all_name', $all_name);
          $page = I('get.p', 1);
          list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
          $this->convert_data_overdue_resolve_submit_log($data);
@@ -2023,25 +2118,34 @@
      }
 
      public function upload_excel() {
-         require APP_PATH . '/Common/Lib/php-excel-reader/excel_reader2.php';
-         $excel = new \Spreadsheet_Excel_Reader($_FILES['file']['tmp_name']);
+         set_time_limit(0);
+         /** Include path **/
+         set_include_path(APP_PATH . '/Common/Lib/phpExcel/Classes/');
+
+         /** PHPExcel_IOFactory */
+         include 'PHPExcel/IOFactory.php';
+         $objPHP = new \PHPExcel_Reader_Excel5();
+         $objPHPExcel = $objPHP->load($_FILES['file']['tmp_name']);
+
+         $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+//         var_dump($sheetData);die();
 
          $data = $bad_data = [];
          $type = I('get.type');
          $AreaService = \Common\Service\AreaService::get_instance();
          $key = '';
          if ($type == 'baddebt_dispose') {
-             if ($excel->colcount() != 7) {
+             if (count($sheetData[1]) != 7) {
                  $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
              }
-             for($i=3;$i<$excel->rowcount() + 1;$i++) {
+             for($i=3;$i<count($sheetData) + 1;$i++) {
                  $temp = [];
                  $is_bad_row = false;
-                 for ($j=1;$j<$excel->colcount() + 1;$j++) {
-
+                 $sheetData[$i] = array_values($sheetData[$i]);
+                 for ($j=1;$j<count($sheetData[1]) + 1;$j++) {
+                     $val = $sheetData[$i][$j-1];
                      if ($j == 3) {
                          //处理街道
-                         $val = $excel->val($i,$j);
                          if ($val) {
                              $area = $AreaService->get_like_name($val);
                          } else {
@@ -2057,9 +2161,8 @@
 
                      }
 
-                     if ($j == 6) {
+                     if ($j == 6 && !$is_bad_row) {
                          //处理收回方式
-                         $val = $excel->val($i,$j);
                          if ($val == '现金收回') {
                              $temp[] = 1;
                              continue;
@@ -2091,7 +2194,7 @@
                      }
 
 
-                     $temp[] = $excel->val($i,$j);
+                     $temp[] = $val;
                  }
                  if ($is_bad_row) {
                      $bad_data[] = $temp;
@@ -2108,33 +2211,45 @@
              }
 
          } elseif ($type == 'loan_details') {
-             if ($excel->colcount() != 21) {
+             if (count($sheetData[1]) != 21) {
                  $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
              }
-             for($i=3;$i<$excel->rowcount() + 1;$i++) {
+             for($i=3;$i<count($sheetData) + 1;$i++) {
                  $temp = [];
                  $is_bad_row = false;
-                 for ($j=1;$j<$excel->colcount() + 1;$j++) {
-                     $val = $excel->val($i,$j);
+                 $sheetData[$i] = array_values($sheetData[$i]);
+                 for ($j=1;$j<count($sheetData[1]) + 1;$j++) {
+                     $val = $sheetData[$i][$j-1];
                      if ($j== 2) {
                          //获取企业信息
                          $info = $this->get_enterprise_info_by_name($val);
                      }
 
                      if ($j == 5) {
-                        if ($val) {
+                         if (!$val) {
 
-                        } else {
-                            if (isset($info['Legal']) && $info['Legal']) {
-                                $val = $info['Legal'];
-                            } else {
-                                
-                            }
-                        }
+                             if (isset($info['Legal']) && $info['Legal']) {
+                                 $val = $info['Legal'];
+                             } else {
+                                 $is_bad_row = true;
+                             }
+                         }
                      } elseif ($j == 6) {
-
+                         if (!$val) {
+                             if (isset($info['Phone']) && $info['Phone']) {
+                                 $val = $info['Phone'];
+                             } else {
+                                 $is_bad_row = true;
+                             }
+                         }
                      } elseif ($j == 7) {
-
+                         if (!$val) {
+                             if (isset($info['Address']) && $info['Address']) {
+                                 $val = $info['Address'];
+                             } else {
+                                 $is_bad_row = true;
+                             }
+                         }
                      } elseif ($j == 8) {
                          //处理街道
                          if ($val) {
@@ -2147,14 +2262,34 @@
                              $temp[] = $area['id'];
                              continue;
                          } else {
-                             $is_bad_row = true;
+
+                             if (isset($info['Jurisdictions']) && $info['Jurisdictions']) {
+                                 $val = $info['Jurisdictions'];
+                                 $area = $AreaService->get_like_name($val);
+                                 if ($area) {
+                                     $temp[] = $area['id'];
+                                     continue;
+                                 } else {
+                                     $is_bad_row = true;
+                                 }
+                             } else {
+                                 $is_bad_row = true;
+                             }
                          }
                      } elseif ($j == 9) {
-
+                         if (!$val) {
+                             if (isset($info['Industry']) && $info['Industry']) {
+                                 $val = $info['Industry'];
+                             } else {
+                                 $is_bad_row = true;
+                             }
+                         }
+                     } elseif ($j == 10) {
                      }
 
 
-                     if ($j == 18) {
+
+                     if ($j == 18 && !$is_bad_row) {
                          //处理收回方式
                          if ($val == '正常') {
                              $temp[] = 1;
@@ -2187,25 +2322,25 @@
                  }
 
              }
-
              if ($bad_data) {
                  $key = uniqid();
                  array_unshift($bad_data,["合同号","企业名称","贷款余额（万元）","执行年利率","法定代表人（自动）","联系电话（自动）","注册地址（自动）","所属镇（街道）（自动）","所属行业（自动）","发放日期","到期日期","担保方式（保证、抵押、质押、信用）","信用余额","抵押余额","质押余额","保证余额","其中：保证人","五级形态（填写：正常、关注、次级、可疑损失）","本金逾期天数","是否需要地方政府协调配合（逾期、不良贷款需填写）","备注"]);
                  S($key, $bad_data, 120);
              }
 
+
          } elseif ($type == 'overdue_resolve') {
-             if ($excel->colcount() != 6) {
+             if (count($sheetData[1]) != 6) {
                  $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
              }
-             for($i=3;$i<$excel->rowcount() + 1;$i++) {
+             for($i=3;$i<count($sheetData) + 1;$i++) {
                  $temp = [];
                  $is_bad_row = false;
-                 for ($j=1;$j<$excel->colcount() + 1;$j++) {
-
+                 $sheetData[$i] = array_values($sheetData[$i]);
+                 for ($j=1;$j<count($sheetData[1]) + 1;$j++) {
+                     $val = $sheetData[$i][$j-1];
                      if ($j == 3) {
                          //处理街道
-                         $val = $excel->val($i,$j);
                          if ($val) {
                              $area = $AreaService->get_like_name($val);
                          } else {
@@ -2222,7 +2357,7 @@
                      }
 
 
-                     $temp[] = $excel->val($i,$j);
+                     $temp[] = $val;
                  }
                  if ($is_bad_row) {
                      $bad_data[] = $temp;
@@ -2244,7 +2379,9 @@
          unlink($_FILES['file']['tmp_name']);
 
          if ($data) {
-             $this->ajaxReturn(['status'=>true, 'data' => $data, 'key'=>$key]);
+             $good_key = uniqid();
+             S($good_key, $data, 600);//缓存好的数据
+             $this->ajaxReturn(['status'=>true, 'key'=>$key, 'good_key' => $good_key]);
          } else {
              $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
          }
@@ -2347,7 +2484,7 @@
                  $excel_data[] = $temp;
              }
          }
-
+    
          exportexcel($excel_data,'明细记录', '明细记录');
      }
  }

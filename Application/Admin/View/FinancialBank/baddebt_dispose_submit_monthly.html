@@ -56,59 +56,74 @@
 							</td>
 						</tr>
 						<tr>
-							<td colspan="9">明细</td>
+							<if condition="!$infos || $infos[0]['status'] == 0">
+								<td colspan="22"><div id="filePicker">导入excel</div></td>
+							</if>
+							<input type="hidden" name="good_key" value="" id="good_key"/>
 						</tr>
 						<tr>
-							<td>企业名称:</td>
-							<td>法人代表或实际控制人:</td>
-							<td>企业所属乡镇（街道）:</td>
-							<td>收回不良贷款金额:</td>
-							<td>收回不良贷款时间:</td>
-							<td>收回方式:</td>
-							<td>备注:</td>
+							<td colspan="22" class="result">
+								<if condition="$infos">
+									已上报数据
+								</if>
+
+							</td>
 						</tr>
-						<volist name="infos" id="vo">
-							<tr>
-								<td>
-									<input type="text" class="input input-xmedium" name="logs1[]" value="{$vo.Enterprise}">
-								</td>
-								<td>
-									<input type="text" class="input input-xmedium" name="logs2[]" value="{$vo.Principal}">
-								</td>
-								<td>
-									<select name="logs3[]">
-										<if condition="$vo['area_options']">
-											{$vo['area_options']}
-											<else/>
-											{$area_options}
-										</if>
-									</select>
-								</td>
-								<td>
-									<input type="text" class="input input-xmedium" name="logs4[]" value="{$vo.Recover}">
-								</td>
 
-								<td>
-									<input type="text" class="input input-xmedium time-start" name="logs5[]" value="{$vo.Recover_Time|time_to_date}">
-								</td>
+						<!--<tr>-->
+							<!--<td colspan="9">明细</td>-->
+						<!--</tr>-->
+						<!--<tr>-->
+							<!--<td>企业名称:</td>-->
+							<!--<td>法人代表或实际控制人:</td>-->
+							<!--<td>企业所属乡镇（街道）:</td>-->
+							<!--<td>收回不良贷款金额:</td>-->
+							<!--<td>收回不良贷款时间:</td>-->
+							<!--<td>收回方式:</td>-->
+							<!--<td>备注:</td>-->
+						<!--</tr>-->
+						<!--<volist name="infos" id="vo">-->
+							<!--<tr>-->
+								<!--<td>-->
+									<!--<input type="text" class="input input-xmedium" name="logs1[]" value="{$vo.Enterprise}">-->
+								<!--</td>-->
+								<!--<td>-->
+									<!--<input type="text" class="input input-xmedium" name="logs2[]" value="{$vo.Principal}">-->
+								<!--</td>-->
+								<!--<td>-->
+									<!--<select name="logs3[]">-->
+										<!--<if condition="$vo['area_options']">-->
+											<!--{$vo['area_options']}-->
+											<!--<else/>-->
+											<!--{$area_options}-->
+										<!--</if>-->
+									<!--</select>-->
+								<!--</td>-->
+								<!--<td>-->
+									<!--<input type="text" class="input input-xmedium" name="logs4[]" value="{$vo.Recover}">-->
+								<!--</td>-->
 
-								<td>
-									<select name="logs6[]">
-										<if condition="$vo['recover_method_options']">
-											{$vo['recover_method_options']}
-											<else/>
-											{$recover_method_options}
-										</if>
-									</select>
+								<!--<td>-->
+									<!--<input type="text" class="input input-xmedium time-start" name="logs5[]" value="{$vo.Recover_Time|time_to_date}">-->
+								<!--</td>-->
 
-								</td>
-								<td>
-									<input type="text" class="input input-xmedium" name="logs7[]" value="{$vo.Remarks}">
-								</td>
-								<td><a class="btn del_log">删除</a></td>
-							</tr>
-						</volist>
-						<tr class="add_line"><td colspan="9"><a class="btn add_log">添加</a></td></tr>
+								<!--<td>-->
+									<!--<select name="logs6[]">-->
+										<!--<if condition="$vo['recover_method_options']">-->
+											<!--{$vo['recover_method_options']}-->
+											<!--<else/>-->
+											<!--{$recover_method_options}-->
+										<!--</if>-->
+									<!--</select>-->
+
+								<!--</td>-->
+								<!--<td>-->
+									<!--<input type="text" class="input input-xmedium" name="logs7[]" value="{$vo.Remarks}">-->
+								<!--</td>-->
+								<!--<td><a class="btn del_log">删除</a></td>-->
+							<!--</tr>-->
+						<!--</volist>-->
+						<!--<tr class="add_line"><td colspan="9"><a class="btn add_log">添加</a></td></tr>-->
 						</tbody>
 					</table>
 				</div>
@@ -134,8 +149,6 @@
 						<if condition="$infos[0]['status'] == 1">
 							审核中
 						</if>
-
-						<div style="position: fixed;right: 0;bottom: 0px;" id="filePicker">导入excel</div>
 					</div>
 				</div>
 			</form>
@@ -239,10 +252,29 @@
 				mimeTypes : 'application/xls'
 			}
 		});
+//		uploader.on( 'uploadSuccess', function(file, response) {
+//			upload(file, response);
+//		});
 		uploader.on( 'uploadSuccess', function(file, response) {
-			upload(file, response);
-		});
+			if(response.status){
+				updateAlert('导入成功','alert-success');
+				$('.result').html('已导入数据');
+				if (response.key) {
+					alert('部分数据不符合要求,我们将以excel的形式退回给您');
+					window.open("{:U('get_excel')}/key/"+response.key);
+				}
+				if (response.good_key) {
+					alert('数据已导入成功,如10分钟内未提交,则导入数据将自动清空');
+					$('#good_key').val(response.good_key);
+				}
 
+			} else {
+				updateAlert(response.info);
+			}
+		});
+		uploader.on( 'startUpload', function() {
+			updateAlert('上传中。。。');
+		});
 		function upload(file, data){
 
 			if(data.status){
