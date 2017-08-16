@@ -1688,6 +1688,28 @@
 
     }
 
+     public function get_enterprise_info_by_name($name) {
+         $EnterpriseService = \Common\Service\EnterpriseService::get_instance();
+         $info = $EnterpriseService->get_info_by_name($name);
+
+         if ($info) {
+             $info['Jurisdictions'] = str_replace('所', '', $info['Jurisdictions']);
+             $info['Jurisdictions'] = str_replace('分局', '', $info['Jurisdictions']);
+
+             $AreaService = \Common\Service\AreaService::get_instance();
+             $area = $AreaService->get_like_name($info['Jurisdictions']);
+
+             if ($area) {
+                 $info['Jurisdictions'] = $area['id'];
+             } else {
+                 $info['Jurisdictions'] = '';
+             }
+         }
+
+         return $info;
+
+     }
+
     public function convert_data_department_types($data) {
         //获取所有相关的公司
         $DepartmentService = \Common\Service\DepartmentService::get_instance();
@@ -2086,7 +2108,6 @@
              }
 
          } elseif ($type == 'loan_details') {
-             echo $excel->colcount();die();
              if ($excel->colcount() != 21) {
                  $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
              }
@@ -2094,10 +2115,28 @@
                  $temp = [];
                  $is_bad_row = false;
                  for ($j=1;$j<$excel->colcount() + 1;$j++) {
+                     $val = $excel->val($i,$j);
+                     if ($j== 2) {
+                         //获取企业信息
+                         $info = $this->get_enterprise_info_by_name($val);
+                     }
 
-                     if ($j == 8) {
+                     if ($j == 5) {
+                        if ($val) {
+
+                        } else {
+                            if (isset($info['Legal']) && $info['Legal']) {
+                                $val = $info['Legal'];
+                            } else {
+                                
+                            }
+                        }
+                     } elseif ($j == 6) {
+
+                     } elseif ($j == 7) {
+
+                     } elseif ($j == 8) {
                          //处理街道
-                         $val = $excel->val($i,$j);
                          if ($val) {
                              $area = $AreaService->get_like_name($val);
                          } else {
@@ -2110,12 +2149,13 @@
                          } else {
                              $is_bad_row = true;
                          }
+                     } elseif ($j == 9) {
 
                      }
 
+
                      if ($j == 18) {
                          //处理收回方式
-                         $val = $excel->val($i,$j);
                          if ($val == '正常') {
                              $temp[] = 1;
                              continue;
@@ -2138,7 +2178,7 @@
                      }
 
 
-                     $temp[] = $excel->val($i,$j);
+                     $temp[] = $val;
                  }
                  if ($is_bad_row) {
                      $bad_data[] = $temp;

@@ -30,9 +30,8 @@
 							</td>
 						</tr>
 						<tr>
-							<td colspan="11">公司全称:</td>
+							<td colspan="22">公司全称:</td>
 
-							<td colspan="11">填表人:</td>
 
 						</tr>
 
@@ -50,8 +49,8 @@
 								</select>
 
 							</td>
-							<td colspan="11">
-								<input type="text" class="input input-medium" name="filler_man" value="{$infos[0]['filler_man']}">
+							<td colspan="5" style="display: none">
+								<input type="text" class="input input-medium" name="filler_man" value="{:session('user_auth.username')}">
 							</td>
 
 						</tr>
@@ -59,6 +58,16 @@
 							<td colspan="22">明细</td>
 						</tr>
 						<tr>
+							<td colspan="22"><div id="filePicker">导入excel</div></td>
+						</tr>
+						<tr>
+							<td colspan="22" class="result">
+								<if condition="$infos">
+									已上报数据
+								</if>
+							</td>
+						</tr>
+						<tr style="display: none">
 							<td>合同号:</td>
 							<td>企业名称:</td>
 							<td>贷款余额（万元）:</td>
@@ -83,7 +92,7 @@
 							<td>备注:</td>
 						</tr>
 						<volist name="infos" id="vo">
-							<tr>
+							<tr style="display: none">
 								<td>
 									<input type="text" class="input input-xmedium" name="logs1[]" value="{$vo.Contract}">
 								</td>
@@ -189,7 +198,7 @@
 								<td><a class="btn del_log">删除</a></td>
 							</tr>
 						</volist>
-						<tr class="add_line"><td colspan="22"><a class="btn add_log">添加</a></td></tr>
+						<tr style="display: none;" class="add_line"><td colspan="22"><a class="btn add_log">添加</a></td></tr>
 						</tbody>
 					</table>
 				</div>
@@ -214,7 +223,7 @@
 						<if condition="$infos[0]['status'] == 1">
 							审核中
 						</if>
-						<div style="position: fixed;right: 0;bottom: 0px;" id="filePicker">导入excel</div>
+
 					</div>
 				</div>
 			</form>
@@ -388,8 +397,23 @@
 				mimeTypes : 'application/xls'
 			}
 		});
+//		uploader.on( 'uploadSuccess', function(file, response) {
+//			upload(file, response);
+//		});
 		uploader.on( 'uploadSuccess', function(file, response) {
-			upload(file, response);
+			if(response.status){
+				updateAlert('导入成功','alert-success');
+				$('.result').html('已导入数据');
+				if (response.key) {
+					alert('部分数据不符合要求,我们将以excel的形式退回给您');
+					window.open("{:U('get_excel')}/key/"+response.key);
+				}
+			} else {
+				updateAlert(response.info);
+			}
+		});
+		uploader.on( 'startUpload', function() {
+			updateAlert('上传中。。。');
 		});
 
 		function upload(file, data){
