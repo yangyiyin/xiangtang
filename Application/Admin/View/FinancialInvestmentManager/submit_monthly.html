@@ -20,7 +20,7 @@
 
 						</tr>
 						<tr>
-							<td>公司全称:</td>
+							<td colspan="3">公司全称:</td>
 							<td>
 								<select name="all_name">
 									<php>
@@ -34,9 +34,8 @@
 								</select>
 
 							</td>
-							<td>填表人:</td>
-							<td>
-								<input type="text" class="input input-medium" name="filler_man" value="{$info.filler_man}">
+							<td colspan="5" style="display: none">
+								<input type="text" class="input input-medium" name="filler_man" value="{:session('user_auth.username')}">
 							</td>
 						</tr>
 

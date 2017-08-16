@@ -74,7 +74,7 @@
 						<td>
 							<a  class="u-btn" href="{:U('add_unit')}/id/{$vo.id}" class="confirm J_ajax_get">编辑</a>|
 							<a  href="{:U('del')}/id/{$vo.id}" class="u-btn confirm J_ajax_get">删除</a>
-
+							<include file="Public/add_user" did="{$vo.id}"/>
 						</td>
 					</tr>
 				</volist>
@@ -93,7 +93,7 @@
 	    </div>
 	</div>
 </div>
-
+	<include file="Public/add_user_modal" group_options="{$group_options}"/>
 </block>
 <block name="script">
 <link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">

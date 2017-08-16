@@ -1,143 +1,122 @@
-<!doctype html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
     <head>
-        <meta charset="UTF-8" />
-        <title>系统后台</title>
-        <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge" />
-        <meta name="robots" content="noindex,nofollow">
-        <link href="__CSS__/admin_login.css" rel="stylesheet" />
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>金融办综合业务管理平台</title>
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+        <link rel="stylesheet" href="__STATIC__/login/assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="__STATIC__/login/assets/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="__STATIC__/login/assets/css/form-elements.css">
+        <link rel="stylesheet" href="__STATIC__/login/assets/css/style.css">
+        <!--[if lt IE 9]>
+            <script src="__STATIC__/login/assets/js/html5shiv.js"></script>
+            <script src="__STATIC__/login/assets/js/respond.min.js"></script>
+        <![endif]-->
     </head>
-<body class="login-wrap">
 
-<div class="login_top" style="display:none">
-    <div class="logo_img"></div>
-    <a href="http://www.gooduo.net" target="_blank">访问谷多官网</a>
-</div>
-
-<div class="login_form">
-    <a style="display:none" href="http://www.gooduo.net" target="_blank"></a>
-    <h1>欢迎使用金融办管理PHP系统</h1>
-    <form method="post" action="{:U('login')}">
-        <input name="cmd" type="hidden" value="admin_login" class="login-form">
-        <div class="form">
-            <input class="txt" type="text" name="username" placeholder="请输入用户名">
-            <input class="txt" type="password" name="password" placeholder="请输入密码">
-            <input type="submit" value="登 录" class="btn">
-            <div style="color: red;font-size: 14px" class="check-tips"></div>
-        </div>
-    </form>
-</div>
-
-    <div style="display: none" class="wrap">
-        <h1><a href="">ANT 后台管理中心</a></h1>
-        <form action="{:U('login')}" method="post" class="login-form">
-            <div class="login">
-                <ul>
-                    <li>
-                        <input class="input" id="J_admin_name" required name="username" type="text" placeholder="帐号名" title="帐号名" />
-                    </li>
-                    <li>
-                        <input class="input" id="admin_pwd" type="password" required name="password" placeholder="密码" title="密码" />
-                    </li>
-                    <li>
-                        <div id="J_verify_code">
-                            <img class="verifyimg reloadverify" alt="点击切换" src="{:U('Public/verify')}">
+    <body>
+        <!-- Top content -->
+        <div class="top-content">
+        	
+            <div class="inner-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-offset-2 text">
+                            <h1><strong>金融办综合业务管理平台</strong></h1>
+                            <div class="description">
+                            	<p></p>
+                            </div>
                         </div>
-                    </li>
-                    <li>
-                        <input type="text" name="verify" placeholder="请填写验证码" autocomplete="off">
-                        <a class="reloadverify" title="换一张" href="javascript:void(0)">换一张？</a>
-                    </li>
-                </ul>
-                <div id="login_btn_wraper">
-                    <button type="submit" name="submit" class="btn btn_submit">登录</button>
-                    <div class="check-tips"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3 form-box">
+                        	<div class="form-top">
+                        		<div class="form-top-left">
+                        			<h3>用户登录</h3>
+						<p> <div style="color: red" class="check-tips"></div></p>
+                        		</div>
+                        		<div class="form-top-right">
+                        			<i class="fa fa-lock"></i>
+                        		</div>
+                            </div>
+                            <div class="form-bottom">
+			                    <form role="form" method="post" action="{:U('login')}" class="login-form">
+			                    	<div class="form-group">
+			                    		<label class="sr-only" for="form-username">Username</label>
+			                        	<input type="text" name="username" placeholder="用户名" class="form-username form-control" id="form-username">
+			                        </div>
+			                        <div class="form-group">
+			                        	<label class="sr-only" for="form-password">Password</label>
+			                        	<input type="password" name="password" placeholder="登录密码" class="form-password form-control" id="form-password">
+			                        </div>
+			                        <div class="form-group" style="position: relative;">
+			                        	<label class="sr-only" for="form-validate">Validate</label>
+			                        	<input type="text" name="verify" placeholder="数字认证" class="form-control" id="form-validate">
+			                        	<div style="position: absolute;top:8px;right:8px;">  <img class="verifyimg reloadverify" alt="点击切换" src="{:U('Public/verify')}" width="150" height="45" style="margin-top: -6px"></div>
+			                        </div>
+			                        <button type="submit" class="btn">登录平台</button>
+			                    </form>
+		                    </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3 social-login">
+                        	<p>Copyright©2017 慈溪市金融办 All Rights Reserved.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </form>
-    </div>
+            
+        </div>
 
-<div class="login_foot" style="display:none">
-    © 2015 <a href="http://www.gooduo.net" target="_blank">谷多网络</a><span>|</span><a href="#">微信公众号</a><span>|</span>服务热线 400-884-0097<span>|</span>Powered by gooduo.net
-</div>
-    <!--[if lt IE 9]>
-    <script type="text/javascript" src="__STATIC__/jquery-1.10.2.min.js"></script>
-    <![endif]-->
-    <!--[if gte IE 9]><!-->
-    <script type="text/javascript" src="__STATIC__/jquery-2.0.3.min.js"></script>
-    <!--<![endif]-->
-    <script type="text/javascript">
-        /* 登陆表单获取焦点变色 */
-        $(".login-form").on("focus", "input", function(){
-            $(this).closest('.item').addClass('focus');
-        }).on("blur","input",function(){
-            $(this).closest('.item').removeClass('focus');
-        });
+        <!-- Javascript -->
+        <script src="__STATIC__/login/assets/js/jquery-1.11.1.min.js"></script>
+        <script src="__STATIC__/login/assets/bootstrap/js/bootstrap.min.js"></script>
+        <script src="__STATIC__/login/assets/js/jquery.backstretch.min.js"></script>
+        <script src="__STATIC__/login/assets/js/scripts.js"></script>
+	<script type="text/javascript">
+	function ReloadValidate(obj,len) {
+		if (!len) len=4;
+		var vid=document.getElementById('vid_'+obj).value;
+		document.getElementById(obj).src='/validate.rs?Auth=1&Len='+len+'&vid='+vid+'&rid='+Math.random();
+		document.getElementById('form-validate').focus();
+	}
 
-        //表单提交
-        $(document)
-            .ajaxStart(function(){
-                $("button:submit").addClass("log-in").attr("disabled", true);
-            })
-            .ajaxStop(function(){
-                $("button:submit").removeClass("log-in").attr("disabled", false);
-            });
+    //刷新验证码
+    var verifyimg = $(".verifyimg").attr("src");
+    $(".reloadverify").click(function(){
+        if( verifyimg.indexOf('?')>0){
+            $(".verifyimg").attr("src", verifyimg+'&random='+Math.random());
+        }else{
+            $(".verifyimg").attr("src", verifyimg.replace(/\?.*$/,'')+'?'+Math.random());
+        }
+    });
 
-        $("form").submit(function(){
-            var self = $(this);
-            $.post(self.attr("action"), self.serialize(), success, "json");
-            return false;
+    $("form").submit(function(e) {
+        var self = $(this);
+        $.post(self.attr("action"), self.serialize(), success, "json");
+        return false;
 
-            function success(data){
-                if(data.status){
-                    self.find(".check-tips").text('登陆成功');
-                    window.location.href = data.url;
-                } else {
-                    self.find(".check-tips").text(data.info);
-                    //刷新验证码
-                    $(".reloadverify").click();
-                }
+        function success(data) {
+            if (data.status) {
+                $(".check-tips").text('登陆成功');
+                window.location.href = data.url;
+            } else {
+                $(".check-tips").text(data.info);
+                //刷新验证码
+                $(".reloadverify").click();
             }
-        });
+        }
+    });
 
-        $(function(){
-            //初始化选中用户名输入框
-            $("#itemBox").find("input[name=username]").focus();
-            //刷新验证码
-            var verifyimg = $(".verifyimg").attr("src");
-            $(".reloadverify").click(function(){
-                if( verifyimg.indexOf('?')>0){
-                    $(".verifyimg").attr("src", verifyimg+'&random='+Math.random());
-                }else{
-                    $(".verifyimg").attr("src", verifyimg.replace(/\?.*$/,'')+'?'+Math.random());
-                }
-            });
 
-            //placeholder兼容性
-                //如果支持 
-            function isPlaceholer(){
-                var input = document.createElement('input');
-                return "placeholder" in input;
-            }
-                //如果不支持
-            if(!isPlaceholer()){
-                $(".placeholder_copy").css({
-                    display:'block'
-                })
-                $("#itemBox input").keydown(function(){
-                    $(this).parents(".item").next(".placeholder_copy").css({
-                        display:'none'
-                    })                    
-                })
-                $("#itemBox input").blur(function(){
-                    if($(this).val()==""){
-                        $(this).parents(".item").next(".placeholder_copy").css({
-                            display:'block'
-                        })                      
-                    }
-                })
-            }
-        });
-    </script>
-</body>
+	</script>
+        <!--[if lt IE 10]>
+            <script src="__STATIC__/login/assets/js/placeholder.js"></script>
+        <![endif]-->
+    </body>
 </html>

@@ -107,6 +107,8 @@ class AuthManagerController extends AdminController{
         if ( empty($this->auth_group) ) {
             $this->assign('auth_group',array('title'=>null,'id'=>null,'description'=>null,'rules'=>null,));//排除notice信息
         }
+        $financial_cat_options = $this->get_financial_cat_options();
+        $this->assign('financial_cat_options', $financial_cat_options);
         $this->meta_title = '新增用户组';
         $this->display('editgroup');
     }
@@ -119,10 +121,32 @@ class AuthManagerController extends AdminController{
         $auth_group = M('AuthGroup')->where( array('module'=>'admin','type'=>AuthGroupModel::TYPE_ADMIN) )
                                     ->find( (int)$_GET['id'] );
         $this->assign('auth_group',$auth_group);
+        if ($auth_group) {
+            $groupCat = D('groupCat');
+            $group_cat = $groupCat->where(['gid'=>$auth_group['id']])->find();
+        }
+        $select_id = isset($group_cat['cid']) ? $group_cat['cid'] : 0;
+        $financial_cat_options = $this->get_financial_cat_options($select_id);
+        $this->assign('financial_cat_options', $financial_cat_options);
+
         $this->meta_title = '编辑用户组';
         $this->display();
     }
 
+    private function get_financial_cat_options($selected_id = 0) {
+        $all = C('GROUP_Financial_CATS_MAP');
+        $options = '';
+        if ($all) {
+            foreach ($all as $key=>$value) {
+                if ($selected_id && $selected_id == $key) {
+                    $options .= '<option selected="selected" value="'.$key.'">'.$value.'</option>';
+                } else {
+                    $options .= '<option value="'.$key.'">'.$value.'</option>';
+                }
+            }
+        }
+        return $options;
+    }
 
     /**
      * 访问授权页面
@@ -166,8 +190,25 @@ class AuthManagerController extends AdminController{
         if ( $data ) {
             if ( empty($data['id']) ) {
                 $r = $AuthGroup->add();
+                if ($r) {
+                    $groupCat = D('groupCat');
+                    $groupCat_data = [];
+                    $groupCat_data['gid'] = $AuthGroup->getLastInsID();
+                    $groupCat_data['cid'] = $_POST['cid'];
+                    $groupCat->add($groupCat_data);
+                }
             }else{
                 $r = $AuthGroup->save();
+                $groupCat = D('groupCat');
+                $groupCat_data = [];
+                $groupCat_data['cid'] = $_POST['cid'];
+                if ($groupCat->where(['gid'=>$data['id']])->find()){
+                    $groupCat->where(['gid'=>$data['id']])->save($groupCat_data);
+                } else {
+                    $groupCat_data['gid'] = $data['id'];
+                    $groupCat->add($groupCat_data);
+                }
+
             }
             if($r===false){
                 $this->error('操作失败'.$AuthGroup->getError());

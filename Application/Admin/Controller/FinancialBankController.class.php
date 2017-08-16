@@ -8,8 +8,9 @@
  use User\Api\UserApi;
  class FinancialBankController extends FinancialBaseController  {
      protected function _initialize() {
+         $this->type = \Common\Model\FinancialDepartmentModel::TYPE_FinancialBank;
+
          parent::_initialize();
-           $this->type = \Common\Model\FinancialDepartmentModel::TYPE_FinancialBank;
      }
 
      /**
@@ -137,9 +138,21 @@
          if (I('get.all_name')) {
              $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
          }
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+
+         if ($departments) {
+             $where['all_name'] = $departments[0]['all_name'];
+             $this->assign('only_my_department', false);
+         } else {
+             $this->assign('only_my_department', true);
+         }
          $page = I('get.p', 1);
          list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
          $this->convert_data_baddebt_dispose_submit_log($data);
+         $data = $this->convert_data_baddebt_dispose_st($data);
          $service = '\Common\Service\BankBaddebtDisposeService';
          $PageInstance = new \Think\Page($count, $service::$page_size);
          if($total>$service::$page_size){
@@ -153,6 +166,25 @@
          $this->display();
      }
 
+     protected function convert_data_baddebt_dispose_st($data) {
+         $result = [];
+         if ($data) {
+             $new_data = [];
+             foreach ($data as $k => $v) {
+                 $new_data[$v['all_name'] . $v['year'] . $v['month']][] = $v;
+             }
+
+             foreach ($new_data as $k => $v) {
+                 $temp = $v[0];
+                 foreach ($v as $li) {
+                     $temp['all_Recover'] += $li['Recover'];
+                 }
+                 $result[] = $temp;
+             }
+
+         }
+         return $result;
+     }
      protected function convert_data_baddebt_dispose_submit_log(&$data) {
          if ($data) {
              $AreaService = \Common\Service\AreaService::get_instance();
@@ -246,6 +278,17 @@
          $where = [];
          if (I('get.all_name')) {
              $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
+         }
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+
+         if ($departments) {
+             $where['all_name'] = $departments[0]['all_name'];
+             $this->assign('only_my_department', false);
+         } else {
+             $this->assign('only_my_department', true);
          }
          $page = I('get.p', 1);
          list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
@@ -691,9 +734,21 @@
          if (I('get.all_name')) {
              $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
          }
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+
+         if ($departments) {
+             $where['all_name'] = $departments[0]['all_name'];
+             $this->assign('only_my_department', false);
+         } else {
+             $this->assign('only_my_department', true);
+         }
          $page = I('get.p', 1);
          list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
          $this->convert_data_loan_details_submit_log($data);
+         $data = $this->convert_data_loan_details_st($data);
          $service = '\Common\Service\BankLoanDetailService';
          $PageInstance = new \Think\Page($count, $service::$page_size);
          if($total>$service::$page_size){
@@ -716,10 +771,35 @@
              foreach ($data as $k => $v) {
                  $data[$k]['area_name'] = isset($areas_map[$v['Area']]['name']) ? $areas_map[$v['Area']]['name'] : '未知';
                  $data[$k]['pattern'] = isset($pattern_map[$v['Pattern']]) ? $pattern_map[$v['Pattern']] : '未知';
-                // $data[$k]['recover_time'] = time_to_date($v['Recover_Time']);
-                 //$data[$k]['recover_method'] = isset($recover_method_map[$v['Recover_Method']]) ? $recover_method_map[$v['Recover_Method']] : '未知';
              }
+
+
+
          }
+     }
+
+     protected function convert_data_loan_details_st($data) {
+         $result = [];
+         if ($data) {
+             $new_data = [];
+             foreach ($data as $k => $v) {
+                 $new_data[$v['all_name'] . $v['year'] . $v['month']][] = $v;
+             }
+
+             foreach ($new_data as $k => $v) {
+                 $temp = $v[0];
+                 foreach ($v as $li) {
+                     $temp['all_Loans'] += $li['Loans'];
+                     $temp['all_Over_Credit'] += $li['Over_Credit'];
+                     $temp['all_Over_Mortgage'] += $li['Over_Mortgage'];
+                     $temp['all_Over_Pledge'] += $li['Over_Pledge'];
+                     $temp['all_Over_Margin'] += $li['Over_Margin'];
+                 }
+                 $result[] = $temp;
+             }
+
+         }
+         return $result;
      }
 
      /**
@@ -868,6 +948,17 @@
          $where = [];
          if (I('get.all_name')) {
              $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
+         }
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+
+         if ($departments) {
+             $where['all_name'] = $departments[0]['all_name'];
+             $this->assign('only_my_department', false);
+         } else {
+             $this->assign('only_my_department', true);
          }
          $page = I('get.p', 1);
          list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
@@ -1024,9 +1115,21 @@
          if (I('get.all_name')) {
              $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
          }
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+
+         if ($departments) {
+             $where['all_name'] = $departments[0]['all_name'];
+             $this->assign('only_my_department', false);
+         } else {
+             $this->assign('only_my_department', true);
+         }
          $page = I('get.p', 1);
          list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
          $this->convert_data_overdue_resolve_submit_log($data);
+         $data = $this->convert_data_overdue_resolve_st($data);
          $service = '\Common\Service\BankOverdueResolveService';
          $PageInstance = new \Think\Page($count, $service::$page_size);
          if($total>$service::$page_size){
@@ -1051,6 +1154,27 @@
                  //$data[$k]['recover_method'] = isset($recover_method_map[$v['Recover_Method']]) ? $recover_method_map[$v['Recover_Method']] : '未知';
              }
          }
+     }
+
+     protected function convert_data_overdue_resolve_st($data) {
+         $result = [];
+         if ($data) {
+             $new_data = [];
+             foreach ($data as $k => $v) {
+                 $new_data[$v['all_name'] . $v['year'] . $v['month']][] = $v;
+             }
+
+             foreach ($new_data as $k => $v) {
+                 $temp = $v[0];
+                 foreach ($v as $li) {
+                     $temp['all_Overdue'] += $li['Overdue'];
+                     $temp['all_Resolve'] += $li['Resolve'];
+                 }
+                 $result[] = $temp;
+             }
+
+         }
+         return $result;
      }
 
      /**
@@ -1489,39 +1613,7 @@
                                  if (!$ret->success) {
                                  $this->error($ret->message);
                               }
-                            $password = '123456';
-                            $username = $data['username'];
-                             if (!$username) {
-                                $this->error('后台登录名不能为空');
-                             }
-                            /* 调用注册接口注册用户 */
-                            $User   =   new UserApi();
-                            $uid    =   $User->register($username, $password, '');
-                            if(0 < $uid){ //注册成功
-                                $user = array('uid' => $uid, 'nickname' => $username, 'status' => 1, 'reg_time' => time());
-                                if(!M('Member')->add($user)){
-                                    $this->error('添加失败！');
-                                } else {
-                                    $gid = C('GROUP_Financial' . 'Bank');
-                                    if( empty($uid) ){
-                                        $this->error('参数有误');
-                                    }
-                                    $AuthGroup = D('AuthGroup');
-                                    if( $gid && !$AuthGroup->checkGroupId($gid)){
-                                        $this->error($AuthGroup->error);
-                                    }
-                                    if ( $AuthGroup->addToGroup($uid,$gid) ){
 
-                                    }else{
-                                        $this->error($AuthGroup->getError());
-                                    }
-
-                                    $data['uid'] = $uid;
-
-                                }
-                            } else { //注册失败，显示错误信息
-                                $this->error('添加失败!'.$uid.',登录名可能重复,请重试');
-                            }
                             $data['type'] = $this->type;
                             $ret = $this->local_service->add_one($data);
                             if ($ret->success) {

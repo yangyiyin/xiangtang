@@ -13,7 +13,6 @@
 <link rel="stylesheet" href="{:C('ADMIN_CSS')}/ace.min.css">
 <link rel="stylesheet" href="{:C('ADMIN_CSS')}/reset.css">
 <link rel="stylesheet" href="{:C('ADMIN_CSS')}/style.css">
-
 <!--[if lt IE 9]>
 <script type="text/javascript" src="__STATIC__/jquery-1.10.2.min.js"></script>
 <![endif]--><!--[if gte IE 9]><!-->
@@ -21,15 +20,18 @@
 <script type="text/javascript" src="{:C('ADMIN_JS')}/jquery.mousewheel.js"></script>
 <!--<![endif]-->
 <script type="text/javascript" src="__STATIC__/jquery.pin.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/jquery.leanModal.min.js"></script>
+
 <block name="style"></block>
     <style>
         .sidebar{
-            top:80px;
+            top:110px;
 
         }
         .navbar .navbar-inner {
-            min-height: 80px;
-            background: #30719B;
+            min-height: 110px;
+            /*background: #30719B;*/
+            background:url({:C('ADMIN_IMG')}/mbg_2.png) repeat-x
         }
         .breadcrumbs{
             background: #fff;
@@ -181,6 +183,9 @@
         .nav-list>li .submenu>li>a {
             height: auto;
         }
+        .user-bar a.dropdown-toggle {
+            padding:35px 20px;
+        }
     </style>
 </head>
 <body style="" screen_capture_injected="true">
@@ -191,7 +196,7 @@
     </php>
     <div class="navbar">
         <div class="container-fluid navbar-inner">
-            <div class="logo">慈溪金融办</div>
+            <div class="logo"><img style="margin-top: -10px;" src="{:C('ADMIN_IMG')}/mLogo.png"></div>
 
             <div class="link" >
                 <a href="{:U('Admin/Public/logout')}" class="logout"></a>

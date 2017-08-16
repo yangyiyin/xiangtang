@@ -34,12 +34,17 @@ class DepartmentService extends BaseService{
     }
 
     public function get_my_list($uid, $type) {
-        $FinancialModel = D('Financial' . static::$name);
-        $where = [];
-        $where['uid'] = ['EQ', $uid];
-        $where['type'] = ['EQ', $type];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $FinancialModel->where($where)->select();
+
+        $DepartmentUid = D('FinancialDepartmentUid')->where(['uid'=>$uid])->find();
+        if ($DepartmentUid) {
+            $FinancialModel = D('Financial' . static::$name);
+            $where = [];
+            $where['id'] = ['EQ', $DepartmentUid['did']];
+            $where['type'] = ['EQ', $type];
+            $where['deleted'] = ['EQ', static::$NOT_DELETED];
+            return $FinancialModel->where($where)->select();
+        }
+        return [];
     }
 
 

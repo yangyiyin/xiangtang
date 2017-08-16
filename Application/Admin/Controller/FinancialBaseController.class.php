@@ -8,7 +8,8 @@
 namespace Admin\Controller;
 
 use Think\Exception;
-
+use Admin\Model\MemberModel;
+use User\Api\UserApi;
 class FinancialBaseController extends AdminController {
     protected $title = '';
     protected $local_service;
@@ -27,6 +28,27 @@ class FinancialBaseController extends AdminController {
 
         } catch (Exception $e) {
 
+        }
+
+        if (ACTION_NAME == 'index') {
+            $group_options = '';
+            $group_cats = D('GroupCat')->where(['cid'=>$this->type])->select();
+
+            $gids = result_to_array($group_cats, 'gid');
+            $group_options = '';
+            if ($gids) {
+                $groups = D('AuthGroup')->where(['id' => ['in',$gids],'module'=>'admin', 'status'=>1])->select();
+
+                if ($groups) {
+                    foreach ($groups as $_group) {
+                        $group_options .= '<option value="'.$_group['id'].'">'.$_group['title'].'</option>';
+                    }
+                }
+
+
+            }
+
+            $this->assign('group_options', $group_options);
         }
 
     }
@@ -99,6 +121,8 @@ class FinancialBaseController extends AdminController {
     public function add_unit() {
         $this->assign('title', $this->title);
 
+
+
     }
     public function check_by_month_year($year, $month, $all_name) {
         if (!$year || !$month || !$all_name) {
@@ -123,6 +147,20 @@ class FinancialBaseController extends AdminController {
         if (I('get.all_name')) {
             $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
         }
+
+        //获取所有相关的公司
+        $DepartmentService = \Common\Service\DepartmentService::get_instance();
+
+        $departments = $DepartmentService->get_my_list(UID, $this->type);
+
+        if ($departments) {
+            $where['all_name'] = $departments[0]['all_name'];
+            $this->assign('only_my_department', false);
+        } else {
+            $this->assign('only_my_department', true);
+        }
+
+
         $page = I('get.p', 1);
         list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
         $this->convert_data_submit_log($data);
@@ -146,5 +184,52 @@ class FinancialBaseController extends AdminController {
     protected function convert_data_statistics($data, $data_all) {
         //子类实现
         return $data;
+    }
+
+    public function add_user() {
+
+        $data = I('post.');
+        $password = '123456';
+        $username = $data['username'];
+        if (!$username) {
+            $this->error('后台登录名不能为空');
+        }
+        if (!$data['gid']) {
+            $this->error('请选择组');
+        }
+        /* 调用注册接口注册用户 */
+        $User   =   new UserApi();
+        $uid    =   $User->register($username, $password, '');
+        if(0 < $uid){ //注册成功
+            $user = array('uid' => $uid, 'nickname' => $username, 'status' => 1, 'reg_time' => time());
+            if(!M('Member')->add($user)){
+                $this->error('添加失败！');
+            } else {
+                $gid = $data['gid'];
+                if( empty($uid) ){
+                    $this->error('参数有误');
+                }
+                $AuthGroup = D('AuthGroup');
+                if( $gid && !$AuthGroup->checkGroupId($gid)){
+                    $this->error($AuthGroup->error);
+                }
+                if ( $AuthGroup->addToGroup($uid,$gid) ){
+
+                }else{
+                    $this->error($AuthGroup->getError());
+                }
+
+                //添加部门和uid的联系
+                $data_department_uid = [];
+                $data_department_uid['did'] = $data['did'];
+                $data_department_uid['uid'] = $uid;
+                D('FinancialDepartmentUid')->add($data_department_uid);
+
+                $this->success('添加成功');
+
+            }
+        } else { //注册失败，显示错误信息
+            $this->error('添加失败!'.$uid.',登录名可能重复,请重试');
+        }
     }
 }

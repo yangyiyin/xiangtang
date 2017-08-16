@@ -5,14 +5,15 @@
 		<div class="u-tab">
 
 			<ul class="cc">
-				<li class="current"><a href="javascript:;">财产保险公司报表记录</a></li>
+				<li class="current"><a href="javascript:;">股权投资和创业投资机构报表记录</a></li>
 			</ul>
 		</div>
 		<div class="search_type cc mb10 search-form">
 			<div class="mb10">
-				&nbsp;公司名称：
-				<input type="text" class="input length_2" name="all_name" style="width:100px;" value="{:I('all_name')}" >
-
+				<if condition="$only_my_department">
+					&nbsp;公司名称：
+					<input type="text" class="input length_2" name="all_name" style="width:100px;" value="{:I('all_name')}" >
+				</if>
 				<a class="u-btn" href="javascript:;" id="search" url="{:U('')}">搜索</a>
 				<!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
 				</span>

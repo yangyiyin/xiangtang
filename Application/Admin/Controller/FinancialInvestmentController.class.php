@@ -8,8 +8,9 @@
  use User\Api\UserApi;
  class FinancialInvestmentController extends FinancialBaseController  {
      protected function _initialize() {
+         $this->type = \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestment;
+
          parent::_initialize();
-           $this->type = \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestment;
      }
 
      public function submit_monthly()
@@ -416,39 +417,7 @@
                                  if (!$ret->success) {
                                  $this->error($ret->message);
                               }
-                            $password = '123456';
-                            $username = $data['username'];
-                             if (!$username) {
-                                $this->error('后台登录名不能为空');
-                             }
-                            /* 调用注册接口注册用户 */
-                            $User   =   new UserApi();
-                            $uid    =   $User->register($username, $password, '');
-                            if(0 < $uid){ //注册成功
-                                $user = array('uid' => $uid, 'nickname' => $username, 'status' => 1, 'reg_time' => time());
-                                if(!M('Member')->add($user)){
-                                    $this->error('添加失败！');
-                                } else {
-                                    $gid = C('GROUP_Financial' . 'Investment');
-                                    if( empty($uid) ){
-                                        $this->error('参数有误');
-                                    }
-                                    $AuthGroup = D('AuthGroup');
-                                    if( $gid && !$AuthGroup->checkGroupId($gid)){
-                                        $this->error($AuthGroup->error);
-                                    }
-                                    if ( $AuthGroup->addToGroup($uid,$gid) ){
 
-                                    }else{
-                                        $this->error($AuthGroup->getError());
-                                    }
-
-                                    $data['uid'] = $uid;
-
-                                }
-                            } else { //注册失败，显示错误信息
-                                $this->error('添加失败!'.$uid.',登录名可能重复,请重试');
-                            }
                             $data['type'] = $this->type;
                             $ret = $this->local_service->add_one($data);
                             if ($ret->success) {
@@ -468,6 +437,17 @@
          $where = [];
          if (I('get.all_name')) {
              $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
+         }
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+
+         if ($departments) {
+             $where['all_name'] = $departments[0]['all_name'];
+             $this->assign('only_my_department', false);
+         } else {
+             $this->assign('only_my_department', true);
          }
          $page = I('get.p', 1);
          $where['Types'] = ['eq', \Common\Model\FinancialInvestmentModel::TYPE_A];
@@ -492,6 +472,17 @@
          if (I('get.all_name')) {
              $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
          }
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+
+         if ($departments) {
+             $where['all_name'] = $departments[0]['all_name'];
+             $this->assign('only_my_department', false);
+         } else {
+             $this->assign('only_my_department', true);
+         }
          $page = I('get.p', 1);
          $where['Types'] = ['eq', \Common\Model\FinancialInvestmentDetailsModel::TYPE_A];
          list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
@@ -514,6 +505,17 @@
          $where = [];
          if (I('get.all_name')) {
              $where['all_name'] = ['LIKE', '%' . I('get.all_name') . '%'];
+         }
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+
+         if ($departments) {
+             $where['all_name'] = $departments[0]['all_name'];
+             $this->assign('only_my_department', false);
+         } else {
+             $this->assign('only_my_department', true);
          }
          $page = I('get.p', 1);
          list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);

@@ -28,9 +28,8 @@
 							</td>
 						</tr>
 						<tr>
-							<td colspan="4">公司全称:</td>
+							<td colspan="9">公司全称:</td>
 
-							<td colspan="5">填表人:</td>
 
 						</tr>
 
@@ -48,8 +47,8 @@
 								</select>
 
 							</td>
-							<td colspan="5">
-								<input type="text" class="input input-medium" name="filler_man" value="{$infos[0]['filler_man']}">
+							<td colspan="5" style="display: none">
+								<input type="text" class="input input-medium" name="filler_man" value="{:session('user_auth.username')}">
 							</td>
 
 						</tr>

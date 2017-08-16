@@ -10,9 +10,10 @@
 		</div>
 		<div class="search_type cc mb10 search-form">
 			<div class="mb10">
-				&nbsp;公司名称：
-				<input type="text" class="input length_2" name="all_name" style="width:100px;" value="{:I('all_name')}" >
-
+				<if condition="$only_my_department">
+					&nbsp;公司名称：
+					<input type="text" class="input length_2" name="all_name" style="width:100px;" value="{:I('all_name')}" >
+				</if>
 				<a class="u-btn" href="javascript:;" id="search" url="{:U('')}">搜索</a>
 				<!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
 				</span>
@@ -26,13 +27,11 @@
 					<td >公司名称</td>
 					<td >填报月</td>
 					<td >填表人</td>
-					<td >企业名称:</td>
-					<td >法人代表或实际控制人:</td>
-					<td >企业所属乡镇（街道）:</td>
-					<td >逾期金额:</td>
-					<td >化解金额:</td>
 
-					<td >备注:</td>
+					<td >逾期总金额:</td>
+					<td >化解总金额:</td>
+
+
 					<td >提交时间</td>
 					<td >ip</td>
 					<td >操作</td>
@@ -51,25 +50,15 @@
 						<td>
 							{$vo.filler_man}
 						</td>
-						<td>
-							{$vo.Enterprise}
-						</td>
-						<td>
-							{$vo.Principal}
-						</td>
-						<td>
-							{$vo.area_name}
-						</td>
-						<td>
-							{$vo.Overdue}
-						</td>
-						<td>
-							{$vo.Resolve}
-						</td>
 
 						<td>
-							{$vo.Remarks}
+							{$vo.all_Overdue}
 						</td>
+						<td>
+							{$vo.all_Resolve}
+						</td>
+
+
 						<td>
 							{$vo.gmt_create|date_time}
 						</td>

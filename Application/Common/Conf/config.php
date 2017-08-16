@@ -68,6 +68,7 @@ return array(
     'GROUP_FinancialSecurities' => 16,
     'GROUP_FinancialTransferFunds' => 17,
     'GROUP_FinancialBank' => 18,
+    'GROUP_Financial_CATS_MAP' => [1=>'财产保险公司', 2=>'人身保险公司', 3=>'保险互助社', 4=>'担保公司', 5=>'股权投资机构', 6=>'股权投资管理机构', 7=>'期货营业部', 8=>'融资租赁', 9=>'小额贷款公司', 12 => '银行机构', 10=> '证券营业部', 11=>'转贷'],
 
     'SERVER_CIDS' => [8,19],
     'INVITER_RATE' => 0.01

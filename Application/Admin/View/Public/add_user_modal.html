@@ -1,0 +1,64 @@
+<link rel="stylesheet" href="__STATIC__/style.css">
+<div id="loginmodal" style="display:none;">
+
+    <h1>添加用户</h1>
+
+    <form id="loginform" name="loginform" method="post" action="index.html">
+
+        <label for="username">登录用户名(姓名):</label>
+
+        <input type="text" name="username" id="username" class="txtfield" tabindex="1">
+
+
+
+        <label for="password">所属组:</label>
+
+        <select id='gid' name="gid">[group_options]</select>
+
+
+
+        <div class="center"><input type="submit" name="loginbtn" id="loginbtn" class="flatbtn-blu" value="添加" tabindex="3"></div>
+
+    </form>
+
+</div>
+<script type="text/javascript">
+
+    $(function(){
+        var did = 0;
+        $(document).on('click', '.add_user', function () {
+            did = $(this).attr('did');
+        });
+
+        $('#loginform').submit(function(e){
+            e.preventDefault()
+            $.post('{:U("add_user")}',{did:did, username:$('#username').val(), gid:$('#gid').val()}).success(function(data){
+                e.preventDefault();
+                if (data.status==1) {
+                    if (data.url) {
+                        updateAlert(data.info + ' 页面即将自动跳转~','alert-success');
+                    }else{
+                        updateAlert(data.info ,'alert-success');
+                    }
+                    setTimeout(function(){
+                        if (data.url) {
+                            location.href=data.url;
+                        }else{
+                            location.reload();
+                        }
+                    },200);
+                }else{
+                    alert(data.info);
+                }
+            });
+            return;
+
+        });
+
+
+
+        $('.modaltrigger').leanModal({ top: 110, overlay: 0.45, closeButton: ".hidemodal" });
+
+    });
+
+</script>

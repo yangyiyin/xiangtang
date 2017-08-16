@@ -8,8 +8,9 @@
  use User\Api\UserApi;
  class FinancialInsuranceMutualController extends FinancialBaseController  {
      protected function _initialize() {
+         $this->type = \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceMutual;
          parent::_initialize();
-           $this->type = \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceMutual;
+
      }
 
      public function submit_monthly()
@@ -256,39 +257,7 @@
                                  if (!$ret->success) {
                                  $this->error($ret->message);
                               }
-                            $password = '123456';
-                            $username = $data['username'];
-                             if (!$username) {
-                                $this->error('后台登录名不能为空');
-                             }
-                            /* 调用注册接口注册用户 */
-                            $User   =   new UserApi();
-                            $uid    =   $User->register($username, $password, '');
-                            if(0 < $uid){ //注册成功
-                                $user = array('uid' => $uid, 'nickname' => $username, 'status' => 1, 'reg_time' => time());
-                                if(!M('Member')->add($user)){
-                                    $this->error('添加失败！');
-                                } else {
-                                    $gid = C('GROUP_Financial' . 'InsuranceMutual');
-                                    if( empty($uid) ){
-                                        $this->error('参数有误');
-                                    }
-                                    $AuthGroup = D('AuthGroup');
-                                    if( $gid && !$AuthGroup->checkGroupId($gid)){
-                                        $this->error($AuthGroup->error);
-                                    }
-                                    if ( $AuthGroup->addToGroup($uid,$gid) ){
 
-                                    }else{
-                                        $this->error($AuthGroup->getError());
-                                    }
-
-                                    $data['uid'] = $uid;
-
-                                }
-                            } else { //注册失败，显示错误信息
-                                $this->error('添加失败!'.$uid.',登录名可能重复,请重试');
-                            }
                             $data['type'] = $this->type;
                             $ret = $this->local_service->add_one($data);
                             if ($ret->success) {
