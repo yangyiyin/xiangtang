@@ -196,17 +196,42 @@
 
         }
     }
-    public function convert_data(&$data) {
-        $uids = result_to_array($data, 'uid');
-        $User   =   new UserApi();
-        $users    =   $User->get_by_uids($uids);
-        $users_map = result_to_map($users, 'id');
-        foreach ($data as $k=>$v) {
-            if (isset($users_map[$v['uid']])) {
-                $data[$k]['user'] = $users_map[$v['uid']];
-            }
-        }
-    }
+//    public function convert_data(&$data) {
+//        $uids = result_to_array($data, 'uid');
+//        $User   =   new UserApi();
+//        $users    =   $User->get_by_uids($uids);
+//        $users_map = result_to_map($users, 'id');
+//        foreach ($data as $k=>$v) {
+//            if (isset($users_map[$v['uid']])) {
+//                $data[$k]['user'] = $users_map[$v['uid']];
+//            }
+//        }
+//    }
+
+     public function convert_data(&$data) {
+
+         //根据部门获取多有uid
+         $DepartmentUids = D('FinancialDepartmentUid')->where(['did'=>['in', result_to_array($data)]])->select();
+         $uids = result_to_array($DepartmentUids, 'uid');
+         //$uids = result_to_array($data, 'uid');
+         $DepartmentUids_map = result_to_complex_map($DepartmentUids, 'did');
+         $User   =   new UserApi();
+         $users    =   $User->get_by_uids($uids);
+         $users_map = result_to_map($users, 'id');
+        // var_dump($DepartmentUids);die();
+         foreach ($data as $k=>$v) {
+             if (isset($DepartmentUids_map[$v['id']]) && $DepartmentUids_map[$v['id']]) {
+                 $data[$k]['user'] = [];
+                 foreach ($DepartmentUids_map[$v['id']] as $_DepartmentUids) {
+                     if (isset($users_map[$_DepartmentUids['uid']])){
+                         $data[$k]['user']['username'] .= '['. $users_map[$_DepartmentUids['uid']]['username'] .']';
+                     }
+                 }
+                 //$data[$k]['user'] = $users_map[$v['uid']];
+             }
+
+         }
+     }
 
     public function convert_data_statistics($data, $data_all) {
         $incomes = result_to_array($data_all, 'income');

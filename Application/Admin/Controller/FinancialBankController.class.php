@@ -1628,14 +1628,25 @@
         }
     }
     public function convert_data(&$data) {
-        $uids = result_to_array($data, 'uid');
+
+        //根据部门获取多有uid
+        $DepartmentUids = D('FinancialDepartmentUid')->where(['did'=>['in', result_to_array($data)]]);
+        $uids = result_to_array($DepartmentUids, 'uid');
+        //$uids = result_to_array($data, 'uid');
+        $DepartmentUids_map = result_to_complex_map($DepartmentUids, 'did');
         $User   =   new UserApi();
         $users    =   $User->get_by_uids($uids);
         $users_map = result_to_map($users, 'id');
         $sub_type_map = \Common\Model\FinancialDepartmentModel::$SUB_TYPE_MAP;
         foreach ($data as $k=>$v) {
-            if (isset($users_map[$v['uid']])) {
-                $data[$k]['user'] = $users_map[$v['uid']];
+            if (isset($DepartmentUids_map[$v['id']]) && $DepartmentUids_map[$v['id']]) {
+                $data[$k]['user'] = [];
+                foreach ($DepartmentUids_map[$v['id']] as $_DepartmentUids) {
+                    if (isset($users_map[$_DepartmentUids['uid']])){
+                        $data[$k]['user']['username'] .= '['. $users_map[$_DepartmentUids['uid']]['username'] .']';
+                    }
+                }
+                //$data[$k]['user'] = $users_map[$v['uid']];
             }
 
             if (isset($sub_type_map[$v['sub_type']])) {
