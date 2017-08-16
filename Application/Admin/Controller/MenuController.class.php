@@ -16,13 +16,19 @@ class MenuController extends AdminController {
     public function add_menu_direct() {
 
         $arr = [
-            ['title' => '设置分佣者界面', 'url'=>'AntUserInviter/add']
+            ['title' => '提交审核', 'url'=>'FinancialBank/submit_verify'],
+            ['title' => '审核通过', 'url'=>'FinancialBank/approve'],
+            ['title' => '审核退回', 'url'=>'FinancialBank/reject'],
+            ['title' => '上传excel', 'url'=>'FinancialBank/upload_excel'],
+            ['title' => '退回不符合要求的excel', 'url'=>'FinancialBank/get_excel'],
+            ['title' => '导出明细', 'url'=>'FinancialBank/log_export_excel']
+
         ];
 
 
         $data = [];
         foreach ($arr as $_value) {
-            $data[] = ['title'=>$_value['title'], 'pid'=>157, 'module'=>'Admin', 'sort'=>99, 'url'=>$_value['url'], 'hide'=>1,'icon'=>'fa-square'];
+            $data[] = ['title'=>$_value['title'], 'pid'=>212, 'module'=>'Admin', 'sort'=>99, 'url'=>$_value['url'], 'hide'=>1,'icon'=>'fa-square'];
         }
 
         M('menu')->addAll($data);

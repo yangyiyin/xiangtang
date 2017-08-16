@@ -2086,6 +2086,7 @@
              }
 
          } elseif ($type == 'loan_details') {
+             echo $excel->colcount();die();
              if ($excel->colcount() != 21) {
                  $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
              }
@@ -2218,9 +2219,10 @@
 
      public function log_export_excel(){
          $type = I('type');
+         $all_name = I('get.all_name');
          if ($type == 'loan_details') {
              $BankLoanDetailService = \Common\Service\BankLoanDetailService::get_instance();
-             $data = $BankLoanDetailService->get_by_month_year_all_names(intval(date('Y')), intval(date('m')));
+             $data = $BankLoanDetailService->get_by_month_year_all_names(intval(date('Y')), intval(date('m')), $all_name);
              $this->convert_data_loan_details_submit_log($data);
              $excel_data = [];
              $excel_data[] = ["id","公司名称","填报月","填表人","合同号:","企业名称:","贷款余额（万元）:","执行年利率:","法定代表人（自动）:","联系电话（自动）:","注册地址（自动）:","所属镇（街道）（自动）:","所属行业（自动）:","发放日期:","到期日期:","担保方式（保证、抵押、质押、信用）:","信用余额:","抵押余额:","质押余额:","保证余额:","其中：保证人:","五级形态（填写：正常、关注、次级、可疑损失）:","本金逾期天数:","是否需要地方政府协调配合（逾期、不良贷款需填写）:","备注:","提交时间","ip","状态"];
