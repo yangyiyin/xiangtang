@@ -2156,7 +2156,13 @@
                              $temp[] = $area['id'];
                              continue;
                          } else {
-                             $is_bad_row = true;
+
+                             if (isset($info['Jurisdictions']) && $info['Jurisdictions']) {
+                                 $val = $info['Jurisdictions'];
+
+                             } else {
+                                 $is_bad_row = true;
+                             }
                          }
 
                      }
@@ -2265,13 +2271,7 @@
 
                              if (isset($info['Jurisdictions']) && $info['Jurisdictions']) {
                                  $val = $info['Jurisdictions'];
-                                 $area = $AreaService->get_like_name($val);
-                                 if ($area) {
-                                     $temp[] = $area['id'];
-                                     continue;
-                                 } else {
-                                     $is_bad_row = true;
-                                 }
+
                              } else {
                                  $is_bad_row = true;
                              }
@@ -2351,9 +2351,14 @@
                              $temp[] = $area['id'];
                              continue;
                          } else {
-                             $is_bad_row = true;
-                         }
 
+                             if (isset($info['Jurisdictions']) && $info['Jurisdictions']) {
+                                 $val = $info['Jurisdictions'];
+
+                             } else {
+                                 $is_bad_row = true;
+                             }
+                         }
                      }
 
 
