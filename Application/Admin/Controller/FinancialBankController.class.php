@@ -2120,10 +2120,10 @@
      public function upload_excel() {
          set_time_limit(0);
          /** Include path **/
-         set_include_path(APP_PATH . '/Common/Lib/phpExcel/Classes/');
+        // set_include_path(APP_PATH . '/Common/Lib/phpExcel/Classes/');
 
          /** PHPExcel_IOFactory */
-         include 'PHPExcel/IOFactory.php';
+         include APP_PATH . '/Common/Lib/phpExcel/Classes/PHPExcel/IOFactory.php';
          $objPHP = new \PHPExcel_Reader_Excel5();
          $objPHPExcel = $objPHP->load($_FILES['file']['tmp_name']);
 
@@ -2484,7 +2484,7 @@
                  $excel_data[] = $temp;
              }
          }
-    
+
          exportexcel($excel_data,'明细记录', '明细记录');
      }
  }
