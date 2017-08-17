@@ -2124,6 +2124,7 @@
 
          /** PHPExcel_IOFactory */
          include APP_PATH . '/Common/Lib/phpExcel/Classes/PHPExcel/IOFactory.php';
+         include APP_PATH . '/Common/Lib/phpExcel/Classes/PHPExcel/Reader/Excel5.php';
          $objPHP = new \PHPExcel_Reader_Excel5();
          $objPHPExcel = $objPHP->load($_FILES['file']['tmp_name']);
 
