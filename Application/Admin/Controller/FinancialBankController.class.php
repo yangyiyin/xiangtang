@@ -2120,7 +2120,7 @@
      public function upload_excel() {
          set_time_limit(0);
          /** Include path **/
-         set_include_path(APP_PATH . '/Common/Lib/phpExcel/Classes/');
+         set_include_path(APP_PATH . '/Common/Lib/PHPExcel/Classes/');
 
          /** PHPExcel_IOFactory */
          include 'PHPExcel/IOFactory.php';
