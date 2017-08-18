@@ -162,7 +162,7 @@ class AntPropertyController extends AdminController {
         $data['p_name'] = $info['name'];
         $CatPropertyService->add_one($data);
 
-        $this->ajaxReturn(result(true, '添加失败'));
+        $this->ajaxReturn(result(true, '添加成功'));
 
     }
 
