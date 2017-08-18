@@ -246,8 +246,8 @@ class AntProductController extends AdminController {
                     $ItemService = \Common\Service\ItemService::get_instance();
                     $items = $ItemService->get_by_pids([$id]);
                     $items_map = result_to_complex_map($items, 'pid');
-                    if (isset($items_map[$pid]) && $items_map[$pid]) {
-                        foreach ($items_map[$pid] as $item) {
+                    if (isset($items_map[$id]) && $items_map[$id]) {
+                        foreach ($items_map[$id] as $item) {
                             $ItemService->update_by_id($item['id'], ['min_normal_price'=>$data['min_normal_price'], 'min_dealer_price'=>$data['min_dealer_price']]);
                         }
                     }
