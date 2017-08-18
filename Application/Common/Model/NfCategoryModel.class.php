@@ -19,7 +19,7 @@ class NfCategoryModel extends Model {
         $where = [];
         $where[] = ['status'=>['eq', 1]];
         $where[] = ['id'=>['not in', C('SERVER_CIDS')]];
-        return $this->where($where)->select();
+        return $this->where($where)->order('sort asc')->select();
     }
 
     public function get_server_cats() {//最多3级
