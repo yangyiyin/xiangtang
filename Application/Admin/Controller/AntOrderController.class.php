@@ -147,8 +147,8 @@ class AntOrderController extends AdminController {
 
     public function order_step() {
         $step = I('get.step');
-        $order_id = I('get.id');
-        $order_ids = I('post.ids');
+        $order_id = I('id');
+        $order_ids = I('ids');
         if ($order_id) {
             $ret = $this->OrderService->process($order_id, $step);
         } elseif ($order_ids) {
