@@ -116,11 +116,11 @@
 					<td ><span>{$vo.status_desc}</span></td>
 					<td>
 
-						<if condition="$vo['status'] == 2 && $vo['is_real'] == 2">
+						<if condition="$vo['status'] == 2 && $vo['is_real'] == 1">
 							<a class="u-btn show_box" tmp_id="express" order_id="{$vo.id}">发货</a>
 						</if>
 
-						<if condition="$vo['status'] == 2 && $vo['is_real'] == 1">
+						<if condition="$vo['status'] == 2 && $vo['is_real'] == 0">
 							<a class="u-btn confirm J_ajax_get" url="{:U('order_step')}/id/{$vo.id}/step/received">接单</a>
 						</if>
 						<if condition="$vo['status'] == 1">
