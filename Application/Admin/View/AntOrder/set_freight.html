@@ -1,0 +1,47 @@
+<extend name="Public/base"/>
+
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+			<ul class="cc tab-nav">
+				<li class="current"><a href="javascript:;">设置运费</a></li>
+			</ul>
+		</div>
+		<!-- 数据表格 -->
+		<div class="tab-content table_list">
+			<!-- 表单 -->
+			<form id="form" action="{:U('')}" method="post" class="form-horizontal">
+				<div id="tab">
+					<table class="" width="100%">
+						<tbody>
+						<tr>
+							<td width="20%"><label class="item-label">小于金额(元)</label></td>
+							<td width="80%">
+								<input type="text" class="input input-medium" name="sum" value="{$info.content.sum}">
+							</td>
+						</tr>
+
+						<tr>
+							<td width="20%"><label class="item-label">运费</label></td>
+							<td width="80%">
+								<input type="text" class="input input-medium" name="freight" value="{$info.content.freight}">
+							</td>
+						</tr>
+
+						</tbody>
+					</table>
+				</div>
+
+				<div class="btn_wrap">
+					<div class="btn_wrap_pd">
+						<button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">确 定</button>
+						<button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	</div>
+
+</block>

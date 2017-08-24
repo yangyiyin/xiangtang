@@ -23,8 +23,11 @@ class NeedsDetail extends BaseApi{
             $map = \Common\Model\NfNeedsModel::$status_map;
             $data['status_desc'] = isset($map[$data['status']]) ? $map[$data['status']] : '未知';
         }
+        if (isset($data['extra']) && $data['extra']) {
+            $data['extra'] = json_decode($data['extra']);
+        }
+        $data = convert_obj($data, 'id,type,title,content,create_time,status_desc,remark,extra');
 
-        $data = convert_obj($data, 'id,type,title,content,create_time,status_desc,remark');
         return result_json(TRUE, '', $data);
     }
 

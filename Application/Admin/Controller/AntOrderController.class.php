@@ -193,5 +193,28 @@ class AntOrderController extends AdminController {
     }
 
 
+    public function set_freight() {
+        $ConfService = \Common\Service\ConfService::get_instance();
+        if (IS_POST) {
+            $sum = I('post.sum');
+            $freight = I('post.freight');
+            $content = json_encode(['sum'=>intval($sum), 'freight'=>intval($freight)]);
+            $ret = $ConfService->update_by_key_name('order_freight', ['content' => $content]);
+
+            if (!$ret->success) {
+                $this->error($ret->message);
+            }
+            action_user_log('修改运费设置');
+            $this->success('订修改成功~');
+
+        }
+        $info = $ConfService->get_by_key_name('order_freight');
+        if ($info) {
+            $info['content'] = json_decode($info['content'], TRUE);
+        }
+        $this->assign('info', $info);
+        $this->display();
+    }
+
 
 }
