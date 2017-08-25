@@ -58,29 +58,22 @@
 //foreach ($list as $k => $_li) {
 //    $list[$_li['pid']][] = $_li;
 //}
-//$tree = make_tree($list);
-function arrtoxml($arr,$dom=0,$item=0){
-    if (!$dom){
-        $dom = new DOMDocument("1.0");
+
+function array_to_xml($arr){
+    if (!$arr){
+        return '';
     }
-    if(!$item){
-        $item = $dom->createElement("root");
-        $dom->appendChild($item);
-    }
+    $xml = [];
+    $xml[] = '<xml>';
     foreach ($arr as $key=>$val){
-        $itemx = $dom->createElement(is_string($key)?$key:"item");
-        $item->appendChild($itemx);
-        if (!is_array($val)){
-            $text = $dom->createTextNode($val);
-            $itemx->appendChild($text);
-
-        }else {
-            arrtoxml($val,$dom,$itemx);
-        }
+        $xml[] = '<'.$key.'>'.$val.'</'.$key.'/>';
     }
-    return $dom->saveXML();
-}
+    $xml[] = '</xml>';
 
-echo arrtoxml(['a'=>1]);
+    $xml = join("\n", $xml);
+    var_dump($xml);
+    return $xml;
+}
+echo array_to_xml(['a'=>1]);
 
 

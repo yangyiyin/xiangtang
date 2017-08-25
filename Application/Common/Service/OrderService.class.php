@@ -190,7 +190,35 @@ class OrderService extends BaseService{
             return result(FALSE, '当前订单状态还不能确认操作!');
         }
 
-        return $this->update_by_id($order['id'], ['status'=>\Common\Model\NfOrderModel::STATUS_DONE]);
+        $ret = $this->update_by_id($order['id'], ['status'=>\Common\Model\NfOrderModel::STATUS_DONE]);
+
+        if ($ret->success) {
+            $AccountLogService = \Common\Service\AccountLogService::get_instance();
+            $AccountService = \Common\Service\AccountService::get_instance();
+            //结算佣金
+            if ($order['inviter_id']) {
+                $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_INVITER_ADD;
+                //$account_data['sum'] = intval($order['sum'] * C('INVITER_RATE'));
+                $account_data['sum'] = $order['dealer_profit'];
+                $account_data['oid'] = $order['id'];
+                $account_data['uid'] = $order['inviter_id'];
+                $account_data['pay_no'] = '';
+                $AccountLogService->add_one($account_data);
+                $AccountService->add_account($order['inviter_id'], $order['dealer_profit']);
+            }
+
+            if ($UserService->is_dealer($order['uid'])) {
+                $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_DEALER_ADD;
+                //$account_data['sum'] = intval($order['sum'] * C('INVITER_RATE'));
+                $account_data['sum'] = $order['dealer_profit'];
+                $account_data['oid'] = $order['id'];
+                $account_data['uid'] = $order['uid'];
+                $account_data['pay_no'] = '';
+                $AccountLogService->add_one($account_data);
+                $AccountService->add_account($order['uid'], $order['dealer_profit']);
+            }
+        }
+        return $ret;
     }
 
     public function stock_out($order) {

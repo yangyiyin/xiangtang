@@ -66,12 +66,14 @@ class OrderAdd extends BaseApi{
             }
             $order_ids[] = $ret->data;
         }
+
+        $orders = $this->OrderService->get_by_ids($order_ids);
         //$order_ids = $ret->data;
         if ($account_money) {
             //账户支付--优惠方式
             $AccountService = \Common\Service\AccountService::get_instance();
             $sum = array_sum(result_to_array($pre_orders, 'sum'));
-            if ($sum < $account_money) {
+            if ($sum != $account_money) {
                 return result_json(FALSE, '参数错误');
             }
             $ret = $AccountService->check_is_available($this->uid, $account_money);
@@ -89,6 +91,55 @@ class OrderAdd extends BaseApi{
             if (!$ret->success) {
                 return result_json(FALSE, $ret->message);
             }
+
+            $PayService = \Common\Service\PayService::get_instance();
+            $data = [];
+            $data['pay_no'] = $PayService->get_pay_no($orders[0]['uid']);
+            $data['pay_agent'] = \Common\Model\NfPayModel::PAY_AGENT_ACCOUNT;
+            $data['uid'] = $orders[0]['uid'];
+            $data['order_ids'] = join(',', $order_ids);
+            $data['sum'] = $account_money;
+            $data['create_time'] = current_date();
+            $data['status'] = \Common\Model\NfPayModel::STATUS_COMPLETE;
+            $ret = $PayService->add_one($data);
+
+            if (!$ret->success) {
+                return result(FALSE, $ret->message);
+            }
+            $data['id'] = $ret->data;
+
+            //更新订单
+            $AccountLogService = \Common\Service\AccountLogService::get_instance();
+            $AccountService = \Common\Service\AccountService::get_instance();
+            //更新订单状态
+            //获取加盟商的uids
+            $MemberService = \Common\Service\MemberService::get_instance();
+            $franchisee_uids = $MemberService->get_franchisee_uids();
+            $OrderService = \Common\Service\OrderService::get_instance();
+            $UserService = \Common\Service\UserService::get_instance();
+            foreach ($order_ids as $order_id) {
+
+                $ret = $OrderService->is_available_payed($order_id, $data['uid']);
+                if (!$ret->success) {
+                    return result(FALSE, '订单不可支付');
+                }
+                $order = $ret->data;
+                $ret = $OrderService->payed($order);
+                if (!$ret->success) {
+                    return result(FALSE, '订单支付失败');
+                }
+                //财务记录
+                $account_data = [];
+                if (in_array($order['seller_uid'], $franchisee_uids)) {
+                    $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_FRANCHISEE_ADD;
+                } else {
+                    $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_PLATFORM_ADD;
+                }
+                $account_data['sum'] = $order['sum'];
+                $account_data['oid'] = $order_id;
+                $account_data['uid'] = $order['seller_uid'];
+                $account_data['pay_no'] = '';
+                $AccountLogService->add_one($account_data);
         }
 
         $to_pay = true;
