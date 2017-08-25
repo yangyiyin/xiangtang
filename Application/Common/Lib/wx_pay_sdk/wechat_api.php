@@ -164,12 +164,11 @@ class Wechat{
         $xml = [];
         $xml[] = '<xml>';
         foreach ($arr as $key=>$val){
-            $xml[] = '<'.$key.'>'.$val.'<'.$key.'/>';
+            $xml[] = '<'.$key.'>'.$val.'</'.$key.'>';
         }
         $xml[] = '</xml>';
 
         $xml = join("\n", $xml);
-
         return $xml;
     }
 }
