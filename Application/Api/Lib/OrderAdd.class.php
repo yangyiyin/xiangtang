@@ -84,7 +84,8 @@ class OrderAdd extends BaseApi{
             //记录订单优惠
             $OrderBenefitService = \Common\Service\OrderBenefitService::get_instance();
             $data = [];
-            $data['oids'] = join(',', sort($order_ids));
+            sort($order_ids);
+            $data['oids'] = join(',', $order_ids);
             $data['type'] = \Common\Model\NfOrderBenefitModel::TYPE_ACCOUNT;
             $data['rule'] = $account_money;
             $ret = $OrderBenefitService->add_one($data);

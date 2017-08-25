@@ -16,7 +16,7 @@ class OrderBenefitService extends BaseService{
         if ($NfModel->add()) {
             return result(TRUE, '', $NfModel->getLastInsID());
         } else {
-            echo $NfModel->getLastSql();
+//            echo $NfModel->getLastSql();
             return result(FALSE, '网络繁忙~');
         }
     }
