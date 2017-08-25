@@ -60,8 +60,8 @@ class AlipayCreate extends BaseApi{
         //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
         $request = new \AlipayTradeAppPayRequest();
         //SDK已经封装掉了公共参数，这里只需要传入业务参数
-        $bizcontent = "{\"body\":\"蚂蚁app支付\","
-            . "\"subject\": \"蚂蚁app支付\","
+        $bizcontent = "{\"body\":\"app支付\","
+            . "\"subject\": \"app支付\","
             . "\"out_trade_no\": \"" . $pay_info['pay_no'] . "\","
             . "\"timeout_express\": \"30m\","
             . "\"total_amount\": \"".($pay_info['sum'] / 100)."\","

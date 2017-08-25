@@ -47,7 +47,7 @@ class Wechat{
             'appid'             => $this->wechat_config['APPID'],
             'mch_id'            => $this->wechat_config['MCH_ID'],
             'nonce_str'         => $nonce_str,
-            'body'              => '订单的body',
+            'body'              => '订单支付',
             'out_trade_no'      => $out_trade_no,
             'total_fee'         => $total_fee,
             'spbill_create_ip'  => $spbill_create_ip,
@@ -56,12 +56,12 @@ class Wechat{
             'fee_type'          => 'CNY',
             'time_start'        => $time_start,
             'time_expire'       => $time_expire,
-            'detail'            => '订单的detail',
+            'detail'            => '订单支付',
         );
         $sign = $this->setWxSign($sign_data);
         $sign_data['sign'] = $sign;
         ksort($sign_data);
-        $xml = array_to_xml($sign_data);
+        $xml = $this->array_to_xml($sign_data);
         $post_url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
         $response_xml = $this->https_get($post_url,$xml);
         $response_arr = $this->setXmlArray($response_xml);
@@ -152,6 +152,22 @@ class Wechat{
         if ($fb_sign != $wx_sign) {
             return false;
         }
+        return $xml;
+    }
+
+    function array_to_xml($arr){
+        if (!$arr){
+            return '';
+        }
+        $xml = [];
+        $xml[] = '<xml>';
+        foreach ($arr as $key=>$val){
+            $xml[] = '<'.$key.'>'.$val.'<'.$key.'/>';
+        }
+        $xml[] = '</xml>';
+
+        $xml = join("\n", $xml);
+
         return $xml;
     }
 }

@@ -16,5 +16,6 @@ class NfPayModel extends Model {
 
     const PAY_AGENT_ALIPAY = 'alipay';
     const PAY_AGENT_ACCOUNT = 'account';
+    const PAY_AGENT_WECHAT_PAY = 'wechat_pay';
 
 }

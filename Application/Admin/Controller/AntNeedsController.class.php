@@ -129,7 +129,7 @@ class AntNeedsController extends AdminController {
             if (isset($needs_types_map[$da['type']])) {
                 $da['type'] = $needs_types_map[$da['type']];
             }
-            
+
             $new_data[] = $da;
         }
 

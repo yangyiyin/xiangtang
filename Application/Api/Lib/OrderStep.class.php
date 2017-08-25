@@ -22,7 +22,7 @@ class OrderStep extends BaseApi{
         $action = I('post.action');
         $order_id = $this->post_data['order_id'];
         $action = $this->post_data['action'];
-        $order_ids = explode(',', $this->post_data['post.order_ids']);
+        $order_ids = explode(',', $this->post_data['order_ids']);
 
         if (!$order_ids) {
             return result_json(FALSE, '参数错误~');

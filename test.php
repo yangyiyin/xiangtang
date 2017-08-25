@@ -59,5 +59,28 @@
 //    $list[$_li['pid']][] = $_li;
 //}
 //$tree = make_tree($list);
+function arrtoxml($arr,$dom=0,$item=0){
+    if (!$dom){
+        $dom = new DOMDocument("1.0");
+    }
+    if(!$item){
+        $item = $dom->createElement("root");
+        $dom->appendChild($item);
+    }
+    foreach ($arr as $key=>$val){
+        $itemx = $dom->createElement(is_string($key)?$key:"item");
+        $item->appendChild($itemx);
+        if (!is_array($val)){
+            $text = $dom->createTextNode($val);
+            $itemx->appendChild($text);
 
-echo md5(123123);
+        }else {
+            arrtoxml($val,$dom,$itemx);
+        }
+    }
+    return $dom->saveXML();
+}
+
+echo arrtoxml(['a'=>1]);
+
+
