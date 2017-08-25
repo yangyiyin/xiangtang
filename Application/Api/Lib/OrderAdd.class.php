@@ -140,6 +140,7 @@ class OrderAdd extends BaseApi{
                 $account_data['uid'] = $order['seller_uid'];
                 $account_data['pay_no'] = '';
                 $AccountLogService->add_one($account_data);
+            }
         }
 
         $to_pay = true;
