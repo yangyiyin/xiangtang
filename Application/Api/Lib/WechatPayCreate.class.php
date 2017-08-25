@@ -8,7 +8,6 @@
 namespace Api\Lib;
 use Common\Service;
 
-require APP_PATH . '/Common/Lib/wx_pay_sdk/wechat_config.php';
 require APP_PATH . '/Common/Lib/wx_pay_sdk/wechat_api.php';
 
 
@@ -20,6 +19,7 @@ class WechatPayCreate extends BaseApi{
     public function init() {
         $this->PayService = Service\PayService::get_instance();
         $this->OrderService = Service\OrderService::get_instance();
+
     }
 
     public function excute() {
@@ -49,7 +49,7 @@ class WechatPayCreate extends BaseApi{
         }
 
         $pay_info = $ret->data;
-
+        require APP_PATH . '/Common/Lib/wx_pay_sdk/wechat_config.php';
         $wechat = new \Wechat($wechat_config);
 
         $response = $wechat->createPrepay($pay_info['pay_no'], $pay_info['sum']);
