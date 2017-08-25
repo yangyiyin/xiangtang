@@ -138,8 +138,12 @@ class OrderService extends BaseService{
     }
 
     public function send($order) {
-        if ($order['status'] != \Common\Model\NfOrderModel::STATUS_PAY) {
+        if ($order['pay_type'] == \Common\Model\NfOrderModel::PAY_TYPE_ONLINE && $order['status'] != \Common\Model\NfOrderModel::STATUS_PAY) {
             return result(FALSE, '订单状态不是已付款状态,不能发货操作!');
+        }
+
+        if ($order['pay_type'] == \Common\Model\NfOrderModel::PAY_TYPE_OFFLINE && $order['status'] != \Common\Model\NfOrderModel::STATUS_SUBMIT) {
+            return result(FALSE, '订单状态不是已提交状态,不能发货操作!');
         }
 
         $ret = $this->update_by_id($order['id'], ['status'=>\Common\Model\NfOrderModel::STATUS_SENDING]);
@@ -149,8 +153,11 @@ class OrderService extends BaseService{
 
     public function batch_send($orders) {
         foreach ($orders as $order) {
-            if ($order['status'] != \Common\Model\NfOrderModel::STATUS_PAY) {
+            if ($order['pay_type'] == \Common\Model\NfOrderModel::PAY_TYPE_ONLINE && $order['status'] != \Common\Model\NfOrderModel::STATUS_PAY) {
                 return result(FALSE, '订单id为'.$order['id'].',状态不是已付款状态,不能发货操作!');
+            }
+            if ($order['pay_type'] == \Common\Model\NfOrderModel::PAY_TYPE_OFFLINE && $order['status'] != \Common\Model\NfOrderModel::STATUS_SUBMIT) {
+                return result(FALSE, '订单id为'.$order['id'].',状态不是已提交状态,不能发货操作!');
             }
         }
         $order_ids = result_to_array($orders);

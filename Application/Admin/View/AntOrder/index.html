@@ -116,7 +116,7 @@
 					<td ><span>{$vo.status_desc}</span></td>
 					<td>
 
-						<if condition="$vo['status'] == 2 && $vo['is_real'] == 1">
+						<if condition="($vo['status'] == 2 && $vo['is_real'] == 1) || ($vo['pay_type'] == 2 && $vo['status'] == 1 && $vo['is_real'] == 1)">
 							<a class="u-btn show_box" tmp_id="express" order_id="{$vo.id}">发货</a>
 						</if>
 
