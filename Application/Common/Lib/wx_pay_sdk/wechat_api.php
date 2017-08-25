@@ -122,7 +122,7 @@ class Wechat{
      * https请求
      * @return array
      */
-    puhlic function https_get($url,$xml_data) {
+    public function https_get($url,$xml_data) {
         $ch = curl_init();
         $header[] = "Content-type: text/xml";//定义content-type为xml
         curl_setopt($ch, CURLOPT_URL, $url);
