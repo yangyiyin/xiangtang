@@ -195,6 +195,7 @@ class OrderService extends BaseService{
         if ($ret->success) {
             $AccountLogService = \Common\Service\AccountLogService::get_instance();
             $AccountService = \Common\Service\AccountService::get_instance();
+            $UserService = \Common\Service\UserService::get_instance();
             //结算佣金
             if ($order['inviter_id']) {
                 $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_INVITER_ADD;

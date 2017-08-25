@@ -44,9 +44,6 @@ class WechatPayCreate extends BaseApi{
         if (!$ret->success) {
             return result_json(FALSE, $ret->message);
         }
-        if ($ret->message == 'all_by_account') {//全部账户支付
-            return result_json(TRUE, '', 1);
-        }
 
         $pay_info = $ret->data;
         require APP_PATH . '/Common/Lib/wx_pay_sdk/wechat_config.php';

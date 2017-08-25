@@ -141,6 +141,18 @@ class OrderAdd extends BaseApi{
                 $account_data['uid'] = $order['seller_uid'];
                 $account_data['pay_no'] = '';
                 $AccountLogService->add_one($account_data);
+
+                //扣除佣金
+                $ret = $AccountService->minus_account($data['uid'], $order['sum']);
+                if (!$ret->success){
+                    $this->error($ret->message);
+                }
+                $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_TRADE_MINUS;
+                $account_data['sum'] = -$order['sum'];
+                $account_data['oid'] = 0;
+                $account_data['uid'] = $data['uid'];
+                $account_data['pay_no'] ='';
+                $AccountLogService->add_one($account_data);
             }
         }
 
