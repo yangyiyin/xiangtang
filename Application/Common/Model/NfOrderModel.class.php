@@ -26,6 +26,9 @@ class NfOrderModel extends Model {
     const RECIEVE_TYPE_ARRIVE = 1;
     const RECIEVE_TYPE_SERVER = 2;
 
+    const PAY_TYPE_ONLINE = 1;
+    const PAY_TYPE_OFFLINE = 2;
+
     public static $type_map = [
         1 => '工厂订单',
         2 => '美团订单',

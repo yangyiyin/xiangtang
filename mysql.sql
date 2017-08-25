@@ -28,7 +28,7 @@ alter table shopy_nf_item add brand_id int(11) DEFAULT 0;
 alter table shopy_nf_brand add logo VARCHAR (255) DEFAULT '';
 alter table shopy_nf_order_pre add dealer_profit int(11) DEFAULT '0';
 alter table shopy_nf_order add dealer_profit int(11) DEFAULT '0';
-
+alter table shopy_nf_order add pay_type int(3) DEFAULT '1';
 -------------------
 
 

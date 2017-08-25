@@ -320,16 +320,18 @@ class OrderService extends BaseService{
         $data_order['dealer_profit'] = $order_pre['dealer_profit'];
         $data_order['is_real'] = $order_pre['is_real'];
         $data_order['seller_uid'] = $order_pre['seller_uid'];
-
         $data_order['type'] = $user_info['type'];//用户type和订单type保持一致
         $data_order['inviter_id'] = $user_info['inviter_id'];
-
         $data_order['receiving_type'] = $extra['receiving_type'];
 
         if ($extra['receiving_service_name']) {
             $ServicesService = \Common\Service\ServicesService::get_instance();
             $info = $ServicesService->get_info_by_name($extra['receiving_service_name']);
             $data_order['receiving_service_address'] = isset($info['address']) ? $info['address'] : '未知地址';
+        }
+
+        if ($extra['pay_type']) {
+            $data_order['pay_type'] = $extra['pay_type'];
         }
 
         $data_order['receiving_service_name'] = $extra['receiving_service_name'];

@@ -16,18 +16,14 @@ class OrderAdd extends BaseApi{
     }
 
     public function excute() {
-        $pre_order_id = I('post.pre_order_id');
-        $address = I('post.address');
-        $name = I('post.name');
-        $tel = I('post.tel');
 
-        $pre_order_id = $this->post_data['pre_order_id'];
         $pre_order_ids = explode(',', $this->post_data['pre_order_ids']);
         $address = $this->post_data['address'];
         $name = $this->post_data['name'];
         $tel = $this->post_data['tel'];
         $receiving_type = $this->post_data['receiving_type'];
         $receiving_service_name = $this->post_data['receiving_service_name'];
+        $pay_type = $this->post_data['pay_type'];
 
         $account_money = $this->post_data['account_money'];
 
@@ -64,7 +60,7 @@ class OrderAdd extends BaseApi{
         }
         $order_ids = [];
         foreach ($pre_order_ids as $pre_order_id) {
-            $ret = $this->OrderService->create_by_pre_order_id($pre_order_id, $this->uid, ['receiving_type' => $receiving_type, 'receiving_service_name' => $receiving_service_name, 'address' => $address, 'name' => $name, 'tel' => $tel]);
+            $ret = $this->OrderService->create_by_pre_order_id($pre_order_id, $this->uid, ['receiving_type' => $receiving_type, 'receiving_service_name' => $receiving_service_name, 'address' => $address, 'name' => $name, 'tel' => $tel, 'pay_type' => $pay_type]);
             if (!$ret->success) {
                 return result_json(FALSE, $ret->message);
             }
@@ -95,7 +91,12 @@ class OrderAdd extends BaseApi{
             }
         }
 
-        return result_json(TRUE, '成功创建订单~', ['order_ids' => join(',', $order_ids), 'to_pay'=>true]);
+        $to_pay = true;
+        if ($pay_type == \Common\Model\NfOrderModel::PAY_TYPE_OFFLINE) {
+            $to_pay = false;
+        }
+
+        return result_json(TRUE, '成功创建订单~', ['order_ids' => join(',', $order_ids), 'to_pay'=>$to_pay]);
     }
 
     public function check_same_real($items) {
