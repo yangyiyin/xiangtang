@@ -195,7 +195,7 @@ class OrderPre_order extends BaseApi{
                 }
 
 
-                $list[] = convert_obj($_item, 'id=item_id,sku_id,pid,title,img,desc,unit_desc,price,num,is_real,seller_uid,props,show_price,pay_price');
+                $list[] = convert_obj($_item, 'id=item_id,sku_id,pid,title,img,desc,unit_desc,price,num,is_real,seller_uid,props,show_price,pay_price,dealer_profit');
             }
 
         }
