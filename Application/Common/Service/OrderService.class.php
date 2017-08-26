@@ -174,12 +174,15 @@ class OrderService extends BaseService{
         return $this->update_by_id($order['id'], ['status'=>\Common\Model\NfOrderModel::STATUS_PAYING]);
     }
 
-    public function payed($order) {
+    public function payed($order, $pay_type = 0) {
         if ($order['status'] != \Common\Model\NfOrderModel::STATUS_PAYING && $order['status'] != \Common\Model\NfOrderModel::STATUS_SUBMIT) {
             return result(FALSE, '当前订单状态还不能支付成功操作!');
         }
-
-        return $this->update_by_id($order['id'], ['status'=>\Common\Model\NfOrderModel::STATUS_PAY]);
+        $data = ['status'=>\Common\Model\NfOrderModel::STATUS_PAY];
+        if ($pay_type) {
+            $data['pay_type'] = $pay_type;
+        }
+        return $this->update_by_id($order['id'], $data);
     }
 
     public function complete($order) {

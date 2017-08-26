@@ -125,7 +125,7 @@ class OrderAdd extends BaseApi{
                     return result(FALSE, '订单不可支付');
                 }
                 $order = $ret->data;
-                $ret = $OrderService->payed($order);
+                $ret = $OrderService->payed($order,  \Common\Model\NfOrderModel::PAY_TYPE_LOCAL);
                 if (!$ret->success) {
                     return result(FALSE, '订单支付失败');
                 }

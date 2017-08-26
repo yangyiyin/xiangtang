@@ -84,7 +84,7 @@ class WechatPayNotify extends BaseSapi{
                     exit;
                 }
                 $order = $ret->data;
-                $ret = $OrderService->payed($order);
+                $ret = $OrderService->payed($order, \Common\Model\NfOrderModel::PAY_TYPE_WECHAT);
                 if (!$ret->success) {
                     $data_notify['create_time'] = current_date();
                     $data_notify['remark'] = '订单状态更新失败';

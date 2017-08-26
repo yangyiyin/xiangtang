@@ -29,6 +29,10 @@ class NfOrderModel extends Model {
     const PAY_TYPE_ONLINE = 1;
     const PAY_TYPE_OFFLINE = 2;
 
+    const PAY_TYPE_LOCAL = 3;
+    const PAY_TYPE_ALI = 4;
+    const PAY_TYPE_WECHAT = 5;
+
     public static $type_map = [
         1 => '工厂订单',
         2 => '美团订单',
@@ -45,6 +49,14 @@ class NfOrderModel extends Model {
         6 => '已取消',
         7 => '支付中',
         8 => '已接单'
+    ];
+
+    public static $pay_type_map = [
+        self::PAY_TYPE_OFFLINE => '线下支付',
+        self::PAY_TYPE_ONLINE => '线上支付',
+        self::PAY_TYPE_LOCAL => '佣金支付',
+        self::PAY_TYPE_ALI => '支付宝支付',
+        self::PAY_TYPE_WECHAT => '微信支付'
     ];
 
 }
