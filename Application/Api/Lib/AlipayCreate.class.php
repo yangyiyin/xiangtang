@@ -64,7 +64,7 @@ class AlipayCreate extends BaseApi{
             . "\"total_amount\": \"".($pay_info['sum'] / 100)."\","
             . "\"product_code\":\"QUICK_MSECURITY_PAY\""
             . "}";
-        $request->setNotifyUrl("http://php.gooduo.net/project_ant/index.php/API/Pay/alipay_notify");
+        $request->setNotifyUrl("http://http://118.178.224.208/index.php/API/Pay/alipay_notify");
         $request->setBizContent($bizcontent);
         //这里和普通的接口调用不同，使用的是sdkExecute
         $response = $aop->sdkExecute($request);
