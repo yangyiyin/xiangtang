@@ -100,13 +100,12 @@
 
 						<p class="short_info">联系人:{$vo.receiving_name}</p>
 						<p class="short_info">联系电话:{$vo.receiving_tel}</p>
+						<p class="short_info">支付方式:【{$vo.pay_type_desc}】</p>
 					</td>
 
 					<td >
 						<span>{$vo.status_desc}</span>
-						<if condition="($vo['status'] == 2 && $vo['is_real'] == 1) || ($vo['pay_type'] == 2 && $vo['status'] == 1 && $vo['is_real'] == 1)">
-							【{$vo.pay_type_desc}】
-						</if>
+
 					</td>
 					<td>
 
