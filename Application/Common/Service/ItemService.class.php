@@ -51,7 +51,7 @@ class ItemService extends BaseService{
         if ($NfItem->where('id=' . $id)->save($data)) {
             return result(TRUE);
         } else {
-            return result(FALSE, '网络繁忙');
+            return result(FALSE, '没有修改任何内容');
         }
     }
 
