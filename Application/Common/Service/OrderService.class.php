@@ -197,7 +197,7 @@ class OrderService extends BaseService{
             $AccountService = \Common\Service\AccountService::get_instance();
             $UserService = \Common\Service\UserService::get_instance();
             //结算佣金
-            if ($order['inviter_id']) {
+            if ($order['inviter_id'] && $order['dealer_profit']) {
                 $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_INVITER_ADD;
                 //$account_data['sum'] = intval($order['sum'] * C('INVITER_RATE'));
                 $account_data['sum'] = $order['dealer_profit'];
@@ -207,8 +207,8 @@ class OrderService extends BaseService{
                 $AccountLogService->add_one($account_data);
                 $AccountService->add_account($order['inviter_id'], $order['dealer_profit']);
             }
-
-            if ($UserService->is_dealer($order['uid'])) {
+            $user_info = $UserService->get_info_by_id($order['uid']);
+            if ($user_info && $UserService->is_dealer($user_info['type']) && $order['dealer_profit']) {
                 $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_DEALER_ADD;
                 //$account_data['sum'] = intval($order['sum'] * C('INVITER_RATE'));
                 $account_data['sum'] = $order['dealer_profit'];

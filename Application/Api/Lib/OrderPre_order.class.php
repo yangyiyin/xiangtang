@@ -111,7 +111,7 @@ class OrderPre_order extends BaseApi{
             $data_order_pre['pre_order_no'] = $order_pre_no;
             $data_order_pre['sum'] = $_total_price;
             $data_order_pre['num'] = $_total_num;
-            $data_order_pre['dealer_profit'] = $_total_dealer_profit / 100;
+            $data_order_pre['dealer_profit'] = $_total_dealer_profit;
             $data_order_pre['is_real'] =$_item->is_real;
             $data_order_pre['create_time'] = current_date();
             $ret = $this->OrderPreService->add_one($data_order_pre);

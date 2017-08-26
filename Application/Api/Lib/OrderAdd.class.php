@@ -149,7 +149,7 @@ class OrderAdd extends BaseApi{
                 }
                 $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_TRADE_MINUS;
                 $account_data['sum'] = -$order['sum'];
-                $account_data['oid'] = 0;
+                $account_data['oid'] = $order_id;
                 $account_data['uid'] = $data['uid'];
                 $account_data['pay_no'] ='';
                 $AccountLogService->add_one($account_data);

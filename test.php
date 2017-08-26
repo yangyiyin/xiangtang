@@ -58,22 +58,12 @@
 //foreach ($list as $k => $_li) {
 //    $list[$_li['pid']][] = $_li;
 //}
-
-function array_to_xml($arr){
-    if (!$arr){
-        return '';
-    }
-    $xml = [];
-    $xml[] = '<xml>';
-    foreach ($arr as $key=>$val){
-        $xml[] = '<'.$key.'>'.$val.'</'.$key.'/>';
-    }
-    $xml[] = '</xml>';
-
-    $xml = join("\n", $xml);
-    var_dump($xml);
-    return $xml;
+function encode_user_session($uid) {
+    $str = $uid . '|' . time() . '|' . mt_rand(0,9);
+    $str = base64_encode($str);
+    return $str;
 }
-echo array_to_xml(['a'=>1]);
+
+echo encode_user_session(6);
 
 
