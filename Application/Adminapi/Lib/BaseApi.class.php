@@ -8,47 +8,48 @@
 namespace Adminapi\Lib;
 use Common\Service;
 class BaseApi extends Api {
-    protected $uid;
-    protected $user_info;
-    protected $UserSessionService;
     public function __construct() {
         parent::__construct();
-        $this->UserSessionService = Service\UsersessionService::get_instance();
-        //检测登录信息
-        $user_session = I('user_session');//get or post 均可
-        if (!$user_session) {
-            $user_session = $this->post_data['user_session'];
-        }
-        if (!$user_session) {
-            result_json(FALSE, '未登录', NULL, ERROR_CODE_SESSION_ERROR);
-        }
-        $user_session_arr = $this->UserSessionService->decode_user_session($user_session);
-        if (is_array($user_session_arr) && count($user_session_arr) == 3) {
-            list ($uid, $time, $rand_num) = $user_session_arr;
-        } else {
-            result_json(FALSE, '登录session异常', NULL, ERROR_CODE_SESSION_ERROR);
-        }
-        $user_session_info = $this->UserSessionService->get_info_by_uid($uid);
-        if ($user_session_info && $user_session_info['session']) {
-            $UserService = Service\UserService::get_instance();
-            $ret = $UserService->is_available($uid);
-            if (!$ret->success) {
-                result_json(FALSE, $ret->message, NULL, ERROR_CODE_SESSION_ERROR);
-            }
 
-            if ($user_session_info['session'] != $user_session) {
-                result_json(FALSE, '登录session异常', NULL, ERROR_CODE_SESSION_ERROR);
-            }
-            //检测是否过期,默认90天
-            if ((time() - $time) > 90 * 24 * 3600) {
-                result_json(FALSE, '登录信息过期,请重新登录~', NULL, ERROR_CODE_SESSION_ERROR);
-            }
-            //成功
-            $this->uid = $uid;
-            $this->user_info = $ret->data;
-        } else {
-            result_json(FALSE, '未登录', NULL, ERROR_CODE_SESSION_ERROR);
+
+        // 获取当前用户ID
+        define('UID',is_login());
+
+        if( !UID ){// 还没登录 跳转到登录页面
+            result_json(FALSE, '您还没登录', NULL, ERROR_CODE_SESSION_ERROR);
         }
+        /* 读取数据库中的配置 */
+        $config =   S('DB_CONFIG_DATA');
+        if(!$config){
+            $config =   api('Config/lists');
+            S('DB_CONFIG_DATA',$config);
+        }
+        C($config); //添加配置
+
+        // 是否是超级管理员
+        define('IS_ROOT',   is_administrator());
+        if(!IS_ROOT && C('ADMIN_ALLOW_IP')){
+            // 检查IP地址访问
+            if(!in_array(get_client_ip(),explode(',',C('ADMIN_ALLOW_IP')))){
+                result_json(FALSE, '403:禁止访问');
+            }
+        }
+        // 检测访问权限
+        $access =   $this->accessControl();
+
+        if ( $access === false ) {
+            result_json(FALSE, '403:禁止访问');
+        }elseif( $access === null ){
+            $dynamic        =   $this->checkDynamic();//检测分类栏目有关的各项动态权限
+            if( $dynamic === false ){
+                //检测非动态权限
+                $rule  = strtolower(MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME);
+                if ( !$this->checkRule($rule,array('in','1,2')) ){
+                    result_json(FALSE, '未授权访问');
+                }
+            }
+        }
+
         //执行init
         $this->init();
     }
@@ -56,12 +57,30 @@ class BaseApi extends Api {
         //子类实现
     }
 
-    public function can_order() {
-        if ($this->user_info && $this->user_info['verify_status'] != \Common\Model\NfUserModel::VERIFY_STATUS_OK) {
-            //result_json(FALSE, '未实名认证', NULL);
+
+    final protected function accessControl(){
+        if(IS_ROOT){
+            return true;//管理员允许访问任何页面
         }
+        $allow = C('ALLOW_VISIT');
+        $deny  = C('DENY_VISIT');
+
+        $check = strtolower(CONTROLLER_NAME.'/'.ACTION_NAME);
+
+        if ( !empty($deny)  && in_array_case($check,$deny) ) {
+            return false;//非超管禁止访问deny中的方法
+        }
+        if ( !empty($allow) && in_array_case($check,$allow) ) {
+            return true;
+        }
+        return null;//需要检测节点权限
     }
 
-
+    protected function checkDynamic(){
+        if(IS_ROOT){
+            return true;//管理员允许访问任何页面
+        }
+        return false;//不明,需checkRule
+    }
 
 }
