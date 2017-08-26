@@ -121,6 +121,10 @@
 						<if condition="$vo['status'] == 1">
 							<a class="u-btn confirm J_ajax_get" url="{:U('order_step')}/id/{$vo.id}/step/cancel">取消订单</a>
 						</if>
+
+						<if condition="$vo['pay_type'] == 2 && $vo['status'] == 4 && $vo['is_real'] == 1">
+							<a class="u-btn confirm J_ajax_get" url="{:U('order_step')}/id/{$vo.id}/step/complete">确认收货</a>
+						</if>
 					</td>
 				</tr>
 				</volist>
