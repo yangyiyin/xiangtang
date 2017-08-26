@@ -119,7 +119,6 @@ class AccountService extends BaseService{
             if ($ret_inc) {
                 return result(TRUE, '');
             } else {
-
                 return result(FALSE, '网络繁忙~');
             }
         }
