@@ -140,7 +140,7 @@ class AntOrderController extends AdminController {
                 $data[$key]['type_desc'] = $this->OrderService->get_type_txt($_item['type']);
                 $data[$key]['courier'] = isset($user_courier_map[$_item['uid']]) ? $user_courier_map[$_item['uid']] : [];
                 $data[$key]['express'] = isset($expresses_map[$_item['id']]) ? $expresses_map[$_item['id']] : [];
-                $data[$key]['pay_type_desc'] = isset($pay_type_map[$_item['pay_type']]) ? $pay_type_map[$_item['pay_type']] : '未知支付方式'
+                $data[$key]['pay_type_desc'] = isset($pay_type_map[$_item['pay_type']]) ? $pay_type_map[$_item['pay_type']] : '未知支付方式';
             }
             //var_dump($data);die();
         }
