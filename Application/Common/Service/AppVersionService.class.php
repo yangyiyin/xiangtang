@@ -63,7 +63,7 @@ class AppVersionService extends BaseService{
             return false;
         }
         $NfModel = D('Nf' . static::$name);
-        $ret = $NfModel->where('id=' . $id)->save(['deleted'=>static::$DELETED]);
+        $ret = $NfModel->where('id=' . $id)->delete();
         if ($ret) {
             return result(TRUE);
         } else {

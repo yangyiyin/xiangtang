@@ -101,7 +101,7 @@ class OrderPre_order extends BaseApi{
             foreach ($_items as $_item) {
                 $_total_num += $_item->num;
                 $_total_price += $_item->num * $_item->price;
-                $_total_dealer_profit += $_item->dealer_profit;
+                $_total_dealer_profit += $_item->num * $_item->dealer_profit;
             }
 
             //插入order_pre
