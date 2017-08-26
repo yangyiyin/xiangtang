@@ -314,7 +314,7 @@ class OrderService extends BaseService{
         }
         $order_pre_items_map = result_to_map($order_pre_items, 'sku_id');
 
-        $ret = $ItemService->check_status($items);
+        $ret = $ItemService->check_status($iids, $items);
         if (!$ret->success) {
             return result(FALSE, $ret->message);
         }
