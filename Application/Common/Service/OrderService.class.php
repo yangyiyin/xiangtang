@@ -306,6 +306,7 @@ class OrderService extends BaseService{
         }
 
         $iids = result_to_array($order_pre_items, 'iid');
+        $iids = array_unique($iids);
         $ItemService = \Common\Service\ItemService::get_instance();
         $items = $ItemService->get_by_ids($iids);
         if (!$items) {
