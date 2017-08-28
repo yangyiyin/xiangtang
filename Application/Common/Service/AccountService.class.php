@@ -130,8 +130,8 @@ class AccountService extends BaseService{
         }
         //查询是否存在该账户
         $NfModel = D('Nf' . static::$name);
-        $where = ['uid', $uid].
-            $ret = $NfModel->where($where)->find();
+        $where = ['uid' => $uid];
+        $ret = $NfModel->where($where)->find();
         if (!$ret) {
             //创建账户
             return result(FALSE, '该账户不存在~');

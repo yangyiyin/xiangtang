@@ -1,0 +1,74 @@
+<extend name="Public/base"/>
+
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+		    <ul class="cc tab-nav">
+				<if condition="I('get.op') ==1 || !I('get.op')">
+					<li class="current"><a href="javascript:;">充值</a></li>
+					<li><a href="{:U('')}/op/2">扣除</a></li>
+				</if>
+				<if condition="I('get.op')==2">
+					<li><a href="{:U('')}/op/1">充值</a></li>
+					<li class="current"><a href="javascript:;">扣除</a></li>
+				</if>
+		    </ul>
+		</div>
+		<!-- 数据表格 -->
+		<div class="tab-content table_list">
+		<!-- 表单 -->
+		<form id="form" action="{:U('')}/op/{:I('get.op')}" method="post" class="form-horizontal">
+				<div id="tab">
+					<table class="" width="100%">
+				    <tbody>
+					<tr>
+						<td width="20%"><label class="item-label">账户手机号</label></td>
+						<td width="80%">
+							<input name="user_tel" value="{$user_tel}" class="input user_tel input-medium" type="text"/>
+							<a class="btn search" >查询</a>
+						</td>
+					</tr>
+					<script>
+						$('.search').click(function(){
+							if ($('.user_tel').val()) {
+								window.location.href = '{:U("")}/op/{:I("get.op")}/user_tel/' + $('.user_tel').val();
+							} else {
+								alert('请输入手机号');
+							}
+
+						})
+					</script>
+					<tr>
+						<td width="20%"><label class="item-label">当前账户余额</label></td>
+						<td width="80%">
+							{$sum|format_price} 元
+						</td>
+					</tr>
+							<tr>
+					            <td width="20%"><label class="item-label">金额(元)</label></td>
+					            <td width="80%">
+									<input type="text" class="input input-medium" name="sum" value="">
+								</td>
+							</tr>
+
+					</tbody>
+				    </table> 
+			     </div>
+
+			<div class="btn_wrap">
+	          <div class="btn_wrap_pd">
+				  <if condition="I('get.op') ==1 || !I('get.op')">
+					  <button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">充值</button>
+				  </if>
+				  <if condition="I('get.op')==2">
+					  <button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">扣除</button>
+				  </if>
+	          </div>
+	        </div>
+	    </form>
+	    </div>
+	</div>
+</div>
+
+</block>

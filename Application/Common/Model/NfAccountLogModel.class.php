@@ -15,7 +15,9 @@ class NfAccountLogModel extends NfBaseModel {
     const TYPE_DEALER_ADD = 7;
     const TYPE_DEALER_MINUS = 8;
     const TYPE_OUT_CASH_MINUS = 9;
-    const TYPE_TRADE_MINUS = 9;
+    const TYPE_TRADE_MINUS = 10;
+    const TYPE_OFFICIAL_ADD = 11;
+    const TYPE_OFFICIAL_MINUS = 12;
 
     public static $TYPE_MAP = [
         self::TYPE_PLATFORM_ADD => '',
@@ -27,7 +29,9 @@ class NfAccountLogModel extends NfBaseModel {
         self::TYPE_DEALER_ADD => '经销商佣金收入',
         self::TYPE_DEALER_MINUS => '经销商佣金支出',
          self::TYPE_OUT_CASH_MINUS => '提现',
-        self::TYPE_TRADE_MINUS => '交易支出'
+        self::TYPE_TRADE_MINUS => '交易支出',
+        self::TYPE_OFFICIAL_ADD => '官方充值',
+        self::TYPE_OFFICIAL_MINUS => '官方扣除'
     ];
 
   protected $_validate = array(
