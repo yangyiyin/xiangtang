@@ -55,6 +55,7 @@ class AntAccountController extends AdminController {
             $user_tel = I('user_tel');
             $sum = I('sum');
             $op = I('get.op');
+            $remark = I('remark');
             if ($sum) {
                 $sum *= 100;
                 $AccountLogService = \Common\Service\AccountLogService::get_instance();
@@ -70,6 +71,7 @@ class AntAccountController extends AdminController {
                     $account_data['oid'] = 0;
                     $account_data['uid'] = $info['id'];
                     $account_data['pay_no'] = '';
+                    $account_data['remark'] = $remark;
                     $AccountLogService->add_one($account_data);
 
 
@@ -85,6 +87,7 @@ class AntAccountController extends AdminController {
                     $account_data['oid'] = 0;
                     $account_data['uid'] = $info['id'];
                     $account_data['pay_no'] = '';
+                    $account_data['remark'] = $remark;
                     $AccountLogService->add_one($account_data);
 
                 }

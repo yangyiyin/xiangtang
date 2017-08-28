@@ -19,7 +19,7 @@ class UserMyCommissionDetail extends BaseApi{
         $page = I('get.p');
         $page = $page ? $page : 1;
         $where = [];
-        $where['type'] = ['in', [\Common\Model\NfAccountLogModel::TYPE_OUT_CASH_MINUS, \Common\Model\NfAccountLogModel::TYPE_INVITER_ADD, \Common\Model\NfAccountLogModel::TYPE_INVITER_MINUS, \Common\Model\NfAccountLogModel::TYPE_DEALER_ADD, \Common\Model\NfAccountLogModel::TYPE_DEALER_MINUS]];
+        $where['type'] = ['in', [\Common\Model\NfAccountLogModel::TYPE_OFFICIAL_ADD,\Common\Model\NfAccountLogModel::TYPE_OFFICIAL_MINUS,\Common\Model\NfAccountLogModel::TYPE_OUT_CASH_MINUS, \Common\Model\NfAccountLogModel::TYPE_INVITER_ADD, \Common\Model\NfAccountLogModel::TYPE_INVITER_MINUS, \Common\Model\NfAccountLogModel::TYPE_DEALER_ADD, \Common\Model\NfAccountLogModel::TYPE_DEALER_MINUS]];
         $where['uid'] = $this->uid;
         list($list, $count) = $this->AccountLogService->get_by_where($where);
         $list = $this->convert_data($list);
@@ -37,6 +37,10 @@ class UserMyCommissionDetail extends BaseApi{
                 $temp = [];
                 $temp['sum'] = intval($value['sum']);
                 $temp['info'] = isset($type_map[$value['type']]) ? $type_map[$value['type']] : '未知';
+                if (isset($value['remark']) && $value['remark']) {
+                    $temp['info'] .= '['.$value['remark'].']';
+                }
+
                 $temp['create_time'] = $value['create_time'];
                 $data[] = $temp;
             }

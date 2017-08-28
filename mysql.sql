@@ -75,3 +75,5 @@ CREATE TABLE `shopy_nf_conf` (
 
 alter table shopy_nf_order_pre add freight int (11) DEFAULT '0';
 alter table shopy_nf_order add freight int (11) DEFAULT '0';
+
+alter table shopy_nf_account_log add remark VARCHAR (255) DEFAULT '';
