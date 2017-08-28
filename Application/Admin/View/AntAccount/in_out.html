@@ -32,7 +32,8 @@
 					<script>
 						$('.search').click(function(){
 							if ($('.user_tel').val()) {
-								window.location.href = '{:U("")}/op/{:I("get.op")}/user_tel/' + $('.user_tel').val();
+								var op = '{:I("get.op")}' ? '{:I("get.op")}' : 1;
+								window.location.href = '{:U("")}/op/'+op+'/user_tel/' + $('.user_tel').val();
 							} else {
 								alert('请输入手机号');
 							}
