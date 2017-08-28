@@ -19,7 +19,7 @@ class Verify {
         'useImgBg'  => false,           // 使用背景图片 
         'fontSize'  => 25,              // 验证码字体大小(px)
         'useCurve'  => true,            // 是否画混淆曲线
-        'useNoise'  => true,            // 是否添加杂点	
+        'useNoise'  => true,            // 是否添加杂点
         'imageH'    => 0,               // 验证码图片高度
         'imageW'    => 0,               // 验证码图片宽度
         'length'    => 5,               // 验证码位数
@@ -102,10 +102,10 @@ class Verify {
         // 建立一幅 $this->imageW x $this->imageH 的图像
         $this->_image = imagecreate($this->imageW, $this->imageH); 
         // 设置背景      
-        imagecolorallocate($this->_image, $this->bg[0], $this->bg[1], $this->bg[2]); 
+        imagecolorallocatealpha($this->_image, $this->bg[0], $this->bg[1], $this->bg[2], 127);
 
         // 验证码字体随机颜色
-        $this->_color = imagecolorallocate($this->_image, mt_rand(1,150), mt_rand(1,150), mt_rand(1,150));
+        $this->_color = imagecolorallocate($this->_image, 255, 255, 255);
         // 验证码使用随机字体
         $ttfPath = dirname(__FILE__) . '/Verify/' . ($this->useZh ? 'zhttfs' : 'ttfs') . '/';
 

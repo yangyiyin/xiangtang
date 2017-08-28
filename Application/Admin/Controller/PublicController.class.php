@@ -19,9 +19,9 @@ class PublicController extends \Think\Controller {
     public function login($username = null, $password = null, $verify = null){
         if(IS_POST){
             /* 检测验证码 TODO: */
-//            if(!check_verify($verify)){
-//                $this->error('验证码输入错误！');
-//            }
+            if(!check_verify($verify)){
+                $this->error('验证码输入错误！');
+            }
             $User = new UserApi();
             $uid = $User->login($username, $password);
             if(0 < $uid){ //UC登录成功*/
@@ -72,8 +72,18 @@ class PublicController extends \Think\Controller {
 
     public function verify(){
         $config = array(
-            'length' => 4,
-            'imageW' => 238, 
+            'seKey'     => 'ThinkPHP.CN',   //验证码加密密钥
+            'expire'    => 1800,            // 验证码过期时间（s）
+            'useZh'     => false,           // 使用中文验证码
+            'useImgBg'  => false,           // 使用背景图片
+            'fontSize'  => 15,              // 验证码字体大小(px)
+            'useCurve'  => false,            // 是否画混淆曲线
+            'useNoise'  => false,            // 是否添加杂点
+            'imageH'    => 0,               // 验证码图片高度
+            'imageW'    => 0,               // 验证码图片宽度
+            'length'    => 4,               // 验证码位数
+            'fontttf'   => '',              // 验证码字体，不设置随机获取
+            'bg'        => array(243, 251, 254, 0),  // 背景颜色
         );
         ob_end_clean();
         $verify = new \Think\Verify($config);
