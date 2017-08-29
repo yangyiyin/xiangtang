@@ -17,6 +17,7 @@ class PublicController extends \Think\Controller {
      * @author Jroy
      */
     public function login($username = null, $password = null, $verify = null){
+
         if(IS_POST){
             /* 检测验证码 TODO: */
             if(!check_verify($verify)){
@@ -80,7 +81,7 @@ class PublicController extends \Think\Controller {
             'useCurve'  => false,            // 是否画混淆曲线
             'useNoise'  => false,            // 是否添加杂点
             'imageH'    => 0,               // 验证码图片高度
-            'imageW'    => 0,               // 验证码图片宽度
+            'imageW'    => 100,               // 验证码图片宽度
             'length'    => 4,               // 验证码位数
             'fontttf'   => '',              // 验证码字体，不设置随机获取
             'bg'        => array(243, 251, 254, 0),  // 背景颜色

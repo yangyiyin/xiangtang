@@ -165,13 +165,17 @@ class Verify {
         session($key, $session);
 
                 
-        header('Cache-Control: private, max-age=0, no-store, no-cache, must-revalidate');
-        header('Cache-Control: post-check=0, pre-check=0', false);		
-        header('Pragma: no-cache');
-        header("content-type: image/png");
+//        header('Cache-Control: private, max-age=0, no-store, no-cache, must-revalidate');
+//        header('Cache-Control: post-check=0, pre-check=0', false);
+//        header('Pragma: no-cache');
+//        header("content-type: image/png");
 
         // 输出图像
+        ob_start();
         imagepng($this->_image);
+        $image_data  = ob_get_contents();
+        ob_end_clean ();
+        echo base64_encode($image_data);
         imagedestroy($this->_image);
     }
 
