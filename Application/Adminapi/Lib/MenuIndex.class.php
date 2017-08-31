@@ -29,7 +29,9 @@ class MenuIndex extends BaseApi{
                 if (!is_array($item) || empty($item['title']) || empty($item['url']) ) {
                     return result_json(FALSE, '控制器基类$menus属性元素配置有误');
                 }
-                $item['url'] = $item['module'].'/'.$item['url'];
+                $menus[$key]['name'] = $item['title'];
+                $menus[$key]['icon'] = $item['ico'];
+                $menus[$key]['url'] = '/#/' . $item['module'].'/'.$item['url'];
                 // 判断主菜单权限
                 if ( !IS_ROOT && !$this->checkRule($item['url'],AuthRuleModel::RULE_MAIN,null) ) {
                     unset($menus[$key]);
@@ -46,16 +48,28 @@ class MenuIndex extends BaseApi{
                         foreach ($groups as $k=>$v) {
                             $rule = $v['module'].'/'.$v['url'];
                             $v['url'] = $rule;
-                            if($this->checkRule($rule, AuthRuleModel::RULE_URL,null)){$to_check_urls[] = $v;}
+                            if($this->checkRule($rule, AuthRuleModel::RULE_URL,null)){
+                                $to_check_urls[] = $v;
+                            }
                         }
                     }else{
                         $to_check_urls = $groups;
                     }
+
+                    $to_check_urls = [];
+                    foreach ($groups as $k=>$v) {
+                        $v['name'] = $v['title'];
+                        $v['icon'] = $v['ico'];
+                        $v['url'] = '/#/' . $v['url'];
+                        $to_check_urls[] = $v;
+                    }
+
                     $menus[$key]['child'] = $to_check_urls;
                 }
             }
             //session('ADMIN_MENU_LIST'.$controller,$menus);
         }
+
 
         return result_json(TRUE, '', $menus);
 
