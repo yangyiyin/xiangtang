@@ -192,7 +192,7 @@ class AntAccountLogController extends AdminController {
             $type_map = \Common\Model\NfAccountLogModel::$TYPE_MAP;
             foreach ($data as $key => $value) {
                 $data[$key]['type_desc'] = isset($type_map[$value['type']]) ? $type_map[$value['type']] : '未知类型';
-                $data[$key]['info'] = $data[$key]['type_desc'] . format_price($value['sum']);
+                $data[$key]['info'] = $data[$key]['type_desc'] . format_price($value['sum']) . '元';
             }
         }
 
