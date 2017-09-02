@@ -141,7 +141,62 @@ class AntAccountLogController extends AdminController {
         $this->display();
     }
 
+    /**
+     * 所有佣金记录
+     */
+    public function all_commission() {
+
+        $where = [];
+        $where['type'] = ['in', [\Common\Model\NfAccountLogModel::TYPE_OFFICIAL_ADD,\Common\Model\NfAccountLogModel::TYPE_OFFICIAL_MINUS,\Common\Model\NfAccountLogModel::TYPE_OUT_CASH_MINUS, \Common\Model\NfAccountLogModel::TYPE_INVITER_ADD, \Common\Model\NfAccountLogModel::TYPE_INVITER_MINUS, \Common\Model\NfAccountLogModel::TYPE_DEALER_ADD, \Common\Model\NfAccountLogModel::TYPE_DEALER_MINUS]];
+
+        $create_begin = I('get.create_begin');
+        $create_end = I('get.create_end');
+
+        if (!$create_begin) {
+            $create_begin = date('Y-m-d', time()-7*24*3600);
+        }
+
+        if (!$create_end) {
+            $create_end = date('Y-m-d', time()+7*24*3600);
+        }
+
+        $where[] = ['create_time' => ['egt', $create_begin]];
+        $where[] = ['create_time' => ['elt', $create_end]];
+        if (I('get.uid')) {
+            $where[] = ['uid' => ['eq', I('get.uid')]];
+        }
+        $this->assign('create_begin', $create_begin);
+        $this->assign('create_end', $create_end);
+        $page = I('get.p', 1);
+        list($data, $count) = $this->AccountLogService->get_by_where($where, 'id desc', $page);
+        list($sum,$total_pay_num) = $this->AccountLogService->get_totals($where);
+        $data = $this->convert_commission_data($data);
+        $PageInstance = new \Think\Page($count, \Common\Service\AccountLogService::$page_size);
+        if($total>\Common\Service\AccountLogService::$page_size){
+            $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+        }
+        $page_html = $PageInstance->show();
+
+        $this->assign('list', $data);
+        $this->assign('page_html', $page_html);
+
+        $this->display();
+    }
+
+
     public function convert_data(&$data) {
+
+    }
+    public function convert_commission_data($data) {
+        if ($data) {
+            $type_map = \Common\Model\NfAccountLogModel::$TYPE_MAP;
+            foreach ($data as $key => $value) {
+                $data[$key]['type_desc'] = isset($type_map[$value['type']]) ? $type_map[$value['type']] : '未知类型';
+                $data[$key]['info'] = $data[$key]['type_desc'] . format_price($value['sum']);
+            }
+        }
+
+        return $data;
 
     }
 }
