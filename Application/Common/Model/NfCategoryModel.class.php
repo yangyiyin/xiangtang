@@ -17,7 +17,7 @@ class NfCategoryModel extends Model {
 
     public function get_all() {//最多3级
         $where = 'status = 1';
-        return $this->where($where)->select();
+        return $this->where($where)->order('sort asc')->select();
     }
 
     public function add_by_data($data) {
