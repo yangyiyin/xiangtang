@@ -42,12 +42,14 @@ class AntAccountController extends AdminController {
     public function in_out() {
         $user_tel = '';
         $sum = 0;
+        $entity_name = '';
         if ($user_tel = I('user_tel')) {
             $UserService = \Common\Service\UserService::get_instance();
             $info = $UserService->get_by_tel($user_tel);
             if (!$info) {
                 $this->error('该用户不存在');
             }
+            $entity_name = $info['entity_name'];
         }
 
         if (IS_POST) {
@@ -102,7 +104,7 @@ class AntAccountController extends AdminController {
         }
         $this->assign('sum', $sum);
         $this->assign('user_tel', $user_tel);
-
+        $this->assign('entity_name', $entity_name);
         $this->display();
     }
 
