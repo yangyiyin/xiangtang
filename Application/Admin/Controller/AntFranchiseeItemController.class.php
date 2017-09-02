@@ -42,7 +42,7 @@ class AntFranchiseeItemController extends AdminController {
         $MemberService = \Common\Service\MemberService::get_instance();
         $franchisee_uids = $MemberService->get_franchisee_uids();
         if ($franchisee_uids) {
-            $where['uid'] = ['not in', $franchisee_uids];
+            $where['uid'] = ['in', $franchisee_uids];
         }
 
         $page = I('get.p', 1);

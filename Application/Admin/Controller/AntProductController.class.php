@@ -41,9 +41,12 @@ class AntProductController extends AdminController {
         $where['is_real'] = 1;
 
         //获取加盟商的uids
+        //获取加盟商的uids
         $MemberService = \Common\Service\MemberService::get_instance();
         $franchisee_uids = $MemberService->get_franchisee_uids();
-        if ($franchisee_uids) {
+        if ($franchisee_uids && in_array(UID, $franchisee_uids)) {
+            $where['uid'] = ['in', $franchisee_uids];
+        } else {
             $where['uid'] = ['not in', $franchisee_uids];
         }
 
@@ -90,7 +93,9 @@ class AntProductController extends AdminController {
         //获取加盟商的uids
         $MemberService = \Common\Service\MemberService::get_instance();
         $franchisee_uids = $MemberService->get_franchisee_uids();
-        if ($franchisee_uids) {
+        if ($franchisee_uids && in_array(UID, $franchisee_uids)) {
+            $where['uid'] = ['in', $franchisee_uids];
+        } else {
             $where['uid'] = ['not in', $franchisee_uids];
         }
 
@@ -234,7 +239,7 @@ class AntProductController extends AdminController {
             if ($franchisee_uids && in_array(UID, $franchisee_uids)) {
                 $data['uid'] = UID;
             } else {
-                $data['uid'] = 1;
+                $data['uid'] = 1;//1为平台
             }
             if ($id) {
                 $ret = $this->ProductService->update_by_id($id, $data);

@@ -40,6 +40,13 @@ class AntItemController extends AdminController {
             $where['title'] = ['LIKE', '%'.I('get.title').'%'];
         }
 
+        //获取加盟商的uids
+        $MemberService = \Common\Service\MemberService::get_instance();
+        $franchisee_uids = $MemberService->get_franchisee_uids();
+        if ($franchisee_uids) {
+            $where['uid'] = ['not in', $franchisee_uids];
+        }
+
         $where['is_real'] = 1;
         $page = I('get.p', 1);
         list($data, $count) = $this->ItemService->get_by_where($where, 'status asc, id desc', $page);
@@ -80,6 +87,13 @@ class AntItemController extends AdminController {
 
         if (I('get.title')) {
             $where['title'] = ['LIKE', '%'.I('get.title').'%'];
+        }
+
+        //获取加盟商的uids
+        $MemberService = \Common\Service\MemberService::get_instance();
+        $franchisee_uids = $MemberService->get_franchisee_uids();
+        if ($franchisee_uids) {
+            $where['uid'] = ['not in', $franchisee_uids];
         }
 
         $where['is_real'] = 0;
