@@ -1,6 +1,6 @@
 
 <div style="position: relative;min-height: 580px;">
-<p style="width:1000;text-align: center;font-size: 20px;font-weight: bold;margin: 20px 0">宁波绿锦食品配送有限公司发货单</p>
+<p style="width:1000;text-align: center;font-size: 20px;font-weight: bold;margin: 20px 0">火烧云发货单</p>
 
 <div style="width:1000;margin: 0 auto">
     <div style="margin-top: 10px">
@@ -9,9 +9,13 @@
         <p style="width: 333px;float: left">经手人:</p>
         <div style="clear: both"></div>
     </div>
-
+    <div style="margin-top: 10px">
+        <p style="width: 333px;float: left">收货人:{$vo.receiving_name}<p/>
+        <p style="width: 333px;float: left">联系电话:{$vo.receiving_tel}</p>
+        <div style="clear: both"></div>
+    </div>
     <div style="margin: 10px 0">
-        <p style="width: 333px;">购买单位::{$vo.user_info.entity_name}</p>
+        <p style="width: 333px;">收货地址:{$vo.receiving_address}</p>
     </div>
 </div>
     <table style="margin:0 auto;width:1000px;">
@@ -65,7 +69,6 @@
 
                 <div style="margin: 10px 0">
                     <p style="width: 500px;float: left">发货人:<p/>
-                    <p style="width: 500px;float: left">收货人:</p>
                     <div style="clear: both"></div>
                 </div>
             </div>
@@ -80,7 +83,7 @@
         <div style="width:1000px;margin: 0 auto;">
             <div style="margin: 10px 0">
 
-                <p style="width: 800px;float: left">宁波绿锦食品配送有限公司发货单 电话:0574-63098881<p/>
+                <p style="width: 800px;float: left">火烧云发货单<p/>
                 <p style="width: 200px;float: left">{:date('Y-m-d')}</p>
                 <div style="clear: both"></div>
             </div>
