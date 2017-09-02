@@ -55,6 +55,7 @@
 					<th width="25%">收货地址</th>
 					<th width="10%">状态</th>
 					<th width="10%">操作</th>
+					<th width="10%">打印</th>
 				</tr>
 		    </thead>
 		    <tbody>
@@ -137,6 +138,7 @@
 						</if>
 
 					</td>
+					<td><a class="btn print_btn">打印</a></td>
 				</tr>
 				</volist>
 			</tbody>
@@ -306,7 +308,16 @@ $(function(){
 	}
 
 
-	
+	$(document).on('click', '.print_btn', function () {
+		var id = $(this).attr('id');
+		var url = '{:U('order_info')}/id/' + id;
+
+		$.get(url, function (html) {
+			$("#print").html(html);
+			$("#print").jqprint();
+		})
+
+	});
 
 });
 
