@@ -61,7 +61,12 @@ class AntAccountLogController extends AdminController {
         }
         $page = I('get.p', 1);
         $OrderService = \Common\Service\OrderService::get_instance();
-        list($data, $count) = $OrderService->get_by_where($where, 'id desc', $page);
+        if (I('export')) {
+            list($data, $count) = $OrderService->get_by_where_all($where);
+        } else {
+            list($data, $count) = $OrderService->get_by_where($where, 'id desc', $page);
+        }
+
         $this->convert_data_order($data);
         $PageInstance = new \Think\Page($count, \Common\Service\OrderService::$page_size);
         if($total>\Common\Service\OrderService::$page_size){
@@ -76,7 +81,24 @@ class AntAccountLogController extends AdminController {
 //        $this->assign('dealer_profit_sum', $dealer_profit_sum);
 
         if (I('export')) {
-            
+
+
+            $excel_data = [];
+            $excel_data[] = ["订单号","订单单位","订单金额","支付方式","佣金","订单时间"];
+            foreach ($data as $value) {
+                $temp = [];
+                $temp[] = $value['order_no'];
+                $temp[] = isset($value['user']) ? $value['user']['entity_name'] : '';
+                $temp[] = format_price($value['sum']) . '元';
+                $temp[] = $value['pay_type_desc'];
+                $temp[] = format_price($value['dealer_profit']) . '元';
+                $temp[] = $value['create_time'];
+                $excel_data[] = $temp;
+            }
+
+
+            exportexcel($excel_data,'平台账务', '平台订单账务');
+            exit();
         }
 
         $this->display();

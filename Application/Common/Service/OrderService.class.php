@@ -77,6 +77,16 @@ class OrderService extends BaseService{
         return [$data, $count];
     }
 
+    public function get_by_where_all($where, $order = 'id desc') {
+        $NfOrder = D('NfOrder');
+        $data = [];
+        $count = $NfOrder->where($where)->order($order)->count();
+        if ($count > 0) {
+            $data = $NfOrder->where($where)->order($order)->select();
+        }
+        return [$data, $count];
+    }
+
     public function get_factory_type () {
         return \Common\Model\NfOrderModel::TYPE_ORDER_FACTORY;
     }
