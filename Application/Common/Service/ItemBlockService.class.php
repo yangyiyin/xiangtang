@@ -130,4 +130,27 @@ class ItemBlockService extends BaseService{
     }
 
 
+    public function cancel_block($iids, $type){
+        if (!isset(\Common\Model\NfItemBlockModel::$type_map[$type])) {
+            return result(FALSE, '非法type');
+        }
+        $items = $this->get_by_iids_type($iids, $type);
+
+        if ($items) {
+            $NfModel = D('Nf' . static::$name);
+            $where = [];
+            $where['id'] = ['in', result_to_array($items)];
+
+            $ret = $NfModel->where($where)->save(['deleted'=>static::$DELETED]);
+            if ($ret) {
+                return result(TRUE, '设置成功');
+            }
+        } else {
+
+        }
+        return result(FALSE, '设置失败');
+
+    }
+
+
 }

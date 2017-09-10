@@ -1,32 +1,31 @@
 
-<div style="position: relative;min-height: 580px;">
-<p style="width:1000;text-align: center;font-size: 20px;font-weight: bold;margin: 20px 0">火烧云发货单</p>
+<div style="position: relative;min-height: 380px;">
+<p style="width:750px;text-align: center;font-size: 20px;font-weight: bold;margin: 20px auto">浙江助残网(APP)送货单</p>
 
-<div style="width:1000;margin: 0 auto">
+<div style="width:750px;;margin: 0 auto">
     <div style="margin-top: 10px">
-        <p style="width: 333px;float: left">承单日期:{$vo.create_time}<p/>
-        <p style="width: 333px;float: left">订单编号:{$vo.order_no}</p>
-        <p style="width: 333px;float: left">经手人:</p>
+        <p style="width: 50%;float: left">服务站名称:{$vo.user.entity_name}<p/>
+        <p style="width: 50%;float: left">订单日期:{$vo.create_time}</p>
         <div style="clear: both"></div>
     </div>
     <div style="margin-top: 10px">
-        <p style="width: 333px;float: left">收货人:{$vo.receiving_name}<p/>
-        <p style="width: 333px;float: left">联系电话:{$vo.receiving_tel}</p>
+        <p style="width: 50%;float: left">收货人:{$vo.receiving_name}<p/>
+        <p style="width: 50%;float: left">订单编号:{$vo.order_no}</p>
         <div style="clear: both"></div>
     </div>
     <div style="margin: 10px 0">
-        <p style="width: 333px;">收货地址:{$vo.receiving_address}</p>
+        <p style="width: 50%;float: left">收货地址:{$vo.receiving_address}</p>
+        <p style="width: 50%;float: left">联系电话:{$vo.receiving_tel}</p>
+        <div style="clear: both"></div>
     </div>
 </div>
-    <table style="margin:0 auto;width:1000px;">
+    <table style="margin:0 auto;width:750px;">
         <tr>
-            <th width="22%" style="border: 1px solid #ddd;">商品全名</th>
-            <th width="14%" style="border: 1px solid #ddd;">规格</th>
-            <th width="8%" style="border: 1px solid #ddd;">单位</th>
-            <th width="14%" style="border: 1px solid #ddd;">数量</th>
-            <th width="14%" style="border: 1px solid #ddd;">单价</th>
-            <th width="14%" style="border: 1px solid #ddd;">金额</th>
-            <th width="14%" style="border: 1px solid #ddd;">备注</th>
+            <th width="30%" style="border: 1px solid #ddd;">商品全名</th>
+            <th width="10%" style="border: 1px solid #ddd;">单位</th>
+            <th width="15%" style="border: 1px solid #ddd;">数量</th>
+            <th width="15%" style="border: 1px solid #ddd;">单价</th>
+            <th width="15%" style="border: 1px solid #ddd;">金额</th>
         </tr>
         <volist name="vo['order_snapshot']" id="order_item">
             <tr>
@@ -35,12 +34,10 @@
                     <p style="display: none"><img src="{$order_item['img']}" width="20" height="20"/></p>
                     <p>{$order_item.title}</p>
                 </td>
-                <td style="border: 1px solid #ddd;"></td>
                 <td style="border: 1px solid #ddd" class="factory-price">{$order_item.unit_desc}</td>
                 <td style="border: 1px solid #ddd;" class="title">{$order_item.num}</td>
                 <td style="border: 1px solid #ddd;" class="title">{$order_item.price|format_price}元</td>
                 <td style="border: 1px solid #ddd" class="meituan-price">{$order_item.sum|format_price}元</td>
-                <td style="border: 1px solid #ddd;"></td>
 
             </tr>
         </volist>
@@ -52,23 +49,21 @@
                 合计
             </td>
             <td style="border: 1px solid #ddd;" ></td>
-            <td style="border: 1px solid #ddd;" ></td>
             <td style="border: 1px solid #ddd;" >{$vo.num}</td>
             <td style="border: 1px solid #ddd;" ></td>
             <td style="border: 1px solid #ddd;" >{$vo.sum|format_price}元</td>
-            <td style="border: 1px solid #ddd;" ></td>
         </tr>
         <tr>
             <td colspan="7">
-                <div style="width:1000px;margin: 0 auto">
+                <div style="width:750px;margin: 0 auto">
                 <div style="margin-top: 10px">
-                    <p style="width: 500px;float: left">收款金额:<p/>
-                    <p style="width: 500px;float: left">总计金额:{$vo.sum|format_price}元</p>
-                    <div style="clear: both"></div>
-                </div>
+                    <if condition="$vo.pay_type == 2">
+                        <p style="width: 50%;float: left">总计金额:{$vo.sum|format_price}元</p>
+                        <else/>
+                        <p style="width: 50%;float: left">总计金额:0</p>
+                    </if>
 
-                <div style="margin: 10px 0">
-                    <p style="width: 500px;float: left">发货人:<p/>
+                    <p style="width: 50%;float: left">收款方式:【{$vo.pay_type_desc}】<p/>
                     <div style="clear: both"></div>
                 </div>
             </div>
@@ -78,13 +73,13 @@
 
 
 
-    <div style="position: absolute;bottom: -100px;left: 25px">
-        <div style="height: 1px;width: 1000px;margin: 0 auto;border-top: 1px solid #000"></div>
-        <div style="width:1000px;margin: 0 auto;">
+    <div style="position: absolute;bottom: -100px;left: 50%;margin-left: -375px">
+        <div style="height: 1px;width: 750px;margin: 0 auto;border-top: 1px solid #000"></div>
+        <div style="width:750px;margin: 0 auto;">
             <div style="margin: 10px 0">
 
-                <p style="width: 800px;float: left">火烧云发货单<p/>
-                <p style="width: 200px;float: left">{:date('Y-m-d')}</p>
+                <p style="width: 500px;float: left">公司地址:金华市金东区李渔东路2500号广润翰城4幢165-168<p/>
+                <p style="width: 250px;float: left;text-align: right">电话0579-82206688 82206607</p>
                 <div style="clear: both"></div>
             </div>
         </div>

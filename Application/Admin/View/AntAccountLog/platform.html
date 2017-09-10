@@ -10,12 +10,34 @@
 		</div>
 	    <div class="search_type cc mb10 search-form">
 	      <div class="mb10">
-			  &nbsp;用户id：
-			  <input type="text" class="input length_2" name="uid" style="width:100px;" value="{:I('uid')}" >
+			  &nbsp;订单号：
+			  <input type="text" class="input length_2" name="order_no" style="width:100px;" value="{:I('order_no')}" >
+
+			  &nbsp;服务站名称：
+			  <input type="text" class="input length_2" name="entity_name" style="width:100px;" value="{:I('entity_name')}" >
+			  &nbsp;支付方式：
+
+			  <php>
+				  $all = (I('get.pay_type'))?'':'selected';
+				  $first = (I('get.pay_type')==2)?'selected':'';
+				  $second = (I('get.pay_type')==3)?'selected':'';
+				  $third = (I('get.pay_type')==4)?'selected':'';
+				  $forth = (I('get.pay_type')==5)?'selected':'';
+
+			  </php>
+			  <select class="select_2 select" id="sch-sort-txt" name="pay_type">
+				  <option value="" {$all}>全部</option>
+				  <option value="2" {$first}>线下支付</option>
+				  <option value="3" {$second}>佣金</option>
+				  <option value="4" {$third}>支付宝</option>
+				  <option value="5" {$forth}>微信</option>
+
+			  </select>
+
 			  时间：
-			  <input type="text" name="create_begin" id="time-start" class="input length_2" value="{:I('create_begin')}" style="width:80px;" autocomplete="off" placeholder="起始时间">
+			  <input type="text" name="create_begin" id="time-start" class="input length_2" value="{$create_begin}" style="width:80px;" autocomplete="off" placeholder="起始时间">
 			  -
-			  <span class="input-append date" id="datetimepicker"><input type="text" id="time-end" name="create_end" class="input input" value="{:I('create_end')}" placeholder="结束时间" /><span class="add-on" style="background:none;border:none;"><i class="icon-th"></i></span></span>
+			  <span class="input-append date" id="datetimepicker"><input type="text" id="time-end" name="create_end" class="input input" value="{$create_end}" placeholder="结束时间" /><span class="add-on" style="background:none;border:none;"><i class="icon-th"></i></span></span>
 			  &nbsp<a class="u-btn" href="javascript:;" id="search" url="{:U('platform')}">确定</a>
 	        <!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
 	        </span>
@@ -26,28 +48,31 @@
 			<table class="" width="100%">
 		    <thead>
 		        <tr>
-					<th>交易号</th>
-					<th>订单id</th>
-					<th>总金额</th>
-					<th>用户id</th>
-					<th>创建时间</th>
+					<th>订单号</th>
+					<th>订单单位</th>
+					<th>订单金额</th>
+					<th>支付方式</th>
+					<th>佣金</th>
+					<th>订单时间</th>
 				</tr>
 		    </thead>
 		    <tbody>
 				<volist name="list" id="vo">
 				<tr>
-					<td>{$vo.pay_no} </td>
+					<td>{$vo.order_no} </td>
 
 					<td>
-						{$vo.oid}
+						{$vo.user.entity_name}
 					</td>
 					<td>
-						{$vo.sum|format_price}
+						{$vo.sum|format_price}元
 					</td>
 					<td>
-						{$vo.uid}
+						{$vo.pay_type_desc}
 					</td>
-
+					<td>
+						{$vo.dealer_profit|format_price}元
+					</td>
 					<td>
 						{$vo.create_time}
 					</td>
@@ -59,9 +84,7 @@
 		<div class="btn_wrap">
 			<div class="btn_wrap_pd">
 				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
-				<a href="javascript:;">总计金额(元):{$total_sum|format_price}</a>
-				<a href="javascript:;">总计交易数:{$total_pay_num}</a>
-				<a href="javascript:;">总计订单数:{$total_order_num}</a>
+				<a class="btn btn_small search" href="javascript:;" url="{:U('platform')}/export/1">导出excel</a>
 				<a href="javascript:;">总计起止时间:{$create_begin} 至 {$create_end}</a>
 		    </div>
 		</div>
@@ -94,6 +117,21 @@ $(function(){
         }else{
             url += '?' + query;
         }
+		window.location.href = url;
+	});
+
+	$(".search").click(function(){
+		var url = $(this).attr('url');
+		var query  = $('.search-form').find('input,select').serialize();
+		query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+		query = query.replace(/^&/g,'');
+
+
+		if( url.indexOf('?')>0 ){
+			url += '&' + query;
+		}else{
+			url += '?' + query;
+		}
 		window.location.href = url;
 	});
 

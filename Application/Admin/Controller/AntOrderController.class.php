@@ -20,8 +20,21 @@ class AntOrderController extends AdminController {
 
 
         if (I('get.order_no')) {
-            $where['order_no'] = ['EQ', I('get.order_no')];
+            $where['order_no'] = ['LIKE', '%' . I('get.order_no') . '%'];
         }
+
+        if (I('get.entity_name')) {
+            $where_user = [];
+            $where_user['entity_name'] = ['LIKE', '%' . I('get.entity_name') . '%'];
+            $UserService = \Common\Service\UserService::get_instance();
+            list($users,$count) = $UserService->get_by_where($where_user);
+            if ($users) {
+                $where['uid'] = ['in', result_to_array($users)];
+            } else {
+                $where['uid'] = ['in', [0]];
+            }
+        }
+
         if (I('get.status')) {
             $where['status'] = ['EQ', I('get.status')];
         }
@@ -121,6 +134,9 @@ class AntOrderController extends AdminController {
             $user_courier = $userCourierService->get_by_uids($uids);
             $user_courier_map = result_to_map($user_courier, 'uid');
 
+            $UserService = \Common\Service\UserService::get_instance();
+            $users = $UserService->get_by_ids($uids);
+            $users_map = result_to_map($users);
             $OrderExpressService = \Common\Service\OrderExpressService::get_instance();
             $expresses = $OrderExpressService->get_by_oids($order_ids);
             $expresses_map = result_to_map($expresses, 'oid');
@@ -141,6 +157,9 @@ class AntOrderController extends AdminController {
                 $data[$key]['courier'] = isset($user_courier_map[$_item['uid']]) ? $user_courier_map[$_item['uid']] : [];
                 $data[$key]['express'] = isset($expresses_map[$_item['id']]) ? $expresses_map[$_item['id']] : [];
                 $data[$key]['pay_type_desc'] = isset($pay_type_map[$_item['pay_type']]) ? $pay_type_map[$_item['pay_type']] : '未知支付方式';
+                $data[$key]['user'] = isset($users_map[$_item['uid']]) ? $users_map[$_item['uid']] : [];
+
+
             }
             //var_dump($data);die();
         }

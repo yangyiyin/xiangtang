@@ -8,6 +8,14 @@
 
 	<script type="text/javascript" src="__STATIC__/popwin.js"></script>
 <style type="text/css">#dialog{display:none;}</style>
+
+
+	<style>
+
+		#pic{position: absolute; top:0;left: 0;right:0;bottom: 0;margin: auto auto;width: 400px; height: 400px;}
+	</style>
+
+
 	<div class="g-wrap">
 		<!-- 按钮工具栏 -->
 		<div class="u-tab">
@@ -64,7 +72,7 @@
 										<input type="hidden" value="{$product.img}" name="img" id="cover_id_1"/>
 										<div class="upload-img-box">
 											<notempty name="product['img']">
-												<div class="upload-pre-item"><img src="{$product['img']|get_cover}" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic()"><i class="fa fa-times-circle u-close"></i></a></div>
+												<div class="upload-pre-item"><img class="pro_img" src="{$product['img']|get_cover}" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic()"><i class="fa fa-times-circle u-close"></i></a></div>
 											</notempty>
 										</div>
 									</div>
@@ -123,7 +131,7 @@
 												$("#cover_id_1").val(data.path);
 												src = data.url || '__ROOT__' + data.path
 												$("#cover_id_1").parent().find('.upload-img-box').html(
-														'<div class="upload-pre-item j_1"><img src="' + src + '" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic()"><i class="fa fa-times-circle u-close"></i></a></div>'
+														'<div class="upload-pre-item j_1"><img class="pro_img" src="' + src + '" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic()"><i class="fa fa-times-circle u-close"></i></a></div>'
 												);
 											} else {
 												updateAlert(data.info);
@@ -306,7 +314,19 @@ $(function(){
 
 			}
 
+
+
 		});
+
+		$(document).on('mouseover','.pro_img',function(){
+			console.log(123);
+			$("body").append("<p id='pic'><img src='"+$(this).attr("src")+"' id='pic1'></p>");
+
+		});
+		$(document).on('mouseout','.pro_img',function(){
+			$("#pic").remove();
+		});
+		
 		function init_skus() {
 			var sku_html = '<tr>'+
 					'<td>属性</td>'+
@@ -389,6 +409,8 @@ $(function(){
 		}
 		return sku_temp;
 	}
+
+
 	
 </script>
 </block>

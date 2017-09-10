@@ -47,6 +47,20 @@ class AntNeedsController extends AdminController {
             $where['type'] = ['EQ', I('get.type')];
         }
 
+        if (I('get.entity_name')) {
+            $where_user = [];
+            $where_user['entity_name'] = ['LIKE', '%' . I('get.entity_name') . '%'];
+            $UserService = \Common\Service\UserService::get_instance();
+            list($users,$count) = $UserService->get_by_where($where_user);
+            if ($users) {
+                $where['uid'] = ['in', result_to_array($users)];
+            } else {
+                $where['uid'] = ['in', [0]];
+            }
+        }
+
+
+
         $page = I('get.p', 1);
         list($data, $count) = $this->NeedsService->get_by_where($where, 'id desc', $page);
         $this->convert_data($data);
@@ -123,13 +137,18 @@ class AntNeedsController extends AdminController {
         $needs_types  = $NeedsTypesService->get_by_ids($types);
         $needs_types_map = result_to_map($needs_types);
         //var_dump($needs_types_map);die();
+
+        $uids = result_to_array($data, 'uid');
+        $UserService = \Common\Service\UserService::get_instance();
+        $users = $UserService->get_by_ids($uids);
+        $users_map = result_to_map($users);
         $new_data = [];
         foreach ($data as $da) {
 
             if (isset($needs_types_map[$da['type']])) {
                 $da['type'] = $needs_types_map[$da['type']];
             }
-
+            $da['user'] = isset($users_map[$da['uid']]) ? $users_map[$da['uid']] : [];
             $new_data[] = $da;
         }
 

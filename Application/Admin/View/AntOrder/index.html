@@ -13,6 +13,10 @@
 			  &nbsp;订单编号：
 			  <input type="text" class="input length_2" name="order_no" style="width:100px;" value="{:I('order_no')}" >
 
+			  &nbsp;服务站名称：
+			  <input type="text" class="input length_2" name="entity_name" style="width:100px;" value="{:I('entity_name')}" >
+
+
 			  <span class="mr20">状态：
         	<php>
         		$all = (I('get.status'))?'selected':'';
@@ -68,6 +72,10 @@
 						<p class="short_info">总价:{$vo.sum|format_price}元</p>
 						<p class="short_info">总数量:{$vo.num}</p>
 						<p class="short_info">佣金:{$vo.dealer_profit|format_price}元</p>
+						<if condition="$vo['user']['type'] == 2">
+							<p class="short_info">服务站:{$vo.user.entity_name}</p>
+						</if>
+
 						<p class="short_info">创建时间:{$vo.create_time}</p>
 					</td>
 

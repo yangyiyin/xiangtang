@@ -23,8 +23,14 @@ class AntItemController extends AdminController {
         list($services, $count) = $ServicesService->get_by_where_all([]);
         $this->assign('services', $services);
         $where = [];
-        if (I('get.cid')) {
-            $where['cid'] = ['EQ', I('get.cid')];
+        if ($cid = I('get.cid')) {
+
+            //获取cid下的所有cids
+            $CategoryService = \Common\Service\CategoryService::get_instance();
+            $cids = $CategoryService->get_cids_by_cid($cid);
+
+            $where['cid'] = ['IN', $cids];
+
         }
         if (I('get.status')) {
             $where['status'] = ['EQ', I('get.status')];
@@ -357,6 +363,27 @@ class AntItemController extends AdminController {
         }
         action_user_log('批量设置活动商品');
         $this->success('设置成功！');
+    }
+
+    public function cancel_block() {
+        $ids = I('post.ids');
+        $id = I('get.id');
+        $type = I('get.type');
+        $ItemBlockService = \Common\Service\ItemBlockService::get_instance();
+
+        if ($id) {
+            $ret = $ItemBlockService->cancel_block([$id], $type);
+        }
+
+        if ($ids) {
+            $ret = $ItemBlockService->cancel_block($ids, $type);
+        }
+
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        action_user_log('批量取消活动商品');
+        $this->success('取消成功！');
     }
 
 }

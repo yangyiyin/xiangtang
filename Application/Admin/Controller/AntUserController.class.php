@@ -46,6 +46,10 @@ class AntUserController extends AdminController {
             $where['status'] = ['LIKE', '%' . I('get.user_name') . '%'];
         }
 
+        if (I('get.entity_name')) {
+            $where['entity_name'] = ['LIKE', '%' . I('get.entity_name') . '%'];
+        }
+
         $page = I('get.p', 1);
         list($data, $count) = $this->UserService->get_by_where($where, 'id desc', $page);
         $this->convert_data($data);

@@ -32,6 +32,15 @@ class UserService extends BaseService{
         return $NfUser->where('id = ' . $id)->find();
     }
 
+    public function get_by_ids($ids) {
+        if (!check_num_ids($ids)) {
+            return result(FALSE, 'ids不能为空');
+        }
+        $NfUser = D('NfUser');
+        $where = [];
+        $where['id'] = ['in', $ids];
+        return $NfUser->where($where)->select();
+    }
 
     public function get_by_tel($tel, $status = 1) {
         $NfUser = D('NfUser');
