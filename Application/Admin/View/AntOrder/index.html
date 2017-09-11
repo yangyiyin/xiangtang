@@ -55,8 +55,8 @@
 
 					<th width="10%">订单编号</th>
 					<th width="20%">基本信息</th>
-					<th width="25%">详情</th>
-					<th width="25%">收货地址</th>
+					<th width="35%">详情</th>
+					<th width="15%">收货地址</th>
 					<th width="10%">状态</th>
 					<th width="10%">操作</th>
 					<th width="10%">打印</th>
@@ -64,7 +64,7 @@
 		    </thead>
 		    <tbody>
 				<volist name="list" id="vo">
-				<tr>
+				<tr style="border-bottom: 1px solid #999">
 		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
 					<td>{$vo.order_no} </td>
 					<td>
