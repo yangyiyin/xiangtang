@@ -1,5 +1,5 @@
 
-<div style="position: relative;min-height: 380px;">
+<div style="position: relative;min-height: 200px;">
 <p style="width:750px;text-align: center;font-size: 20px;font-weight: bold;margin: 20px auto">浙江助残网(APP)送货单</p>
 
 <div style="width:750px;;margin: 0 auto">
@@ -58,9 +58,9 @@
                 <div style="width:750px;margin: 0 auto">
                 <div style="margin-top: 10px">
                     <if condition="$vo.pay_type == 2">
-                        <p style="width: 50%;float: left">总计金额:{$vo.sum|format_price}元</p>
+                        <p style="width: 50%;float: left">应收金额:{$vo.sum|format_price}元</p>
                         <else/>
-                        <p style="width: 50%;float: left">总计金额:0</p>
+                        <p style="width: 50%;float: left">应收金额:0</p>
                     </if>
 
                     <p style="width: 50%;float: left">收款方式:【{$vo.pay_type_desc}】<p/>
