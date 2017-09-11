@@ -131,6 +131,8 @@ class OrderPre_order extends BaseApi{
                 $tmp['sku_id'] = $_item->sku_id;
                 $tmp['price'] = $_item->price;
                 $tmp['sum'] = $_item->num * $_item->price;
+                $tmp['sum_dealer_profit'] = $_item->num * $_item->dealer_profit;
+
                 $data_order_item_pre[] = $tmp;
             }
             $this->OrderItemPreService->add_batch($data_order_item_pre);

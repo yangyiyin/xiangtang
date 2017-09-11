@@ -87,6 +87,7 @@
 								<th width="20%">单价</th>
 								<th width="20%">数量</th>
 								<th width="20%">总价</th>
+								<th width="20%">佣金</th>
 							</tr>
 							<volist name="vo['order_snapshot']" id="order_item">
 							<tr>
@@ -99,7 +100,7 @@
 									<td style="border: 1px solid #ddd;" class="title">{$order_item.price|format_price}元</td>
 									<td style="border: 1px solid #ddd" class="factory-price">{$order_item.num}{$order_item.unit_desc}</td>
 									<td style="border: 1px solid #ddd" class="meituan-price">{$order_item.sum|format_price}元</td>
-
+								<td style="border: 1px solid #ddd" class="meituan-price">{$order_item.sum_dealer_profit|format_price}元</td>
 
 							</tr>
 							</volist>

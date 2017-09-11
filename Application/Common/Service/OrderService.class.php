@@ -406,6 +406,7 @@ class OrderService extends BaseService{
             $temp['num'] = $_item['num'];
             $temp['sum'] = $_item['sum'];
             $temp['price'] = $_item['price'];
+            $temp['sum_dealer_profit'] = $_item['sum_dealer_profit'];
             $data_order_items[] = $temp;
         }
         $OrderItemService = \Common\Service\OrderItemService::get_instance();
@@ -438,6 +439,7 @@ class OrderService extends BaseService{
             $_item['sku_id'] = (int) $_item['sku_id'];
             $_item['price'] = (int) $_item['price'];
             $_item['sum'] = (int) $_item['sum'];
+            $_item['sum_dealer_profit'] = (int) $_item['sum_dealer_profit'];
             $_item['num'] = (int) $_item['num'];
             $_item['title'] = $items_map[$_item['iid']]['title'];
             $_item['unit_desc'] = $items_map[$_item['iid']]['unit_desc'];
@@ -448,7 +450,7 @@ class OrderService extends BaseService{
                 $_item['props'] = $sku_props_map[$_item['sku_id']];
             }
 
-            $snap[] = convert_obj($_item, 'id=iid,pid,sku_id,title,img,desc,unit_desc,price,num,sum,props');
+            $snap[] = convert_obj($_item, 'id=iid,pid,sku_id,title,img,desc,unit_desc,price,num,sum,props,sum_dealer_profit');
         }
         $snap_content = json_encode($snap);
         $OrderSnapshotService = \Common\Service\OrderSnapshotService::get_instance();
