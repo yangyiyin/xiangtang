@@ -96,7 +96,20 @@ $(function(){
         }
 		window.location.href = url;
 	});
+	$(".search").click(function(){
+		var url = $(this).attr('url');
+		var query  = $('.search-form').find('input,select').serialize();
+		query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+		query = query.replace(/^&/g,'');
 
+
+		if( url.indexOf('?')>0 ){
+			url += '&' + query;
+		}else{
+			url += '?' + query;
+		}
+		window.location.href = url;
+	});
 	/* 状态搜索子菜单 */
 	$(".search-form").find(".drop-down").hover(function(){
 		$("#sub-sch-menu").removeClass("hidden");
