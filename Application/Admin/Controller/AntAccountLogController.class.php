@@ -230,7 +230,16 @@ class AntAccountLogController extends AdminController {
         $this->assign('create_begin', $create_begin);
         $this->assign('create_end', $create_end);
         $page = I('get.p', 1);
-        list($data, $count) = $this->AccountLogService->get_by_where($where, 'id desc', $page);
+        //list($data, $count) = $this->AccountLogService->get_by_where($where, 'id desc', $page);
+
+        if (I('export')) {
+            list($data, $count) = $this->AccountLogService->get_by_where_all($where);
+        } else {
+            list($data, $count) = $this->AccountLogService->get_by_where($where, 'id desc', $page);
+        }
+
+
+
         list($sum,$total_pay_num) = $this->AccountLogService->get_totals($where);
         $data = $this->convert_commission_data($data);
         $PageInstance = new \Think\Page($count, \Common\Service\AccountLogService::$page_size);
@@ -241,6 +250,27 @@ class AntAccountLogController extends AdminController {
 
         $this->assign('list', $data);
         $this->assign('page_html', $page_html);
+
+        if (I('export')) {
+
+
+            $excel_data = [];
+            $excel_data[] = ["用户id","服务站名称","明细","备注","发生时间"];
+            foreach ($data as $value) {
+                $temp = [];
+                $temp[] = $value['uid'];
+                $temp[] = isset($value['user']) ? $value['user']['entity_title'] : '';
+                $temp[] = $value['info'];
+                $temp[] = $value['remark'];
+                $temp[] = $value['create_time'];
+                $excel_data[] = $temp;
+            }
+
+
+            exportexcel($excel_data,'', '佣金明细');
+            exit();
+        }
+
 
         $this->display();
     }
