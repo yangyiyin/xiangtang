@@ -19,7 +19,7 @@
 			  &nbsp;名称：
 			  <input type="text" class="input length_2" name="title" style="width:100px;" value="{:I('title')}" >
  				&nbsp;服务站名称：
-			  <input type="text" class="input length_2" name="entity_name" style="width:100px;" value="{:I('entity_name')}" >
+			  <input type="text" class="input length_2" name="entity_title" style="width:100px;" value="{:I('entity_title')}" >
 
 			  <span class="mr20">状态：
         	<php>
@@ -64,7 +64,7 @@
 				<tr>
 		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
 					<td>{$vo.id} </td>
-					<td>{$vo.user.entity_name} </td>
+					<td>{$vo.user.entity_title} </td>
 					<td>
 						{$vo.type.title}
 					</td>

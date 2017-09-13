@@ -23,9 +23,9 @@ class AntOrderController extends AdminController {
             $where['order_no'] = ['LIKE', '%' . I('get.order_no') . '%'];
         }
 
-        if (I('get.entity_name')) {
+        if (I('get.entity_title')) {
             $where_user = [];
-            $where_user['entity_name'] = ['LIKE', '%' . I('get.entity_name') . '%'];
+            $where_user['entity_title'] = ['LIKE', '%' . I('get.entity_title') . '%'];
             $UserService = \Common\Service\UserService::get_instance();
             list($users,$count) = $UserService->get_by_where($where_user);
             if ($users) {

@@ -19,9 +19,9 @@ class AntAccountLogController extends AdminController {
             $where['order_no'] = ['LIKE', '%' . I('get.order_no') . '%'];
         }
 
-        if (I('get.entity_name')) {
+        if (I('get.entity_title')) {
             $where_user = [];
-            $where_user['entity_name'] = ['LIKE', '%' . I('get.entity_name') . '%'];
+            $where_user['entity_title'] = ['LIKE', '%' . I('get.entity_title') . '%'];
             $UserService = \Common\Service\UserService::get_instance();
             list($users,$count) = $UserService->get_by_where($where_user);
             if ($users) {
@@ -88,7 +88,7 @@ class AntAccountLogController extends AdminController {
             foreach ($data as $value) {
                 $temp = [];
                 $temp[] = $value['order_no'];
-                $temp[] = isset($value['user']) ? $value['user']['entity_name'] : '';
+                $temp[] = isset($value['user']) ? $value['user']['entity_title'] : '';
                 $temp[] = format_price($value['sum']) . '元';
                 $temp[] = $value['pay_type_desc'];
                 $temp[] = format_price($value['dealer_profit']) . '元';
@@ -214,9 +214,9 @@ class AntAccountLogController extends AdminController {
             $where[] = ['uid' => ['eq', I('get.uid')]];
         }
 
-        if (I('get.entity_name')) {
+        if (I('get.entity_title')) {
             $where_user = [];
-            $where_user['entity_name'] = ['LIKE', '%' . I('get.entity_name') . '%'];
+            $where_user['entity_title'] = ['LIKE', '%' . I('get.entity_title') . '%'];
             $UserService = \Common\Service\UserService::get_instance();
             list($users,$count) = $UserService->get_by_where($where_user);
             if ($users) {

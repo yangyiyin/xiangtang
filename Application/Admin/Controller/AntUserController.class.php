@@ -46,8 +46,8 @@ class AntUserController extends AdminController {
             $where['status'] = ['LIKE', '%' . I('get.user_name') . '%'];
         }
 
-        if (I('get.entity_name')) {
-            $where['entity_name'] = ['LIKE', '%' . I('get.entity_name') . '%'];
+        if (I('get.entity_title')) {
+            $where['entity_title'] = ['LIKE', '%' . I('get.entity_title') . '%'];
         }
 
         $page = I('get.p', 1);

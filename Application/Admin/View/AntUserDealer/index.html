@@ -32,7 +32,7 @@
 			用户id：
 	        <input type="text" class="input length_2" name="id" style="width:50px;" value="{:I('id')}" >
 					服务站名称：
-	        <input type="text" class="input length_2" name="entity_name" style="width:50px;" value="{:I('entity_name')}" >
+	        <input type="text" class="input length_2" name="entity_title" style="width:50px;" value="{:I('entity_title')}" >
 					创建时间：
 	        <input type="text" name="create_begin" id="time-start" class="input length_2" value="{:I('create_begin')}" style="width:80px;" autocomplete="off" placeholder="起始时间">-<span class="input-append date" id="datetimepicker"><input type="text" id="time-end" name="create_end" class="input input" value="{:I('create_end')}" placeholder="结束时间" /><span class="add-on" style="background:none;border:none;"><i class="icon-th"></i></span></span>
 	        &nbsp;
@@ -60,7 +60,7 @@
 				<tr>
 		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
 					<td>
-						<p class="short_info">用户服务站名称:{$vo.entity_name}</p>
+						<p class="short_info">用户服务站名称:{$vo.entity_title}</p>
 						<p class="short_info">注册手机号:{$vo.user_tel}</p>
 						<p style="display: none" class="short_info"><a target="_blank" class="u-btn" href="{:U('entity_info')}/id/{$vo.id}" class="confirm J_ajax_get">查看单位信息</a></p>
 					</td>

@@ -13,7 +13,7 @@
 			  &nbsp;用户id：
 			  <input type="text" class="input length_2" name="uid" style="width:100px;" value="{:I('uid')}" >
 			  &nbsp;服务站名称：
-			  <input type="text" class="input length_2" name="entity_name" style="width:100px;" value="{:I('entity_name')}" >
+			  <input type="text" class="input length_2" name="entity_title" style="width:100px;" value="{:I('entity_title')}" >
 			  时间：
 			  <input type="text" name="create_begin" id="time-start" class="input length_2" value="{:I('create_begin')}" style="width:80px;" autocomplete="off" placeholder="起始时间">
 			  -
@@ -42,7 +42,7 @@
 						{$vo.uid}
 					</td>
 					<td>
-						{$vo.user.entity_name}
+						{$vo.user.entity_title}
 					</td>
 					<td>
 						{$vo.info}

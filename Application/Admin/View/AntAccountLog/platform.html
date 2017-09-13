@@ -14,7 +14,7 @@
 			  <input type="text" class="input length_2" name="order_no" style="width:100px;" value="{:I('order_no')}" >
 
 			  &nbsp;服务站名称：
-			  <input type="text" class="input length_2" name="entity_name" style="width:100px;" value="{:I('entity_name')}" >
+			  <input type="text" class="input length_2" name="entity_title" style="width:100px;" value="{:I('entity_title')}" >
 			  &nbsp;支付方式：
 
 			  <php>
@@ -62,7 +62,7 @@
 					<td>{$vo.order_no} </td>
 
 					<td>
-						{$vo.user.entity_name}
+						{$vo.user.entity_title}
 					</td>
 					<td>
 						{$vo.sum|format_price}元
