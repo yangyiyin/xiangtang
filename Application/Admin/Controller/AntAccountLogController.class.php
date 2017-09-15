@@ -200,16 +200,19 @@ class AntAccountLogController extends AdminController {
         $create_begin = I('get.create_begin');
         $create_end = I('get.create_end');
 
-        if (!$create_begin) {
-            $create_begin = date('Y-m-d', time()-7*24*3600);
+//        if (!$create_begin) {
+//            $create_begin = date('Y-m-d', time()-7*24*3600);
+//        }
+//
+//        if (!$create_end) {
+//            $create_end = date('Y-m-d', time()+7*24*3600);
+//        }
+        if ($create_begin) {
+            $where[] = ['create_time' => ['egt', $create_begin]];
         }
-
-        if (!$create_end) {
-            $create_end = date('Y-m-d', time()+7*24*3600);
+        if ($create_end) {
+            $where[] = ['create_time' => ['elt', $create_end]];
         }
-
-        $where[] = ['create_time' => ['egt', $create_begin]];
-        $where[] = ['create_time' => ['elt', $create_end]];
         if (I('get.uid')) {
             $where[] = ['uid' => ['eq', I('get.uid')]];
         }
