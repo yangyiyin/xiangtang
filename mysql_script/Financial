@@ -808,3 +808,72 @@ create table shopy_financial_department_uid (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+
+
+#银行信贷(新)
+create table shopy_financial_bank_credit_new (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT '0' COMMENT '用户id',
+  `all_name` VARCHAR(50) DEFAULT '' COMMENT '公司全称',
+  `filler_man` VARCHAR(50) DEFAULT ''  COMMENT '填报人',
+  `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
+  `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
+
+  Loans decimal(7,2) NOT NULL DEFAULT 0,	#贷款余额	亿元
+	Loans_A decimal(7,2) NOT NULL DEFAULT 0,	#小企业贷款
+	Loans_B decimal(7,2) NOT NULL DEFAULT 0,	#担保公司担保贷款
+	Loans_C decimal(7,2) NOT NULL DEFAULT 0,	#政府平台公司贷款
+	Loans_D decimal(7,2) NOT NULL DEFAULT 0,	#涉农贷款
+	Loans_D1 decimal(7,2) NOT NULL DEFAULT 0,	#农业贷款
+	Loans_D2 decimal(7,2) NOT NULL DEFAULT 0,	#农户贷款
+	Loans_E decimal(7,2) NOT NULL DEFAULT 0,	#固定资产贷款
+	Loans_F decimal(7,2) NOT NULL DEFAULT 0,	#房地产开发贷款
+	Loans_G decimal(7,2) NOT NULL DEFAULT 0,	#个人住房贷款
+	Loans_G1 decimal(7,2) NOT NULL DEFAULT 0,	#个人住房按揭贷款
+	Loans_H decimal(7,2) NOT NULL DEFAULT 0,	#个人经营性贷款
+	Loans_I decimal(7,2) NOT NULL DEFAULT 0,	#票据
+	Loans_I1 decimal(7,2) NOT NULL DEFAULT 0,	#银票贴现
+	Loans_I2 decimal(7,2) NOT NULL DEFAULT 0,	#商票贴现
+	Loans_J decimal(7,2) NOT NULL DEFAULT 0,	#节能减排
+	Loans_K decimal(7,2) NOT NULL DEFAULT 0,	#高新技术
+
+	Deposits decimal(7,2) NOT NULL DEFAULT 0,		#存款余额
+	Deposits_A decimal(7,2) NOT NULL DEFAULT 0,		#对公
+	Deposits_A1 decimal(7,2) NOT NULL DEFAULT 0,	#活期
+	Deposits_A2 decimal(7,2) NOT NULL DEFAULT 0,	#定期
+	Deposits_B decimal(7,2) NOT NULL DEFAULT 0,		#储蓄
+	Deposits_B1 decimal(7,2) NOT NULL DEFAULT 0,	#活期储蓄
+  Deposits_B2 decimal(7,2) NOT NULL DEFAULT 0,	#定期储蓄
+	Deposits_C decimal(7,2) NOT NULL DEFAULT 0,		#保证金
+	Deposits_C1 decimal(7,2) NOT NULL DEFAULT 0,	#开证保证金
+	Deposits_C2 decimal(7,2) NOT NULL DEFAULT 0,	#签发银票保证金
+	Deposits_C3 decimal(7,2) NOT NULL DEFAULT 0,	#商票保贴保证金
+	Deposits_C4 decimal(7,2) NOT NULL DEFAULT 0,	#开立保函保证金
+	Deposits_D decimal(7,2) NOT NULL DEFAULT 0,		#其他存款
+	Deposits_D1 decimal(7,2) NOT NULL DEFAULT 0,	#同业存款
+	Deposits_D2 decimal(7,2) NOT NULL DEFAULT 0,	#银行承税质押的存款
+Deposits_D3 decimal(7,2) NOT NULL DEFAULT 0,	#转(再)贴现
+Deposits_D4 decimal(7,2) NOT NULL DEFAULT 0,	#银行对外担保和承诺金额
+Deposits_D41 decimal(7,2) NOT NULL DEFAULT 0,	#银行开出保函
+Deposits_D42 decimal(7,2) NOT NULL DEFAULT 0,	#银行承税汇票余额
+Deposits_D43 decimal(7,2) NOT NULL DEFAULT 0,	#信用证余额
+Deposits_D44 decimal(7,2) NOT NULL DEFAULT 0,	#其他对外承诺
+Deposits_D5 decimal(7,2) NOT NULL DEFAULT 0,	#信贷资产
+Deposits_D51 decimal(7,2) NOT NULL DEFAULT 0,	#证券化
+Deposits_D52 decimal(7,2) NOT NULL DEFAULT 0,	#贷款转让
+Deposits_D53 decimal(7,2) NOT NULL DEFAULT 0,	#银信合作转让
+Deposits_D6 decimal(7,2) NOT NULL DEFAULT 0,	#委托代理贷款
+Deposits_D61 decimal(7,2) NOT NULL DEFAULT 0,	#委托贷款
+Deposits_D62 decimal(7,2) NOT NULL DEFAULT 0,	#代理他行
+Deposits_D63 decimal(7,2) NOT NULL DEFAULT 0,	#代理他行集约票据
+Deposits_D7 decimal(7,2) NOT NULL DEFAULT 0,	#理财业务余额
+Deposits_D8 decimal(7,2) NOT NULL DEFAULT 0,	#国际业务结算量
+Deposits_D9 decimal(7,2) NOT NULL DEFAULT 0,	#账面利润
+Deposits_D10 decimal(7,2) NOT NULL DEFAULT 0,	#中间业务收入
+Deposits_D11 decimal(7,2) NOT NULL DEFAULT 0,	#利息收入
+
+  `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
