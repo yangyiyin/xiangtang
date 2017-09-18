@@ -317,9 +317,273 @@
                     $info[$field]['b'] = $arr[1];
                     $info[$field]['c'] = $arr[2];
                 }
+                if (count($arr) == 4) {
+                    $info[$field] = [];
+                    $info[$field]['a'] = $arr[0];
+                    $info[$field]['b'] = $arr[1];
+                    $info[$field]['c'] = $arr[2];
+                    $info[$field]['d'] = $arr[3];
+                }
+
+                if (count($arr) == 5) {
+                    $info[$field] = [];
+                    $info[$field]['a'] = $arr[0];
+                    $info[$field]['b'] = $arr[1];
+                    $info[$field]['c'] = $arr[2];
+                    $info[$field]['d'] = $arr[3];
+                    $info[$field]['e'] = $arr[4];
+                }
+
             }
         }
      }
+
+
+
+     /**
+      * 信贷情况月报
+      */
+     public function quarterly_quantity_a_new_submit_monthly()
+     {
+         $this->local_service = \Common\Service\BankQuaterlyQuantityANewService::get_instance();
+         if (IS_POST) {
+             $id = I('get.id');
+             $data = I('post.');
+             $data['uid'] = UID;
+             if (!$this->is_history) {
+
+                 $data['year'] = $data['year'] ? $data['year'] : intval(date('Y'));
+                 $data['month'] = $data['month'] ? $data['month'] : intval(date('m'));
+             } else {
+                 $time = intval(strtotime($data['year'] . '-' . $data['month']));
+                 if (!$time || $time > strtotime('201712')) {
+                     $this->error('历史数据时间必须小于201712');
+                 }
+             }
+
+            // var_dump($data);
+             foreach ($data as $field => $value) {
+                 if (is_array($value)) {
+                     if (count($value) == 4 && is_numeric($value[0]) && is_numeric($value[1]) && is_numeric($value[2])&& is_numeric($value[3])){
+                         $data[$field] = join('|', $value);
+                     } else {
+                         $data[$field] = '';
+                     }
+                 }
+             }
+
+
+             if ($id) {
+                 $ret = $this->local_service->update_by_id($id, $data);
+                 if ($ret->success) {
+                     action_user_log('修改银行贷款利率执行水平监测季报表');
+                     $this->success('修改成功！');
+                 } else {
+                     $this->error($ret->message);
+                 }
+             } else {
+                 $check_ret = $this->check_by_month_year($data['year'], $data['month'], $data['all_name']);
+                 if ($check_ret === true){
+                     //新增 不做处理
+                 } elseif($check_ret) {
+                     if ($data['force_modify']) {//强制修改
+                         $id = $check_ret['id'];
+                         $ret = $this->local_service->update_by_id($id, $data);
+                         if ($ret->success) {
+                             action_user_log('修改银行贷款利率执行水平监测季报表');
+                             $this->success('修改成功！');
+                         } else {
+                             $this->error($ret->message);
+                         }
+                     } else {
+                         $this->error('该月已提交报表,请不要重复提交');
+                     }
+                 } else {
+                     $this->error('参数错误');
+                 }
+                // var_dump($data);die();
+                 $ret = $this->local_service->add_one($data);
+                 if ($ret->success) {
+                     action_user_log('新增银行贷款利率执行水平监测季报表');
+                     $this->success('添加成功！');
+                 } else {
+                     $this->error($ret->message);
+                 }
+             }
+         } else {
+             $this->title = '银行贷款利率执行水平监测季报表';
+             if ($this->is_history) {
+                 $this->title = '银行贷款利率执行水平监测月填报[正在编辑历史数据]';
+             }
+             parent::submit_monthly();
+
+             $this->display();
+         }
+     }
+
+     /**
+      * 信贷情况月报
+      */
+     public function quarterly_quantity_b_new_submit_monthly()
+     {
+         $this->local_service = \Common\Service\BankQuaterlyQuantityBNewService::get_instance();
+         if (IS_POST) {
+             $id = I('get.id');
+             $data = I('post.');
+             $data['uid'] = UID;
+             if (!$this->is_history) {
+
+                 $data['year'] = $data['year'] ? $data['year'] : intval(date('Y'));
+                 $data['month'] = $data['month'] ? $data['month'] : intval(date('m'));
+             } else {
+                 $time = intval(strtotime($data['year'] . '-' . $data['month']));
+                 if (!$time || $time > strtotime('201712')) {
+                     $this->error('历史数据时间必须小于201712');
+                 }
+             }
+
+             // var_dump($data);
+             foreach ($data as $field => $value) {
+                 if (is_array($value)) {
+                     if (count($value) == 5 && is_numeric($value[0]) && is_numeric($value[1]) && is_numeric($value[2]) && is_numeric($value[3]) && is_numeric($value[4])){
+                         $data[$field] = join('|', $value);
+                     } else {
+                         $data[$field] = '';
+                     }
+                 }
+             }
+
+
+             if ($id) {
+                 $ret = $this->local_service->update_by_id($id, $data);
+                 if ($ret->success) {
+                     action_user_log('修改企业贷款利率执行水平监测季报表');
+                     $this->success('修改成功！');
+                 } else {
+                     $this->error($ret->message);
+                 }
+             } else {
+                 $check_ret = $this->check_by_month_year($data['year'], $data['month'], $data['all_name']);
+                 if ($check_ret === true){
+                     //新增 不做处理
+                 } elseif($check_ret) {
+                     if ($data['force_modify']) {//强制修改
+                         $id = $check_ret['id'];
+                         $ret = $this->local_service->update_by_id($id, $data);
+                         if ($ret->success) {
+                             action_user_log('修改企业贷款利率执行水平监测季报表');
+                             $this->success('修改成功！');
+                         } else {
+                             $this->error($ret->message);
+                         }
+                     } else {
+                         $this->error('该月已提交报表,请不要重复提交');
+                     }
+                 } else {
+                     $this->error('参数错误');
+                 }
+                 // var_dump($data);die();
+                 $ret = $this->local_service->add_one($data);
+                 if ($ret->success) {
+                     action_user_log('新增企业贷款利率执行水平监测季报表');
+                     $this->success('添加成功！');
+                 } else {
+                     $this->error($ret->message);
+                 }
+             }
+         } else {
+             $this->title = '企业贷款利率执行水平监测月填报';
+             if ($this->is_history) {
+                 $this->title = '企业贷款利率执行水平监测月填报[正在编辑历史数据]';
+             }
+             parent::submit_monthly();
+
+             $this->display();
+         }
+     }
+
+     /**
+      * 信贷情况月报
+      */
+     public function quarterly_quantity_c_new_submit_monthly()
+     {
+         $this->local_service = \Common\Service\BankQuaterlyQuantityCNewService::get_instance();
+         if (IS_POST) {
+             $id = I('get.id');
+             $data = I('post.');
+             $data['uid'] = UID;
+             if (!$this->is_history) {
+
+                 $data['year'] = $data['year'] ? $data['year'] : intval(date('Y'));
+                 $data['month'] = $data['month'] ? $data['month'] : intval(date('m'));
+             } else {
+                 $time = intval(strtotime($data['year'] . '-' . $data['month']));
+                 if (!$time || $time > strtotime('201712')) {
+                     $this->error('历史数据时间必须小于201712');
+                 }
+             }
+
+             // var_dump($data);
+             foreach ($data as $field => $value) {
+                 if (is_array($value)) {
+                     if (count($value) == 4 && is_numeric($value[0]) && is_numeric($value[1]) && is_numeric($value[2]) && is_numeric($value[3])){
+                         $data[$field] = join('|', $value);
+                     } else {
+                         $data[$field] = '';
+                     }
+                 }
+             }
+
+
+             if ($id) {
+                 $ret = $this->local_service->update_by_id($id, $data);
+                 if ($ret->success) {
+                     action_user_log('修改资产质量相关情况季报表');
+                     $this->success('修改成功！');
+                 } else {
+                     $this->error($ret->message);
+                 }
+             } else {
+                 $check_ret = $this->check_by_month_year($data['year'], $data['month'], $data['all_name']);
+                 if ($check_ret === true){
+                     //新增 不做处理
+                 } elseif($check_ret) {
+                     if ($data['force_modify']) {//强制修改
+                         $id = $check_ret['id'];
+                         $ret = $this->local_service->update_by_id($id, $data);
+                         if ($ret->success) {
+                             action_user_log('修改资产质量相关情况季报表');
+                             $this->success('修改成功！');
+                         } else {
+                             $this->error($ret->message);
+                         }
+                     } else {
+                         $this->error('该月已提交报表,请不要重复提交');
+                     }
+                 } else {
+                     $this->error('参数错误');
+                 }
+
+                 $ret = $this->local_service->add_one($data);
+                 if ($ret->success) {
+                     action_user_log('新增资产质量相关情况季报表');
+                     $this->success('添加成功！');
+                 } else {
+                     $this->error($ret->message);
+                 }
+             }
+         } else {
+             $this->title = '资产质量相关情况季报表';
+             if ($this->is_history) {
+                 $this->title = '资产质量相关情况季报表[正在编辑历史数据]';
+             }
+             parent::submit_monthly();
+
+             $this->display();
+         }
+     }
+
+
      public function add_history_credit_submit_monthly() {
          $this->is_history = true;
          $this->credit_submit_monthly();
@@ -1993,6 +2257,7 @@
          $type = I('get.type');
          $AreaService = \Common\Service\AreaService::get_instance();
          $key = '';
+         $page_html = '';
          if ($type == 'baddebt_dispose') {
              if (count($sheetData[1]) != 7) {
                  $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
@@ -2237,6 +2502,108 @@
                  S($key, $bad_data, 120);
              }
 
+         } elseif ($type == 'baddebt_detail_new') {
+             var_dump($sheetData);die();
+             if (count($sheetData[4]) != 14) {
+                 $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
+             }
+             for($i=5;$i<count($sheetData) + 1;$i++) {
+                 $temp = [];
+                 $is_bad_row = false;
+                 $sheetData[$i] = array_values($sheetData[$i]);
+                 for ($j=1;$j<14;$j++) {
+                     if (!$sheetData[$i][1] || '填报人:' == $sheetData[$i][1] ) {
+                         break;
+                     }
+                     if ($j==7 || $j==8) {
+                         $sheetData[$i][$j] = strtotime($sheetData[$i][$j]);
+                     }
+
+                     $val = (string) $sheetData[$i][$j];
+                     $temp[] = $val;
+                 }
+                 if ($temp) {
+                     $data[] = $temp;
+                 }
+
+             }
+
+//             if ($bad_data) {
+//                 $key = uniqid();
+//                 array_unshift($bad_data,['企业名称','法人代表或实际控制人','企业所属乡镇（街道）','逾期贷款金额','化解金额','备注']);
+//                 S($key, $bad_data, 120);
+//             }
+
+
+
+         } elseif ($type == 'baddebt_dispose_new') {
+            // print_r($sheetData);die();
+             if (count($sheetData[4]) != 13) {
+                 $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
+             }
+             $end = 0;
+             for($i=5;$i<count($sheetData) + 1;$i++) {
+                 if ($end == 1) {
+                     break;
+                 }
+                 $temp = [];
+                 $is_bad_row = false;
+                 $sheetData[$i] = array_values($sheetData[$i]);
+                 for ($j=0;$j<12;$j++) {
+                     if ('填报人:' == $sheetData[$i][0]) {
+                         $end = 1;
+                     }
+                     if (!$sheetData[$i][1] || $end == 1 ) {
+                         break;
+                     }
+                     $val = (string) $sheetData[$i][$j];
+                     $temp[] = $val;
+                 }
+                 if ($temp) {
+                     $data[] = $temp;
+                 }
+
+             }
+
+//             if ($bad_data) {
+//                 $key = uniqid();
+//                 array_unshift($bad_data,['企业名称','法人代表或实际控制人','企业所属乡镇（街道）','逾期贷款金额','化解金额','备注']);
+//                 S($key, $bad_data, 120);
+//             }
+
+
+
+         } elseif ($type == 'focus_detail_new') {
+
+             if (count($sheetData[4]) != 12) {
+                 $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
+             }
+             for($i=5;$i<count($sheetData) + 1;$i++) {
+                 $temp = [];
+                 $is_bad_row = false;
+                 $sheetData[$i] = array_values($sheetData[$i]);
+                 for ($j=0;$j<12;$j++) {
+                     if (strpos('填报人:', $sheetData[$i][0] !== false)) {
+                         $end = 1;
+                     }
+                     if (!$sheetData[$i][1] || $end==1 ) {
+                         break;
+                     }
+                     if ($j==3 || $j==4) {
+                         $sheetData[$i][$j] = strtotime($sheetData[$i][$j]);
+                     }
+
+                     $val = (string) $sheetData[$i][$j];
+                     $temp[] = $val;
+                 }
+                 if ($temp) {
+                     $data[] = $temp;
+                 }
+
+             }
+
+
+
          }
 
 
@@ -2245,7 +2612,7 @@
          if ($data) {
              $good_key = uniqid();
              S($good_key, $data, 600);//缓存好的数据
-             $this->ajaxReturn(['status'=>true, 'key'=>$key, 'good_key' => $good_key]);
+             $this->ajaxReturn(['status'=>true, 'key'=>$key, 'good_key' => $good_key, 'data' => $data]);
          } else {
              $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
          }
@@ -2428,13 +2795,12 @@
      {
 
          $this->local_service = \Common\Service\BankBaddebtDetailNewService::get_instance();
+         $good_key = I('good_key');
+         $cache_data = S($good_key);
          if (IS_POST) {
              $id = I('get.id');
              $data = I('post.');
              $data['uid'] = UID;
-//             if (!$data['logs1']) {
-//                 $this->error('请填写完整的信息~');
-//             }
              if (!$this->is_history) {
                  $data['year'] = $data['year'] ? $data['year'] : intval(date('Y'));
                  $data['month'] = $data['month'] ? $data['month'] : intval(date('m'));
@@ -2444,87 +2810,47 @@
                      $this->error('历史数据时间必须小于201712');
                  }
              }
-             $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name']);
-             if ($ret){
-                 //删除
-                 if ($this->is_history && !$data['force_modify']) {
-                     $this->error('该月报表已经提交,如需修改,请勾选强制修改');
-                 }
-                 $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name']);
-             }
 
              $batch_data = [];
-//             $good_key = I('post.good_key');
-//             $cache_data = S($good_key);
-//             if ($cache_data) {
-//                 foreach ($cache_data as $value) {
-//                     $temp = [];
-//                     $temp['all_name'] = $data['all_name'];
-//                     $temp['year'] = $data['year'];
-//                     $temp['month'] = $data['month'];
-//                     $temp['uid'] = $data['uid'];
-//                     $temp['filler_man'] = $data['filler_man'];
-//                     $temp['gmt_create'] = time();
-//                     $temp['Contract'] = $value[0];
-//                     $temp['Enterprise'] = $value[1];
-//                     $temp['Loans'] = $value[2];
-//                     $temp['Interest'] = $value[3];
-//                     $temp['Principal'] = $value[4];
-//                     $temp['Phone'] = $value[5];
-//                     $temp['Address'] = $value[6];
-//                     $temp['Area'] = $value[7];
-//                     $temp['Industry'] = $value[8];
-//                     $temp['Startdate'] = strtotime($value[9]);
-//                     $temp['Enddate'] = strtotime($value[10]);
-//                     $temp['Guarantee'] = $value[11];
-//                     $temp['Over_Credit'] = $value[12];
-//                     $temp['Over_Mortgage'] = $value[13];
-//                     $temp['Over_Pledge'] = $value[14];
-//                     $temp['Over_Margin'] = $value[15];
-//                     $temp['Guarantor'] = $value[16];
-//                     $temp['Pattern'] = $value[17];
-//                     $temp['OverdueDays'] = $value[18];
-//                     $temp['Coordination'] = (string) $value[19];
-//                     $temp['Remarks'] = (string) $value[20];
-//                     $temp['ip'] = $_SERVER["REMOTE_ADDR"];
-//                     $batch_data[] = $temp;
-//                 }
-//             }
-             foreach ($data['logs1'] as $k => $v) {
-                 $temp = [];
-                 $temp['all_name'] = $data['all_name'];
-                 $temp['year'] = $data['year'];
-                 $temp['month'] = $data['month'];
-                 $temp['uid'] = $data['uid'];
-                 $temp['filler_man'] = $data['filler_man'];
-                 $temp['gmt_create'] = time();
-                 $temp['Contract'] = $v;
-                 $temp['Enterprise'] = isset($data['logs2'][$k]) ? $data['logs2'][$k] : '';
-                 $temp['Loans'] = isset($data['logs3'][$k]) ? $data['logs3'][$k] : 0;
-                 $temp['Interest'] = isset($data['logs4'][$k]) ? $data['logs4'][$k] : 0;
-                 $temp['Principal'] = isset($data['logs5'][$k]) ? $data['logs5'][$k] : 0;
-                 $temp['Phone'] = isset($data['logs6'][$k]) ? $data['logs6'][$k] : 0;
-                 $temp['Address'] = isset($data['logs7'][$k]) ? $data['logs7'][$k] : 0;
-                 $temp['Area'] = isset($data['logs8'][$k]) ? $data['logs8'][$k] : 0;
-                 $temp['Industry'] = isset($data['logs9'][$k]) ? $data['logs9'][$k] : '';
-                 $temp['Startdate'] = isset($data['logs10'][$k]) ? strtotime($data['logs10'][$k]) : '';
-                 $temp['Enddate'] = isset($data['logs11'][$k]) ? strtotime($data['logs11'][$k]) : '';
-                 $temp['Guarantee'] = isset($data['logs12'][$k]) ? $data['logs12'][$k] : '';
-                 $temp['Over_Credit'] = isset($data['logs13'][$k]) ? $data['logs13'][$k] : '';
-                 $temp['Over_Mortgage'] = isset($data['logs14'][$k]) ? $data['logs14'][$k] : '';
-                 $temp['Over_Pledge'] = isset($data['logs15'][$k]) ? $data['logs15'][$k] : '';
-                 $temp['Over_Margin'] = isset($data['logs16'][$k]) ? $data['logs16'][$k] : '';
-                 $temp['Guarantor'] = isset($data['logs17'][$k]) ? $data['logs17'][$k] : '';
-                 $temp['Pattern'] = isset($data['logs18'][$k]) ? $data['logs18'][$k] : '';
-                 $temp['OverdueDays'] = isset($data['logs19'][$k]) ? $data['logs19'][$k] : '';
-                 $temp['Coordination'] = isset($data['logs20'][$k]) ? $data['logs20'][$k] : '';
-                 $temp['Remarks'] = isset($data['logs21'][$k]) ? $data['logs21'][$k] : '';
+             if ($cache_data) {
+                 $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name']);
+                 if ($ret){
+                     //删除
+                     if ($this->is_history && !$data['force_modify']) {
+                         $this->error('该月报表已经提交,如需修改,请勾选强制修改');
+                     }
+                     $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name']);
+                 }
 
+                 foreach ($cache_data as $value) {
+                     $temp = [];
+                     $temp['all_name'] = $data['all_name'];
+                     $temp['year'] = $data['year'];
+                     $temp['month'] = $data['month'];
+                     $temp['uid'] = $data['uid'];
+                     $temp['filler_man'] = $data['filler_man'];
 
-                 $temp['ip'] = $_SERVER["REMOTE_ADDR"];
-                 $batch_data[] = $temp;
+                     $temp['gmt_create'] = time();
+                     $temp['Enterprise'] = $value[0];
+                     $temp['Principal'] = $value[1];
+                     $temp['Address'] = $value[2];
+                     $temp['Loans'] = $value[3];
+                     $temp['Loans_Type'] = $value[4];
+                     $temp['Startdate'] = $value[5];
+                     $temp['Enddate'] = $value[6];
+                     $temp['Industry'] = $value[7];
+                     $temp['Reason'] = $value[8];
+                     $temp['Handle'] = strtotime($value[9]);
+                     $temp['Info'] = strtotime($value[10]);
+                     $temp['Plan'] = $value[11];
+                     $temp['Recommend'] = $value[12];
+                     $temp['ip'] = $_SERVER["REMOTE_ADDR"];
+                     $batch_data[] = $temp;
+                 }
+             } else {
+                 $this->error('没有导入数据');
              }
-             // var_dump($batch_data);die();
+
              $ret = $this->local_service->add_batch($batch_data);
              if ($ret->success) {
                  action_user_log('新增不良贷款明细报表');
@@ -2560,7 +2886,12 @@
              //获取当期的数据
              $infos = [];
              if (!$this->is_history) {
-                 if ($all_name) {
+                 if ($cache_data) {
+
+                     $infos = $cache_data;
+                    // var_dump($infos);die();
+                     $this->assign('cache', 1);
+                 } elseif ($all_name) {
 
                      $year = I('year') ? I('year') : intval(date('Y'));
                      $month = I('month') ? I('month') : intval(date('m'));
@@ -2569,11 +2900,282 @@
                      //$this->convert_data_detail_submit_monthly($infos);
                  }
              }
+             $count = count($infos);
+             $page_size = 20;
+             $PageInstance = new \Think\Page($count, $page_size);
+             if($count>$page_size){
+                 $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+             }
+             $page_html = $PageInstance->show();
+
+             $this->assign('page_html', $page_html);
+             $page = I('p') ? I('p') : 1;
+             $infos = array_slice($infos, $page_size * ($page-1), $page_size);
+
              $this->assign('infos', $infos);
-
-
 
              $this->display();
          }
      }
+
+
+     /**
+      * 贷款明细
+      */
+     public function baddebt_dispose_new_submit_monthly()
+     {
+
+         $this->local_service = \Common\Service\BankBaddebtDisposeNewService::get_instance();
+         $good_key = I('good_key');
+         $cache_data = S($good_key);
+         if (IS_POST) {
+             $id = I('get.id');
+             $data = I('post.');
+             $data['uid'] = UID;
+             if (!$this->is_history) {
+                 $data['year'] = $data['year'] ? $data['year'] : intval(date('Y'));
+                 $data['month'] = $data['month'] ? $data['month'] : intval(date('m'));
+             } else {
+                 $time = intval(strtotime($data['year'] . '-' . $data['month']));
+                 if (!$time || $time > strtotime('201712')) {
+                     $this->error('历史数据时间必须小于201712');
+                 }
+             }
+
+             $batch_data = [];
+             if ($cache_data) {
+                 $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name']);
+                 if ($ret){
+                     //删除
+                     if ($this->is_history && !$data['force_modify']) {
+                         $this->error('该月报表已经提交,如需修改,请勾选强制修改');
+                     }
+                     $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name']);
+                 }
+
+                 foreach ($cache_data as $value) {
+                     $temp = [];
+                     $temp['all_name'] = $data['all_name'];
+                     $temp['year'] = $data['year'];
+                     $temp['month'] = $data['month'];
+                     $temp['uid'] = $data['uid'];
+                     $temp['filler_man'] = $data['filler_man'];
+
+                     $temp['gmt_create'] = time();
+                     $temp['Enterprise'] = $value[0];
+                     $temp['Loans'] = $value[1];
+                     $temp['Recover'] = $value[2];
+                     $temp['Recover_Ot_1'] = $value[3];
+                     $temp['Recover_Ot_2'] = $value[4];
+                     $temp['Recover_Ot_3'] = $value[5];
+                     $temp['Recover_Ot_4'] = $value[6];
+                     $temp['Recover_Ot_5'] = $value[7];
+                     $temp['Recover_Ot_6'] = $value[8];
+                     $temp['Recover_Ot'] = $value[9];
+                     $temp['Recover_Ot_other_name'] = $value[10];
+                     $temp['Recover_Ot_other'] = $value[11];
+
+                     $temp['ip'] = $_SERVER["REMOTE_ADDR"];
+                     $batch_data[] = $temp;
+                 }
+             } else {
+                 $this->error('没有导入数据');
+             }
+
+             $ret = $this->local_service->add_batch($batch_data);
+             if ($ret->success) {
+                 action_user_log('新增不良资产清收明细报表');
+                 $this->success('添加成功！');
+             } else {
+                 $this->error($ret->message);
+             }
+
+
+         } else {
+             $this->title = '不良资产清收明细月填报('. date('Y-m') .'月)';
+             if ($this->is_history) {
+                 $this->title = '不良资产清收明细月填报[正在编辑历史数据]';
+             }
+
+             $this->assign('title', $this->title);
+
+             //获取所有相关的公司
+             $DepartmentService = \Common\Service\DepartmentService::get_instance();
+
+             $departments = $DepartmentService->get_my_list(UID, $this->type);
+
+
+             if (!$departments) {
+                 $departments = $DepartmentService->get_all_list($this->type);
+             }
+             $data = $departments[0];
+             $all_name = $data['all_name'];
+             $all_name = I('all_name') ? I('all_name') : $all_name;
+             $departments = result_to_array($departments, 'all_name');
+             $this->assign('departments', $departments);
+
+             //获取当期的数据
+             $infos = [];
+             if (!$this->is_history) {
+                 if ($cache_data) {
+                     $infos = $cache_data;
+                     $this->assign('cache', 1);
+                 } elseif ($all_name) {
+
+                     $year = I('year') ? I('year') : intval(date('Y'));
+                     $month = I('month') ? I('month') : intval(date('m'));
+
+                     $infos = $this->local_service->get_by_month_year($year, $month, $all_name);
+                     //$this->convert_data_detail_submit_monthly($infos);
+                 }
+             }
+             $count = count($infos);
+             $page_size = 20;
+             $PageInstance = new \Think\Page($count, $page_size);
+             if($count>$page_size){
+                 $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+             }
+             $page_html = $PageInstance->show();
+
+             $this->assign('page_html', $page_html);
+             $page = I('p') ? I('p') : 1;
+             $infos = array_slice($infos, $page_size * ($page-1), $page_size);
+
+             $this->assign('infos', $infos);
+
+             $this->display();
+         }
+     }
+
+
+     /**
+      * 贷款明细
+      */
+     public function focus_detail_new_submit_monthly()
+     {
+
+         $this->local_service = \Common\Service\BankFocusDetailNewService::get_instance();
+         $good_key = I('good_key');
+         $cache_data = S($good_key);
+         if (IS_POST) {
+             $id = I('get.id');
+             $data = I('post.');
+             $data['uid'] = UID;
+             if (!$this->is_history) {
+                 $data['year'] = $data['year'] ? $data['year'] : intval(date('Y'));
+                 $data['month'] = $data['month'] ? $data['month'] : intval(date('m'));
+             } else {
+                 $time = intval(strtotime($data['year'] . '-' . $data['month']));
+                 if (!$time || $time > strtotime('201712')) {
+                     $this->error('历史数据时间必须小于201712');
+                 }
+             }
+
+             $batch_data = [];
+             if ($cache_data) {
+                 $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name']);
+                 if ($ret){
+                     //删除
+                     if ($this->is_history && !$data['force_modify']) {
+                         $this->error('该月报表已经提交,如需修改,请勾选强制修改');
+                     }
+                     $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name']);
+                 }
+
+
+                 foreach ($cache_data as $value) {
+                     $temp = [];
+                     $temp['all_name'] = $data['all_name'];
+                     $temp['year'] = $data['year'];
+                     $temp['month'] = $data['month'];
+                     $temp['uid'] = $data['uid'];
+                     $temp['filler_man'] = $data['filler_man'];
+
+                     $temp['gmt_create'] = time();
+                     $temp['Enterprise'] = $value[0];
+                     $temp['Loans'] = $value[1];
+                     $temp['Overdue_Loans'] = $value[2];
+                     $temp['Startdate'] = $value[3];
+                     $temp['Enddate'] = $value[4];
+                     $temp['Industry'] = $value[5];
+                     $temp['Scale'] = $value[6];
+                     $temp['Principal'] = $value[7];
+                     $temp['Address'] = $value[8];
+                     $temp['Phone'] = $value[9];
+                     $temp['Area'] = $value[10];
+                     $temp['Remark'] = $value[11];
+
+                     $temp['ip'] = $_SERVER["REMOTE_ADDR"];
+                     $batch_data[] = $temp;
+                 }
+             } else {
+                 $this->error('没有导入数据');
+             }
+
+             $ret = $this->local_service->add_batch($batch_data);
+             if ($ret->success) {
+                 action_user_log('新增关注类贷款明细报表');
+                 $this->success('添加成功！');
+             } else {
+                 $this->error($ret->message);
+             }
+
+
+         } else {
+             $this->title = '关注类贷款明细月填报('. date('Y-m') .'月)';
+             if ($this->is_history) {
+                 $this->title = '关注类贷款明细月填报[正在编辑历史数据]';
+             }
+
+             $this->assign('title', $this->title);
+
+             //获取所有相关的公司
+             $DepartmentService = \Common\Service\DepartmentService::get_instance();
+
+             $departments = $DepartmentService->get_my_list(UID, $this->type);
+
+
+             if (!$departments) {
+                 $departments = $DepartmentService->get_all_list($this->type);
+             }
+             $data = $departments[0];
+             $all_name = $data['all_name'];
+             $all_name = I('all_name') ? I('all_name') : $all_name;
+             $departments = result_to_array($departments, 'all_name');
+             $this->assign('departments', $departments);
+
+             //获取当期的数据
+             $infos = [];
+             if (!$this->is_history) {
+                 if ($cache_data) {
+
+                     $infos = $cache_data;
+                     $this->assign('cache', 1);
+                 } elseif ($all_name) {
+
+                     $year = I('year') ? I('year') : intval(date('Y'));
+                     $month = I('month') ? I('month') : intval(date('m'));
+
+                     $infos = $this->local_service->get_by_month_year($year, $month, $all_name);
+                     //$this->convert_data_detail_submit_monthly($infos);
+                 }
+             }
+             $count = count($infos);
+             $page_size = 20;
+             $PageInstance = new \Think\Page($count, $page_size);
+             if($count>$page_size){
+                 $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+             }
+             $page_html = $PageInstance->show();
+
+             $this->assign('page_html', $page_html);
+             $page = I('p') ? I('p') : 1;
+             $infos = array_slice($infos, $page_size * ($page-1), $page_size);
+
+             $this->assign('infos', $infos);
+
+             $this->display();
+         }
+     }
+
  }

@@ -73,7 +73,7 @@ class Page{
      * 组装分页链接
      * @return string
      */
-    public function show() {
+    public function show($url='') {
         if(0 == $this->totalRows) return '';
 
         /* 生成URL */

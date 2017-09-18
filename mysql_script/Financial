@@ -994,15 +994,15 @@ create table shopy_financial_bank_focus_detail_new (
 	Enterprise varchar(50) NOT NULL,		#企业名称
 		Loans decimal(9,2) NOT NULL DEFAULT 0,		#贷款余额（万元）
 		Overdue_Loans decimal(9,2) NOT NULL DEFAULT 0,		#逾期贷款余额（万元）
-
+	Startdate int NOT NULL DEFAULT 0,			#发放日期
+	Enddate int NOT NULL DEFAULT 0,			#到期日期
 	Industry varchar(50) NULL,			#所属行业
 	Scale varchar(50) NULL,			#规模
 	Principal varchar(50) NULL,			#法人
 	Address varchar(50) NULL,			#注册地址
 	Phone varchar(50) NULL,			#联系电话
 		Area varchar(20) NULL,			#街道
-	Startdate int NOT NULL DEFAULT 0,			#发放日期
-	Enddate int NOT NULL DEFAULT 0,			#到期日期
+
 	Remark varchar(200) NULL,			#备注
 
   `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
@@ -1021,20 +1021,20 @@ create table shopy_financial_bank_quarterly_quantity_a_new (
   `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
   Type TINYINT(3) DEFAULT 1,
 
-  A1 decimal(9,2) NOT NULL DEFAULT 0,	#贷款利率
-  Rate_A1 decimal(9,2) NOT NULL DEFAULT 0,	#加权平均利率
-  A2 decimal(9,2) NOT NULL DEFAULT 0,	#最高利率
-  Rate_A2 decimal(9,2) NOT NULL DEFAULT 0,	#加权平均利率
-  A3 decimal(9,2) NOT NULL DEFAULT 0,	#最低利率
-  Rate_A3 decimal(9,2) NOT NULL DEFAULT 0,	#发生额
-  A4 decimal(9,2) NOT NULL DEFAULT 0,	#信用
-  Rate_A4 decimal(9,2) NOT NULL DEFAULT 0,	#加权平均利率
-  A5 decimal(9,2) NOT NULL DEFAULT 0,	#抵押
-  Rate_A5 decimal(9,2) NOT NULL DEFAULT 0,	#加权平均利率
-  A6 decimal(9,2) NOT NULL DEFAULT 0,	#保证
-  Rate_A6 decimal(9,2) NOT NULL DEFAULT 0,	#加权平均利率
-  A7 decimal(9,2) NOT NULL DEFAULT 0,	#抵押+保证
-  Rate_A7 decimal(9,2) NOT NULL DEFAULT 0,	#加权平均利率
+  A1 VARCHAR(50) NOT NULL DEFAULT 0,	#贷款利率
+  Rate_A1 VARCHAR(50) NOT NULL DEFAULT 0,	#加权平均利率
+  A2 VARCHAR(50) NOT NULL DEFAULT 0,	#最高利率
+  Rate_A2 VARCHAR(50) NOT NULL DEFAULT 0,	#加权平均利率
+  A3 VARCHAR(50) NOT NULL DEFAULT 0,	#最低利率
+  Rate_A3 VARCHAR(50) NOT NULL DEFAULT 0,	#发生额
+  A4 VARCHAR(50) NOT NULL DEFAULT 0,	#信用
+  Rate_A4 VARCHAR(50) NOT NULL DEFAULT 0,	#加权平均利率
+  A5 VARCHAR(50) NOT NULL DEFAULT 0,	#抵押
+  Rate_A5 VARCHAR(50) NOT NULL DEFAULT 0,	#加权平均利率
+  A6 VARCHAR(50) NOT NULL DEFAULT 0,	#保证
+  Rate_A6 VARCHAR(50) NOT NULL DEFAULT 0,	#加权平均利率
+  A7 VARCHAR(50) NOT NULL DEFAULT 0,	#抵押+保证
+  Rate_A7 VARCHAR(50) NOT NULL DEFAULT 0,	#加权平均利率
 
   `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
   `gmt_create` int(11) DEFAULT 0,
@@ -1052,8 +1052,8 @@ create table shopy_financial_bank_quarterly_quantity_b_new (
   `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
   Type TINYINT(3) DEFAULT 1,
 
-  A decimal(9,2) NOT NULL DEFAULT 0,	#发生额
-  Rate_A decimal(9,2) NOT NULL DEFAULT 0,	#加权平均利率
+  A VARCHAR(50) NOT NULL DEFAULT 0,	#发生额
+  Rate_A VARCHAR(50) NOT NULL DEFAULT 0,	#加权平均利率
 
 
   `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
@@ -1071,7 +1071,7 @@ create table shopy_financial_bank_quarterly_quantity_c_new (
   `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
   Type TINYINT(3) DEFAULT 1,
 
-  A decimal(9,2) NOT NULL DEFAULT 0,	#发生额
+  A VARCHAR(50) NOT NULL DEFAULT 0,	#发生额
 
 
   `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',

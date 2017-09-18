@@ -1,0 +1,144 @@
+<extend name="Public/base"/>
+
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+			<ul class="cc tab-nav">
+				<li class="current"><a href="javascript:;">{$title}</a></li>
+			</ul>
+		</div>
+		<!-- 数据表格 -->
+		<div class="tab-content table_list">
+			<!-- 表单 -->
+			<form id="form" action="{:U('')}/id/{$info.id}" method="post" class="form-horizontal">
+				<div id="tab">
+					<table class="biaoge">
+						<tbody>
+						<tr>
+							<td colspan="15">
+								<span class="title">企业贷款利率执行水平监测表(季报)</span><span> (单位 万元,年利率%)</span>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="15">
+								填报机构:
+								<select name="all_name">
+									<php>
+										$list = $departments;
+										$cur = $info['all_name'];
+										foreach($list as $li){
+										$selected = ($li == $cur) ? 'selected' : '';
+										echo '<option value="'.$li.'" '.$selected.'>'.$li.'</option>';
+										}
+									</php>
+								</select>
+								<input type="hidden" class="input input-medium" name="filler_man" value="{:session('user_auth.username')}">
+								&nbsp;&nbsp;&nbsp;&nbsp;时间:
+								<select name="year" class="year change_time">
+									<php>
+										$years = [2016,2017];
+										$cur_year = I('year') ? I('year') : intval(date('Y'));
+										foreach($years as $year){
+										$selected = ($year == $cur_year) ? 'selected' : '';
+										echo '<option value="'.$year.'" '.$selected.'>'.$year.'</option>';
+										}
+									</php>
+								</select>年
+								<select name="month" class="month change_time">
+									<php>
+										$months = [1,2,3,4,5,6,7,8,9,10,11,12];
+										$cur_month = I('month') ? I('month') : intval(date('m'));
+										foreach($months as $month){
+										$selected = ($month == $cur_month) ? 'selected' : '';
+										echo '<option value="'.$month.'" '.$selected.'>'.$month.'</option>';
+										}
+									</php>
+								</select>月
+
+							</td>
+						</tr>
+
+						<tr>
+							<td>企业类型</td>
+							<td>本季发生额</td>
+							<td>加权平均利率</td>
+						</tr>
+
+						<tr>
+							<td>大</td>
+							<td>
+								<input type="text" class="input input-small" name="A[]" value="{$info.A.a}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Rate_A[]" value="{$info.Rate_A.a}">
+							</td>
+
+
+						</tr>
+						<tr>
+							<td>中</td>
+							<td>
+								<input type="text" class="input input-small" name="A[]" value="{$info.A.b}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Rate_A[]" value="{$info.Rate_A.b}">
+							</td>
+
+						</tr>
+						<tr>
+							<td>小</td>
+							<td>
+								<input type="text" class="input input-small" name="A[]" value="{$info.A.c}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Rate_A[]" value="{$info.Rate_A.c}">
+							</td>
+						</tr>
+						<tr>
+							<td>微</td>
+							<td>
+								<input type="text" class="input input-small" name="A[]" value="{$info.A.d}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Rate_A[]" value="{$info.Rate_A.d}">
+							</td>
+						</tr>
+						<tr>
+							<td>合计</td>
+							<td>
+								<input type="text" class="input input-small" name="A[]" value="{$info.A.e}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Rate_A[]" value="{$info.Rate_A.e}">
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+
+
+
+
+
+				<div class="btn_wrap">
+					<div class="btn_wrap_pd">
+						<button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">保存</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	</div>
+
+	<script>
+		$(document).ready(function(){
+			$('.change_time').change(function(){
+				var year = $('.year').val();
+				var month = $('.month').val();
+				location.href= "{:U('')}/year/"+year+"/month/"+month;
+			})
+		})
+	</script>
+</block>
