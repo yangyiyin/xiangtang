@@ -231,36 +231,22 @@
      /**
       * 信贷情况月报
       */
-     public function credit_new_submit_monthly()
+     public function credit_submit_monthly()
      {
-         $this->local_service = \Common\Service\BankCreditNewService::get_instance();
+         $this->local_service = \Common\Service\BankCreditService::get_instance();
          if (IS_POST) {
              $id = I('get.id');
              $data = I('post.');
              $data['uid'] = UID;
              if (!$this->is_history) {
-
-                 $data['year'] = $data['year'] ? $data['year'] : intval(date('Y'));
-                 $data['month'] = $data['month'] ? $data['month'] : intval(date('m'));
+                 $data['year'] = intval(date('Y'));
+                 $data['month'] = intval(date('m'));
              } else {
                  $time = intval(strtotime($data['year'] . '-' . $data['month']));
                  if (!$time || $time > strtotime('201712')) {
                      $this->error('历史数据时间必须小于201712');
                  }
              }
-
-
-             foreach ($data as $field => $value) {
-                if (is_array($value)) {
-                    if (count($value) == 3 && is_numeric($value[0]) && is_numeric($value[1]) && is_numeric($value[2])){
-                        $data[$field] = join('|', $value);
-                    } else {
-                        $data[$field] = '';
-                    }
-                }
-             }
-
-
              if ($id) {
                  $ret = $this->local_service->update_by_id($id, $data);
                  if ($ret->success) {
@@ -298,28 +284,17 @@
                  }
              }
          } else {
-             $this->title = '信贷收支情况月填报';
+             $this->title = '信贷情况月填报('. date('Y-m') .'月)';
              if ($this->is_history) {
-                 $this->title = '信贷收支情况月填报[正在编辑历史数据]';
+                 $this->title = '信贷情况月填报[正在编辑历史数据]';
              }
+
              parent::submit_monthly();
 
              $this->display();
          }
      }
-     protected function convert_data_submit_monthly(&$info) {
-        if ($info) {
-            foreach ($info as $field => $data) {
-                $arr = explode('|', $data);
-                if (count($arr) == 3) {
-                    $info[$field] = [];
-                    $info[$field]['a'] = $arr[0];
-                    $info[$field]['b'] = $arr[1];
-                    $info[$field]['c'] = $arr[2];
-                }
-            }
-        }
-     }
+
      public function add_history_credit_submit_monthly() {
          $this->is_history = true;
          $this->credit_submit_monthly();
@@ -359,6 +334,172 @@
          $this->display();
      }
 
+     /**
+      * 贷款明细
+      */
+     public function loan_details_submit_monthly()
+     {
+
+         $this->local_service = \Common\Service\BankLoanDetailService::get_instance();
+         if (IS_POST) {
+             $id = I('get.id');
+             $data = I('post.');
+             $data['uid'] = UID;
+//             if (!$data['logs1']) {
+//                 $this->error('请填写完整的信息~');
+//             }
+             if (!$this->is_history) {
+                 $data['year'] = intval(date('Y'));
+                 $data['month'] = intval(date('m'));
+             } else {
+                 $time = intval(strtotime($data['year'] . '-' . $data['month']));
+                 if (!$time || $time > strtotime('201712')) {
+                     $this->error('历史数据时间必须小于201712');
+                 }
+             }
+             $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name']);
+             if ($ret){
+                 //删除
+                 if ($this->is_history && !$data['force_modify']) {
+                     $this->error('该月报表已经提交,如需修改,请勾选强制修改');
+                 }
+                 $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name']);
+             }
+
+             $batch_data = [];
+             $good_key = I('post.good_key');
+             $cache_data = S($good_key);
+             if ($cache_data) {
+                 foreach ($cache_data as $value) {
+                     $temp = [];
+                     $temp['all_name'] = $data['all_name'];
+                     $temp['year'] = $data['year'];
+                     $temp['month'] = $data['month'];
+                     $temp['uid'] = $data['uid'];
+                     $temp['filler_man'] = $data['filler_man'];
+                     $temp['gmt_create'] = time();
+                     $temp['Contract'] = $value[0];
+                     $temp['Enterprise'] = $value[1];
+                     $temp['Loans'] = $value[2];
+                     $temp['Interest'] = $value[3];
+                     $temp['Principal'] = $value[4];
+                     $temp['Phone'] = $value[5];
+                     $temp['Address'] = $value[6];
+                     $temp['Area'] = $value[7];
+                     $temp['Industry'] = $value[8];
+                     $temp['Startdate'] = strtotime($value[9]);
+                     $temp['Enddate'] = strtotime($value[10]);
+                     $temp['Guarantee'] = $value[11];
+                     $temp['Over_Credit'] = $value[12];
+                     $temp['Over_Mortgage'] = $value[13];
+                     $temp['Over_Pledge'] = $value[14];
+                     $temp['Over_Margin'] = $value[15];
+                     $temp['Guarantor'] = $value[16];
+                     $temp['Pattern'] = $value[17];
+                     $temp['OverdueDays'] = $value[18];
+                     $temp['Coordination'] = (string) $value[19];
+                     $temp['Remarks'] = (string) $value[20];
+                     $temp['ip'] = $_SERVER["REMOTE_ADDR"];
+                     $batch_data[] = $temp;
+                 }
+             }
+//             foreach ($data['logs1'] as $k => $v) {
+//                 if ($v) {
+//                     $temp = [];
+//                     $temp['all_name'] = $data['all_name'];
+//                     $temp['year'] = $data['year'];
+//                     $temp['month'] = $data['month'];
+//                     $temp['uid'] = $data['uid'];
+//                     $temp['filler_man'] = $data['filler_man'];
+//                     $temp['gmt_create'] = time();
+//                     $temp['Contract'] = $v;
+//                     $temp['Enterprise'] = isset($data['logs2'][$k]) ? $data['logs2'][$k] : '';
+//                     $temp['Loans'] = isset($data['logs3'][$k]) ? $data['logs3'][$k] : 0;
+//                     $temp['Interest'] = isset($data['logs4'][$k]) ? $data['logs4'][$k] : 0;
+//                     $temp['Principal'] = isset($data['logs5'][$k]) ? $data['logs5'][$k] : 0;
+//                     $temp['Phone'] = isset($data['logs6'][$k]) ? $data['logs6'][$k] : 0;
+//                     $temp['Address'] = isset($data['logs7'][$k]) ? $data['logs7'][$k] : 0;
+//                     $temp['Area'] = isset($data['logs8'][$k]) ? $data['logs8'][$k] : 0;
+//                     $temp['Industry'] = isset($data['logs9'][$k]) ? $data['logs9'][$k] : '';
+//                     $temp['Startdate'] = isset($data['logs10'][$k]) ? strtotime($data['logs10'][$k]) : '';
+//                     $temp['Enddate'] = isset($data['logs11'][$k]) ? strtotime($data['logs11'][$k]) : '';
+//                     $temp['Guarantee'] = isset($data['logs12'][$k]) ? $data['logs12'][$k] : '';
+//                     $temp['Over_Credit'] = isset($data['logs13'][$k]) ? $data['logs13'][$k] : '';
+//                     $temp['Over_Mortgage'] = isset($data['logs14'][$k]) ? $data['logs14'][$k] : '';
+//                     $temp['Over_Pledge'] = isset($data['logs15'][$k]) ? $data['logs15'][$k] : '';
+//                     $temp['Over_Margin'] = isset($data['logs16'][$k]) ? $data['logs16'][$k] : '';
+//                     $temp['Guarantor'] = isset($data['logs17'][$k]) ? $data['logs17'][$k] : '';
+//                     $temp['Pattern'] = isset($data['logs18'][$k]) ? $data['logs18'][$k] : '';
+//                     $temp['OverdueDays'] = isset($data['logs19'][$k]) ? $data['logs19'][$k] : '';
+//                     $temp['Coordination'] = isset($data['logs20'][$k]) ? $data['logs20'][$k] : '';
+//                     $temp['Remarks'] = isset($data['logs21'][$k]) ? $data['logs21'][$k] : '';
+//
+//
+//                     $temp['ip'] = $_SERVER["REMOTE_ADDR"];
+//                     $batch_data[] = $temp;
+//                 }
+//
+//             }
+            // var_dump($batch_data);die();
+             $ret = $this->local_service->add_batch($batch_data);
+             if ($ret->success) {
+//                 $this->update_loan_st($batch_data);
+//                 $this->update_area_a_st($data['year'], $data['month']);
+//                 $this->update_area_b_st($data['year'], $data['month']);
+                 action_user_log('新增贷款明细报表');
+                 $this->success('添加成功！');
+             } else {
+                 $this->error($ret->message);
+             }
+
+
+         } else {
+             $this->title = '贷款明细月填报('. date('Y-m') .'月)';
+             if ($this->is_history) {
+                 $this->title = '贷款明细月填报[正在编辑历史数据]';
+             }
+
+             $this->assign('title', $this->title);
+
+             //获取所有相关的公司
+             $DepartmentService = \Common\Service\DepartmentService::get_instance();
+
+             $departments = $DepartmentService->get_my_list(UID, $this->type);
+
+
+             if (!$departments) {
+                 $departments = $DepartmentService->get_all_list($this->type);
+             } else {
+                 $data = $departments[0];
+             }
+             $departments = result_to_array($departments, 'all_name');
+             $this->assign('departments', $departments);
+
+             //获取当期的数据
+             $infos = [];
+             if (!$this->is_history) {
+                 if (isset($data['all_name']) && $data['all_name']) {
+                     $infos = $this->local_service->get_by_month_year(intval(date('Y')), intval(date('m')), $data['all_name']);
+                     //$this->convert_data_detail_submit_monthly($infos);
+                 }
+             }
+             //获取区域
+             $AreaService = \Common\Service\AreaService::get_instance();
+             if ($infos) {
+
+                 $infos = $AreaService->set_area_options($infos);
+
+                 $infos = $this->local_service->pattern_options($infos);
+             }
+             $this->assign('infos', $infos);
+             $this->assign('area_options', $AreaService->set_area_options());
+             $this->assign('pattern_options', $this->local_service->pattern_options());
+
+
+
+             $this->display();
+         }
+     }
 
      protected function update_loan_st($batch_data) {
          $BankBaddebtStService = \Common\Service\BankBaddebtStService::get_instance();
@@ -2350,230 +2491,5 @@
          }
 
          exportexcel($excel_data,'明细记录', '明细记录');
-     }
-
-
-     /**
-      * 信贷情况月报
-      */
-     public function baddebt_new_submit_monthly()
-     {
-         $this->local_service = \Common\Service\BankBaddebtNewService::get_instance();
-         if (IS_POST) {
-             $id = I('get.id');
-             $data = I('post.');
-             $data['uid'] = UID;
-             if (!$this->is_history) {
-
-                 $data['year'] = $data['year'] ? $data['year'] : intval(date('Y'));
-                 $data['month'] = $data['month'] ? $data['month'] : intval(date('m'));
-             } else {
-                 $time = intval(strtotime($data['year'] . '-' . $data['month']));
-                 if (!$time || $time > strtotime('201712')) {
-                     $this->error('历史数据时间必须小于201712');
-                 }
-             }
-
-             if ($id) {
-                 $ret = $this->local_service->update_by_id($id, $data);
-                 if ($ret->success) {
-                     action_user_log('修改不良贷款监测月报表');
-                     $this->success('修改成功！');
-                 } else {
-                     $this->error($ret->message);
-                 }
-             } else {
-                 $check_ret = $this->check_by_month_year($data['year'], $data['month'], $data['all_name']);
-                 if ($check_ret === true){
-                     //新增 不做处理
-                 } elseif($check_ret) {
-                     if ($data['force_modify']) {//强制修改
-                         $id = $check_ret['id'];
-                         $ret = $this->local_service->update_by_id($id, $data);
-                         if ($ret->success) {
-                             action_user_log('修改不良贷款监测月报表');
-                             $this->success('修改成功！');
-                         } else {
-                             $this->error($ret->message);
-                         }
-                     } else {
-                         $this->error('该月已提交报表,请不要重复提交');
-                     }
-                 } else {
-                     $this->error('参数错误');
-                 }
-                 $ret = $this->local_service->add_one($data);
-                 if ($ret->success) {
-                     action_user_log('新增不良贷款监测月报表');
-                     $this->success('添加成功！');
-                 } else {
-                     $this->error($ret->message);
-                 }
-             }
-         } else {
-             $this->title = '不良贷款监测月填报';
-             if ($this->is_history) {
-                 $this->title = '不良贷款监测月填报[正在编辑历史数据]';
-             }
-             parent::submit_monthly();
-
-             $this->display();
-         }
-     }
-
-     /**
-      * 贷款明细
-      */
-     public function baddebt_detail_new_submit_monthly()
-     {
-
-         $this->local_service = \Common\Service\BankBaddebtDetailNewService::get_instance();
-         if (IS_POST) {
-             $id = I('get.id');
-             $data = I('post.');
-             $data['uid'] = UID;
-//             if (!$data['logs1']) {
-//                 $this->error('请填写完整的信息~');
-//             }
-             if (!$this->is_history) {
-                 $data['year'] = $data['year'] ? $data['year'] : intval(date('Y'));
-                 $data['month'] = $data['month'] ? $data['month'] : intval(date('m'));
-             } else {
-                 $time = intval(strtotime($data['year'] . '-' . $data['month']));
-                 if (!$time || $time > strtotime('201712')) {
-                     $this->error('历史数据时间必须小于201712');
-                 }
-             }
-             $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name']);
-             if ($ret){
-                 //删除
-                 if ($this->is_history && !$data['force_modify']) {
-                     $this->error('该月报表已经提交,如需修改,请勾选强制修改');
-                 }
-                 $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name']);
-             }
-
-             $batch_data = [];
-//             $good_key = I('post.good_key');
-//             $cache_data = S($good_key);
-//             if ($cache_data) {
-//                 foreach ($cache_data as $value) {
-//                     $temp = [];
-//                     $temp['all_name'] = $data['all_name'];
-//                     $temp['year'] = $data['year'];
-//                     $temp['month'] = $data['month'];
-//                     $temp['uid'] = $data['uid'];
-//                     $temp['filler_man'] = $data['filler_man'];
-//                     $temp['gmt_create'] = time();
-//                     $temp['Contract'] = $value[0];
-//                     $temp['Enterprise'] = $value[1];
-//                     $temp['Loans'] = $value[2];
-//                     $temp['Interest'] = $value[3];
-//                     $temp['Principal'] = $value[4];
-//                     $temp['Phone'] = $value[5];
-//                     $temp['Address'] = $value[6];
-//                     $temp['Area'] = $value[7];
-//                     $temp['Industry'] = $value[8];
-//                     $temp['Startdate'] = strtotime($value[9]);
-//                     $temp['Enddate'] = strtotime($value[10]);
-//                     $temp['Guarantee'] = $value[11];
-//                     $temp['Over_Credit'] = $value[12];
-//                     $temp['Over_Mortgage'] = $value[13];
-//                     $temp['Over_Pledge'] = $value[14];
-//                     $temp['Over_Margin'] = $value[15];
-//                     $temp['Guarantor'] = $value[16];
-//                     $temp['Pattern'] = $value[17];
-//                     $temp['OverdueDays'] = $value[18];
-//                     $temp['Coordination'] = (string) $value[19];
-//                     $temp['Remarks'] = (string) $value[20];
-//                     $temp['ip'] = $_SERVER["REMOTE_ADDR"];
-//                     $batch_data[] = $temp;
-//                 }
-//             }
-             foreach ($data['logs1'] as $k => $v) {
-                 $temp = [];
-                 $temp['all_name'] = $data['all_name'];
-                 $temp['year'] = $data['year'];
-                 $temp['month'] = $data['month'];
-                 $temp['uid'] = $data['uid'];
-                 $temp['filler_man'] = $data['filler_man'];
-                 $temp['gmt_create'] = time();
-                 $temp['Contract'] = $v;
-                 $temp['Enterprise'] = isset($data['logs2'][$k]) ? $data['logs2'][$k] : '';
-                 $temp['Loans'] = isset($data['logs3'][$k]) ? $data['logs3'][$k] : 0;
-                 $temp['Interest'] = isset($data['logs4'][$k]) ? $data['logs4'][$k] : 0;
-                 $temp['Principal'] = isset($data['logs5'][$k]) ? $data['logs5'][$k] : 0;
-                 $temp['Phone'] = isset($data['logs6'][$k]) ? $data['logs6'][$k] : 0;
-                 $temp['Address'] = isset($data['logs7'][$k]) ? $data['logs7'][$k] : 0;
-                 $temp['Area'] = isset($data['logs8'][$k]) ? $data['logs8'][$k] : 0;
-                 $temp['Industry'] = isset($data['logs9'][$k]) ? $data['logs9'][$k] : '';
-                 $temp['Startdate'] = isset($data['logs10'][$k]) ? strtotime($data['logs10'][$k]) : '';
-                 $temp['Enddate'] = isset($data['logs11'][$k]) ? strtotime($data['logs11'][$k]) : '';
-                 $temp['Guarantee'] = isset($data['logs12'][$k]) ? $data['logs12'][$k] : '';
-                 $temp['Over_Credit'] = isset($data['logs13'][$k]) ? $data['logs13'][$k] : '';
-                 $temp['Over_Mortgage'] = isset($data['logs14'][$k]) ? $data['logs14'][$k] : '';
-                 $temp['Over_Pledge'] = isset($data['logs15'][$k]) ? $data['logs15'][$k] : '';
-                 $temp['Over_Margin'] = isset($data['logs16'][$k]) ? $data['logs16'][$k] : '';
-                 $temp['Guarantor'] = isset($data['logs17'][$k]) ? $data['logs17'][$k] : '';
-                 $temp['Pattern'] = isset($data['logs18'][$k]) ? $data['logs18'][$k] : '';
-                 $temp['OverdueDays'] = isset($data['logs19'][$k]) ? $data['logs19'][$k] : '';
-                 $temp['Coordination'] = isset($data['logs20'][$k]) ? $data['logs20'][$k] : '';
-                 $temp['Remarks'] = isset($data['logs21'][$k]) ? $data['logs21'][$k] : '';
-
-
-                 $temp['ip'] = $_SERVER["REMOTE_ADDR"];
-                 $batch_data[] = $temp;
-             }
-             // var_dump($batch_data);die();
-             $ret = $this->local_service->add_batch($batch_data);
-             if ($ret->success) {
-                 action_user_log('新增不良贷款明细报表');
-                 $this->success('添加成功！');
-             } else {
-                 $this->error($ret->message);
-             }
-
-
-         } else {
-             $this->title = '不良贷款明细月填报('. date('Y-m') .'月)';
-             if ($this->is_history) {
-                 $this->title = '不良贷款明细月填报[正在编辑历史数据]';
-             }
-
-             $this->assign('title', $this->title);
-
-             //获取所有相关的公司
-             $DepartmentService = \Common\Service\DepartmentService::get_instance();
-
-             $departments = $DepartmentService->get_my_list(UID, $this->type);
-
-
-             if (!$departments) {
-                 $departments = $DepartmentService->get_all_list($this->type);
-             }
-             $data = $departments[0];
-             $all_name = $data['all_name'];
-             $all_name = I('all_name') ? I('all_name') : $all_name;
-             $departments = result_to_array($departments, 'all_name');
-             $this->assign('departments', $departments);
-
-             //获取当期的数据
-             $infos = [];
-             if (!$this->is_history) {
-                 if ($all_name) {
-
-                     $year = I('year') ? I('year') : intval(date('Y'));
-                     $month = I('month') ? I('month') : intval(date('m'));
-
-                     $infos = $this->local_service->get_by_month_year($year, $month, $all_name);
-                     //$this->convert_data_detail_submit_monthly($infos);
-                 }
-             }
-             $this->assign('infos', $infos);
-
-
-
-             $this->display();
-         }
      }
  }

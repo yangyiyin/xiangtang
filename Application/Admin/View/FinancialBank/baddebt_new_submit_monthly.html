@@ -1,0 +1,215 @@
+<extend name="Public/base"/>
+
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+			<ul class="cc tab-nav">
+				<li class="current"><a href="javascript:;">{$title}</a></li>
+			</ul>
+		</div>
+		<!-- 数据表格 -->
+		<div class="tab-content table_list">
+			<!-- 表单 -->
+			<form id="form" action="{:U('')}/id/{$info.id}" method="post" class="form-horizontal">
+				<div id="tab">
+					<table class="biaoge">
+						<tbody>
+						<tr>
+							<td colspan="12">
+								<span class="title">银行机构不良贷款监测统计表</span><span> (单位 万元)</span>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="12">
+								填报机构:
+								<select name="all_name">
+									<php>
+										$list = $departments;
+										$cur = $info['all_name'];
+										foreach($list as $li){
+										$selected = ($li == $cur) ? 'selected' : '';
+										echo '<option value="'.$li.'" '.$selected.'>'.$li.'</option>';
+										}
+									</php>
+								</select>
+								<input type="hidden" class="input input-medium" name="filler_man" value="{:session('user_auth.username')}">
+								&nbsp;&nbsp;&nbsp;&nbsp;时间:
+								<select name="year" class="year change_time">
+									<php>
+										$years = [2016,2017];
+										$cur_year = I('year') ? I('year') : intval(date('Y'));
+										foreach($years as $year){
+										$selected = ($year == $cur_year) ? 'selected' : '';
+										echo '<option value="'.$year.'" '.$selected.'>'.$year.'</option>';
+										}
+									</php>
+								</select>年
+								<select name="month" class="month change_time">
+									<php>
+										$months = [1,2,3,4,5,6,7,8,9,10,11,12];
+										$cur_month = I('month') ? I('month') : intval(date('m'));
+										foreach($months as $month){
+										$selected = ($month == $cur_month) ? 'selected' : '';
+										echo '<option value="'.$month.'" '.$selected.'>'.$month.'</option>';
+										}
+									</php>
+								</select>月
+
+							</td>
+						</tr>
+
+						<tr>
+							<td rowspan="2">年初不良贷款额</td>
+							<td rowspan="2">本月不良贷款额</td>
+							<td rowspan="2">比年初增减额</td>
+							<td rowspan="2">比上月增减</td>
+							<td colspan="8">其中:五级分类情况</td>
+						</tr>
+						<tr>
+							<td>次级</td>
+							<td>比年初</td>
+							<td>可疑</td>
+							<td>比年初</td>
+							<td>损失</td>
+							<td>比年初</td>
+							<td colspan="2">次级+可疑+损失</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_Initial" value="{$info.Baddebt_Initial}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_Month" value="{$info.Baddebt_Month}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_Initial_Modify" value="{$info.Baddebt_Initial_Modify}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_Lastmon_Modify" value="{$info.Baddebt_Lastmon_Modify}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_C" value="{$info.Baddebt_C}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_C_Initial_Modify" value="{$info.Baddebt_C_Initial_Modify}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_D" value="{$info.Baddebt_D}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_D_Initial_Modify" value="{$info.Baddebt_D_Initial_Modify}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_E" value="{$info.Baddebt_E}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_E_Initial_Modify" value="{$info.Baddebt_E_Initial_Modify}">
+							</td>
+							<td colspan="2">
+								<input type="text" class="input input-small" name="Baddebt_CDE" value="{$info.Baddebt_CDE}">
+							</td>
+
+						</tr>
+
+
+						<tr>
+							<td rowspan="2">年初不良贷款额</td>
+							<td rowspan="2">本月不良贷款额</td>
+							<td rowspan="2">比年初增减额</td>
+							<td rowspan="2">比上月增减</td>
+							<td colspan="2">现金回收</td>
+							<td colspan="6">不良资产处置情况</td>
+						</tr>
+						<tr>
+							<td>当年新发生</td>
+							<td>上年度</td>
+							<td>上划</td>
+							<td>以资抵债</td>
+							<td>重组上调</td>
+							<td>资产证券化</td>
+							<td>转让</td>
+							<td>核销</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_Initial_Rate" value="{$info.Baddebt_Initial_Rate}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_Month_Rate" value="{$info.Baddebt_Month_Rate}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_Year_New" value="{$info.Baddebt_Year_New}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_Back" value="{$info.Baddebt_Back}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_Back_Cash_Lastyear" value="{$info.Baddebt_Back_Cash_Lastyear}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_Back_Cash_New" value="{$info.Baddebt_Back_Cash_New}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_Back_A" value="{$info.Baddebt_Back_A}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_Back_B" value="{$info.Baddebt_Back_B}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_Back_C" value="{$info.Baddebt_Back_C}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_Back_D" value="{$info.Baddebt_Back_D}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_Back_E" value="{$info.Baddebt_Back_E}">
+							</td>
+							<td>
+								<input type="text" class="input input-small" name="Baddebt_Back_F" value="{$info.Baddebt_Back_F}">
+							</td>
+						</tr>
+
+						<tr>
+							<td>关注类贷款</td>
+							<td><input type="text" class="input input-small" name="Baddebt_B" value="{$info.Baddebt_D}"></td>
+							<td>比年初增减额</td>
+							<td><input type="text" class="input input-small" name="Baddebt_B_Initial_Modify" value="{$info.Baddebt_B_Initial_Modify}"></td>
+							<td>逾期类贷款</td>
+							<td><input type="text" class="input input-small" name="Baddebt_Overdue" value="{$info.Baddebt_Overdue}"></td>
+							<td>比年初增减额</td>
+							<td><input type="text" class="input input-small" name="Baddebt_Overdue_Initial_Modify" value="{$info.Baddebt_Overdue_Initial_Modify}"></td>
+							<td>逾期贷款三个月以上的</td>
+							<td colspan="3"><input type="text" class="input input-small" name="Baddebt_Overdue_long" value="{$info.Baddebt_Overdue_long}"></td>
+
+						</tr>
+
+						</tbody>
+					</table>
+				</div>
+
+
+
+
+
+
+				<div class="btn_wrap">
+					<div class="btn_wrap_pd">
+						<button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">保存</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	</div>
+
+	<script>
+		$(document).ready(function(){
+			$('.change_time').change(function(){
+				var year = $('.year').val();
+				var month = $('.month').val();
+				location.href= "{:U('')}/year/"+year+"/month/"+month;
+			})
+		})
+	</script>
+</block>

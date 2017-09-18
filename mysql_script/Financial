@@ -818,62 +818,266 @@ create table shopy_financial_bank_credit_new (
   `filler_man` VARCHAR(50) DEFAULT ''  COMMENT '填报人',
   `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
   `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
-
-  Loans decimal(7,2) NOT NULL DEFAULT 0,	#贷款余额	亿元
-	Loans_A decimal(7,2) NOT NULL DEFAULT 0,	#小企业贷款
-	Loans_B decimal(7,2) NOT NULL DEFAULT 0,	#担保公司担保贷款
-	Loans_C decimal(7,2) NOT NULL DEFAULT 0,	#政府平台公司贷款
-	Loans_D decimal(7,2) NOT NULL DEFAULT 0,	#涉农贷款
-	Loans_D1 decimal(7,2) NOT NULL DEFAULT 0,	#农业贷款
-	Loans_D2 decimal(7,2) NOT NULL DEFAULT 0,	#农户贷款
-	Loans_E decimal(7,2) NOT NULL DEFAULT 0,	#固定资产贷款
-	Loans_F decimal(7,2) NOT NULL DEFAULT 0,	#房地产开发贷款
-	Loans_G decimal(7,2) NOT NULL DEFAULT 0,	#个人住房贷款
-	Loans_G1 decimal(7,2) NOT NULL DEFAULT 0,	#个人住房按揭贷款
-	Loans_H decimal(7,2) NOT NULL DEFAULT 0,	#个人经营性贷款
-	Loans_I decimal(7,2) NOT NULL DEFAULT 0,	#票据
-	Loans_I1 decimal(7,2) NOT NULL DEFAULT 0,	#银票贴现
-	Loans_I2 decimal(7,2) NOT NULL DEFAULT 0,	#商票贴现
-	Loans_J decimal(7,2) NOT NULL DEFAULT 0,	#节能减排
-	Loans_K decimal(7,2) NOT NULL DEFAULT 0,	#高新技术
-
-	Deposits decimal(7,2) NOT NULL DEFAULT 0,		#存款余额
-	Deposits_A decimal(7,2) NOT NULL DEFAULT 0,		#对公
-	Deposits_A1 decimal(7,2) NOT NULL DEFAULT 0,	#活期
-	Deposits_A2 decimal(7,2) NOT NULL DEFAULT 0,	#定期
-	Deposits_B decimal(7,2) NOT NULL DEFAULT 0,		#储蓄
-	Deposits_B1 decimal(7,2) NOT NULL DEFAULT 0,	#活期储蓄
-  Deposits_B2 decimal(7,2) NOT NULL DEFAULT 0,	#定期储蓄
-	Deposits_C decimal(7,2) NOT NULL DEFAULT 0,		#保证金
-	Deposits_C1 decimal(7,2) NOT NULL DEFAULT 0,	#开证保证金
-	Deposits_C2 decimal(7,2) NOT NULL DEFAULT 0,	#签发银票保证金
-	Deposits_C3 decimal(7,2) NOT NULL DEFAULT 0,	#商票保贴保证金
-	Deposits_C4 decimal(7,2) NOT NULL DEFAULT 0,	#开立保函保证金
-	Deposits_D decimal(7,2) NOT NULL DEFAULT 0,		#其他存款
-	Deposits_D1 decimal(7,2) NOT NULL DEFAULT 0,	#同业存款
-	Deposits_D2 decimal(7,2) NOT NULL DEFAULT 0,	#银行承税质押的存款
-Deposits_D3 decimal(7,2) NOT NULL DEFAULT 0,	#转(再)贴现
-Deposits_D4 decimal(7,2) NOT NULL DEFAULT 0,	#银行对外担保和承诺金额
-Deposits_D41 decimal(7,2) NOT NULL DEFAULT 0,	#银行开出保函
-Deposits_D42 decimal(7,2) NOT NULL DEFAULT 0,	#银行承税汇票余额
-Deposits_D43 decimal(7,2) NOT NULL DEFAULT 0,	#信用证余额
-Deposits_D44 decimal(7,2) NOT NULL DEFAULT 0,	#其他对外承诺
-Deposits_D5 decimal(7,2) NOT NULL DEFAULT 0,	#信贷资产
-Deposits_D51 decimal(7,2) NOT NULL DEFAULT 0,	#证券化
-Deposits_D52 decimal(7,2) NOT NULL DEFAULT 0,	#贷款转让
-Deposits_D53 decimal(7,2) NOT NULL DEFAULT 0,	#银信合作转让
-Deposits_D6 decimal(7,2) NOT NULL DEFAULT 0,	#委托代理贷款
-Deposits_D61 decimal(7,2) NOT NULL DEFAULT 0,	#委托贷款
-Deposits_D62 decimal(7,2) NOT NULL DEFAULT 0,	#代理他行
-Deposits_D63 decimal(7,2) NOT NULL DEFAULT 0,	#代理他行集约票据
-Deposits_D7 decimal(7,2) NOT NULL DEFAULT 0,	#理财业务余额
-Deposits_D8 decimal(7,2) NOT NULL DEFAULT 0,	#国际业务结算量
-Deposits_D9 decimal(7,2) NOT NULL DEFAULT 0,	#账面利润
-Deposits_D10 decimal(7,2) NOT NULL DEFAULT 0,	#中间业务收入
-Deposits_D11 decimal(7,2) NOT NULL DEFAULT 0,	#利息收入
+  type TINYINT(3) DEFAULT 1,
+  Loans  VARCHAR(50) NOT NULL DEFAULT '',	#贷款余额	亿元
+	Loans_A  VARCHAR(50) NOT NULL DEFAULT '',	#小企业贷款
+	Loans_B  VARCHAR(50) NOT NULL DEFAULT '',	#担保公司担保贷款
+	Loans_C  VARCHAR(50) NOT NULL DEFAULT '',	#政府平台公司贷款
+	Loans_D  VARCHAR(50) NOT NULL DEFAULT '',	#涉农贷款
+	Loans_D1  VARCHAR(50) NOT NULL DEFAULT '',	#农业贷款
+	Loans_D2  VARCHAR(50) NOT NULL DEFAULT '',	#农户贷款
+	Loans_E  VARCHAR(50) NOT NULL DEFAULT '',	#固定资产贷款
+	Loans_F  VARCHAR(50) NOT NULL DEFAULT '',	#房地产开发贷款
+	Loans_G  VARCHAR(50) NOT NULL DEFAULT '',	#个人住房贷款
+	Loans_G1  VARCHAR(50) NOT NULL DEFAULT '',	#个人住房按揭贷款
+	Loans_H  VARCHAR(50) NOT NULL DEFAULT '',	#个人经营性贷款
+	Loans_I  VARCHAR(50) NOT NULL DEFAULT '',	#票据
+	Loans_I1  VARCHAR(50) NOT NULL DEFAULT '',	#银票贴现
+	Loans_I2  VARCHAR(50) NOT NULL DEFAULT '',	#商票贴现
+	Loans_J  VARCHAR(50) NOT NULL DEFAULT '',	#节能减排
+	Loans_K  VARCHAR(50) NOT NULL DEFAULT '',	#高新技术
+	Deposits  VARCHAR(50) NOT NULL DEFAULT '',		#存款余额
+	Deposits_A  VARCHAR(50) NOT NULL DEFAULT '',		#对公
+	Deposits_A1  VARCHAR(50) NOT NULL DEFAULT '',	#活期
+	Deposits_A2  VARCHAR(50) NOT NULL DEFAULT '',	#定期
+	Deposits_B  VARCHAR(50) NOT NULL DEFAULT '',		#储蓄
+	Deposits_B1  VARCHAR(50) NOT NULL DEFAULT '',	#活期储蓄
+  Deposits_B2  VARCHAR(50) NOT NULL DEFAULT '',	#定期储蓄
+	Deposits_C  VARCHAR(50) NOT NULL DEFAULT '',		#保证金
+	Deposits_C1  VARCHAR(50) NOT NULL DEFAULT '',	#开证保证金
+	Deposits_C2  VARCHAR(50) NOT NULL DEFAULT '',	#签发银票保证金
+	Deposits_C3  VARCHAR(50) NOT NULL DEFAULT '',	#商票保贴保证金
+	Deposits_C4  VARCHAR(50) NOT NULL DEFAULT '',	#开立保函保证金
+	Deposits_D  VARCHAR(50) NOT NULL DEFAULT '',		#其他存款
+	Deposits_D1  VARCHAR(50) NOT NULL DEFAULT '',	#同业存款
+	Deposits_D2  VARCHAR(50) NOT NULL DEFAULT '',	#银行承税质押的存款
+Deposits_D3  VARCHAR(50) NOT NULL DEFAULT '',	#转(再)贴现
+Deposits_D4  VARCHAR(50) NOT NULL DEFAULT '',	#银行对外担保和承诺金额
+Deposits_D41  VARCHAR(50) NOT NULL DEFAULT '',	#银行开出保函
+Deposits_D42  VARCHAR(50) NOT NULL DEFAULT '',	#银行承税汇票余额
+Deposits_D43  VARCHAR(50) NOT NULL DEFAULT '',	#信用证余额
+Deposits_D44  VARCHAR(50) NOT NULL DEFAULT '',	#其他对外承诺
+Deposits_D5  VARCHAR(50) NOT NULL DEFAULT '',	#信贷资产
+Deposits_D51  VARCHAR(50) NOT NULL DEFAULT '',	#证券化
+Deposits_D52  VARCHAR(50) NOT NULL DEFAULT '',	#贷款转让
+Deposits_D53  VARCHAR(50) NOT NULL DEFAULT '',	#银信合作转让
+Deposits_D6  VARCHAR(50) NOT NULL DEFAULT '',	#委托代理贷款
+Deposits_D61  VARCHAR(50) NOT NULL DEFAULT '',	#委托贷款
+Deposits_D62  VARCHAR(50) NOT NULL DEFAULT '',	#代理他行
+Deposits_D63  VARCHAR(50) NOT NULL DEFAULT '',	#代理他行集约票据
+Deposits_D7  VARCHAR(50) NOT NULL DEFAULT '',	#理财业务余额
+Deposits_D8  VARCHAR(50) NOT NULL DEFAULT '',	#国际业务结算量
+Deposits_D9  VARCHAR(50) NOT NULL DEFAULT '',	#账面利润
+Deposits_D10  VARCHAR(50) NOT NULL DEFAULT '',	#中间业务收入
+Deposits_D11  VARCHAR(50) NOT NULL DEFAULT '',	#利息收入
 
   `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
   `gmt_create` int(11) DEFAULT 0,
   `deleted` TINYINT(3) DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+
+
+#不良贷款监测
+create table shopy_financial_bank_baddebt_new (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT '0' COMMENT '用户id',
+  `all_name` VARCHAR(50) DEFAULT '' COMMENT '公司全称',
+  `filler_man` VARCHAR(50) DEFAULT ''  COMMENT '填报人',
+  `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
+  `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
+
+  Baddebt_Initial decimal(9,2) NOT NULL DEFAULT 0,		#年初
+	Baddebt_Month decimal(9,2) NOT NULL DEFAULT 0,	#本月
+	Baddebt_Initial_Modify decimal(9,2) NOT NULL DEFAULT 0,	# 比年初增减
+	Baddebt_Lastmon_Modify decimal(9,2) NOT NULL DEFAULT 0,	# 比上月增减
+	Baddebt_B decimal(9,2) NOT NULL DEFAULT 0,	# 关注
+	Baddebt_B_Initial_Modify decimal(9,2) NOT NULL DEFAULT 0,	# 关注比年初
+Baddebt_C decimal(9,2) NOT NULL DEFAULT 0,	# 次级
+Baddebt_C_Initial_Modify decimal(9,2) NOT NULL DEFAULT 0,	# 次级比年初
+Baddebt_D decimal(9,2) NOT NULL DEFAULT 0,	# 可疑
+Baddebt_D_Initial_Modify decimal(9,2) NOT NULL DEFAULT 0,	# 可疑比年初
+Baddebt_E decimal(9,2) NOT NULL DEFAULT 0,	# 损失
+Baddebt_E_Initial_Modify decimal(9,2) NOT NULL DEFAULT 0,	# 损失比年初
+Baddebt_CDE decimal(9,2) NOT NULL DEFAULT 0,	# 次级+可疑+损失
+ Baddebt_Initial_Rate decimal(9,2) NOT NULL DEFAULT 0,		#年初
+ Baddebt_Month_Rate decimal(9,2) NOT NULL DEFAULT 0,		#本月
+ Baddebt_Year_New decimal(9,2) NOT NULL DEFAULT 0,		#当年新发生
+ Baddebt_Back decimal(9,2) NOT NULL DEFAULT 0,		#收回合计
+ Baddebt_Back_Cash_Lastyear decimal(9,2) NOT NULL DEFAULT 0,		#现金收回 上年度
+ Baddebt_Back_Cash_New decimal(9,2) NOT NULL DEFAULT 0,		#现金收回 当年新发生
+ Baddebt_Back_A decimal(9,2) NOT NULL DEFAULT 0,		#上滑
+ Baddebt_Back_B decimal(9,2) NOT NULL DEFAULT 0,		#以资抵债
+ Baddebt_Back_C decimal(9,2) NOT NULL DEFAULT 0,		#重组上调
+ Baddebt_Back_D decimal(9,2) NOT NULL DEFAULT 0,		#资产债券化
+ Baddebt_Back_E decimal(9,2) NOT NULL DEFAULT 0,		#转让
+ Baddebt_Back_F decimal(9,2) NOT NULL DEFAULT 0,		#核销
+ Baddebt_Overdue decimal(9,2) NOT NULL DEFAULT 0,		#逾期
+  Baddebt_Overdue_Initial_Modify decimal(9,2) NOT NULL DEFAULT 0,		#逾期比年初
+   Baddebt_Overdue_long decimal(9,2) NOT NULL DEFAULT 0,		#逾期3月以上
+
+
+  `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+create table shopy_financial_bank_baddebt_detail_new (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT '0' COMMENT '用户id',
+  `all_name` VARCHAR(50) DEFAULT '' COMMENT '公司全称',
+  `filler_man` VARCHAR(50) DEFAULT ''  COMMENT '填报人',
+  `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
+  `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
+
+	Enterprise varchar(50) NOT NULL,		#企业名称
+	Principal varchar(50) NULL,			#法人
+	Address varchar(100) NULL,			#注册地址
+		Loans decimal(9,2) NOT NULL DEFAULT 0,		#贷款余额（万元）
+	Loans_Type varchar(20) NOT NULL DEFAULT 0,	#不良贷款分类
+	Industry varchar(50) NULL,			#所属行业
+	Reason varchar(200) NOT NULL,		#原因
+	Handle varchar(100) NOT NULL,		#清收措施
+	Info varchar(200) NOT NULL,		#企业基本情况
+	Plan varchar(200) NOT NULL,		#下一步处置计划
+  Recommend varchar(200) NOT NULL,		#要求或建议
+	Startdate int NOT NULL DEFAULT 0,			#列入日期
+	Enddate int NOT NULL DEFAULT 0,			#收回日期
+
+  `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+create table shopy_financial_bank_baddebt_dispose_new (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT '0' COMMENT '用户id',
+  `all_name` VARCHAR(50) DEFAULT '' COMMENT '公司全称',
+  `filler_man` VARCHAR(50) DEFAULT ''  COMMENT '填报人',
+  `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
+  `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
+
+
+	Enterprise varchar(200) NOT NULL,		#企业名称
+	Loans decimal(9,2) NOT NULL DEFAULT 0,		#贷款余额（万元）
+	Recover decimal(9,2) NOT NULL DEFAULT 0,	#收回金额+
+	Recover_Ot decimal(9,2) NOT NULL DEFAULT 0,	#总的
+	Recover_Ot_1 decimal(9,2) NOT NULL DEFAULT 0,	#以资抵债
+	Recover_Ot_2 decimal(9,2) NOT NULL DEFAULT 0,	#法院清收
+	Recover_Ot_3 decimal(9,2) NOT NULL DEFAULT 0,	#核销
+	Recover_Ot_4 decimal(9,2) NOT NULL DEFAULT 0,	#上划
+	Recover_Ot_5 decimal(9,2) NOT NULL DEFAULT 0,	#政策性剥离
+	Recover_Ot_6 decimal(9,2) NOT NULL DEFAULT 0,	#打包出售
+  Recover_Ot_other_name varchar(20) NOT NULL,	#其他
+	Recover_Ot_other decimal(9,2) NOT NULL DEFAULT 0,	#其他
+
+  `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+create table shopy_financial_bank_focus_detail_new (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT '0' COMMENT '用户id',
+  `all_name` VARCHAR(50) DEFAULT '' COMMENT '公司全称',
+  `filler_man` VARCHAR(50) DEFAULT ''  COMMENT '填报人',
+  `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
+  `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
+
+	Enterprise varchar(50) NOT NULL,		#企业名称
+		Loans decimal(9,2) NOT NULL DEFAULT 0,		#贷款余额（万元）
+		Overdue_Loans decimal(9,2) NOT NULL DEFAULT 0,		#逾期贷款余额（万元）
+
+	Industry varchar(50) NULL,			#所属行业
+	Scale varchar(50) NULL,			#规模
+	Principal varchar(50) NULL,			#法人
+	Address varchar(50) NULL,			#注册地址
+	Phone varchar(50) NULL,			#联系电话
+		Area varchar(20) NULL,			#街道
+	Startdate int NOT NULL DEFAULT 0,			#发放日期
+	Enddate int NOT NULL DEFAULT 0,			#到期日期
+	Remark varchar(200) NULL,			#备注
+
+  `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+create table shopy_financial_bank_quarterly_quantity_a_new (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT '0' COMMENT '用户id',
+  `all_name` VARCHAR(50) DEFAULT '' COMMENT '公司全称',
+  `filler_man` VARCHAR(50) DEFAULT ''  COMMENT '填报人',
+  `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
+  `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
+  Type TINYINT(3) DEFAULT 1,
+
+  A1 decimal(9,2) NOT NULL DEFAULT 0,	#贷款利率
+  Rate_A1 decimal(9,2) NOT NULL DEFAULT 0,	#加权平均利率
+  A2 decimal(9,2) NOT NULL DEFAULT 0,	#最高利率
+  Rate_A2 decimal(9,2) NOT NULL DEFAULT 0,	#加权平均利率
+  A3 decimal(9,2) NOT NULL DEFAULT 0,	#最低利率
+  Rate_A3 decimal(9,2) NOT NULL DEFAULT 0,	#发生额
+  A4 decimal(9,2) NOT NULL DEFAULT 0,	#信用
+  Rate_A4 decimal(9,2) NOT NULL DEFAULT 0,	#加权平均利率
+  A5 decimal(9,2) NOT NULL DEFAULT 0,	#抵押
+  Rate_A5 decimal(9,2) NOT NULL DEFAULT 0,	#加权平均利率
+  A6 decimal(9,2) NOT NULL DEFAULT 0,	#保证
+  Rate_A6 decimal(9,2) NOT NULL DEFAULT 0,	#加权平均利率
+  A7 decimal(9,2) NOT NULL DEFAULT 0,	#抵押+保证
+  Rate_A7 decimal(9,2) NOT NULL DEFAULT 0,	#加权平均利率
+
+  `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+create table shopy_financial_bank_quarterly_quantity_b_new (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT '0' COMMENT '用户id',
+  `all_name` VARCHAR(50) DEFAULT '' COMMENT '公司全称',
+  `filler_man` VARCHAR(50) DEFAULT ''  COMMENT '填报人',
+  `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
+  `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
+  Type TINYINT(3) DEFAULT 1,
+
+  A decimal(9,2) NOT NULL DEFAULT 0,	#发生额
+  Rate_A decimal(9,2) NOT NULL DEFAULT 0,	#加权平均利率
+
+
+  `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+create table shopy_financial_bank_quarterly_quantity_c_new (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) DEFAULT '0' COMMENT '用户id',
+  `all_name` VARCHAR(50) DEFAULT '' COMMENT '公司全称',
+  `filler_man` VARCHAR(50) DEFAULT ''  COMMENT '填报人',
+  `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
+  `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
+  Type TINYINT(3) DEFAULT 1,
+
+  A decimal(9,2) NOT NULL DEFAULT 0,	#发生额
+
+
+  `ip` VARCHAR(50) DEFAULT '' COMMENT 'ip',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+alter table shopy_financial_bank_credit_new add type INT (3) DEFAULT '1' ;

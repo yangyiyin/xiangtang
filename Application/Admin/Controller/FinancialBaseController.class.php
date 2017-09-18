@@ -61,20 +61,25 @@ class FinancialBaseController extends AdminController {
 
         $departments = $DepartmentService->get_my_list(UID, $this->type);
 
-
+        $all_name = '';
         if (!$departments) {
             $departments = $DepartmentService->get_all_list($this->type);
-        } else {
-            $data = $departments[0];
         }
+        $data = $departments[0];
+        $all_name = $data['all_name'];
+        $all_name = I('all_name') ? I('all_name') : $all_name;
+
         $departments = result_to_array($departments, 'all_name');
         $this->assign('departments', $departments);
 
         //获取当期的数据
         $info = [];
+
         if (!$this->is_history) {
-            if (isset($data['all_name']) && $data['all_name']) {
-                $info = $this->local_service->get_by_month_year(intval(date('Y')), intval(date('m')), $data['all_name']);
+            if ($all_name) {
+                $year = I('year') ? I('year') : intval(date('Y'));
+                $month = I('month') ? I('month') : intval(date('m'));
+                $info = $this->local_service->get_by_month_year($year, $month, $all_name);
                 $this->convert_data_submit_monthly($info);
             }
         }

@@ -39,9 +39,5 @@
 //$_str = encode_big_endian($_num);
 //echo 'encode: ', $_num, '=', $_str, "\n";
 //echo 'deocde: ', $_str, '=', decode_big_endian($_str), "\n";
-
-
-$a = 'id	公司名称	填报月	填表人	企业名称:	法人代表或实际控制人:	企业所属乡镇（街道）:	逾期金额:	化解金额:	备注:	提交时间	ip	操作';
-echo $a = str_replace('	','","', $a);
-
+var_dump(is_numeric('0'));
 
