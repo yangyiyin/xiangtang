@@ -69,7 +69,7 @@
 					<td>{$vo.order_no} </td>
 					<td>
 						<p class="short_info">订单id:{$vo.id}</p>
-						<p class="short_info">总价:{$vo.sum|format_price}元(含运费{$vo.freight}元)</p>
+						<p class="short_info">总价:{$vo.sum|format_price}元(含运费{$vo.freight|format_price}元)</p>
 
 						<p class="short_info">总数量:{$vo.num}</p>
 						<p class="short_info">佣金:{$vo.dealer_profit|format_price}元</p>
