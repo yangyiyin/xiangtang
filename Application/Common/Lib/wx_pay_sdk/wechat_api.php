@@ -132,7 +132,6 @@ class Wechat{
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $xml_data);
         $response = curl_exec($ch);
-        var_dump($response);
         if (curl_errno($ch)) {
             print curl_error($ch);
         }
