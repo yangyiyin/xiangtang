@@ -63,7 +63,6 @@ class Wechat{
         ksort($sign_data);
         $xml = $this->array_to_xml($sign_data);
         $post_url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
-        var_dump($xml);
         $response_xml = $this->https_get($post_url,$xml);
         $response_arr = $this->setXmlArray($response_xml);
         if ($response_arr['return_code'] == 'SUCCESS' && $response_arr['return_msg'] == 'OK') {
