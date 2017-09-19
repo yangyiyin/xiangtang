@@ -285,7 +285,12 @@
 					<div class="btn_wrap_pd">
 						<if condition="$can_submit == 1">
 							<button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">提交</button>
-
+						</if>
+						<if condition="$verify_status == 1">
+							已提交审核
+						</if>
+						<if condition="$verify_status == 2">
+							审核通过
 						</if>
 					</div>
 				</div>

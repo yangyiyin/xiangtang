@@ -20,19 +20,57 @@
 
 						</tr>
 						<tr>
-							<td colspan="3">公司全称:</td>
-							<td>
-								<select name="all_name">
+
+							<td colspan="4">
+								填报机构:
+								<select name="all_name" class="all_name">
 									<php>
 										$list = $departments;
-										$cur = $info['all_name'];
+										$cur = I('all_name') ? I('all_name') : '';
 										foreach($list as $li){
 										$selected = ($li == $cur) ? 'selected' : '';
 										echo '<option value="'.$li.'" '.$selected.'>'.$li.'</option>';
 										}
 									</php>
 								</select>
-
+								<input type="hidden" class="input input-medium" name="filler_man" value="{:session('user_auth.username')}">
+								&nbsp;&nbsp;&nbsp;&nbsp;时间:
+								<select name="year" class="year change_time">
+									<php>
+										$years = [2016,2017];
+										$cur_year = I('year') ? I('year') : intval(date('Y'));
+										foreach($years as $year){
+										$selected = ($year == $cur_year) ? 'selected' : '';
+										echo '<option value="'.$year.'" '.$selected.'>'.$year.'</option>';
+										}
+									</php>
+								</select>年
+								<select name="month" class="month change_time">
+									<php>
+										$months = [1,2,3,4,5,6,7,8,9,10,11,12];
+										$cur_month = I('month') ? I('month') : intval(date('m'));
+										foreach($months as $month){
+										$selected = ($month == $cur_month) ? 'selected' : '';
+										echo '<option value="'.$month.'" '.$selected.'>'.$month.'</option>';
+										}
+									</php>
+								</select>月
+								<script>
+									$(document).ready(function(){
+										$('.change_time').change(function(){
+											var year = $('.year').val();
+											var month = $('.month').val();
+											var all_name = $('.all_name').val();
+											location.href= "{:U('')}/year/"+year+"/month/"+month+"/all_name/"+all_name;
+										})
+										$('.all_name').change(function(){
+											var year = $('.year').val();
+											var month = $('.month').val();
+											var all_name = $('.all_name').val();
+											location.href= "{:U('')}/year/"+year+"/month/"+month+"/all_name/"+all_name;
+										})
+									})
+								</script>
 							</td>
 
 							<td colspan="5" style="display: none">
@@ -40,13 +78,7 @@
 							</td>
 						</tr>
 
-						<tr>
-							<td colspan="3">项目</td>
-							<td>
 
-								{:date('Y')}年{:date('m')}月
-							</td>
-						</tr>
 
 						<tr>
 							<td rowspan="6">保费</td>
@@ -179,7 +211,15 @@
 
 				<div class="btn_wrap">
 					<div class="btn_wrap_pd">
-						<if condition="$info['id']">已提交</if><button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal"><if condition="$info['id']">修 改<else/>提 交</if></button>
+						<if condition="$can_submit == 1">
+							<button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">提交</button>
+						</if>
+						<if condition="$verify_status == 1">
+							已提交审核
+						</if>
+						<if condition="$verify_status == 2">
+							审核通过
+						</if>
 					</div>
 				</div>
 			</form>

@@ -16,14 +16,38 @@
      public function submit_monthly()
      {
 
+
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+         if (!$departments) {
+             $departments = $DepartmentService->get_all_list($this->type);
+         }
+         $all_name = $departments[0]['all_name'];
+         $all_name = I('all_name') ? I('all_name') : $all_name;
+         $VerifyService = \Common\Service\VerifyService::get_instance();
+         $type = \Common\Model\FinancialVerifyModel::TYPE_Insurance_PROP;
+         $year = I('month') ? I('year') : intval(date('Y'));
+         $month = I('month') ? I('month') : intval(date('m'));
+
+         $verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
+         if ($verify_info) {
+             $this->assign('verify_status', $verify_info['status']);
+         }
+         $can_submit = 0;
+         if (!isset($verify_info['status']) || $verify_info['status'] == 0) {
+             $can_submit = 1;
+         }
+         $this->assign('can_submit', $can_submit);
+
          if (IS_POST) {
              $id = I('get.id');
              $data = I('post.');
              $data['uid'] = UID;
 
              if (!$this->is_history) {
-                 $data['year'] = intval(date('Y'));
-                 $data['month'] = intval(date('m'));
+                 $data['year'] = I('year') ? I('year') : intval(date('Y'));
+                 $data['month'] = I('month') ? I('month') : intval(date('m'));
              } else {
                  $time = intval(strtotime($data['year'] . '-' .$data['month']));
                  if (!$time || $time > strtotime('201712')) {
@@ -34,6 +58,34 @@
                  $ret = $this->local_service->update_by_id($id, $data);
                  if ($ret->success) {
                      action_user_log('修改财产保险公司月报表');
+                     //提交审核
+                     if ($verify_info && $verify_info['status'] != 0) {
+                         $this->error('对不起,您无法提交审核,该月审核记录已经提交!');
+                     }
+
+                     if ($verify_info) {
+                         $data = [];
+                         $data['status'] = 1;
+                         $data['uid'] = UID;
+                         $ret = $VerifyService->update_by_id($verify_info['id'], $data);
+                         if (!$ret->success) {
+                             $this->error($ret->message);
+                         }
+                         action_user_log('提交财产保险月报审核,id:'.$verify_info['id']);
+                     } else {
+                         $data = [];
+                         $data['year'] = $year;
+                         $data['month'] = $month;
+                         $data['all_name'] = $all_name;
+                         $data['type'] = $type;
+                         $data['status'] = 1;
+                         $data['uid'] = UID;
+                         $ret = $VerifyService->add_one($data);
+                         if (!$ret->success) {
+                             $this->error($ret->message);
+                         }
+                         action_user_log('提交财产保险月报审核,id:'.$ret->data);
+                     }
                      $this->success('修改成功！');
                  } else {
                      $this->error($ret->message);
@@ -61,6 +113,35 @@
                  $ret = $this->local_service->add_one($data);
                  if ($ret->success) {
                      action_user_log('新增财产保险公司月报表');
+                     //提交审核
+                     if ($verify_info && $verify_info['status'] != 0) {
+                         $this->error('对不起,您无法提交审核,该月审核记录已经提交!');
+                     }
+
+                     if ($verify_info) {
+                         $data = [];
+                         $data['status'] = 1;
+                         $data['uid'] = UID;
+                         $ret = $VerifyService->update_by_id($verify_info['id'], $data);
+                         if (!$ret->success) {
+                             $this->error($ret->message);
+                         }
+                         action_user_log('提交财产保险月报审核,id:'.$verify_info['id']);
+                     } else {
+                         $data = [];
+                         $data['year'] = $year;
+                         $data['month'] = $month;
+                         $data['all_name'] = $all_name;
+                         $data['type'] = $type;
+                         $data['status'] = 1;
+                         $data['uid'] = UID;
+                         $ret = $VerifyService->add_one($data);
+                         if (!$ret->success) {
+                             $this->error($ret->message);
+                         }
+                         action_user_log('提交财产保险月报审核,id:'.$ret->data);
+                     }
+
                      $this->success('添加成功！');
                  } else {
                      $this->error($ret->message);

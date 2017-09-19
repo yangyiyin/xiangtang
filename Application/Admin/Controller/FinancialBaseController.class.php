@@ -110,6 +110,11 @@ class FinancialBaseController extends AdminController {
         $where_all = [];
         $where_all['year'] = $get['year'];
         $where_all['month'] = $get['month'];
+
+        //排除非审核通过的单位
+        \Common\Service\
+
+
         $data_all = $this->local_service->get_by_where_all($where_all);
         list($data, $count) = $this->local_service->get_by_where($where, 'income desc', $page);
         $data = $this->convert_data_statistics($data, $data_all);

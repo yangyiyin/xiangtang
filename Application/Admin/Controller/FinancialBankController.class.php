@@ -234,6 +234,28 @@
      public function credit_new_submit_monthly()
      {
          $this->local_service = \Common\Service\BankCreditNewService::get_instance();
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+         if (!$departments) {
+             $departments = $DepartmentService->get_all_list($this->type);
+         }
+         $all_name = $departments[0]['all_name'];
+         $all_name = I('all_name') ? I('all_name') : $all_name;
+         $VerifyService = \Common\Service\VerifyService::get_instance();
+         $type = \Common\Model\FinancialVerifyModel::TYPE_BANK_MONTH;
+         $year = I('month') ? I('year') : intval(date('Y'));
+         $month = I('month') ? I('month') : intval(date('m'));
+
+         $verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
+         if ($verify_info) {
+             $this->assign('verify_status', $verify_info['status']);
+         }
+         $can_submit = 0;
+         if (!isset($verify_info['status']) || $verify_info['status'] == 0) {
+             $can_submit = 1;
+         }
+         $this->assign('can_submit', $can_submit);
          if (IS_POST) {
              $id = I('get.id');
              $data = I('post.');
@@ -360,6 +382,9 @@
          $month = I('month') ? I('month') : intval(date('m'));
 
          $verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
+         if ($verify_info) {
+             $this->assign('verify_status', $verify_info['status']);
+         }
          $can_submit = 0;
          if (!isset($verify_info['status']) || $verify_info['status'] == 0) {
              $can_submit = 1;
@@ -410,7 +435,7 @@
                          if (!$ret->success) {
                              $this->error($ret->message);
                          }
-                         action_user_log('提交银行月报审核,id:'.$verify_info['id']);
+                         action_user_log('提交银行季报A报审核,id:'.$verify_info['id']);
                      } else {
                          $data = [];
                          $data['year'] = $year;
@@ -423,7 +448,7 @@
                          if (!$ret->success) {
                              $this->error($ret->message);
                          }
-                         action_user_log('提交银行月报审核,id:'.$ret->data);
+                         action_user_log('提交银行季报A审核,id:'.$ret->data);
                      }
                      $this->success('修改成功！');
                  } else {
@@ -519,6 +544,9 @@
          $month = I('month') ? I('month') : intval(date('m'));
 
          $verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
+         if ($verify_info) {
+             $this->assign('verify_status', $verify_info['status']);
+         }
          $can_submit = 0;
          if (!isset($verify_info['status']) || $verify_info['status'] == 0) {
              $can_submit = 1;
@@ -570,7 +598,7 @@
                          if (!$ret->success) {
                              $this->error($ret->message);
                          }
-                         action_user_log('提交银行月报审核,id:'.$verify_info['id']);
+                         action_user_log('提交银行季报B审核,id:'.$verify_info['id']);
                      } else {
                          $data = [];
                          $data['year'] = $year;
@@ -583,7 +611,7 @@
                          if (!$ret->success) {
                              $this->error($ret->message);
                          }
-                         action_user_log('提交银行月报审核,id:'.$ret->data);
+                         action_user_log('提交银行季报B审核,id:'.$ret->data);
                      }
                      $this->success('修改成功！');
                  } else {
@@ -626,7 +654,7 @@
                          if (!$ret->success) {
                              $this->error($ret->message);
                          }
-                         action_user_log('提交银行月报审核,id:'.$verify_info['id']);
+                         action_user_log('提交银行季报C审核,id:'.$verify_info['id']);
                      } else {
                          $data = [];
                          $data['year'] = $year;
@@ -639,7 +667,7 @@
                          if (!$ret->success) {
                              $this->error($ret->message);
                          }
-                         action_user_log('提交银行月报审核,id:'.$ret->data);
+                         action_user_log('提交银行季报C审核,id:'.$ret->data);
                      }
                      $this->success('添加成功！');
                  } else {
@@ -678,6 +706,9 @@
          $month = I('month') ? I('month') : intval(date('m'));
 
          $verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
+         if ($verify_info) {
+             $this->assign('verify_status', $verify_info['status']);
+         }
          $can_submit = 0;
          if (!isset($verify_info['status']) || $verify_info['status'] == 0) {
              $can_submit = 1;
@@ -2959,6 +2990,28 @@
      public function baddebt_new_submit_monthly()
      {
          $this->local_service = \Common\Service\BankBaddebtNewService::get_instance();
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+         if (!$departments) {
+             $departments = $DepartmentService->get_all_list($this->type);
+         }
+         $all_name = $departments[0]['all_name'];
+         $all_name = I('all_name') ? I('all_name') : $all_name;
+         $VerifyService = \Common\Service\VerifyService::get_instance();
+         $type = \Common\Model\FinancialVerifyModel::TYPE_BANK_MONTH;
+         $year = I('month') ? I('year') : intval(date('Y'));
+         $month = I('month') ? I('month') : intval(date('m'));
+
+         $verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
+         if ($verify_info) {
+             $this->assign('verify_status', $verify_info['status']);
+         }
+         $can_submit = 0;
+         if (!isset($verify_info['status']) || $verify_info['status'] == 0) {
+             $can_submit = 1;
+         }
+         $this->assign('can_submit', $can_submit);
          if (IS_POST) {
              $id = I('get.id');
              $data = I('post.');
@@ -3028,6 +3081,28 @@
      {
 
          $this->local_service = \Common\Service\BankBaddebtDetailNewService::get_instance();
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+         if (!$departments) {
+             $departments = $DepartmentService->get_all_list($this->type);
+         }
+         $all_name = $departments[0]['all_name'];
+         $all_name = I('all_name') ? I('all_name') : $all_name;
+         $VerifyService = \Common\Service\VerifyService::get_instance();
+         $type = \Common\Model\FinancialVerifyModel::TYPE_BANK_MONTH;
+         $year = I('month') ? I('year') : intval(date('Y'));
+         $month = I('month') ? I('month') : intval(date('m'));
+
+         $verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
+         if ($verify_info) {
+             $this->assign('verify_status', $verify_info['status']);
+         }
+         $can_submit = 0;
+         if (!isset($verify_info['status']) || $verify_info['status'] == 0) {
+             $can_submit = 1;
+         }
+         $this->assign('can_submit', $can_submit);
          $good_key = I('good_key');
          $cache_data = S($good_key);
          if (IS_POST) {
@@ -3159,6 +3234,28 @@
      {
 
          $this->local_service = \Common\Service\BankBaddebtDisposeNewService::get_instance();
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+         if (!$departments) {
+             $departments = $DepartmentService->get_all_list($this->type);
+         }
+         $all_name = $departments[0]['all_name'];
+         $all_name = I('all_name') ? I('all_name') : $all_name;
+         $VerifyService = \Common\Service\VerifyService::get_instance();
+         $type = \Common\Model\FinancialVerifyModel::TYPE_BANK_MONTH;
+         $year = I('month') ? I('year') : intval(date('Y'));
+         $month = I('month') ? I('month') : intval(date('m'));
+
+         $verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
+         if ($verify_info) {
+             $this->assign('verify_status', $verify_info['status']);
+         }
+         $can_submit = 0;
+         if (!isset($verify_info['status']) || $verify_info['status'] == 0) {
+             $can_submit = 1;
+         }
+         $this->assign('can_submit', $can_submit);
          $good_key = I('good_key');
          $cache_data = S($good_key);
          if (IS_POST) {
@@ -3288,6 +3385,28 @@
      {
 
          $this->local_service = \Common\Service\BankFocusDetailNewService::get_instance();
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+         if (!$departments) {
+             $departments = $DepartmentService->get_all_list($this->type);
+         }
+         $all_name = $departments[0]['all_name'];
+         $all_name = I('all_name') ? I('all_name') : $all_name;
+         $VerifyService = \Common\Service\VerifyService::get_instance();
+         $type = \Common\Model\FinancialVerifyModel::TYPE_BANK_MONTH;
+         $year = I('month') ? I('year') : intval(date('Y'));
+         $month = I('month') ? I('month') : intval(date('m'));
+
+         $verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
+         if ($verify_info) {
+             $this->assign('verify_status', $verify_info['status']);
+         }
+         $can_submit = 0;
+         if (!isset($verify_info['status']) || $verify_info['status'] == 0) {
+             $can_submit = 1;
+         }
+         $this->assign('can_submit', $can_submit);
          $good_key = I('good_key');
          $cache_data = S($good_key);
          if (IS_POST) {
