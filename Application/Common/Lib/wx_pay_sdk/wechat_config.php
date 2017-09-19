@@ -3,7 +3,7 @@ $wechat_config['APPID'] = "wxf716bd5d6844abf4";//
 
 $wechat_config['APPSECRET'] = "";// 权限获取所需密钥 Key
 
-$wechat_config['KEY'] = "";// 加密密钥 Key，也即appKey
+$wechat_config['KEY'] = "148833570214883357021488335702hs";// 加密密钥 Key，也即appKey
 
 $wechat_config['MCH_ID'] = '1488335702';// 财付通商户身份标识
 
