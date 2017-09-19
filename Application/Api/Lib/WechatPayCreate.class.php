@@ -51,7 +51,7 @@ class WechatPayCreate extends BaseApi{
 
         $response = $wechat->createPrepay($pay_info['pay_no'], $pay_info['sum']);
 
-        result_json(TRUE, '', $response);
+        result_json(TRUE, '', json_encode($response));
 
     }
 }

@@ -66,7 +66,7 @@ class Wechat{
         $response_xml = $this->https_get($post_url,$xml);
         $response_arr = $this->setXmlArray($response_xml);
         if ($response_arr['return_code'] == 'SUCCESS' && $response_arr['return_msg'] == 'OK') {
-            return $response_arr['prepay_id'];
+            return $response_arr;
         } else {
             return false;
         }
