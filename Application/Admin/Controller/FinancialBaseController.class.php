@@ -94,7 +94,7 @@ class FinancialBaseController extends AdminController {
         $get = I('get.');
         $where = [];
         if ($get['all_name']) {
-            $where['all_name'] = ['LIKE', '%' . $get['all_name'] . '%'];
+            $where['all_name'][] = ['LIKE', '%' . $get['all_name'] . '%'];
         }
 
         if (!$get['year']) {
@@ -111,8 +111,27 @@ class FinancialBaseController extends AdminController {
         $where_all['year'] = $get['year'];
         $where_all['month'] = $get['month'];
 
-        //排除非审核通过的单位
-        \Common\Service\
+
+        if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty) {
+            $type = \Common\Model\FinancialVerifyModel::TYPE_Insurance_PROP;
+        } elseif ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceLife) {
+            $type = \Common\Model\FinancialVerifyModel::TYPE_Insurance_LIFE;
+        }
+        if (isset($type)) {
+            //排除非审核通过的单位
+            $VerifyService = \Common\Service\VerifyService::get_instance();
+            $where_verify = [];
+            $where_verify['type'] = $type;
+            $where_verify['year'] = $where['year'];
+            $where_verify['month'] = $where['month'];
+            $where_verify['status'] = ['neq', 2];
+            $verifies = $VerifyService->get_by_where_all($where_verify);
+            if ($verifies) {
+                $all_nams = result_to_array($verifies, 'all_name');
+                $where['all_name'][] = ['not in', $all_nams];
+            }
+
+        }
 
 
         $data_all = $this->local_service->get_by_where_all($where_all);
@@ -262,7 +281,9 @@ class FinancialBaseController extends AdminController {
                 $this->error('添加失败!'.$uid.',登录名可能重复,请重试');
             }
         }
+    }
 
+    public function verify() {
 
     }
 }

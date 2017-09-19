@@ -174,7 +174,7 @@
          $get = I('get.');
          $where = [];
          if ($get['all_name']) {
-             $where['all_name'] = ['LIKE', '%' . $get['all_name'] . '%'];
+             $where['all_name'][] = ['LIKE', '%' . $get['all_name'] . '%'];
          }
 
          if (!$get['year']) {
@@ -187,6 +187,19 @@
          $where['month'] = $get['month'];
          $service = '\Common\Service\\'.$this->local_service_name;
          $page = I('get.p', 1);
+
+         //排除非审核通过的单位
+         $VerifyService = \Common\Service\VerifyService::get_instance();
+         $where_verify = [];
+         $where_verify['type'] = \Common\Model\FinancialVerifyModel::TYPE_Insurance_Mutual;
+         $where_verify['year'] = $where['year'];
+         $where_verify['month'] = $where['month'];
+         $where_verify['status'] = ['neq', 2];
+         $verifies = $VerifyService->get_by_where_all($where_verify);
+         if ($verifies) {
+             $all_nams = result_to_array($verifies, 'all_name');
+             $where['all_name'][] = ['not in', $all_nams];
+         }
 
          list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
          //获取年度和历史累计
