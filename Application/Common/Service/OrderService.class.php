@@ -373,6 +373,7 @@ class OrderService extends BaseService{
         $data_order['type'] = $user_info['type'];//用户type和订单type保持一致
         $data_order['inviter_id'] = $user_info['inviter_id'];
         $data_order['receiving_type'] = $extra['receiving_type'];
+        $data_order['freight'] = $order_pre['freight'];
 
         if ($extra['receiving_service_name']) {
             $ServicesService = \Common\Service\ServicesService::get_instance();

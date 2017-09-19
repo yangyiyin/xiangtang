@@ -43,6 +43,7 @@ class OrderPre_order_info extends BaseApi{
             $data['pre_order_id'] = (int) $pre_order['id'];
             $data['total_num'] = (int) $pre_order['num'];
             $data['total_price'] = (int) $pre_order['sum'];
+            $data['freight'] = (int) $pre_order['freight'];
             $data['item_list'] = $items;
             $result[] = $data;
         }

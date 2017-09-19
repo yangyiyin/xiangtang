@@ -114,6 +114,17 @@ class OrderPre_order extends BaseApi{
             $data_order_pre['dealer_profit'] = $_total_dealer_profit;
             $data_order_pre['is_real'] =$_item->is_real;
             $data_order_pre['create_time'] = current_date();
+            //运费
+            $ConfService = \Common\Service\ConfService::get_instance();
+            $info = $ConfService->get_by_key_name('order_freight');
+
+            if ($info) {
+                $content = json_decode($info['content'], TRUE);
+                if ($data_order_pre['sum'] < $content['sum'] * 100) {
+                    $data_order_pre['freight'] = $content['freight'] * 100;
+                    $data_order_pre['sum'] += $data_order_pre['freight'];
+                }
+            }
             $ret = $this->OrderPreService->add_one($data_order_pre);
             if (!$ret->success) {
                 return result_json(FALSE, $ret->message);
