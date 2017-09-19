@@ -50,7 +50,12 @@ class WechatPayCreate extends BaseApi{
         $wechat = new \Wechat($wechat_config);
 
         $response = $wechat->createPrepay($pay_info['pay_no'], $pay_info['sum']);
-
+        if ($response) {
+            $response['prepayid'] = $response['prepay_id'];
+            $response['noncestr'] = $response['nonce_str'];
+            $response['partnerid'] = $response['mch_id'];
+            $response['timestamp'] = time();
+        }
         result_json(TRUE, '', json_encode($response));
 
     }
