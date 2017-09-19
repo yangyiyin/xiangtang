@@ -5,7 +5,10 @@
 		<!-- 按钮工具栏 -->
 		<div class="u-tab">
 			<ul class="cc tab-nav">
-				<li class="current"><a href="javascript:;">{$title}</a></li>
+				<li><a href="{:U('FinancialBank/quarterly_quantity_a_new_submit_monthly')}">银行贷款利率执行水平监测季报表</a></li>
+				<li><a href="{:U('FinancialBank/quarterly_quantity_b_new_submit_monthly')}">企业贷款利率执行水平监测季填报</a></li>
+				<li class="current"><a href="javascript:;">企业贷款利率执行水平监测季填报</a></li>
+
 			</ul>
 		</div>
 		<!-- 数据表格 -->
@@ -23,10 +26,10 @@
 						<tr>
 							<td colspan="15">
 								填报机构:
-								<select name="all_name">
+								<select name="all_name" class="all_name">
 									<php>
 										$list = $departments;
-										$cur = $info['all_name'];
+										$cur = I('all_name') ? I('all_name') : '';
 										foreach($list as $li){
 										$selected = ($li == $cur) ? 'selected' : '';
 										echo '<option value="'.$li.'" '.$selected.'>'.$li.'</option>';
@@ -106,7 +109,10 @@
 
 				<div class="btn_wrap">
 					<div class="btn_wrap_pd">
-						<button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">保存</button>
+						<if condition="$can_submit == 1">
+							<button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">提交</button>
+
+						</if>
 					</div>
 				</div>
 			</form>
@@ -119,7 +125,14 @@
 			$('.change_time').change(function(){
 				var year = $('.year').val();
 				var month = $('.month').val();
-				location.href= "{:U('')}/year/"+year+"/month/"+month;
+				var all_name = $('.all_name').val();
+				location.href= "{:U('')}/year/"+year+"/month/"+month+"/all_name/"+all_name;
+			})
+			$('.all_name').change(function(){
+				var year = $('.year').val();
+				var month = $('.month').val();
+				var all_name = $('.all_name').val();
+				location.href= "{:U('')}/year/"+year+"/month/"+month+"/all_name/"+all_name;
 			})
 		})
 	</script>

@@ -5,8 +5,15 @@
 		<!-- 按钮工具栏 -->
 		<div class="u-tab">
 			<ul class="cc tab-nav">
-				<li class="current"><a href="javascript:;">{$title}</a></li>
+				<li class="current"><a href="javascript:;">信贷收支情况</a></li>
+				<li><a href="{:U('FinancialBank/baddebt_new_submit_monthly')}">不良贷款监测</a></li>
+				<li><a href="{:U('FinancialBank/baddebt_detail_new_submit_monthly')}">不良贷款明细</a></li>
+				<li><a href="{:U('FinancialBank/baddebt_dispose_new_submit_monthly')}">不良资产清收明细</a></li>
+				<li><a href="{:U('FinancialBank/focus_detail_new_submit_monthly')}">关注类贷款明细</a></li>
+
 			</ul>
+
+
 		</div>
 		<!-- 数据表格 -->
 		<div class="tab-content table_list">
@@ -23,10 +30,10 @@
 						<tr>
 							<td colspan="12">
 								填报机构:
-								<select name="all_name">
+								<select name="all_name" class="all_name">
 									<php>
 										$list = $departments;
-										$cur = $info['all_name'];
+										$cur = I('all_name') ? I('all_name') : '';
 										foreach($list as $li){
 										$selected = ($li == $cur) ? 'selected' : '';
 										echo '<option value="'.$li.'" '.$selected.'>'.$li.'</option>';
@@ -641,7 +648,14 @@
 			$('.change_time').change(function(){
 				var year = $('.year').val();
 				var month = $('.month').val();
-				location.href= "{:U('')}/year/"+year+"/month/"+month;
+				var all_name = $('.all_name').val();
+				location.href= "{:U('')}/year/"+year+"/month/"+month+"/all_name/"+all_name;
+			})
+			$('.all_name').change(function(){
+				var year = $('.year').val();
+				var month = $('.month').val();
+				var all_name = $('.all_name').val();
+				location.href= "{:U('')}/year/"+year+"/month/"+month+"/all_name/"+all_name;
 			})
 		})
 	</script>

@@ -311,9 +311,7 @@
                 <div id="task-content">
                 <?php $hotkey = json_decode(cookie('Admin_hotkey'),true);?>
                 <ul class="macro-component-tab" id="task-content-inner">
-                    <li class="macro-component-tabitem noclose" app-id="0" app-url="{:u('main/index')}" app-name="首页">
-                        <a href="{:U('Index/index')}"><span class="macro-tabs-item-text"><img style="margin-right: 10px" src="http://php.gooduo.net/gnc/templates/default/images/icon_12.gif"/>首页</span></a>
-                    </li>
+
                     <volist name="hotkey" id="vo">
                         <li class="macro-component-tabitem noclose">
                             <a href="{:U('Index/cutkey')}?title={$key}" class="J_ajax_get"><i class="fa fa-times-circle u-close"></i></a>

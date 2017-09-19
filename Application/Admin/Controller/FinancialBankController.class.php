@@ -346,6 +346,26 @@
      public function quarterly_quantity_a_new_submit_monthly()
      {
          $this->local_service = \Common\Service\BankQuaterlyQuantityANewService::get_instance();
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+         if (!$departments) {
+             $departments = $DepartmentService->get_all_list($this->type);
+         }
+         $all_name = $departments[0]['all_name'];
+         $all_name = I('all_name') ? I('all_name') : $all_name;
+         $VerifyService = \Common\Service\VerifyService::get_instance();
+         $type = \Common\Model\FinancialVerifyModel::TYPE_BANK_A;
+         $year = I('month') ? I('year') : intval(date('Y'));
+         $month = I('month') ? I('month') : intval(date('m'));
+
+         $verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
+         $can_submit = 0;
+         if (!isset($verify_info['status']) || $verify_info['status'] == 0) {
+             $can_submit = 1;
+         }
+         $this->assign('can_submit', $can_submit);
+
          if (IS_POST) {
              $id = I('get.id');
              $data = I('post.');
@@ -377,6 +397,34 @@
                  $ret = $this->local_service->update_by_id($id, $data);
                  if ($ret->success) {
                      action_user_log('修改银行贷款利率执行水平监测季报表');
+                     //提交审核
+                     if ($verify_info && $verify_info['status'] != 0) {
+                         $this->error('对不起,您无法提交审核,该月审核记录已经提交!');
+                     }
+
+                     if ($verify_info) {
+                         $data = [];
+                         $data['status'] = 1;
+                         $data['uid'] = UID;
+                         $ret = $VerifyService->update_by_id($verify_info['id'], $data);
+                         if (!$ret->success) {
+                             $this->error($ret->message);
+                         }
+                         action_user_log('提交银行月报审核,id:'.$verify_info['id']);
+                     } else {
+                         $data = [];
+                         $data['year'] = $year;
+                         $data['month'] = $month;
+                         $data['all_name'] = $all_name;
+                         $data['type'] = $type;
+                         $data['status'] = 1;
+                         $data['uid'] = UID;
+                         $ret = $VerifyService->add_one($data);
+                         if (!$ret->success) {
+                             $this->error($ret->message);
+                         }
+                         action_user_log('提交银行月报审核,id:'.$ret->data);
+                     }
                      $this->success('修改成功！');
                  } else {
                      $this->error($ret->message);
@@ -405,6 +453,35 @@
                  $ret = $this->local_service->add_one($data);
                  if ($ret->success) {
                      action_user_log('新增银行贷款利率执行水平监测季报表');
+
+                     if ($verify_info && $verify_info['status'] != 0) {
+                         $this->error('对不起,您无法提交审核,该月审核记录已经提交!');
+                     }
+                     //提交审核
+                     if ($verify_info) {
+                         $data = [];
+                         $data['status'] = 1;
+                         $data['uid'] = UID;
+                         $ret = $VerifyService->update_by_id($verify_info['id'], $data);
+                         if (!$ret->success) {
+                             $this->error($ret->message);
+                         }
+                         action_user_log('提交银行月报审核,id:'.$verify_info['id']);
+                     } else {
+                         $data = [];
+                         $data['year'] = $year;
+                         $data['month'] = $month;
+                         $data['all_name'] = $all_name;
+                         $data['type'] = $type;
+                         $data['status'] = 1;
+                         $data['uid'] = UID;
+                         $ret = $VerifyService->add_one($data);
+                         if (!$ret->success) {
+                             $this->error($ret->message);
+                         }
+                         action_user_log('提交银行月报审核,id:'.$ret->data);
+                     }
+
                      $this->success('添加成功！');
                  } else {
                      $this->error($ret->message);
@@ -427,6 +504,28 @@
      public function quarterly_quantity_b_new_submit_monthly()
      {
          $this->local_service = \Common\Service\BankQuaterlyQuantityBNewService::get_instance();
+
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+         if (!$departments) {
+             $departments = $DepartmentService->get_all_list($this->type);
+         }
+         $all_name = $departments[0]['all_name'];
+         $all_name = I('all_name') ? I('all_name') : $all_name;
+         $VerifyService = \Common\Service\VerifyService::get_instance();
+         $type = \Common\Model\FinancialVerifyModel::TYPE_BANK_B;
+         $year = I('month') ? I('year') : intval(date('Y'));
+         $month = I('month') ? I('month') : intval(date('m'));
+
+         $verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
+         $can_submit = 0;
+         if (!isset($verify_info['status']) || $verify_info['status'] == 0) {
+             $can_submit = 1;
+         }
+         $this->assign('can_submit', $can_submit);
+
+
          if (IS_POST) {
              $id = I('get.id');
              $data = I('post.');
@@ -458,6 +557,34 @@
                  $ret = $this->local_service->update_by_id($id, $data);
                  if ($ret->success) {
                      action_user_log('修改企业贷款利率执行水平监测季报表');
+                     //提交审核
+                     if ($verify_info && $verify_info['status'] != 0) {
+                         $this->error('对不起,您无法提交审核,该月审核记录已经提交!');
+                     }
+
+                     if ($verify_info) {
+                         $data = [];
+                         $data['status'] = 1;
+                         $data['uid'] = UID;
+                         $ret = $VerifyService->update_by_id($verify_info['id'], $data);
+                         if (!$ret->success) {
+                             $this->error($ret->message);
+                         }
+                         action_user_log('提交银行月报审核,id:'.$verify_info['id']);
+                     } else {
+                         $data = [];
+                         $data['year'] = $year;
+                         $data['month'] = $month;
+                         $data['all_name'] = $all_name;
+                         $data['type'] = $type;
+                         $data['status'] = 1;
+                         $data['uid'] = UID;
+                         $ret = $VerifyService->add_one($data);
+                         if (!$ret->success) {
+                             $this->error($ret->message);
+                         }
+                         action_user_log('提交银行月报审核,id:'.$ret->data);
+                     }
                      $this->success('修改成功！');
                  } else {
                      $this->error($ret->message);
@@ -486,6 +613,34 @@
                  $ret = $this->local_service->add_one($data);
                  if ($ret->success) {
                      action_user_log('新增企业贷款利率执行水平监测季报表');
+                     //提交审核
+                     if ($verify_info && $verify_info['status'] != 0) {
+                         $this->error('对不起,您无法提交审核,该月审核记录已经提交!');
+                     }
+
+                     if ($verify_info) {
+                         $data = [];
+                         $data['status'] = 1;
+                         $data['uid'] = UID;
+                         $ret = $VerifyService->update_by_id($verify_info['id'], $data);
+                         if (!$ret->success) {
+                             $this->error($ret->message);
+                         }
+                         action_user_log('提交银行月报审核,id:'.$verify_info['id']);
+                     } else {
+                         $data = [];
+                         $data['year'] = $year;
+                         $data['month'] = $month;
+                         $data['all_name'] = $all_name;
+                         $data['type'] = $type;
+                         $data['status'] = 1;
+                         $data['uid'] = UID;
+                         $ret = $VerifyService->add_one($data);
+                         if (!$ret->success) {
+                             $this->error($ret->message);
+                         }
+                         action_user_log('提交银行月报审核,id:'.$ret->data);
+                     }
                      $this->success('添加成功！');
                  } else {
                      $this->error($ret->message);
@@ -508,6 +663,28 @@
      public function quarterly_quantity_c_new_submit_monthly()
      {
          $this->local_service = \Common\Service\BankQuaterlyQuantityCNewService::get_instance();
+
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+         if (!$departments) {
+             $departments = $DepartmentService->get_all_list($this->type);
+         }
+         $all_name = $departments[0]['all_name'];
+         $all_name = I('all_name') ? I('all_name') : $all_name;
+         $VerifyService = \Common\Service\VerifyService::get_instance();
+         $type = \Common\Model\FinancialVerifyModel::TYPE_BANK_C;
+         $year = I('month') ? I('year') : intval(date('Y'));
+         $month = I('month') ? I('month') : intval(date('m'));
+
+         $verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
+         $can_submit = 0;
+         if (!isset($verify_info['status']) || $verify_info['status'] == 0) {
+             $can_submit = 1;
+         }
+         $this->assign('can_submit', $can_submit);
+
+
          if (IS_POST) {
              $id = I('get.id');
              $data = I('post.');
@@ -539,6 +716,34 @@
                  $ret = $this->local_service->update_by_id($id, $data);
                  if ($ret->success) {
                      action_user_log('修改资产质量相关情况季报表');
+                     //提交审核
+                     if ($verify_info && $verify_info['status'] != 0) {
+                         $this->error('对不起,您无法提交审核,该月审核记录已经提交!');
+                     }
+
+                     if ($verify_info) {
+                         $data = [];
+                         $data['status'] = 1;
+                         $data['uid'] = UID;
+                         $ret = $VerifyService->update_by_id($verify_info['id'], $data);
+                         if (!$ret->success) {
+                             $this->error($ret->message);
+                         }
+                         action_user_log('提交银行月报审核,id:'.$verify_info['id']);
+                     } else {
+                         $data = [];
+                         $data['year'] = $year;
+                         $data['month'] = $month;
+                         $data['all_name'] = $all_name;
+                         $data['type'] = $type;
+                         $data['status'] = 1;
+                         $data['uid'] = UID;
+                         $ret = $VerifyService->add_one($data);
+                         if (!$ret->success) {
+                             $this->error($ret->message);
+                         }
+                         action_user_log('提交银行月报审核,id:'.$ret->data);
+                     }
                      $this->success('修改成功！');
                  } else {
                      $this->error($ret->message);
@@ -567,6 +772,34 @@
                  $ret = $this->local_service->add_one($data);
                  if ($ret->success) {
                      action_user_log('新增资产质量相关情况季报表');
+                     //提交审核
+                     if ($verify_info && $verify_info['status'] != 0) {
+                         $this->error('对不起,您无法提交审核,该月审核记录已经提交!');
+                     }
+
+                     if ($verify_info) {
+                         $data = [];
+                         $data['status'] = 1;
+                         $data['uid'] = UID;
+                         $ret = $VerifyService->update_by_id($verify_info['id'], $data);
+                         if (!$ret->success) {
+                             $this->error($ret->message);
+                         }
+                         action_user_log('提交银行月报审核,id:'.$verify_info['id']);
+                     } else {
+                         $data = [];
+                         $data['year'] = $year;
+                         $data['month'] = $month;
+                         $data['all_name'] = $all_name;
+                         $data['type'] = $type;
+                         $data['status'] = 1;
+                         $data['uid'] = UID;
+                         $ret = $VerifyService->add_one($data);
+                         if (!$ret->success) {
+                             $this->error($ret->message);
+                         }
+                         action_user_log('提交银行月报审核,id:'.$ret->data);
+                     }
                      $this->success('添加成功！');
                  } else {
                      $this->error($ret->message);
@@ -1956,90 +2189,90 @@
     }
 
 
-    public function submit_verify() {
-        $id = I('get.id');
-        $type = I('get.type');
-
-        switch ($type) {
-            case 'credit':
-                $service = \Common\Service\BankCreditService::get_instance();
-                $info = $service->get_info_by_id($id);
-                if (!$info || !$this->check_is_my_department($info['all_name'])) {
-                    $this->error('没有该信息或者权限不够');
-                }
-                break;
-            case 'baddebt_dispose':
-                $service = \Common\Service\BankBaddebtDisposeService::get_instance();
-                $all_name = I('get.all_name');
-                if (!$this->check_is_my_department($all_name)) {
-                    $this->error('没有该信息或者权限不够');
-                }
-
-                $year = I('get.year');
-                $month = I('get.month');
-                $ret = $service->update_by_year_month_all_name($year, $month, $all_name, ['status'=>1]);
-
-                if (!$ret->success) {
-                    $this->error($ret->message);
-                }
-                //action_user_log('提交状态');
-                $this->success('提交成功~');
-                break;
-            case 'loan_details':
-                $service = \Common\Service\BankLoanDetailService::get_instance();
-                $all_name = I('get.all_name');
-                if (!$this->check_is_my_department($all_name)) {
-                    $this->error('没有该信息或者权限不够');
-                }
-
-                $year = I('get.year');
-                $month = I('get.month');
-                $ret = $service->update_by_year_month_all_name($year, $month, $all_name, ['status'=>1]);
-
-                if (!$ret->success) {
-                    $this->error($ret->message);
-                }
-                //action_user_log('提交状态');
-                $this->success('提交成功~');
-                break;
-            case 'quarterly':
-                $service = \Common\Service\BankQuarterlyService::get_instance();
-                $info = $service->get_info_by_id($id);
-                if (!$info || !$this->check_is_my_department($info['all_name'])) {
-                    $this->error('没有该信息或者权限不够');
-                }
-                break;
-            case 'overdue':
-                $service = \Common\Service\BankOverdueResolveService::get_instance();
-                $all_name = I('get.all_name');
-                if (!$this->check_is_my_department($all_name)) {
-                    $this->error('没有该信息或者权限不够');
-                }
-
-                $year = I('get.year');
-                $month = I('get.month');
-                $ret = $service->update_by_year_month_all_name($year, $month, $all_name, ['status'=>1]);
-
-                if (!$ret->success) {
-                    $this->error($ret->message);
-                }
-                //action_user_log('提交状态');
-                $this->success('提交成功~');
-                break;
-            default:
-                break;
-        }
-
-        if ($service) {
-            $ret = $service->update_by_id($id, ['status' => 1]);
-            if (!$ret->success) {
-                $this->error($ret->message);
-            }
-            //action_user_log('提交状态');
-            $this->success('提交成功~');
-        }
-        $this->error('参数错误');
-    }
+//    public function submit_verify() {
+//        $id = I('get.id');
+//        $type = I('get.type');
+//
+//        switch ($type) {
+//            case 'credit':
+//                $service = \Common\Service\BankCreditService::get_instance();
+//                $info = $service->get_info_by_id($id);
+//                if (!$info || !$this->check_is_my_department($info['all_name'])) {
+//                    $this->error('没有该信息或者权限不够');
+//                }
+//                break;
+//            case 'baddebt_dispose':
+//                $service = \Common\Service\BankBaddebtDisposeService::get_instance();
+//                $all_name = I('get.all_name');
+//                if (!$this->check_is_my_department($all_name)) {
+//                    $this->error('没有该信息或者权限不够');
+//                }
+//
+//                $year = I('get.year');
+//                $month = I('get.month');
+//                $ret = $service->update_by_year_month_all_name($year, $month, $all_name, ['status'=>1]);
+//
+//                if (!$ret->success) {
+//                    $this->error($ret->message);
+//                }
+//                //action_user_log('提交状态');
+//                $this->success('提交成功~');
+//                break;
+//            case 'loan_details':
+//                $service = \Common\Service\BankLoanDetailService::get_instance();
+//                $all_name = I('get.all_name');
+//                if (!$this->check_is_my_department($all_name)) {
+//                    $this->error('没有该信息或者权限不够');
+//                }
+//
+//                $year = I('get.year');
+//                $month = I('get.month');
+//                $ret = $service->update_by_year_month_all_name($year, $month, $all_name, ['status'=>1]);
+//
+//                if (!$ret->success) {
+//                    $this->error($ret->message);
+//                }
+//                //action_user_log('提交状态');
+//                $this->success('提交成功~');
+//                break;
+//            case 'quarterly':
+//                $service = \Common\Service\BankQuarterlyService::get_instance();
+//                $info = $service->get_info_by_id($id);
+//                if (!$info || !$this->check_is_my_department($info['all_name'])) {
+//                    $this->error('没有该信息或者权限不够');
+//                }
+//                break;
+//            case 'overdue':
+//                $service = \Common\Service\BankOverdueResolveService::get_instance();
+//                $all_name = I('get.all_name');
+//                if (!$this->check_is_my_department($all_name)) {
+//                    $this->error('没有该信息或者权限不够');
+//                }
+//
+//                $year = I('get.year');
+//                $month = I('get.month');
+//                $ret = $service->update_by_year_month_all_name($year, $month, $all_name, ['status'=>1]);
+//
+//                if (!$ret->success) {
+//                    $this->error($ret->message);
+//                }
+//                //action_user_log('提交状态');
+//                $this->success('提交成功~');
+//                break;
+//            default:
+//                break;
+//        }
+//
+//        if ($service) {
+//            $ret = $service->update_by_id($id, ['status' => 1]);
+//            if (!$ret->success) {
+//                $this->error($ret->message);
+//            }
+//            //action_user_log('提交状态');
+//            $this->success('提交成功~');
+//        }
+//        $this->error('参数错误');
+//    }
 
 
      public function approve() {
@@ -3176,6 +3409,107 @@
 
              $this->display();
          }
+     }
+
+
+     public function submit_verify() {
+
+         //获取所有相关的公司
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+
+         $departments = $DepartmentService->get_my_list(UID, $this->type);
+
+
+         if (!$departments) {
+             $departments = $DepartmentService->get_all_list($this->type);
+         }
+         $data = $departments[0];
+         $all_name = $data['all_name'];
+         $all_name = I('all_name') ? I('all_name') : $all_name;
+         $year = I('year') ? I('year') : intval(date('Y'));
+         $month = I('month') ? I('month') : intval(date('m'));
+
+         //获取公司各表格填报状态
+         $status = [0,0,0,0,0];
+         $BankCreditNewService = \Common\Service\BankCreditNewService::get_instance();
+         if ($BankCreditNewService->get_by_month_year($year, $month, $all_name)) {
+             $status[0] = 1;
+         }
+         $BankBaddebtNewService = \Common\Service\BankBaddebtNewService::get_instance();
+         if ($BankBaddebtNewService->get_by_month_year($year, $month, $all_name)) {
+             $status[1] = 1;
+         }
+         $BankBaddebtDetailNewService = \Common\Service\BankBaddebtDetailNewService::get_instance();
+         if ($BankBaddebtDetailNewService->get_by_month_year($year, $month, $all_name)) {
+             $status[2] = 1;
+         }
+         $BankBaddebtDisposeNewService = \Common\Service\BankBaddebtDisposeNewService::get_instance();
+         if ($BankBaddebtDisposeNewService->get_by_month_year($year, $month, $all_name)) {
+             $status[3] = 1;
+         }
+         $BankFocusDetailNewService = \Common\Service\BankFocusDetailNewService::get_instance();
+         if ($BankFocusDetailNewService->get_by_month_year($year, $month, $all_name)) {
+             $status[4] = 1;
+         }
+
+         $VerifyService = \Common\Service\VerifyService::get_instance();
+         $type = \Common\Model\FinancialVerifyModel::TYPE_BANK_MONTH;
+         $verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
+
+         if (IS_POST) {
+             foreach ($status as $_v) {
+                 if (!$_v) {
+                     $this->error('对不起,您还无法提交审核,请确保月报表都已经保存!');
+                 }
+             }
+
+             if ($verify_info && $verify_info['status'] != 0) {
+                 $this->error('对不起,您无法提交审核,该月审核记录已经提交!');
+             }
+
+             if ($verify_info) {
+                 $data = [];
+                 $data['status'] = 1;
+                 $data['uid'] = UID;
+                 $ret = $VerifyService->update_by_id($verify_info['id'], $data);
+                 if (!$ret->success) {
+                     $this->error($ret->message);
+                 }
+                 action_user_log('提交银行月报审核,id:'.$verify_info['id']);
+             } else {
+                 $data = [];
+                 $data['year'] = $year;
+                 $data['month'] = $month;
+                 $data['all_name'] = $all_name;
+                 $data['type'] = $type;
+                 $data['status'] = 1;
+                 $data['uid'] = UID;
+                 $ret = $VerifyService->add_one($data);
+                 if (!$ret->success) {
+                     $this->error($ret->message);
+                 }
+                 action_user_log('提交银行月报审核,id:'.$ret->data);
+             }
+
+
+             $this->success('提交成功');
+         }
+
+
+         $departments = result_to_array($departments, 'all_name');
+         $this->assign('departments', $departments);
+
+         $this->assign('status', $status);
+
+         $can_submit = 0;
+         if (!isset($verify_info['status']) || $verify_info['status'] == 0) {
+             $can_submit = 1;
+         }
+         $this->assign('can_submit', $can_submit);
+
+         $this->display();
+
+
      }
 
  }
