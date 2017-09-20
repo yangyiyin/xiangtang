@@ -19,7 +19,7 @@ class WechatPayNotify extends BaseSapi{
     }
 
     public function excute() {
-        var_dump(function_exists('simplexml_load_string'));die();
+        //var_dump(function_exists('simplexml_load_string'));die();
 
 
         $wechat = new \Wechat($wechat_config);
@@ -28,7 +28,7 @@ class WechatPayNotify extends BaseSapi{
         $data_notify = [];
         $data_notify['pay_no'] = isset($verify_info['out_trade_no']) ? $verify_info['out_trade_no'] : '';
         $data_notify['pay_agent'] = \Common\Model\NfPayModel::PAY_AGENT_WECHAT_PAY;
-        $data_notify['content'] = file_get_contents("php://input");
+        $data_notify['content'] = $verify_info;
         $data_notify['create_time'] = current_date();
         $data_notify['code'] = isset($verify_info['result_code']) ? $verify_info['result_code'] : '';
         $data_notify['remark'] = '';
