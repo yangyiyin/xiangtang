@@ -7,7 +7,6 @@
  */
 namespace Api\Lib;
 use Common\Service;
-require APP_PATH . '/Common/Lib/wx_pay_sdk/wechat_config.php';
 require APP_PATH . '/Common/Lib/wx_pay_sdk/wechat_api.php';
 
 class WechatPayNotify extends BaseSapi{
@@ -19,9 +18,8 @@ class WechatPayNotify extends BaseSapi{
     }
 
     public function excute() {
-        //var_dump(function_exists('simplexml_load_string'));die();
 
-
+        require APP_PATH . '/Common/Lib/wx_pay_sdk/wechat_config.php';
         $wechat = new \Wechat($wechat_config);
         $verify_info = $wechat->verifyNotify(); // 验证通知
 

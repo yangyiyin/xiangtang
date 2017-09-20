@@ -147,14 +147,12 @@ class Wechat{
     public function verifyNotify() {
         $xml = $this->getXmlArray();
         if (!$xml)  {
-            return 1;
             return false;
         }
         $wx_sign = $xml['sign'];
         unset($xml['sign']);
         $fb_sign = $this->setWxSign($xml);
         if ($fb_sign != $wx_sign) {
-            return 2;
             return false;
         }
         return $xml;
