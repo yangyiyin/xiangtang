@@ -19,7 +19,7 @@ class WechatPayNotify extends BaseSapi{
     }
 
     public function excute() {
-
+        var_dump(function_exists('simplexml_load_string'));die();
 
 
         $wechat = new \Wechat($wechat_config);
