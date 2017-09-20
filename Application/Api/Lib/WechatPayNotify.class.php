@@ -26,13 +26,12 @@ class WechatPayNotify extends BaseSapi{
         $data_notify = [];
         $data_notify['pay_no'] = isset($verify_info['out_trade_no']) ? $verify_info['out_trade_no'] : '';
         $data_notify['pay_agent'] = \Common\Model\NfPayModel::PAY_AGENT_WECHAT_PAY;
-        $data_notify['content'] = $verify_info;
+        $data_notify['content'] = json_encode($verify_info);
         $data_notify['create_time'] = current_date();
         $data_notify['code'] = isset($verify_info['result_code']) ? $verify_info['result_code'] : '';
         $data_notify['remark'] = '';
         $this->PayNotifyLogService->add_one($data_notify);
-
-        die();
+        
         if ($verify_info === false) {
             echo 'fail';
             $data_notify['create_time'] = current_date();
