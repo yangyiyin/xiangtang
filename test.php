@@ -58,12 +58,46 @@
 //foreach ($list as $k => $_li) {
 //    $list[$_li['pid']][] = $_li;
 //}
-function encode_user_session($uid) {
-    $str = $uid . '|' . time() . '|' . mt_rand(0,9);
-    $str = base64_encode($str);
-    return $str;
+$xmlData = '<xml><appid><![CDATA[wxf716bd5d6844abf4]]></appid>
+<bank_type><![CDATA[CFT]]></bank_type>
+<cash_fee><![CDATA[1]]></cash_fee>
+<fee_type><![CDATA[CNY]]></fee_type>
+<is_subscribe><![CDATA[N]]></is_subscribe>
+<mch_id><![CDATA[1488335702]]></mch_id>
+<nonce_str><![CDATA[59c1cabcbd2af]]></nonce_str>
+<openid><![CDATA[oAe_Z0043h9RSJ5HTXQpry8-AakU]]></openid>
+<out_trade_no><![CDATA[T10150587257277596]]></out_trade_no>
+<result_code><![CDATA[SUCCESS]]></result_code>
+<return_code><![CDATA[SUCCESS]]></return_code>
+<sign><![CDATA[AC4DB31B9B702E54633DCC5689654D72]]></sign>
+<time_end><![CDATA[20170920095619]]></time_end>
+<total_fee>1</total_fee>
+<trade_type><![CDATA[APP]]></trade_type>
+<transaction_id><![CDATA[4200000003201709203140993177]]></transaction_id>
+</xml>';
+
+
+$postObj = simplexml_load_string($xmlData, 'SimpleXMLElement', LIBXML_NOCDATA);
+
+if (! is_object($postObj)) {
+    echo 1;
 }
+$array = json_decode(json_encode($postObj), true); // xml对象转数组
 
-echo encode_user_session(6);
+$xml = array_change_key_case($array, CASE_LOWER); // 所有键小写
 
+$wx_sign = $xml['sign'];
+unset($xml['sign']);
+$fb_sign = setWxSign($xml);
+if ($fb_sign != $wx_sign) {
+    echo 4;
+}
+echo 2;
+
+function setWxSign($sign_data) {
+    if (isset($sign_data['sign'])) unset($sign_data['sign']);
+    ksort($sign_data);
+    $sign_str = urldecode(http_build_query($sign_data));
+    return strtoupper(md5($sign_str.'&key='.'148833570214883357021488335702hs'));
+}
 
