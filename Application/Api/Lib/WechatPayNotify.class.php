@@ -34,7 +34,7 @@ class WechatPayNotify extends BaseSapi{
         $data_notify['remark'] = '';
         $this->PayNotifyLogService->add_one($data_notify);
 
-
+        die();
         if ($verify_info === false) {
             echo 'fail';
             $data_notify['create_time'] = current_date();
