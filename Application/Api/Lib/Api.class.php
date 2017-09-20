@@ -9,6 +9,7 @@ namespace Api\Lib;
 class Api{
     const API_METHOD_GET = 'get';
     const API_METHOD_POST= 'post';
+    const API_METHOD_ALL = 'all';
     protected $method = 'get';
     protected $callback = '';
     protected $post_data = [];
@@ -24,6 +25,9 @@ class Api{
                 if (!IS_POST) {
                     result_json(FALSE, '非法请求方式');
                 }
+                break;
+            case self::API_METHOD_ALL:
+
                 break;
             default:
                 result_json(FALSE, '非法请求方式');

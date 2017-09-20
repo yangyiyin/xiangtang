@@ -13,7 +13,7 @@ require APP_PATH . '/Common/Lib/wx_pay_sdk/wechat_api.php';
 class WechatPayNotify extends BaseSapi{
 
     private $PayNotifyLogService;
-    protected $method = parent::API_METHOD_POST;
+    protected $method = parent::API_METHOD_ALL;
     public function init() {
         $this->PayNotifyLogService = \Common\Service\PayNotifyLogService::get_instance();
     }
