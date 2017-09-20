@@ -40,7 +40,7 @@ class WechatPayCreate extends BaseApi{
 
 
 
-        $ret = $this->PayService->create_by_orders($orders);
+        $ret = $this->PayService->create_by_orders($orders, \Common\Model\NfPayModel::PAY_AGENT_WECHAT_PAY);
         if (!$ret->success) {
             return result_json(FALSE, $ret->message);
         }

@@ -130,7 +130,7 @@ class PayService extends BaseService{
 //
 //    }
 
-    public function create_by_orders($orders) {
+    public function create_by_orders($orders, $pay_agent=false) {
         if (!$orders) {
             return result(FALSE, '订单不存在~');
         }
@@ -175,7 +175,7 @@ class PayService extends BaseService{
 
         $data = [];
         $data['pay_no'] = $this->get_pay_no($orders[0]['uid']);
-        $data['pay_agent'] = \Common\Model\NfPayModel::PAY_AGENT_ALIPAY;
+        $data['pay_agent'] = $pay_agent ? $pay_agent : \Common\Model\NfPayModel::PAY_AGENT_ALIPAY;
         $data['uid'] = $orders[0]['uid'];
         $data['order_ids'] = join(',', $order_ids);
         $data['sum'] = $sum;
