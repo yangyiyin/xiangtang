@@ -1664,12 +1664,698 @@
       */
      public function statistics()
      {
-         $this->title = '';
-         parent::statistics();
+         $action = I('action');
+         $year = I('year') ? I('year') : intval(date('Y'));
+         $month = I('month') ? I('month') : intval(date('m'));
+         $p = I('p') ? I('p') : 1;
+         $table_id = I('table') ?  I('table') : 1;
+         if ($action == 'gain_statistics') {
+             $error = [];
+             $ret = $this->statistics_1($year, $month);
+             if (!$ret->success) {
+                 $error[] = '生成表1:'.$ret->message;
+             }
+
+             $ret = $this->statistics_2($year, $month);
+             if (!$ret->success) {
+                 $error[] = '生成表2:'.$ret->message;
+             }
+
+             $ret = $this->statistics_3($year, $month);
+             if (!$ret->success) {
+                 $error[] = '生成表3:'.$ret->message;
+             }
+
+             $ret = $this->statistics_4($year, $month);
+             if (!$ret->success) {
+                 $error[] = '生成表4:'.$ret->message;
+             }
+
+             $ret = $this->statistics_5($year, $month);
+             if (!$ret->success) {
+                 $error[] = '生成表5:'.$ret->message;
+             }
+
+             $ret = $this->statistics_6($year, $month);
+             if (!$ret->success) {
+                 $error[] = '生成表6:'.$ret->message;
+             }
+
+             $ret = $this->statistics_7($year, $month);
+             if (!$ret->success) {
+                 $error[] = '生成表7:'.$ret->message;
+             }
+
+             $ret = $this->statistics_8($year, $month);
+             if (!$ret->success) {
+                 $error[] = '生成表8:'.$ret->message;
+             }
+
+             $ret = $this->statistics_9($year, $month);
+             if (!$ret->success) {
+                 $error[] = '生成表9:'.$ret->message;
+             }
+
+             if ($error) {
+                 $this->error('生成统计部分错误,产生以下问题:'.join(';',$error));
+             }
+             $this->success('生成统计成功!');
+         }
+
+        //获取统计列表
+         $statistics = [
+             ['data'=>null,'name'=>'慈溪市金融机构本外币信贷收支情况表(表1)'],
+             ['data'=>null,'name'=>'慈溪市金融机构本外币存贷情况表(表2)'],
+             ['data'=>null,'name'=>'慈溪市金融机构不良贷款情况表(表3)'],
+             ['data'=>null,'name'=>'慈溪市金融机构不良贷款50万(含以上)明细表(表4)'],
+             ['data'=>null,'name'=>'慈溪市金融机构不良资产清收情况表(表5)'],
+             ['data'=>null,'name'=>'慈溪市金融机构关注类贷款明细表(表6)'],
+             ['data'=>null,'name'=>'慈溪市银行贷款利率执行水平监测表(表7)'],
+             ['data'=>null,'name'=>'企业贷款利率执行水平监测表(表8)'],
+             ['data'=>null,'name'=>'资产质量相关情况调查表(表9)']
+
+         ];
+         $Service = \Common\Service\BankCreditAStNewService::get_instance();
+         $statistics[0]['data'] = $Service->get_by_month_year($year, $month);
+         $Service = \Common\Service\BankCreditBStNewService::get_instance();
+         $statistics[1]['data'] = $Service->get_by_month_year($year, $month);
+         $Service = \Common\Service\BankBaddebtStNewService::get_instance();
+         $statistics[2]['data'] = $Service->get_by_month_year($year, $month);
+
+         $Service = \Common\Service\BankBaddebtDetailStNewService::get_instance();
+         $where = [];
+         $where['year'] = $year;
+         $where['month'] = $month;
+         list($statistics[3]['data'], $count_3) = $Service->get_by_where($where, 'gmt_create desc', $p);
+         $Service = \Common\Service\BankBaddebtDisposeStNewService::get_instance();
+         $where = [];
+         $where['year'] = $year;
+         $where['month'] = $month;
+         list($statistics[4]['data'], $count_4) = $Service->get_by_where($where, 'gmt_create desc', $p);
+         $Service = \Common\Service\BankFocusDetailStNewService::get_instance();
+         $statistics[5]['data'] = $Service->get_by_month_year($year, $month);
+         $where = [];
+         $where['year'] = $year;
+         $where['month'] = $month;
+         list($statistics[5]['data'], $count_5) = $Service->get_by_where($where, 'gmt_create desc', $p);
+
+         $Service = \Common\Service\BankQuarterlyQuantityAStNewService::get_instance();
+         $statistics[6]['data'] = $Service->get_by_month_year($year, $month);
+         $Service = \Common\Service\BankQuarterlyQuantityBStNewService::get_instance();
+         $statistics[7]['data'] = $Service->get_by_month_year($year, $month);
+         $Service = \Common\Service\BankQuarterlyQuantityCStNewService::get_instance();
+         $statistics[8]['data'] = $Service->get_by_month_year($year, $month);
 
 
+         if (in_array($table_id, [4,5,6])) {
+             if ($table_id == 4) $count = $count_3;
+             if ($table_id == 5) $count = $count_4;
+             if ($table_id == 6) $count = $count_5;
+             $PageInstance = new \Think\Page($count, \Common\Service\BaseService::$page_size);
+             if($count>\Common\Service\BaseService::$page_size){
+                 $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+             }
+             $page_html = $PageInstance->show();
+             $this->assign('page_html',$page_html);
+         }
+
+         $sub_type_map = \Common\Model\FinancialDepartmentModel::$SUB_TYPE_MAP;
+
+         foreach ($statistics as $k => $_data) {
+             $_data = $_data['data'];
+             if (!$_data || ($k+1) != $table_id) {
+                 continue;
+             }
+             foreach ($_data as $_k => $_v) {
+                 $statistics[$k]['data'][$_k]['content'] = json_decode($_v['content']);
+             }
+
+             if (in_array($k, [0,1,2,6,7,8])) {
+                 $statistics[$k]['data'] = result_to_complex_map($statistics[$k]['data'], 'department_sub_type');
+                 $temp = [];
+                 $all = [];
+                 foreach ($statistics[$k]['data'] as $_sub_type => $data) {
+                     $sub_type_name = isset($sub_type_map[$_sub_type]) ? $sub_type_map[$_sub_type] : '未知';
+                     $temp[$sub_type_name] = $data;
+                     foreach ($data as $in_value) {
+                         foreach ($in_value['content'] as $field => $value) {
+                             if (is_array($value)) {
+                                 foreach ($value as $_key => $_value) {
+                                     $all[$field][$_key] += $_value;
+                                 }
+                             } else {
+                                 $all[$field] += $value;
+                             }
+                         }
+
+                     }
+                 }
+                 $statistics[$k]['data'] = $temp;
+                 $statistics[$k]['data']['合计'] = $all;
+             }
+         }
+
+         $statistics = json_decode(json_encode($statistics), TRUE);
+         //echo json_encode($statistics);die();
+         $this->assign('statistics', $statistics);
          $this->display();
      }
+
+     private function statistics_1($year, $month) {
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+         //生成统计
+         $BankCreditAStNewService = \Common\Service\BankCreditAStNewService::get_instance();
+         $BankCreditNewService = \Common\Service\BankCreditNewService::get_instance();
+         $where = [];
+         $where['year'] = $year;
+         $where['month'] = $month;
+         $credit_news = $BankCreditNewService->get_by_where_all($where);
+
+         if ($credit_news) {
+             
+             //获取去年同期数据
+             $where_past = [];
+             $where_past['year'] = $year - 1;
+             $where_past['month'] = $month;
+             $credit_news_past = $BankCreditNewService->get_by_where_all($where_past);
+             $credit_news_past_map = result_to_map($credit_news_past, 'all_name');
+             
+             //获得年初数据
+             $where_year_begin = [];
+             $where_year_begin['year'] = $year - 1;
+             $where_year_begin['month'] = 12;
+             $credit_news_year_begin = $BankCreditNewService->get_by_where_all($where_year_begin);
+             $credit_news_year_begin_map = result_to_map($credit_news_year_begin, 'all_name');
+
+             $all_names = result_to_array($credit_news, 'all_name');
+             $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+             $departments_map = result_to_map($departments, 'all_name');
+             $data = [];
+             foreach ($credit_news as $_data) {
+                 foreach ($_data as $_k => $_v) {
+                     $_arr = explode('|', $_v);
+                     if (count($_arr) == 3) {
+                         $_data[$_k] = $_arr;
+                         if (isset($credit_news_past_map[$_data['all_name']])) {
+                             $_v_past = explode('|', $credit_news_past_map[$_data['all_name']][$_k]);
+                             if ($_v_past[0]) {
+                                 $_data[$_k][3] = fix_2($_data[$_k][0] / $_v_past[0] - 1);
+                             } else {
+                                 $_data[$_k][3] = 0;//去年记录为0
+                             }
+                         } else {
+                             $_data[$_k][3] = 0;//去年无记录
+                         }
+
+                         if (isset($credit_news_year_begin_map[$_data['all_name']])) {
+                             $_v_year_begin = explode('|', $credit_news_year_begin_map[$_data['all_name']][$_k]);
+                             $_data[$_k][4] = $_v_year_begin[0];//年初余额
+                         } else {
+                             $_data[$_k][4] = $_data[$_k][0] - $_data[$_k][2];
+                         }
+                         $_data[$_k][5] = $_data[$_k][0] - $_data[$_k][4];//比年初
+                     }
+                 }
+
+                 $temp = [];
+                 $temp['all_name'] = $_data['all_name'];
+                 $temp['year'] = $year;
+                 $temp['month'] = $month;
+                 $temp['department_sub_type'] = isset($departments_map[$_data['all_name']]['sub_type']) ? $departments_map[$_data['all_name']]['sub_type'] : 0;
+
+                 $fields = ['Deposits','Deposits_A','Deposits_A1','Deposits_A2',
+                     'Deposits_B','Deposits_B1','Deposits_B2','Deposits_C','Deposits_C1',
+                     'Deposits_C2','Deposits_C3','Deposits_C4','Deposits_D',
+                     'Loans','Loans_A','Loans_B','Loans_C','Loans_D',
+                     'Loans_D1','Loans_D2','Loans_E','Loans_F','Loans_G',
+                     'Loans_H','Loans_I','Loans_I1','Loans_I2'
+                 ];
+                 $content = [];
+                 foreach ($fields as $_field) {
+                     $content[$_field] = [$_data[$_field][4], $_data[$_field][0], $_data[$_field][5], $_data[$_field][3]];
+                 }
+                 $temp['content'] = json_encode($content);
+                 $temp['gmt_create'] = time();
+                 $data[] = $temp;
+
+             }
+
+             $BankCreditAStNewService->del_by_month_year($year,$month);
+             return $BankCreditAStNewService->add_batch($data);
+
+         }
+     }
+
+     private function statistics_2($year, $month) {
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+         //生成统计
+         $BankCreditBStNewService = \Common\Service\BankCreditBStNewService::get_instance();
+         $BankCreditNewService = \Common\Service\BankCreditNewService::get_instance();
+         $where = [];
+         $where['year'] = $year;
+         $where['month'] = $month;
+         $credit_news = $BankCreditNewService->get_by_where_all($where);
+
+         if ($credit_news) {
+             //获取同比数据
+             $where_past = [];
+             $where_past['year'] = $year - 1;
+             $where_past['month'] = $month;
+             $credit_news_past = $BankCreditNewService->get_by_where_all($where_past);
+             $credit_news_past_map = result_to_map($credit_news_past, 'all_name');
+
+             //获得年初数据
+             $where_year_begin = [];
+             $where_year_begin['year'] = $year - 1;
+             $where_year_begin['month'] = 12;
+             $credit_news_year_begin = $BankCreditNewService->get_by_where_all($where_year_begin);
+             $credit_news_year_begin_map = result_to_map($credit_news_year_begin, 'all_name');
+
+             //获得上月数据
+             $where_last_month = [];
+             if ($month == 1) {
+                 $where_last_month['year'] = $year - 1;
+                 $where_last_month['month'] = 12;
+             } else {
+                 $where_last_month['year'] = $year;
+                 $where_last_month['month'] = $month - 1;
+             }
+             $credit_news_last_month = $BankCreditNewService->get_by_where_all($where_last_month);
+             $credit_news_last_month_map = result_to_map($credit_news_last_month, 'all_name');
+
+             $all_names = result_to_array($credit_news, 'all_name');
+             $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+             $departments_map = result_to_map($departments, 'all_name');
+             $data = [];
+             foreach ($credit_news as $_data) {
+                 foreach ($_data as $_k => $_v) {
+                     $_arr = explode('|', $_v);
+                     if (count($_arr) == 3) {
+                         $_data[$_k] = $_arr;
+                         if (isset($credit_news_past_map[$_data['all_name']])) {
+                             $_v_past = explode('|', $credit_news_past_map[$_data['all_name']][$_k]);
+                             $_data[$_k][3] = $_data[$_k][0] - $_v_past[0];//上月余额
+                         } else {
+                             $_data[$_k][3] = $_data[$_k][0];
+                         }
+
+                         if (isset($credit_news_last_month_map[$_data['all_name']])) {
+                             $_v_last_month = explode('|', $credit_news_last_month_map[$_data['all_name']][$_k]);
+                             $_data[$_k][4] = $_v_last_month[0];//上月余额
+                         } else {
+                             $_data[$_k][4] = $_data[$_k][0] - $_data[$_k][1];
+                         }
+
+
+                         if (isset($credit_news_year_begin_map[$_data['all_name']])) {
+                             $_v_year_begin = explode('|', $credit_news_year_begin_map[$_data['all_name']][$_k]);
+                             $_data[$_k][5] = $_v_year_begin[0];//年初余额
+                         } else {
+                             $_data[$_k][5] = $_data[$_k][0] - $_data[$_k][2];
+                         }
+
+                         $_data[$_k][1] = $_data[$_k][0] - $_data[$_k][4];//比上月
+                         $_data[$_k][2] = $_data[$_k][0] - $_data[$_k][5];//比年初
+                     }
+                 }
+
+                 $temp = [];
+                 $temp['all_name'] = $_data['all_name'];
+                 $temp['year'] = $year;
+                 $temp['month'] = $month;
+                 $temp['department_sub_type'] = isset($departments_map[$_data['all_name']]['sub_type']) ? $departments_map[$_data['all_name']]['sub_type'] : 0;
+
+                 $fields = ['Deposits', 'Loans'];
+                 $content = [];
+                 foreach ($fields as $_field) {
+                     $content[$_field] = [$_data[$_field][5] * 10000, $_data[$_field][4] * 10000, $_data[$_field][0] * 10000, $_data[$_field][1] * 10000, $_data[$_field][2] * 10000, $_data[$_field][3]];
+                 }
+                 $content['Deposits_Loans'] = [get_rate($_data['Deposits'][0], $_data['Loans'][0]), get_rate($_data['Deposits'][2], $_data['Loans'][2])];
+                 $temp['content'] = json_encode($content);
+                 $temp['gmt_create'] = time();
+                 $data[] = $temp;
+
+             }
+
+             $BankCreditBStNewService->del_by_month_year($year,$month);
+             return $BankCreditBStNewService->add_batch($data);
+
+         }
+     }
+
+     private function statistics_3($year, $month) {
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+         //生成统计
+         $BankBaddebtStNewService = \Common\Service\BankBaddebtStNewService::get_instance();
+         $BankBaddebtNewService = \Common\Service\BankBaddebtNewService::get_instance();
+         $BankCreditNewService = \Common\Service\BankCreditNewService::get_instance();
+         $where = [];
+         $where['year'] = $year;
+         $where['month'] = $month;
+         $datas = $BankBaddebtNewService->get_by_where_all($where);
+
+         if ($datas) {
+
+             //获取同比数据
+             $where_credit = [];
+             $where_credit['year'] = $year;
+             $where_credit['month'] = $month;
+             $data_credit = $BankCreditNewService->get_by_where_all($where_credit);
+             $data_credit_map = result_to_map($data_credit, 'all_name');
+
+             //获取同比数据
+             $where_past = [];
+             $where_past['year'] = $year - 1;
+             $where_past['month'] = $month;
+             $data_past = $BankBaddebtNewService->get_by_where_all($where_past);
+             $data_past_map = result_to_map($credit_news_past, 'all_name');
+
+             //获得年初数据
+             $where_year_begin = [];
+             $where_year_begin['year'] = $year - 1;
+             $where_year_begin['month'] = 12;
+             $data_year_begin = $BankBaddebtNewService->get_by_where_all($where_year_begin);
+             $data_year_begin_map = result_to_map($data_year_begin, 'all_name');
+
+             //获得上月数据
+             $where_last_month = [];
+             if ($month == 1) {
+                 $where_last_month['year'] = $year - 1;
+                 $where_last_month['month'] = 12;
+             } else {
+                 $where_last_month['year'] = $year;
+                 $where_last_month['month'] = $month - 1;
+             }
+             $data_last_month = $BankCreditNewService->get_by_where_all($where_last_month);
+             $data_last_month_map = result_to_map($data_last_month, 'all_name');
+
+             $all_names = result_to_array($datas, 'all_name');
+             $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+             $departments_map = result_to_map($departments, 'all_name');
+             $data = [];
+             foreach ($datas as $_data) {
+                 if (isset($data_credit_map[$_data['all_name']])) {
+                     $_data['Loans'] = $data_credit_map[$_data['all_name']]['Loans'] * 10000;
+                 } else {
+                     $_data['Loans'] = 0;
+                 }
+                 $_data['Baddebt_A'] =  $_data['Loans'] - $_data['Baddebt_B'] - $_data['Baddebt_C'] - $_data['Baddebt_D'] - $_data['Baddebt_E'];
+                 //$_data['Baddebt_A'] = ($_data['Baddebt_A'] >= 0) ? $_data['Baddebt_A'] : 0;
+                 if (isset($data_year_begin_map[$_data['all_name']])) {
+                     $_data['Baddebt_CDE_year_begin'] = $data_year_begin_map[$_data['all_name']]['Baddebt_CDE'];
+                     $_data['Baddebt_Month_Rate_year_begin'] = $data_year_begin_map[$_data['all_name']]['Baddebt_Month_Rate'];
+                 } else {
+                     $_data['Baddebt_CDE_year_begin'] = 0;
+                     $_data['Baddebt_Month_Rate_year_begin'] = 0;
+                 }
+
+                 if (isset($data_last_month_map[$_data['all_name']])) {
+                     $_data['Baddebt_CDE_last_month'] = $data_last_month_map[$_data['all_name']]['Baddebt_CDE'];
+                     $_data['Baddebt_Month_Rate_last_month'] = $data_last_month_map[$_data['all_name']]['Baddebt_Month_Rate'];
+
+                 } else {
+                     $_data['Baddebt_CDE_last_month'] = 0;
+                     $_data['Baddebt_Month_Rate_last_month'] = 0;
+                 }
+
+                 if (isset($data_past_map[$_data['all_name']])) {
+                     $_data['Baddebt_CDE_past'] = $data_past_map[$_data['all_name']]['Baddebt_CDE'];
+                     $_data['Baddebt_Month_Rate_past'] = $data_past_map[$_data['all_name']]['Baddebt_Month_Rate'];
+
+                 } else {
+                     $_data['Baddebt_CDE_past'] = 0;
+                     $_data['Baddebt_Month_Rate_past'] = 0;
+                 }
+
+                 $_data['Baddebt_CDE_year_begin_modify'] = $_data['Baddebt_CDE'] - $_data['Baddebt_CDE_year_begin'];
+                 $_data['Baddebt_CDE_last_month_modify'] = $_data['Baddebt_CDE'] - $_data['Baddebt_CDE_last_month'];
+                 $_data['Baddebt_CDE_past_modify'] = $_data['Baddebt_CDE'] - $_data['Baddebt_CDE_past'];
+
+                 $_data['Baddebt_Month_Rate_year_begin_modify'] = $_data['Baddebt_Month_Rate'] - $_data['Baddebt_Month_Rate_year_begin'];
+                 $_data['Baddebt_Month_Rate_last_month_modify'] = $_data['Baddebt_Month_Rate'] - $_data['Baddebt_Month_Rate_last_month'];
+                 $_data['Baddebt_Month_Rate_past_modify'] = $_data['Baddebt_Month_Rate'] - $_data['Baddebt_Month_Rate_past'];
+
+
+
+                 $temp = [];
+                 $temp['all_name'] = $_data['all_name'];
+                 $temp['year'] = $year;
+                 $temp['month'] = $month;
+                 $temp['department_sub_type'] = isset($departments_map[$_data['all_name']]['sub_type']) ? $departments_map[$_data['all_name']]['sub_type'] : 0;
+
+                 $temp['content'] = json_encode($_data);
+                 $temp['gmt_create'] = time();
+                 $data[] = $temp;
+
+             }
+
+             $BankBaddebtStNewService->del_by_month_year($year,$month);
+             return $BankBaddebtStNewService->add_batch($data);
+
+         }
+     }
+
+
+     private function statistics_4($year, $month) {
+         //生成统计
+         $BankBaddebtDetailStNewService = \Common\Service\BankBaddebtDetailStNewService::get_instance();
+         $BankBaddebtDetailNewService = \Common\Service\BankBaddebtDetailNewService::get_instance();
+         $where = [];
+         $where['year'] = $year;
+         $where['month'] = $month;
+         $datas = $BankBaddebtDetailNewService->get_by_where_all($where);
+
+         if ($datas) {
+
+             $data = [];
+             foreach ($datas as $_data) {
+                if ($_data['Enterprise'] == '小计' || $_data['Enterprise'] == '合计' || $_data['Enterprise'] == '50万元以下汇总') {
+                    continue;
+                }
+                 $temp = [];
+                 $temp['all_name'] = $_data['all_name'];
+                 $temp['year'] = $year;
+                 $temp['month'] = $month;
+                 $temp['enterprise'] = $_data['Enterprise'];
+                 $temp['content'] = json_encode($_data);
+                 $temp['gmt_create'] = time();
+                 $data[] = $temp;
+
+             }
+
+             $BankBaddebtDetailStNewService->del_by_month_year($year,$month);
+             return $BankBaddebtDetailStNewService->add_batch($data);
+
+         }
+     }
+
+     private function statistics_5($year, $month) {
+         //生成统计
+         $BankBaddebtDisposeStNewService = \Common\Service\BankBaddebtDisposeStNewService::get_instance();
+         $BankBaddebtDisposeNewService = \Common\Service\BankBaddebtDisposeNewService::get_instance();
+         $where = [];
+         $where['year'] = $year;
+         $where['month'] = $month;
+         $datas = $BankBaddebtDisposeNewService->get_by_where_all($where);
+
+         if ($datas) {
+
+             $data = [];
+             foreach ($datas as $_data) {
+                 if ($_data['Enterprise'] == '小计' || $_data['Enterprise'] == '合计' || $_data['Enterprise'] == '50万元以下汇总') {
+                     continue;
+                 }
+                 $temp = [];
+                 $temp['all_name'] = $_data['all_name'];
+                 $temp['year'] = $year;
+                 $temp['month'] = $month;
+                 $temp['enterprise'] = $_data['Enterprise'];
+                 $temp['content'] = json_encode($_data);
+                 $temp['gmt_create'] = time();
+                 $data[] = $temp;
+
+             }
+
+             $BankBaddebtDisposeStNewService->del_by_month_year($year,$month);
+             return $BankBaddebtDisposeStNewService->add_batch($data);
+
+         }
+     }
+
+     private function statistics_6($year, $month) {
+         //生成统计
+         $BankFocusDetailStNewService = \Common\Service\BankFocusDetailStNewService::get_instance();
+         $BankFocusDetailNewService = \Common\Service\BankFocusDetailNewService::get_instance();
+         $where = [];
+         $where['year'] = $year;
+         $where['month'] = $month;
+         $datas = $BankFocusDetailNewService->get_by_where_all($where);
+
+         if ($datas) {
+
+             $data = [];
+             foreach ($datas as $_data) {
+                 if ($_data['Enterprise'] == '小计' || $_data['Enterprise'] == '合计' || $_data['Enterprise'] == '50万元以下汇总') {
+                     continue;
+                 }
+                 $temp = [];
+                 $temp['all_name'] = $_data['all_name'];
+                 $temp['year'] = $year;
+                 $temp['month'] = $month;
+                 $temp['enterprise'] = $_data['Enterprise'];
+                 $temp['content'] = json_encode($_data);
+                 $temp['gmt_create'] = time();
+                 $data[] = $temp;
+
+             }
+
+             $BankFocusDetailStNewService->del_by_month_year($year,$month);
+             return $BankFocusDetailStNewService->add_batch($data);
+
+         }
+     }
+
+     private function statistics_7($year, $month) {
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+         //生成统计
+         $BankQuarterlyQuantityAStNewService = \Common\Service\BankQuarterlyQuantityAStNewService::get_instance();
+         $BankQuaterlyQuantityANewService = \Common\Service\BankQuaterlyQuantityANewService::get_instance();
+         $where = [];
+         $where['year'] = $year;
+         $where['month'] = $month;
+         $datas = $BankQuaterlyQuantityANewService->get_by_where_all($where);
+
+         if ($datas) {
+             $all_names = result_to_array($datas, 'all_name');
+             $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+             $departments_map = result_to_map($departments, 'all_name');
+             $data = [];
+             foreach ($datas as $_data) {
+                 if ($_data['Enterprise'] == '小计' || $_data['Enterprise'] == '合计' || $_data['Enterprise'] == '50万元以下汇总') {
+                     continue;
+                 }
+                 $temp = [];
+                 $temp['department_sub_type'] = isset($departments_map[$_data['all_name']]['sub_type']) ? $departments_map[$_data['all_name']]['sub_type'] : 0;
+                 $temp['all_name'] = $_data['all_name'];
+                 $temp['year'] = $year;
+                 $temp['month'] = $month;
+                 $content = [];
+                 foreach ($_data as $_k => $_v) {
+                     $_arr = explode('|', $_v);
+                     if (count($_arr) == 4) {
+                         $content['first'][] = $_arr[0];
+                         $content['second'][] = $_arr[1];
+                         $content['third'][] = $_arr[2];
+                     }
+                 }
+
+                 $temp['content'] = json_encode($content);
+                 $temp['gmt_create'] = time();
+                 $data[] = $temp;
+
+             }
+
+             $BankQuarterlyQuantityAStNewService->del_by_month_year($year,$month);
+             return $BankQuarterlyQuantityAStNewService->add_batch($data);
+
+         }
+     }
+
+
+     private function statistics_8($year, $month) {
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+         //生成统计
+         $BankQuarterlyQuantityBStNewService = \Common\Service\BankQuarterlyQuantityBStNewService::get_instance();
+         $BankQuaterlyQuantityBNewService = \Common\Service\BankQuaterlyQuantityBNewService::get_instance();
+         $where = [];
+         $where['year'] = $year;
+         $where['month'] = $month;
+         $datas = $BankQuaterlyQuantityBNewService->get_by_where_all($where);
+
+         if ($datas) {
+             $all_names = result_to_array($datas, 'all_name');
+             $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+             $departments_map = result_to_map($departments, 'all_name');
+             $data = [];
+             foreach ($datas as $_data) {
+                 if ($_data['Enterprise'] == '小计' || $_data['Enterprise'] == '合计' || $_data['Enterprise'] == '50万元以下汇总') {
+                     continue;
+                 }
+                 $temp = [];
+                 $temp['department_sub_type'] = isset($departments_map[$_data['all_name']]['sub_type']) ? $departments_map[$_data['all_name']]['sub_type'] : 0;
+                 $temp['all_name'] = $_data['all_name'];
+                 $temp['year'] = $year;
+                 $temp['month'] = $month;
+                 $content = [];
+                 foreach ($_data as $_k => $_v) {
+                     $_arr = explode('|', $_v);
+                     if (count($_arr) == 5) {
+                         $content['first'][] = $_arr[0];
+                         $content['second'][] = $_arr[1];
+                         $content['third'][] = $_arr[2];
+                         $content['forth'][] = $_arr[3];
+                     }
+                 }
+
+                 $temp['content'] = json_encode($content);
+                 $temp['gmt_create'] = time();
+                 $data[] = $temp;
+
+             }
+
+             $BankQuarterlyQuantityBStNewService->del_by_month_year($year,$month);
+             return $BankQuarterlyQuantityBStNewService->add_batch($data);
+
+         }
+     }
+
+     private function statistics_9($year, $month) {
+         $DepartmentService = \Common\Service\DepartmentService::get_instance();
+         //生成统计
+         $BankQuarterlyQuantityCStNewService = \Common\Service\BankQuarterlyQuantityCStNewService::get_instance();
+         $BankQuaterlyQuantityCNewService = \Common\Service\BankQuaterlyQuantityCNewService::get_instance();
+         $where = [];
+         $where['year'] = $year;
+         $where['month'] = $month;
+         $datas = $BankQuaterlyQuantityCNewService->get_by_where_all($where);
+
+         if ($datas) {
+             $all_names = result_to_array($datas, 'all_name');
+             $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+             $departments_map = result_to_map($departments, 'all_name');
+             $data = [];
+             foreach ($datas as $_data) {
+                 if ($_data['Enterprise'] == '小计' || $_data['Enterprise'] == '合计' || $_data['Enterprise'] == '50万元以下汇总') {
+                     continue;
+                 }
+                 $temp = [];
+                 $temp['department_sub_type'] = isset($departments_map[$_data['all_name']]['sub_type']) ? $departments_map[$_data['all_name']]['sub_type'] : 0;
+                 $temp['all_name'] = $_data['all_name'];
+                 $temp['year'] = $year;
+                 $temp['month'] = $month;
+                 $content = [];
+                 foreach ($_data as $_k => $_v) {
+                     $_arr = explode('|', $_v);
+                     if (count($_arr) == 4) {
+                         $content['first'][] = $_arr[0];
+                         $content['second'][] = $_arr[1];
+                         $content['third'][] = $_arr[2];
+                         $content['forth'][] = $_arr[3];
+                     }
+                 }
+
+                 $temp['content'] = json_encode($content);
+                 $temp['gmt_create'] = time();
+                 $data[] = $temp;
+
+             }
+
+             $BankQuarterlyQuantityCStNewService->del_by_month_year($year,$month);
+             return $BankQuarterlyQuantityCStNewService->add_batch($data);
+
+         }
+     }
+
 
      /**
       * 信贷统计
@@ -3630,5 +4316,6 @@
 
 
      }
+
 
  }

@@ -1378,6 +1378,13 @@ function tel_num_security($tel) {
     return $tel_1. '***' . $tel_2;
 }
 
+function get_rate($a,$b) {
+    if (!$b) {
+        return 0;
+    }
+    return fix_2($a / $b);
+}
+
 function fix_2($num) {
     return ceil($num * 10000) / 100;
 }

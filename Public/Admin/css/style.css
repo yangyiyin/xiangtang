@@ -1278,7 +1278,7 @@ input:radio+span{
 ===================
 */
 .btn_wrap{
-	position:fixed;z-index: 999999;
+	position:fixed;z-index: 9999;
 	bottom:0;
 	width:100%;
 	_position: absolute;

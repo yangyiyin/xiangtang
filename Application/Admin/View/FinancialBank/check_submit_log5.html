@@ -1,0 +1,70 @@
+
+<table class="biaoge" style="min-width:500px;background: #fff;min-height: 500px;">
+	<tbody>
+	<tr>
+		<td colspan="22"><span class="title">关注类贷款明细报表</span><span> (金额单位 万元)</span></td>
+
+	</tr>
+	<tr>
+		<td colspan="12">公司:{$info[0]['all_name']}</td>
+
+	</tr>
+
+	<tr >
+		<td >企业名称/个人姓名:</td>
+		<td >贷款余额:</td>
+		<td >逾期贷款余额(万元):</td>
+		<td >发放日期:</td>
+		<td >到期日期:</td>
+		<td >行业分类:</td>
+		<td >企业规模(工信部标准):</td>
+		<td >法定代表人*:</td>
+		<td >联系电话*:</td>
+		<td >注册地址*:</td>
+		<td >所属镇(街道)*:</td>
+		<td >备注*:</td>
+	</tr>
+
+	<volist name="info" id="vo">
+		<tr>
+			<if condition="$cache == 1">
+				<td>{$vo[0]}</td>
+				<td>{$vo[1]}</td>
+				<td>{$vo[2]}</td>
+				<td>{$vo[3]|time_to_date}</td>
+				<td>{$vo[4]|time_to_date}</td>
+				<td>{$vo[5]}</td>
+				<td>{$vo[6]}</td>
+				<td>{$vo[7]}</td>
+				<td>{$vo[8]}</td>
+				<td>{$vo[9]}</td>
+				<td>{$vo[10]}</td>
+				<td>{$vo[11]}</td>
+
+				<else/>
+				<td>{$vo['Enterprise']}</td>
+				<td>{$vo['Loans']}</td>
+				<td>{$vo['Overdue_Loans']}</td>
+				<td>{$vo['Startdate']|time_to_date}</td>
+				<td>{$vo['Enddate']|time_to_date}</td>
+				<td>{$vo['Industry']}</td>
+				<td>{$vo['Scale']}</td>
+				<td>{$vo['Principal']}</td>
+				<td>{$vo['Address']}</td>
+				<td>{$vo['Phone']}</td>
+				<td>{$vo['Area']}</td>
+				<td>{$vo['Remark']}</td>
+			</if>
+
+		</tr>
+	</volist>
+	<tr>
+		<td colspan="13">
+			<div class="page">
+				{$page_html}
+			</div>
+		</td>
+	</tr>
+
+	</tbody>
+</table>

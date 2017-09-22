@@ -8,7 +8,7 @@
 namespace Common\Service;
 class BaseService {
     protected static $instance_map = NULL;
-    public static $page_size = 20;
+    public static $page_size = 50;
     public static $NOT_DELETED = 0;
     public static $DELETED = 1;
 

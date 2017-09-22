@@ -1,0 +1,235 @@
+<extend name="Public/base"/>
+
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+			<ul class="cc tab-nav">
+				<if condition="I('type') == 1 || !I('type')">
+					<li class="current"><a href="javascript:;">月报审核</a></li>
+					<else/>
+					<li ><a href="{:U('verify')}/type/1">月报审核</a></li>
+				</if>
+
+				<if condition="I('type') == 2">
+					<li class="current"><a href="javascript:;">银行贷款利率执行水平监测季报审核</a></li>
+					<else/>
+					<li ><a href="{:U('verify')}/type/2">银行贷款利率执行水平监测季报审核</a></li>
+				</if>
+				<if condition="I('type') == 3">
+					<li class="current"><a href="javascript:;">企业贷款利率执行水平监测季报审核</a></li>
+					<else/>
+					<li ><a href="{:U('verify')}/type/3">企业贷款利率执行水平监测季报审核</a></li>
+				</if>
+				<if condition="I('type') == 4">
+					<li class="current"><a href="javascript:;">资产质量相关情况季报审核</a></li>
+					<else/>
+					<li ><a href="{:U('verify')}/type/4">资产质量相关情况季报审核</a></li>
+				</if>
+
+			</ul>
+		</div>
+		<div class="search_type cc mb10 search-form">
+			<div class="mb10">
+				<input type="hidden" class="input length_2" name="type" style="width:100px;" value="{:I('type')}" >
+				公司名称：
+				<input type="text" class="input length_2" name="all_name" style="width:100px;" value="{:I('all_name')}" >
+
+				<select name="year" class="year change_time">
+					<php>
+						$years = [2016,2017];
+						$cur_year = I('year') ? I('year') : intval(date('Y'));
+						foreach($years as $year){
+						$selected = ($year == $cur_year) ? 'selected' : '';
+						echo '<option value="'.$year.'" '.$selected.'>'.$year.'</option>';
+						}
+					</php>
+				</select>年
+				<select name="month" class="month change_time">
+					<php>
+						$months = [1,2,3,4,5,6,7,8,9,10,11,12];
+						$cur_month = I('month') ? I('month') : intval(date('m'));
+						foreach($months as $month){
+						$selected = ($month == $cur_month) ? 'selected' : '';
+						echo '<option value="'.$month.'" '.$selected.'>'.$month.'</option>';
+						}
+					</php>
+				</select>月
+
+				<a class="u-btn" href="javascript:;" id="search" url="{:U('')}">搜索</a>
+				<!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
+				</span>
+			</div>
+		</div>
+		<!-- 数据表格 -->
+		<div class="table_list">
+			<table class="biaoge">
+				<tr>
+					<td>公司名称</td>
+					<td>填报年月</td>
+					<td>查看报表</td>
+					<td>操作</td>
+				</tr>
+				<tr></tr>
+				<volist name="list" id="vo">
+					<tr>
+
+						<td>
+							{$vo.all_name}
+						</td>
+						<td>
+							{$vo.year}年{$vo.month}月
+						</td>
+						<td>
+							<if condition="I('type') == 1 || !I('type')">
+								<a class="btn modaltrigger check_submit_log" url="all_name/{$vo.all_name}/year/{$vo.year}/month/{$vo.month}/type/1" href="#submit_log">查看(本外币合并信贷收支情况)报表</a><br/>
+								<a class="btn modaltrigger check_submit_log" url="all_name/{$vo.all_name}/year/{$vo.year}/month/{$vo.month}/type/2" href="#submit_log">查看(不良贷款监测)报表</a><br/>
+								<a class="btn modaltrigger check_submit_log" url="all_name/{$vo.all_name}/year/{$vo.year}/month/{$vo.month}/type/3" href="#submit_log">查看(不良贷款明细)报表</a><br/>
+								<a class="btn modaltrigger check_submit_log" url="all_name/{$vo.all_name}/year/{$vo.year}/month/{$vo.month}/type/4" href="#submit_log">查看(不良贷款清收情况)报表</a><br/>
+								<a class="btn modaltrigger check_submit_log" url="all_name/{$vo.all_name}/year/{$vo.year}/month/{$vo.month}/type/5" href="#submit_log">查看(关注类贷款明细)报表</a><br/>
+
+							</if>
+							<if condition="I('type') == 2">
+								<a class="btn modaltrigger check_submit_log" url="all_name/{$vo.all_name}/year/{$vo.year}/month/{$vo.month}/type/6" href="#submit_log">查看报表</a>
+							</if>
+							<if condition="I('type') == 3">
+								<a class="btn modaltrigger check_submit_log" url="all_name/{$vo.all_name}/year/{$vo.year}/month/{$vo.month}/type/7" href="#submit_log">查看报表</a>
+							</if>
+							<if condition="I('type') == 4">
+								<a class="btn modaltrigger check_submit_log" url="all_name/{$vo.all_name}/year/{$vo.year}/month/{$vo.month}/type/8" href="#submit_log">查看报表</a>
+							</if>
+						</td>
+
+
+
+
+						<td>
+							<if condition="$vo['status'] == 1">
+								<a class="u-btn confirm J_ajax_get" href="{:U('verify_approve')}/id/{$vo.id}" >通过</a>
+								<a class="u-btn confirm J_ajax_get" href="{:U('verify_reject')}/id/{$vo.id}" >退回</a>
+							</if>
+							<if condition="$vo['status'] == 2">
+								审核已通过
+								<a class="u-btn confirm J_ajax_get" href="{:U('verify_reject')}/id/{$vo.id}" >退回</a>
+							</if>
+						</td>
+
+					</tr>
+				</volist>
+
+			</table>
+		</div>
+		<div class="btn_wrap">
+			<div class="btn_wrap_pd">
+				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
+
+			</div>
+		</div>
+		<!-- 分页 -->
+		<div class="page">
+			{$page_html}
+		</div>
+		<div id="submit_log" style="display:none;min-width: 300px">
+
+
+
+		</div>
+	</div>
+	</div>
+
+</block>
+<block name="script">
+	<style>
+		.biaoge td {
+			vertical-align:middle;
+			padding: 10px;
+		}
+	</style>
+	<link rel="stylesheet" href="__STATIC__/style.css">
+	<link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
+	<php>if(C('COLOR_STYLE')=='blue_color') echo '<link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css" rel="stylesheet" type="text/css">';</php>
+	<link href="__STATIC__/datetimepicker/css/dropdown.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+	<script type="text/javascript">
+		$(function(){
+			//搜索功能
+			$("#search").click(function(){
+				var url = $(this).attr('url');
+				var query  = $('.search-form').find('input,select').serialize();
+				query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+				query = query.replace(/^&/g,'');
+
+
+				if( url.indexOf('?')>0 ){
+					url += '&' + query;
+				}else{
+					url += '?' + query;
+				}
+				window.location.href = url;
+			});
+
+			/* 状态搜索子菜单 */
+			$(".search-form").find(".drop-down").hover(function(){
+				$("#sub-sch-menu").removeClass("hidden");
+			},function(){
+				$("#sub-sch-menu").addClass("hidden");
+			});
+			$("#sub-sch-menu li").find("a").each(function(){
+				$(this).click(function(){
+					var text = $(this).text();
+					$("#sch-sort-txt").text(text).attr("data",$(this).attr("value"));
+					$("#sub-sch-menu").addClass("hidden");
+				})
+			});
+
+			//回车自动提交
+			$('.search-form').find('input').keyup(function(event){
+				if(event.keyCode===13){
+					$("#search").click();
+				}
+			});
+
+			$('#time-start').datetimepicker({
+				format: 'yyyy-mm-dd',
+				language:"zh-CN",
+				minView:2,
+				autoclose:true
+			});
+
+			$('#datetimepicker').datetimepicker({
+				format: 'yyyy-mm-dd',
+				language:"zh-CN",
+				minView:2,
+				autoclose:true,
+				pickerPosition:'bottom-left'
+			});
+			$('.modaltrigger').leanModal({ top: 110, overlay: 0.45, closeButton: ".hidemodal" });
+
+			$('.check_submit_log').click(function(){
+				var url = "{:U('check_submit_log')}/" + $(this).attr('url');
+				$.get(url,function(data){
+					$('#submit_log').html(data);
+				})
+			});
+
+			var url = "{:U('check_submit_log')}/" + $('.check_submit_log').eq(0).attr('url');
+			$.get(url,function(data){
+				$('#submit_log').html(data);
+			})
+		});
+
+	</script>
+	<script>
+		$(document).ready(function(){
+			$(document).on('click','.num,.prev,.next', function(e){
+				var href = $(this).attr('href');
+				$.get(href,function(data){
+					$('#submit_log').html(data);
+				})
+				return false;
+			})
+		})
+	</script>
+
+</block>

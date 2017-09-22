@@ -1,0 +1,574 @@
+<table class="biaoge" style="min-width:500px;background: #fff;min-height: 500px;max-height: 600px;display:block;overflow: scroll">
+	<tbody>
+	<tr>
+		<td colspan="12">
+			<span class="title">银行机构本外币合并信贷收支情况表</span><span> (单位 亿元、万美元)</span>
+
+		</td>
+
+	</tr>
+	<tr>
+		<td colspan="12">公司:{$info.all_name}</td>
+
+	</tr>
+
+	<tr>
+		<td>项目</td>
+		<td>本期</td>
+		<td>比上月</td>
+		<td>比年初</td>
+		<td>项目</td>
+		<td>本期</td>
+		<td>比上月</td>
+		<td>比年初</td>
+		<td>项目</td>
+		<td>本期</td>
+		<td>比上月</td>
+		<td>比年初</td>
+	</tr>
+	<tr>
+		<td>贷款余额</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans[]" value="{$info.Loans.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans[]" value="{$info.Loans.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans[]" value="{$info.Loans.c}">
+		</td>
+		<td> 存款余额</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits[]" value="{$info.Deposits.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits[]" value="{$info.Deposits.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits[]" value="{$info.Deposits.c}">
+		</td>
+		<td> (1)银行开出保函</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D41[]" value="{$info.Deposits_D41.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D41[]" value="{$info.Deposits_D41.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D41[]" value="{$info.Deposits_D41.c}">
+		</td>
+	</tr>
+	<tr>
+		<td>1、小企业贷款</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_A[]" value="{$info.Loans_A.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_A[]" value="{$info.Loans_A.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_A[]" value="{$info.Loans_A.c}">
+		</td>
+		<td> 1、对公贷款</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_A[]" value="{$info.Deposits_A.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_A[]" value="{$info.Deposits_A.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_A[]" value="{$info.Deposits_A.c}">
+		</td>
+		<td> (2)银行承兑汇票余额</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D42[]" value="{$info.Deposits_D42.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D42[]" value="{$info.Deposits_D42.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D42[]" value="{$info.Deposits_D42.c}">
+		</td>
+	</tr>
+	<tr>
+		<td>2、担保公司担保贷款</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_B[]" value="{$info.Loans_B.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_B[]" value="{$info.Loans_B.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_B[]" value="{$info.Loans_B.c}">
+		</td>
+		<td> (1)活期存款</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_A1[]" value="{$info.Deposits_A1.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_A1[]" value="{$info.Deposits_A1.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_A1[]" value="{$info.Deposits_A1.c}">
+		</td>
+		<td> (3)信用证余额(国外、国内)</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D43[]" value="{$info.Deposits_D43.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D43[]" value="{$info.Deposits_D43.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D43[]" value="{$info.Deposits_D43.c}">
+		</td>
+	</tr>
+	<tr>
+		<td>3、政府平台公司贷款</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_C[]" value="{$info.Loans_C.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_C[]" value="{$info.Loans_C.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_C[]" value="{$info.Loans_C.c}">
+		</td>
+		<td> (2)定期存款</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_A2[]" value="{$info.Deposits_A2.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_A2[]" value="{$info.Deposits_A2.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_A2[]" value="{$info.Deposits_A2.c}">
+		</td>
+		<td> (4)其他对外承诺或担保金额</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D44[]" value="{$info.Deposits_D44.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D44[]" value="{$info.Deposits_D44.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D44[]" value="{$info.Deposits_D44.c}">
+		</td>
+	</tr>
+	<tr>
+		<td>4、涉农贷款</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_D[]" value="{$info.Loans_D.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_D[]" value="{$info.Loans_D.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_D[]" value="{$info.Loans_D.c}">
+		</td>
+		<td> 2、储蓄存款</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_B[]" value="{$info.Deposits_B.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_B[]" value="{$info.Deposits_B.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_B[]" value="{$info.Deposits_B.c}">
+		</td>
+		<td> 信贷资产(转让)</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D5[]" value="{$info.Deposits_D5.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D5[]" value="{$info.Deposits_D5.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D5[]" value="{$info.Deposits_D5.c}">
+		</td>
+	</tr>
+	<tr>
+		<td>(1)农业贷款</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_D1[]" value="{$info.Loans_D1.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_D1[]" value="{$info.Loans_D1.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_D1[]" value="{$info.Loans_D1.c}">
+		</td>
+		<td> (1)活期储蓄</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_B1[]" value="{$info.Deposits_B1.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_B1[]" value="{$info.Deposits_B1.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_B1[]" value="{$info.Deposits_B1.c}">
+		</td>
+		<td> (1)证券化</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D51[]" value="{$info.Deposits_D51.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D51[]" value="{$info.Deposits_D51.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D51[]" value="{$info.Deposits_D51.c}">
+		</td>
+	</tr>
+	<tr>
+		<td>(2)农户贷款</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_D2[]" value="{$info.Loans_D2.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_D2[]" value="{$info.Loans_D2.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_D2[]" value="{$info.Loans_D2.c}">
+		</td>
+		<td> (2)定期储蓄</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_B2[]" value="{$info.Deposits_B2.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_B2[]" value="{$info.Deposits_B2.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_B2[]" value="{$info.Deposits_B2.c}">
+		</td>
+		<td> (2)贷款转让</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D52[]" value="{$info.Deposits_D52.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D52[]" value="{$info.Deposits_D52.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D52[]" value="{$info.Deposits_D52.c}">
+		</td>
+	</tr>
+	<tr>
+		<td>5、固定资产贷款</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_E[]" value="{$info.Loans_E.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_E[]" value="{$info.Loans_E.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_E[]" value="{$info.Loans_E.c}">
+		</td>
+		<td> 3、保证金存款</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_C[]" value="{$info.Deposits_C.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_C[]" value="{$info.Deposits_C.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_C[]" value="{$info.Deposits_C.c}">
+		</td>
+		<td> (3)银信合作转让</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D53[]" value="{$info.Deposits_D53.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D53[]" value="{$info.Deposits_D53.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D53[]" value="{$info.Deposits_D53.c}">
+		</td>
+	</tr>
+	<tr>
+		<td>6、房地产开发放贷</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_F[]" value="{$info.Loans_F.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_F[]" value="{$info.Loans_F.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_F[]" value="{$info.Loans_F.c}">
+		</td>
+		<td> (1)开证保证金</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_C1[]" value="{$info.Deposits_C1.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_C1[]" value="{$info.Deposits_C1.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_C1[]" value="{$info.Deposits_C1.c}">
+		</td>
+		<td> 委托代理贷款</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D6[]" value="{$info.Deposits_D6.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D6[]" value="{$info.Deposits_D6.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D6[]" value="{$info.Deposits_D6.c}">
+		</td>
+	</tr>
+	<tr>
+		<td>7、个人住房贷款</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_G[]" value="{$info.Loans_G.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_G[]" value="{$info.Loans_G.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_G[]" value="{$info.Loans_G.c}">
+		</td>
+		<td> (2)签发银票保证金</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_C2[]" value="{$info.Deposits_C2.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_C2[]" value="{$info.Deposits_C2.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_C2[]" value="{$info.Deposits_C2.c}">
+		</td>
+		<td> (1)委托贷款</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D61[]" value="{$info.Deposits_D61.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D61[]" value="{$info.Deposits_D61.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D61[]" value="{$info.Deposits_D61.c}">
+		</td>
+	</tr>
+	<tr>
+		<td>其中:个人住房按揭贷款</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_G1[]" value="{$info.Loans_G1.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_G1[]" value="{$info.Loans_G1.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_G1[]" value="{$info.Loans_G1.c}">
+		</td>
+		<td> (3)商票保贴保证金</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_C3[]" value="{$info.Deposits_C3.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_C3[]" value="{$info.Deposits_C3.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_C3[]" value="{$info.Deposits_C3.c}">
+		</td>
+		<td> (2)代理他行贷款</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D62[]" value="{$info.Deposits_D62.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D62[]" value="{$info.Deposits_D62.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D62[]" value="{$info.Deposits_D62.c}">
+		</td>
+	</tr>
+	<tr>
+		<td>8、个人经营性贷款</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_H[]" value="{$info.Loans_H.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_H[]" value="{$info.Loans_H.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_H[]" value="{$info.Loans_H.c}">
+		</td>
+		<td> (4)开立保函保证金</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_C4[]" value="{$info.Deposits_C4.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_C4[]" value="{$info.Deposits_C4.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_C4[]" value="{$info.Deposits_C4.c}">
+		</td>
+		<td> (3)代理他行集约票据</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D63[]" value="{$info.Deposits_D63.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D63[]" value="{$info.Deposits_D63.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D63[]" value="{$info.Deposits_D63.c}">
+		</td>
+	</tr>
+	<tr>
+		<td>9、票据贴现</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_I[]" value="{$info.Loans_I.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_I[]" value="{$info.Loans_I.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_I[]" value="{$info.Loans_I.c}">
+		</td>
+		<td> 4、其他存款</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D[]" value="{$info.Deposits_D.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D[]" value="{$info.Deposits_D.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D[]" value="{$info.Deposits_D.c}">
+		</td>
+		<td> 理财业务余额</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D7[]" value="{$info.Deposits_D7.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D7[]" value="{$info.Deposits_D7.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D7[]" value="{$info.Deposits_D7.c}">
+		</td>
+	</tr>
+	<tr>
+		<td>(1)银票贴现</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_I1[]" value="{$info.Loans_I1.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_I1[]" value="{$info.Loans_I1.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_I1[]" value="{$info.Loans_I1.c}">
+		</td>
+		<td> 同行存款</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D1[]" value="{$info.Deposits_D1.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D1[]" value="{$info.Deposits_D1.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D1[]" value="{$info.Deposits_D1.c}">
+		</td>
+		<td> 国际业务结算量(万美元)</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D8[]" value="{$info.Deposits_D8.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D8[]" value="{$info.Deposits_D8.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D8[]" value="{$info.Deposits_D8.c}">
+		</td>
+	</tr>
+	<tr>
+		<td>(2)商品贴现</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_I2[]" value="{$info.Loans_I2.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_I2[]" value="{$info.Loans_I2.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_I2[]" value="{$info.Loans_I2.c}">
+		</td>
+		<td> 银行承兑质押的存款</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D2[]" value="{$info.Deposits_D2.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D2[]" value="{$info.Deposits_D2.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D2[]" value="{$info.Deposits_D2.c}">
+		</td>
+		<td> 账面利润(税前)</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D9[]" value="{$info.Deposits_D9.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D9[]" value="{$info.Deposits_D9.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D9[]" value="{$info.Deposits_D9.c}">
+		</td>
+	</tr>
+	<tr>
+		<td>10、节能减排及绿色环保企业贷款</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_J[]" value="{$info.Loans_J.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_J[]" value="{$info.Loans_J.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_J[]" value="{$info.Loans_J.c}">
+		</td>
+		<td> 转(再)贴现</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D3[]" value="{$info.Deposits_D3.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D3[]" value="{$info.Deposits_D3.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D3[]" value="{$info.Deposits_D3.c}">
+		</td>
+		<td> 中间业务收入</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D10[]" value="{$info.Deposits_D10.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D10[]" value="{$info.Deposits_D10.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D10[]" value="{$info.Deposits_D10.c}">
+		</td>
+	</tr>
+	<tr>
+		<td>11、高新技术贷款</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_K[]" value="{$info.Loans_K.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_K[]" value="{$info.Loans_K.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Loans_K[]" value="{$info.Loans_K.c}">
+		</td>
+		<td> 银行对外担保和承诺金额</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D4[]" value="{$info.Deposits_D4.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D4[]" value="{$info.Deposits_D4.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D4[]" value="{$info.Deposits_D4.c}">
+		</td>
+		<td> 利息收入</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D11[]" value="{$info.Deposits_D11.a}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D11[]" value="{$info.Deposits_D11.b}">
+		</td>
+		<td>
+			<input type="text" class="input input-small" name="Deposits_D11[]" value="{$info.Deposits_D11.c}">
+		</td>
+	</tr>
+	</tbody>
+</table>

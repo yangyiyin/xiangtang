@@ -285,5 +285,121 @@ class FinancialBaseController extends AdminController {
 
     public function verify() {
 
+        if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty) {
+            $type = \Common\Model\FinancialVerifyModel::TYPE_Insurance_PROP;
+        } elseif ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceLife) {
+            $type = \Common\Model\FinancialVerifyModel::TYPE_Insurance_LIFE;
+        } elseif ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceMutual) {
+            $type = \Common\Model\FinancialVerifyModel::TYPE_Insurance_Mutual;
+        } elseif ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialBank) {
+            $type = I('type') ? I('type') : 1;
+        } else {
+            $this->error('您访问的模块未开发');
+        }
+
+
+        $all_name = I('all_name');
+        $year = I('year') ? I('year') : intval(date('Y'));
+        $month = I('month') ? I('month') : intval(date('m'));
+        $p = I('p') ? I('p') : 1;
+        $VerifyService = \Common\Service\VerifyService::get_instance();
+        $where = [];
+        if ($all_name) {
+            $where['all_name'] = ['like', '%'.$all_name.'%'];
+        }
+        $where['year'] = $year;
+        $where['month'] = $month;
+        $where['type'] = $type;
+        $where['status'] = ['in', [1,2]];
+
+        list($list, $count) = $VerifyService->get_by_where($where, 'status asc, gmt_create asc', $p);
+        $page_size = \Common\Service\VerifyService::$page_size;
+        $PageInstance = new \Think\Page($count, $page_size);
+        if($count>$page_size){
+            $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+        }
+        $page_html = $PageInstance->show();
+
+        $this->assign('page_html', $page_html);
+        $this->assign('list', $list);
+
+        $this->display();
     }
+
+    public function verify_approve() {
+        $id = I('id');
+        $VerifyService = \Common\Service\VerifyService::get_instance();
+        $data = [];
+        $data['status'] = 2;
+        $ret = $VerifyService->update_by_id($id, $data);
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        $this->success('操作成功!');
+
+    }
+
+    public function verify_reject() {
+        $id = I('id');
+        $VerifyService = \Common\Service\VerifyService::get_instance();
+        $data = [];
+        $data['status'] = 0;
+        $ret = $VerifyService->update_by_id($id, $data);
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        $this->success('操作成功!');
+
+    }
+
+    public function check_submit_log() {
+        $all_name = I('all_name');
+        $year = I('year') ? I('year') : intval(date('Y'));
+        $month = I('month') ? I('month') : intval(date('m'));
+        $type = I('type');
+
+        if ($type == 1) {
+            $this->local_service = \Common\Service\BankCreditNewService::get_instance();
+        } elseif ($type == 2) {
+            $this->local_service = \Common\Service\BankBaddebtNewService::get_instance();
+        } elseif ($type == 3) {
+            $this->local_service = \Common\Service\BankBaddebtDetailNewService::get_instance();
+        } elseif ($type == 4) {
+            $this->local_service = \Common\Service\BankBaddebtDisposeNewService::get_instance();
+        } elseif ($type == 5) {
+            $this->local_service = \Common\Service\BankFocusDetailNewService::get_instance();
+        } elseif ($type == 6) {
+            $this->local_service = \Common\Service\BankQuaterlyQuantityANewService::get_instance();
+        } elseif ($type == 7) {
+            $this->local_service = \Common\Service\BankQuaterlyQuantityBNewService::get_instance();
+        } elseif ($type == 8) {
+            $this->local_service = \Common\Service\BankQuaterlyQuantityCNewService::get_instance();
+        }
+        $tpl = '';
+        if ($type) {
+            $tpl = 'check_submit_log'.$type;
+        }
+
+        $info = $this->local_service->get_by_month_year($year,$month,$all_name);
+
+        //明细类
+        if ($type && in_array($type, [3,4,5])) {
+            $count = count($info);
+            $page_size = 20;
+            $PageInstance = new \Think\Page($count, $page_size);
+            if($count>$page_size){
+                $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+            }
+            $page_html = $PageInstance->show();
+
+            $this->assign('page_html', $page_html);
+            $page = I('p') ? I('p') : 1;
+            $info = array_slice($info, $page_size * ($page-1), $page_size);
+        }
+
+        $this->assign('info',$info);
+        $this->display($tpl);
+
+    }
+
 }
