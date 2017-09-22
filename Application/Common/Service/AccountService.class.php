@@ -36,6 +36,17 @@ class AccountService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
+    public function get_by_uids($uids) {
+        if (!check_num_ids($uids)) {
+            return result(FALSE, 'uids格式不正确');
+        }
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['uid'] = ['in', $uids];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
     public function update_by_id($id, $data) {
 
         if (!$id) {

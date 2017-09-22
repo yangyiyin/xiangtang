@@ -1,5 +1,12 @@
 <extend name="Public/base"/>
 <block name="body">
+	<style>
+		.table table td,.table table th{
+			background: #fff;
+			border: 1px solid #999;
+			padding: 5px;
+		}
+	</style>
 	<div class="g-wrap">
 		<!-- 按钮工具栏 -->
 		<div class="u-tab">
@@ -28,31 +35,297 @@
 			<table class="" width="100%">
 		    <thead>
 		        <tr>
-					<th>用户id</th>
 					<th>服务站名称</th>
-					<th>明细</th>
-					<th>备注</th>
-					<th>发生时间</th>
+					<th>初始金额</th>
+					<th>官方充值</th>
+					<th>官方扣除</th>
+					<th>经销商佣金收入</th>
+					<th>交易支出</th>
+					<th>提现</th>
+					<th>结余金额</th>
+					<th>操作</th>
 				</tr>
 		    </thead>
 		    <tbody>
 				<volist name="list" id="vo">
 				<tr>
 					<td>
-						{$vo.uid}
-					</td>
-					<td>
 						{$vo.user.entity_title}
 					</td>
 					<td>
-						{$vo.info}
+						{$vo.account_before|format_price}
 					</td>
 					<td>
-						{$vo.remark}
+						<a class="check_detail show_box" href="javascript:;" tmp_id="detail">
+							{$vo.a_sum|format_price}
+							<div class="detail_in" style="display: none">
+								<table  width="100%">
+									<thead>
+									<tr>
+										<th>摘要</th>
+										<th>日期</th>
+										<th>操作uid</th>
+										<th>备注</th>
+										<th>金额</th>
+
+									</tr>
+									</thead>
+									<tbody>
+									<volist name="vo.a" id="log">
+										<tr>
+											<td>
+												{$log.type_desc}
+											</td>
+											<td>
+												{$log.create_time}
+											</td>
+											<td>
+												{$log.op_uid}
+											</td>
+
+											<td>
+												{$log.remark}
+											</td>
+											<td>
+												{$log.sum|format_price}
+											</td>
+
+
+										</tr>
+									</volist>
+									</tbody>
+								</table>
+							</div>
+						</a>
 					</td>
 					<td>
-						{$vo.create_time}
+						<a class="check_detail show_box" href="javascript:;" tmp_id="detail">
+							{$vo.b_sum|format_price}
+							<div class="detail_in" style="display: none">
+								<table  width="100%">
+									<thead>
+									<tr>
+										<th>摘要</th>
+										<th>日期</th>
+										<th>操作uid</th>
+										<th>备注</th>
+										<th>金额</th>
+
+									</tr>
+									</thead>
+									<tbody>
+									<volist name="vo.b" id="log">
+										<tr>
+											<td>
+												{$log.type_desc}
+											</td>
+											<td>
+												{$log.create_time}
+											</td>
+											<td>
+												{$log.op_uid}
+											</td>
+
+											<td>
+												{$log.remark}
+											</td>
+											<td>
+												{$log.sum|format_price}
+											</td>
+
+
+										</tr>
+									</volist>
+									</tbody>
+								</table>
+							</div>
+						</a>
 					</td>
+					<td>
+						<a class="check_detail show_box" href="javascript:;" tmp_id="detail">
+							{$vo.c_sum|format_price}
+							<div class="detail_in" style="display: none">
+								<table  width="100%">
+									<thead>
+									<tr>
+										<th>摘要</th>
+										<th>日期</th>
+										<th>单据号</th>
+										<th>订单金额</th>
+										<th>佣金</th>
+										<th>金额</th>
+									</tr>
+									</thead>
+									<tbody>
+									<volist name="vo.c" id="log">
+										<tr>
+											<td>
+												{$log.type_desc}
+											</td>
+											<td>
+												{$log.create_time}
+											</td>
+											<td>
+												{$log.order.order_no}
+											</td>
+
+											<td>
+												{$log.order.sum|format_price}
+											</td>
+											<td>
+												{$log.order.dealer_profit|format_price}
+											</td>
+											<td>
+												{$log.sum|format_price}
+											</td>
+
+										</tr>
+									</volist>
+									</tbody>
+								</table>
+							</div>
+						</a>
+					</td>
+					<td>
+						<a class="check_detail show_box" href="javascript:;" tmp_id="detail">
+							{$vo.d_sum|format_price}
+							<div class="detail_in" style="display: none">
+								<table  width="100%">
+									<thead>
+									<tr>
+										<th>摘要</th>
+										<th>日期</th>
+										<th>单据号</th>
+										<th>订单金额</th>
+										<th>金额</th>
+									</tr>
+									</thead>
+									<tbody>
+									<volist name="vo.d" id="log">
+										<tr>
+											<td>
+												{$log.type_desc}
+											</td>
+											<td>
+												{$log.create_time}
+											</td>
+											<td>
+												{$log.order.order_no}
+											</td>
+
+											<td>
+												{$log.order.sum|format_price}
+											</td>
+
+											<td>
+												{$log.sum|format_price}
+											</td>
+
+										</tr>
+									</volist>
+									</tbody>
+								</table>
+							</div>
+						</a>
+					</td>
+					<td>
+						<a class="check_detail show_box" href="javascript:;" tmp_id="detail">
+							{$vo.e_sum|format_price}
+							<div class="detail_in" style="display: none">
+								<table  width="100%">
+									<thead>
+									<tr>
+										<th>摘要</th>
+										<th>日期</th>
+										<th>操作uid</th>
+										<th>备注</th>
+										<th>金额</th>
+
+									</tr>
+									</thead>
+									<tbody>
+									<volist name="vo.e" id="log">
+										<tr>
+											<td>
+												{$log.type_desc}
+											</td>
+											<td>
+												{$log.create_time}
+											</td>
+											<td>
+												{$log.op_uid}
+											</td>
+
+											<td>
+												{$log.remark}
+											</td>
+											<td>
+												{$log.sum|format_price}
+											</td>
+										</tr>
+									</volist>
+									</tbody>
+								</table>
+							</div>
+						</a>
+					</td>
+					<td>
+						{$vo.account|format_price}
+					</td>
+					<td>
+						<a class="check_detail show_box" href="javascript:;" tmp_id="detail">
+							查看明细
+							<div class="detail_in" style="display: none">
+								<table  width="100%">
+									<thead>
+									<tr>
+										<th>摘要</th>
+										<th>日期</th>
+										<th>单据号</th>
+										<th>订单金额</th>
+										<th>订单佣金</th>
+										<th>备注</th>
+										<th>金额</th>
+										<th>结余金额</th>
+									</tr>
+									</thead>
+									<tbody>
+									<volist name="vo.detail_all" id="log">
+										<tr>
+											<td>
+												{$log.type_desc}
+											</td>
+											<td>
+												{$log.create_time}
+											</td>
+											<td>
+												{$log.order.order_no}
+											</td>
+											<td>
+												{$log.order.sum|format_price}
+											</td>
+											<td>
+												{$log.order.dealer_profit|format_price}
+											</td>
+											<td>
+												{$log.remark}
+											</td>
+											<td>
+												{$log.sum|format_price}
+											</td>
+											<td>
+												{$log.account|format_price}
+											</td>
+
+										</tr>
+									</volist>
+									</tbody>
+								</table>
+							</div>
+
+						</a>
+					</td>
+
 				</tr>
 				</volist>
 			</tbody>
@@ -71,7 +344,15 @@
 	    </div>
 	</div>
 </div>
+	<div id="detail" class="show_box_temp" style="display:none;position: fixed;min-width: 500px;left: 50%;top:30%;z-index: 1000;background: #ddd;border: 1px solid #000000;padding: 10px">
+		<p class="table">
 
+		</p>
+		<p style="padding: 10px">
+
+			<a class="u-btn	close_show_box" href="javascript:;">关闭</a>
+		</p>
+	</div>
 </block>
 <block name="script">
 <link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
@@ -145,6 +426,18 @@ $(function(){
         autoclose:true,
         pickerPosition:'bottom-left'
     });
+	$('.show_box').on('click', function () {
+		//console.log($(this).attr('data'));
+		$('.show_box_temp').hide();
+
+		var id = $(this).attr('tmp_id');
+		$('.table').html($(this).find('.detail_in').html());
+		$('#'+id).show();
+
+	});
+	$('.close_show_box').on('click',function () {
+		$(this).parents('.show_box_temp').hide();
+	});
 
 
 });

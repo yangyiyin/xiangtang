@@ -84,3 +84,5 @@ update shopy_nf_product set uid = 1;
 
 alter table shopy_nf_order_item_pre add sum_dealer_profit int (11) DEFAULT '0';
 alter table shopy_nf_order_item add sum_dealer_profit int (11) DEFAULT '0';
+alter table shopy_nf_account_log add op_uid int (11) DEFAULT '0';
+alter table shopy_nf_account_log add op_name varchar (20) DEFAULT '';

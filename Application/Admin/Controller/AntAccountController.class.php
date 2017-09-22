@@ -71,6 +71,7 @@ class AntAccountController extends AdminController {
                     //$account_data['sum'] = intval($order['sum'] * C('INVITER_RATE'));
                     $account_data['sum'] = $sum;
                     $account_data['oid'] = 0;
+                    $account_data['op_uid'] = UID;
                     $account_data['uid'] = $info['id'];
                     $account_data['pay_no'] = '';
                     $account_data['remark'] = $remark;
@@ -82,11 +83,13 @@ class AntAccountController extends AdminController {
                     if (!$ret->success) {
                         $this->error($ret->message);
                     }
+
                     $account_data = [];
                     $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_OFFICIAL_MINUS;
                     //$account_data['sum'] = intval($order['sum'] * C('INVITER_RATE'));
                     $account_data['sum'] = -$sum;
                     $account_data['oid'] = 0;
+                    $account_data['op_uid'] = UID;
                     $account_data['uid'] = $info['id'];
                     $account_data['pay_no'] = '';
                     $account_data['remark'] = $remark;

@@ -194,19 +194,73 @@ class AntAccountLogController extends AdminController {
      */
     public function all_commission() {
 
+        $where = $where_arr = [];
+        $where['type'] = ['in', [\Common\Model\NfAccountLogModel::TYPE_OFFICIAL_ADD,\Common\Model\NfAccountLogModel::TYPE_OFFICIAL_MINUS,\Common\Model\NfAccountLogModel::TYPE_TRADE_MINUS,\Common\Model\NfAccountLogModel::TYPE_OUT_CASH_MINUS, \Common\Model\NfAccountLogModel::TYPE_INVITER_ADD, \Common\Model\NfAccountLogModel::TYPE_INVITER_MINUS, \Common\Model\NfAccountLogModel::TYPE_DEALER_ADD, \Common\Model\NfAccountLogModel::TYPE_DEALER_MINUS]];
+        $where_arr[] = 'type in ('.join(',',[\Common\Model\NfAccountLogModel::TYPE_OFFICIAL_ADD,\Common\Model\NfAccountLogModel::TYPE_OFFICIAL_MINUS,\Common\Model\NfAccountLogModel::TYPE_TRADE_MINUS,\Common\Model\NfAccountLogModel::TYPE_OUT_CASH_MINUS, \Common\Model\NfAccountLogModel::TYPE_INVITER_ADD, \Common\Model\NfAccountLogModel::TYPE_INVITER_MINUS, \Common\Model\NfAccountLogModel::TYPE_DEALER_ADD, \Common\Model\NfAccountLogModel::TYPE_DEALER_MINUS]).') ';
+        $create_begin = I('get.create_begin');
+        $create_end = I('get.create_end');
+
+        if ($create_begin) {
+            $where[] = ['create_time' => ['egt', $create_begin]];
+            $where_arr[] = 'create_time >= "'.$create_begin .'"';
+        }
+        if ($create_end) {
+            $where[] = ['create_time' => ['elt', $create_end]];
+            $where_arr[] = 'create_time <= "'.$create_end.'"';
+        }
+        if (I('get.uid')) {
+            $where[] = ['uid' => ['eq', I('get.uid')]];
+            $where_arr[] = 'uid = '.I('get.uid');
+        }
+
+        if (I('get.entity_title')) {
+            $where_user = [];
+            $where_user['entity_title'] = ['LIKE', '%' . I('get.entity_title') . '%'];
+            $UserService = \Common\Service\UserService::get_instance();
+            list($users,$count) = $UserService->get_by_where($where_user);
+            if ($users) {
+                $where['uid'] = ['in', result_to_array($users)];
+                $where_arr[] = 'uid in ('.join(',',result_to_array($users)).') ';
+            } else {
+                $where['uid'] = ['in', [0]];
+                $where_arr[] = 'uid in (0) ';
+            }
+        }
+
+
+        $this->assign('create_begin', $create_begin);
+        $this->assign('create_end', $create_end);
+        $page = I('get.p', 1);
+        //list($data, $count) = $this->AccountLogService->get_by_where($where, 'id desc', $page);
+
+        list($data, $count) = $this->AccountLogService->get_group_by_uid(join(' and ', $where_arr), 'id desc',$page);
+
+        $data = $this->convert_commission_data($data, $where);
+        //echo json_encode($data);die();
+        $PageInstance = new \Think\Page($count, \Common\Service\AccountLogService::$page_size);
+        if($total>\Common\Service\AccountLogService::$page_size){
+            $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+        }
+        $page_html = $PageInstance->show();
+
+        $this->assign('list', $data);
+        $this->assign('page_html', $page_html);
+
+
+        $this->display();
+    }
+
+    /**
+     * 所有佣金记录
+     */
+    public function all_commission_old() {
+
         $where = [];
         $where['type'] = ['in', [\Common\Model\NfAccountLogModel::TYPE_OFFICIAL_ADD,\Common\Model\NfAccountLogModel::TYPE_OFFICIAL_MINUS,\Common\Model\NfAccountLogModel::TYPE_TRADE_MINUS,\Common\Model\NfAccountLogModel::TYPE_OUT_CASH_MINUS, \Common\Model\NfAccountLogModel::TYPE_INVITER_ADD, \Common\Model\NfAccountLogModel::TYPE_INVITER_MINUS, \Common\Model\NfAccountLogModel::TYPE_DEALER_ADD, \Common\Model\NfAccountLogModel::TYPE_DEALER_MINUS]];
 
         $create_begin = I('get.create_begin');
         $create_end = I('get.create_end');
 
-//        if (!$create_begin) {
-//            $create_begin = date('Y-m-d', time()-7*24*3600);
-//        }
-//
-//        if (!$create_end) {
-//            $create_end = date('Y-m-d', time()+7*24*3600);
-//        }
         if ($create_begin) {
             $where[] = ['create_time' => ['egt', $create_begin]];
         }
@@ -241,8 +295,6 @@ class AntAccountLogController extends AdminController {
             list($data, $count) = $this->AccountLogService->get_by_where($where, 'id desc', $page);
         }
 
-
-
         list($sum,$total_pay_num) = $this->AccountLogService->get_totals($where);
         $data = $this->convert_commission_data($data);
         $PageInstance = new \Think\Page($count, \Common\Service\AccountLogService::$page_size);
@@ -255,8 +307,6 @@ class AntAccountLogController extends AdminController {
         $this->assign('page_html', $page_html);
 
         if (I('export')) {
-
-
             $excel_data = [];
             $excel_data[] = ["用户id","服务站名称","明细","备注","发生时间"];
             foreach ($data as $value) {
@@ -268,8 +318,6 @@ class AntAccountLogController extends AdminController {
                 $temp[] = $value['create_time'];
                 $excel_data[] = $temp;
             }
-
-
             exportexcel($excel_data,'', '佣金明细');
             exit();
         }
@@ -278,23 +326,81 @@ class AntAccountLogController extends AdminController {
         $this->display();
     }
 
-
     public function convert_data(&$data) {
 
     }
-    public function convert_commission_data($data) {
-        if ($data) {
-            $type_map = \Common\Model\NfAccountLogModel::$TYPE_MAP;
+    public function convert_commission_data($data, $where='') {
 
+        if ($data) {
             $uids = result_to_array($data, 'uid');
+            $type_map = \Common\Model\NfAccountLogModel::$TYPE_MAP;
             $UserService = \Common\Service\UserService::get_instance();
             $users = $UserService->get_by_ids($uids);
-
             $users_map = result_to_map($users);
+            $where['uid'] = ['in', $uids];
+            list($all_datas, ) = $this->AccountLogService->get_by_where_all($where);
+            $all_datas_map = result_to_complex_map($all_datas, 'uid');
+
+            $oids = result_to_array($all_datas, 'oid');
+            if ($oids) {
+                $OrderService = \Common\Service\OrderService::get_instance();
+                $orders = $OrderService->get_by_ids($oids);
+                $orders_map = result_to_map($orders);
+            }
+
+
+            $AccountService = \Common\Service\AccountService::get_instance();
+            $accounts = $AccountService->get_by_uids($uids);
+            $accounts_map = result_to_map($accounts, 'uid');
             foreach ($data as $key => $value) {
-                $data[$key]['type_desc'] = isset($type_map[$value['type']]) ? $type_map[$value['type']] : '未知类型';
-                $data[$key]['info'] = $data[$key]['type_desc'] . format_price($value['sum']) . '元';
+//                $data[$key]['type_desc'] = isset($type_map[$value['type']]) ? $type_map[$value['type']] : '未知类型';
+//                $data[$key]['info'] = $data[$key]['type_desc'] . format_price($value['sum']) . '元';
+
                 $data[$key]['user'] = isset($users_map[$value['uid']]) ? $users_map[$value['uid']] : [];
+                $data[$key]['account'] = isset($accounts_map[$value['uid']]['sum']) ? $accounts_map[$value['uid']]['sum'] : 0;
+                if (isset($all_datas_map[$value['uid']])) {
+                    foreach ($all_datas_map[$value['uid']] as $_k => $_log) {
+                        $all_datas_map[$value['uid']][$_k]['type_desc'] = isset($type_map[$_log['type']]) ? $type_map[$_log['type']] : '未知类型';
+
+                    }
+
+                    $account_modify = array_sum(result_to_array($all_datas_map[$value['uid']], 'sum'));
+                    $data_type_map = result_to_complex_map($all_datas_map[$value['uid']], 'type');
+                    $data[$key]['a'] = isset($data_type_map[\Common\Model\NfAccountLogModel::TYPE_OFFICIAL_ADD]) ? $data_type_map[\Common\Model\NfAccountLogModel::TYPE_OFFICIAL_ADD] : [];
+                    $data[$key]['b'] = isset($data_type_map[\Common\Model\NfAccountLogModel::TYPE_OFFICIAL_MINUS]) ? $data_type_map[\Common\Model\NfAccountLogModel::TYPE_OFFICIAL_MINUS] : [];
+                    $data[$key]['c'] = isset($data_type_map[\Common\Model\NfAccountLogModel::TYPE_DEALER_ADD]) ? $data_type_map[\Common\Model\NfAccountLogModel::TYPE_DEALER_ADD] : [];
+                    $data[$key]['d'] = isset($data_type_map[\Common\Model\NfAccountLogModel::TYPE_TRADE_MINUS]) ? $data_type_map[\Common\Model\NfAccountLogModel::TYPE_TRADE_MINUS] : [];
+                    $data[$key]['e'] = isset($data_type_map[\Common\Model\NfAccountLogModel::TYPE_OUT_CASH_MINUS]) ? $data_type_map[\Common\Model\NfAccountLogModel::TYPE_OUT_CASH_MINUS] : [];
+
+
+                } else {
+                    $account_modify = 0;
+                    $data[$key]['a'] = $data[$key]['b'] = $data[$key]['c'] = $data[$key]['d'] = $data[$key]['e'] = [];
+
+                }
+                $data[$key]['a_sum'] = array_sum(result_to_array($data[$key]['a'], 'sum'));
+                $data[$key]['b_sum'] = array_sum(result_to_array($data[$key]['b'], 'sum'));
+                $data[$key]['c_sum'] = array_sum(result_to_array($data[$key]['c'], 'sum'));
+                $data[$key]['d_sum'] = array_sum(result_to_array($data[$key]['d'], 'sum'));
+                $data[$key]['e_sum'] = array_sum(result_to_array($data[$key]['e'], 'sum'));
+                $data[$key]['account_before'] = $data[$key]['account'] - $account_modify;//初始金额
+                if (isset($all_datas_map[$value['uid']])) {
+
+                    foreach ($all_datas_map[$value['uid']] as $_k => $_log) {
+                        $all_datas_map[$value['uid']][$_k]['type_desc'] = isset($type_map[$_log['type']]) ? $type_map[$_log['type']] : '未知类型';
+                        if ($_k == 0) {
+                            $all_datas_map[$value['uid']][$_k]['account'] = $data[$key]['account'];
+
+                        } else {
+                            $all_datas_map[$value['uid']][$_k]['account'] = $all_datas_map[$value['uid']][$_k-1]['account'] - $all_datas_map[$value['uid']][$_k-1]['sum'];
+
+                        }
+                        $all_datas_map[$value['uid']][$_k]['order'] = isset($orders_map[$_log['oid']]) ? $orders_map[$_log['oid']] : [];
+
+
+                    }
+                    $data[$key]['detail_all'] = $all_datas_map[$value['uid']];
+                }
             }
         }
 

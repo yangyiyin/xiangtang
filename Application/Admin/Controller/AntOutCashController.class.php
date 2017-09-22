@@ -88,6 +88,7 @@ class AntOutCashController extends AdminController {
             $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_OUT_CASH_MINUS;
             $account_data['sum'] = -$sum;
             $account_data['oid'] = 0;
+            $account_data['op_uid'] = UID;
             $account_data['uid'] = $uid;
             $account_data['pay_no'] ='';
             $AccountLogService->add_one($account_data);
