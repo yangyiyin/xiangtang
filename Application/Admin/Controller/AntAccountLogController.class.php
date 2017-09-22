@@ -361,6 +361,7 @@ class AntAccountLogController extends AdminController {
                 if (isset($all_datas_map[$value['uid']])) {
                     foreach ($all_datas_map[$value['uid']] as $_k => $_log) {
                         $all_datas_map[$value['uid']][$_k]['type_desc'] = isset($type_map[$_log['type']]) ? $type_map[$_log['type']] : '未知类型';
+                        $all_datas_map[$value['uid']][$_k]['order'] = isset($orders_map[$_log['oid']]) ? $orders_map[$_log['oid']] : [];
 
                     }
 
