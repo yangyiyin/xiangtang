@@ -16,7 +16,9 @@ class SignupController extends Controller {
 	//系统首页
     public function index(){
 
+        if (IS_POST) {
 
+        }
 
                  
         $this->display();

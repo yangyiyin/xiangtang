@@ -62,3 +62,17 @@ alter table shopy_nf_out_cash add bank_code VARCHAR (50) DEFAULT '';
 alter table shopy_nf_out_cash add sum int (11) DEFAULT '0';
 alter table shopy_nf_out_cash add status tinyint (5) DEFAULT '0';
 alter table shopy_nf_out_cash add uid int (11) DEFAULT '0';
+
+
+
+CREATE TABLE `shopy_nf_ones` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+`qq` varchar(50)  NOT NULL,
+`yy` varchar(50)  NOT NULL,
+`status` tinyint(3) DEFAULT '1',
+`create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
