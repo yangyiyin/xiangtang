@@ -74,4 +74,8 @@ class SignupController extends Controller {
         $this->display();
     }
 
+    public function yy_info(){
+        $this->display();
+    }
+
 }
