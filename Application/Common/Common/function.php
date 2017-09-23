@@ -1372,6 +1372,12 @@ function tel_num_security($tel) {
     return $tel_1. '***' . $tel_2;
 }
 
+function qq_num_security($tel) {
+    $tel_1 = substr($tel, 0, 3);
+    $tel_2 = substr($tel, -2, 2);
+    return $tel_1. '***' . $tel_2;
+}
+
 function make_tree($list) {
     $child_pids = [];
     foreach ($list as $_ms) {

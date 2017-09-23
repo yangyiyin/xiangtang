@@ -75,4 +75,5 @@ CREATE TABLE `shopy_nf_ones` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+alter table shopy_nf_ones add type int (11) DEFAULT '0';
 

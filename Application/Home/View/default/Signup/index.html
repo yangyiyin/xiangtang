@@ -2,19 +2,231 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>php初学者联盟报名</title>
+    <style>
+
+        body{
+            background: #666;
+        }
+        *{
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        .content{
+            width: 1000px;
+            height: auto;
+            margin: auto auto;
+            background: #eee;
+
+        }
+        .info{
+            width: 900px;
+            margin: 20px auto;
+            position: relative;
+            margin-top: 50px;
+        }
+        .info img{
+            position:absolute;
+            top: -29px;
+            left: 0;
+        }
+        .text{
+            background: #fff;
+            padding: 30px;
+        }
+        .btn{
+            width: 900px;
+            margin: 40px auto;
+            background: #faf5ac;
+            position: relative;
+            height:200px;
+            margin-bottom: 40px;
+        }
+        .btn .signup{
+            position: absolute;
+            top:50px;
+            left: 50px;
+            cursor: pointer;
+        }
+        .user-list{
+            position: absolute;
+            top:30px;
+            right: 80px;
+            font-size: 14px;
+            color: rgb(162,93,30);
+        }
+        .user-list ul{
+            height: 120px;
+            overflow-y: auto;
+        }
+        .user-list ul li {
+            padding: 2px 20px;
+        }
+        .btn_text{
+            font-size: 25px;
+            font-weight: bolder;
+            color: #fff;
+            position: absolute;
+            top:75px;
+            left: 150px;
+            cursor: pointer;
+        }
+        .btn_text_sub{
+            font-size: 12px;
+            font-weight: bolder;
+            color: rgb(249,217,118);
+            position: absolute;
+            top:110px;
+            left: 137px;
+            cursor: pointer;
+        }
+        .zhifu_text{
+            font-size: 25px;
+            font-weight: bolder;
+            position: absolute;
+            top:75px;
+            left: 70px;
+        }
+        .zhifu_text_sub{
+            font-size: 12px;
+            font-weight: bolder;
+            position: absolute;
+            top:110px;
+            left: 55px;
+        }
+
+        .bottom {
+            width: 1000px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            line-height: 20px;
+        }
+        .baoming{
+            padding: 2px 10px;
+            border: none;
+            margin-top: 10px;
+            background: rgb(240,120,20);
+            color:#fff;
+            cursor: pointer;
+
+        }
+    </style>
+    <script type="text/javascript" src="__STATIC__/jquery_danchu/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/jquery_danchu/jquery.reveal.js"></script>
+    <link rel="stylesheet" href="__STATIC__/jquery_danchu/reveal.css">
+
 </head>
 <body>
-<div>海报</div>
+<div class="content">
 
-<div>课程介绍</div>
 
-<div>报名</div>
+    <div>
+        <img src="__IMG__/banner.png">
+    </div>
 
-<form action="{:U('')}" method="post">
-    QQ号:<input name="qq" value=""/>
-    <input type="submit" value="提交"/>
-</form>
+    <div>
+        <div class="info">
+            <img src="__IMG__/title.png">
+            <div class="text">
 
+                <p><span style="color: rgb(240,120,20)">课程内容:</span> 第一期课程主要学习windows下面的php集成环境搭建,以及php的hello world例子,以及phpstorm编辑器的使用,还有前端知识如何学习。</p>
+                <p><span style="color: rgb(240,120,20)">课程时长:</span>60分钟左右(包括提问交流)</p>
+                <p><span style="color: rgb(240,120,20)">YY房间号:</span>待确认</p>
+                <p><span style="color: rgb(240,120,20)">本期主讲人:</span> 群主</p>
+                <p><span style="color: rgb(240,120,20)">本期时间:</span>2017/9/27 19:30</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="btn">
+        <if condition="!$has_signup">
+            <img class="signup" src="__IMG__/btn.png">
+            <div class="btn_text">马上报名</div>
+            <div class="btn_text_sub">手慢无,抢限量免费名额</div>
+            <else/>
+            <img style="width: 200px;position: absolute;left: 180px" src="__IMG__/weixinzhifu.png">
+            <div class="zhifu_text">打赏</div>
+            <div class="zhifu_text_sub">使用<span style="color: red">微信</span>扫一扫>></div>
+        </if>
+
+        <div class="user-list">
+            <img class="title2" src="__IMG__/title2.png">
+            <ul>
+                <volist id="vo" name="list">
+                    <li>qq:{$vo.qq}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$vo.create_time}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$vo.status_desc}</li>
+
+                </volist>
+
+            </ul>
+        </div>
+    </div>
+
+
+    <div id="login" class="reveal-modal">
+
+      <p style="text-align: center">
+          QQ号:<input id="qq" type="text" value=""/><span class="must">*</span><br/>
+          YY号:<input id="yy" type="text" value=""/>&nbsp;<br/>
+          <input type="button" class="baoming" value="报名">
+      </p>
+
+    </div>
+
+    <div id="error" class="reveal-modal">
+
+        <p class="error_message" style="text-align: center">
+
+        </p>
+
+    </div>
+
+    <div id="success" class="reveal-modal">
+
+        <p style="text-align: center">
+         报名成功!页面即将自动刷新
+        </p>
+
+    </div>
+
+    <div class="bottom">
+        学习交流,欢迎初学者加入,QQ群号:641829936<br/>
+        浙ICP备14040875号-1
+    </div>
+
+</div>
 </body>
+<script>
+    $(document).ready(function(){
+        $('.signup,.btn_text,.btn_text_sub').live('click', function(e) {
+            e.preventDefault();
+            $('#login').reveal({animation:'fade'});
+        });
+
+        $('.baoming').click(function(){
+            if (!$('#qq').val()) {
+                $('.must').css('color','red');
+            }
+            var url = '{:U('')}';
+            var data = {
+                qq:$('#qq').val(),
+                yy:$('#yy').val()
+            }
+            $.post(url,data,function(data){
+                if(data.status) {
+                    $('#login').trigger('reveal:close');
+                    $('#success').reveal({animation:'fade'});
+                    setTimeout(function(){
+                        history.go(0)
+                    },2000)
+                } else {
+                    $('.error_message').text(data.info);
+                    $('#login').trigger('reveal:close')
+                    $('#error').reveal({animation:'fade'});
+                }
+            });
+        })
+    })
+</script>
 </html>
