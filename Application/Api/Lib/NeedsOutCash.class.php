@@ -28,7 +28,7 @@ class NeedsOutCash extends BaseApi{
         $data = [];
         $data['name'] = $name;
         $data['bank_code'] = $bank_code;
-        $data['sum'] = $sum;
+        $data['sum'] = $sum * 100;
         $data['bank_name'] = $bank_name;
 
         $data['status'] = \Common\Model\NfOutCashModel::STATUS_READY;

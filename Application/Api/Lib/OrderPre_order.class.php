@@ -40,6 +40,7 @@ class OrderPre_order extends BaseApi{
         $iids = result_to_array($items_num_arr, 'item_id');
         $ItemService = Service\ItemService::get_instance();
         $items = $ItemService->get_by_ids($iids);
+
         if (!$items) {
             return result_json(FALSE, '参数错误~');
         }
@@ -55,6 +56,7 @@ class OrderPre_order extends BaseApi{
         if (!$ret) {
             return result_json(FALSE, '商品类型不一致,虚拟商品和实物商品不能同时下单');
         }
+
         //检测库存
         $ProductSkuService = \Common\Service\ProductSkuService::get_instance();
         $sku_ids = result_to_array($items_num_arr, 'sku_id');
@@ -138,6 +140,7 @@ class OrderPre_order extends BaseApi{
                 $tmp['order_pre_id'] = $order_pre_id;
                 $tmp['iid'] = $_item->item_id;
                 $tmp['pid'] = $_item->pid;
+                $tmp['code'] = $_item->code;
                 $tmp['num'] = $_item->num;
                 $tmp['sku_id'] = $_item->sku_id;
                 $tmp['price'] = $_item->price;
@@ -177,6 +180,11 @@ class OrderPre_order extends BaseApi{
             $sku_props = $SkuPropertyService->get_by_sku_ids($sku_ids);
             $sku_props_map = $SkuPropertyService->get_sku_props_map($sku_props);
 
+            //获取产品信息
+            $ProductService = \Common\Service\ProductService::get_instance();
+            $pids = result_to_array($items_map, 'pid');
+            $products = $ProductService->get_by_ids($pids);
+            $products_map = result_to_map($products);
             foreach ($data as $key => $_item) {
                 $_item['img'] = item_img(get_cover($items_map[$_item['item_id']]['img'], 'path'));//todo 这种方式后期改掉
 
@@ -197,18 +205,20 @@ class OrderPre_order extends BaseApi{
                 $_item['id'] = (int) $_item['item_id'];
                 $_item['seller_uid'] =  (int) $items_map[$_item['item_id']]['uid'];
                 $_item['pid'] = (int) $items_map[$_item['item_id']]['pid'];
+                $_item['code'] = isset($products_map[$_item['pid']]['code']) ? $products_map[$_item['pid']]['code'] : '';
                 $_item['title'] = $items_map[$_item['item_id']]['title'];
                 $_item['desc'] =  $items_map[$_item['item_id']]['desc'];
                 $_item['is_real'] =  $items_map[$_item['item_id']]['is_real'];
                 $_item['unit_desc'] = $items_map[$_item['item_id']]['unit_desc'];
                 $_item['sku_id'] = (int) $skus_map[$_item['sku_id']]['id'];
 
+
                 if (isset($sku_props_map[$_item['sku_id']])) {
                     $_item['props'] = $sku_props_map[$_item['sku_id']];
                 }
 
 
-                $list[] = convert_obj($_item, 'id=item_id,sku_id,pid,title,img,desc,unit_desc,price,num,is_real,seller_uid,props,show_price,pay_price,dealer_profit');
+                $list[] = convert_obj($_item, 'id=item_id,sku_id,pid,title,img,desc,unit_desc,price,num,is_real,seller_uid,props,show_price,pay_price,dealer_profit,code');
             }
 
         }

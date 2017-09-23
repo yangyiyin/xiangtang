@@ -402,6 +402,7 @@ class OrderService extends BaseService{
             $temp = [];
             $temp['order_id'] = $order_id;
             $temp['pid'] = $_item['pid'];
+            $temp['code'] = $_item['code'];
             $temp['iid'] = $_item['iid'];
             $temp['sku_id'] = $_item['sku_id'];
             $temp['num'] = $_item['num'];
@@ -437,6 +438,7 @@ class OrderService extends BaseService{
         foreach ($order_pre_items as $key => $_item) {
             $_item['id'] = (int) $_item['iid'];
             $_item['pid'] = (int) $_item['pid'];
+            $_item['code'] = $_item['code'];
             $_item['sku_id'] = (int) $_item['sku_id'];
             $_item['price'] = (int) $_item['price'];
             $_item['sum'] = (int) $_item['sum'];
@@ -451,7 +453,7 @@ class OrderService extends BaseService{
                 $_item['props'] = $sku_props_map[$_item['sku_id']];
             }
 
-            $snap[] = convert_obj($_item, 'id=iid,pid,sku_id,title,img,desc,unit_desc,price,num,sum,props,sum_dealer_profit');
+            $snap[] = convert_obj($_item, 'id=iid,pid,code,sku_id,title,img,desc,unit_desc,price,num,sum,props,sum_dealer_profit');
         }
         $snap_content = json_encode($snap);
         $OrderSnapshotService = \Common\Service\OrderSnapshotService::get_instance();

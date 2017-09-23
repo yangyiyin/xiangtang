@@ -499,6 +499,7 @@ class AntProductController extends AdminController {
             }
             $data = [];
             $data['pid'] = $product['id'];
+            $data['code'] = $product['code'];
             $data['uid'] = $product['uid'];
             $data['title'] = $product['title'];
             $data['cid'] = $product['cid'];
@@ -535,6 +536,7 @@ class AntProductController extends AdminController {
             foreach ($products as $product) {
                 $data = [];
                 $data['pid'] = $product['id'];
+                $data['code'] = $product['code'];
                 $data['uid'] = $product['uid'];
                 $data['title'] = $product['title'];
                 $data['cid'] = $product['cid'];

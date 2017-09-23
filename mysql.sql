@@ -86,3 +86,10 @@ alter table shopy_nf_order_item_pre add sum_dealer_profit int (11) DEFAULT '0';
 alter table shopy_nf_order_item add sum_dealer_profit int (11) DEFAULT '0';
 alter table shopy_nf_account_log add op_uid int (11) DEFAULT '0';
 alter table shopy_nf_account_log add op_name varchar (20) DEFAULT '';
+
+
+alter table shopy_nf_product add code varchar (50) DEFAULT '';
+alter table shopy_nf_item add code varchar (50) DEFAULT '';
+
+alter table shopy_nf_order_item add code varchar (50) DEFAULT '';
+alter table shopy_nf_order_item_pre add code varchar (50) DEFAULT '';
