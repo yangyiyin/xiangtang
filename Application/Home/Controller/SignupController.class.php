@@ -18,6 +18,19 @@ class SignupController extends Controller {
 	//系统首页
     public function index(){
 
+        //增加点击量
+        $NfClicks = M('NfClicks');
+
+        $one = $NfClicks->where(['ip'=>$_SERVER['REMOTE_ADDR']])->find();
+        if ($one) {
+            $NfClicks->where(['ip'=>$_SERVER['REMOTE_ADDR']])->setInc('count',1);
+        } else {
+            $add_click_data = [];
+            $add_click_data['ip'] = $_SERVER['REMOTE_ADDR'];
+            $add_click_data['create_time'] = date('Y-m-d H:i:s');
+            $NfClicks->add($add_click_data);
+        }
+
         if (IS_POST) {
             $qq = I('qq');
             $yy = I('yy');

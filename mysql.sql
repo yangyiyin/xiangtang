@@ -77,3 +77,12 @@ CREATE TABLE `shopy_nf_ones` (
 
 alter table shopy_nf_ones add type int (11) DEFAULT '0';
 
+
+CREATE TABLE `shopy_nf_clicks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+`ip` varchar(20)  NOT NULL,
+`count` INT(11) DEFAULT '1',
+`create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
