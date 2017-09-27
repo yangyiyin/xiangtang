@@ -102,7 +102,6 @@ class AccountLogService extends BaseService{
         $count = $NfModel->where($where)->order($order)->count();
         if ($count > 0) {
             $data = $NfModel->where($where)->order($order)->select();
-            echo $NfModel->getLastSql();
         }
 
         return [$data, $count];
