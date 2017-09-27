@@ -58,4 +58,5 @@
 //foreach ($list as $k => $_li) {
 //    $list[$_li['pid']][] = $_li;
 //}
-echo array_sum([]);
+$da = [1];
+unset($da['a']);
