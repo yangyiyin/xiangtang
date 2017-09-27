@@ -379,10 +379,13 @@ class AntAccountLogController extends AdminController {
             $unset_key = '';
             foreach ($where as $k => $v) {
 
-                if (isset($v['create_time'][0]) && $v['create_time'][0] == 'egt') {
+                if (isset($v['create_time'][0])) {
+                    foreach ($v['create_time'][0] as $key => $value) {
+                        if ($key == 'egt') {
+                            $unset_key = $k;
+                        }
+                    }
 
-                    $unset_key = $k;
-                    break;
                 }
             }
             if ($unset_key) {
