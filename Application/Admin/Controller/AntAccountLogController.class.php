@@ -387,15 +387,14 @@ class AntAccountLogController extends AdminController {
             if ($unset_key !== '') {
                 unset($where[$unset_key]);
             }
-            echo_json_die($where);
+
             list($all_datas_sum, ) = $this->AccountLogService->get_by_where_all($where);
-            die();
+
             $all_datas_sum_map = result_to_complex_map($all_datas_sum, 'uid');
             $uid_sum_map = [];
             foreach ($all_datas_sum_map as $uid => $list) {
                 $uid_sum_map[$uid] = array_sum(result_to_array($list, 'sum'));
             }
-            echo json_encode($uid_sum_map);die();
 
             foreach ($data as $key => $value) {
 //                $data[$key]['type_desc'] = isset($type_map[$value['type']]) ? $type_map[$value['type']] : '未知类型';
