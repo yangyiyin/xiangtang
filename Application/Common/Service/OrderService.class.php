@@ -531,4 +531,10 @@ class OrderService extends BaseService{
         return $count;
     }
 
+    public function add_print_count($oid) {
+        $where = [];
+        $NfOrder = D('NfOrder');
+        $where['id'] = $oid;
+        $NfOrder->where($where)->setInc('print_count',1);
+    }
 }

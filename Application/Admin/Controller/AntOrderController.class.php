@@ -246,6 +246,8 @@ class AntOrderController extends AdminController {
             $list = [$info];
             $this->convert_data($list);
             $this->assign('vo', $list[0]);
+            //增加打印次数
+            $this->OrderService->add_print_count($order_id);
         }
 
         $this->display('AntOrder/info');

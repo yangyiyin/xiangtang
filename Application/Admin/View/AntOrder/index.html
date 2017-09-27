@@ -150,7 +150,13 @@
 						</if>
 
 					</td>
-					<td><a class="btn print_btn" id="{$vo.id}">打印</a></td>
+					<td>
+						<a class="btn print_btn" id="{$vo.id}">打印
+							<if condition="($vo['print_count'] gt 0)">
+								(已打印{$vo.print_count}次)
+							</if>
+						</a>
+					</td>
 				</tr>
 				</volist>
 			</tbody>

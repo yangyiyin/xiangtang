@@ -93,3 +93,4 @@ alter table shopy_nf_item add code varchar (50) DEFAULT '';
 
 alter table shopy_nf_order_item add code varchar (50) DEFAULT '';
 alter table shopy_nf_order_item_pre add code varchar (50) DEFAULT '';
+alter table shopy_nf_order add print_count int (5) DEFAULT '0';
