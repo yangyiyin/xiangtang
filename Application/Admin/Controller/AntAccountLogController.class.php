@@ -378,6 +378,7 @@ class AntAccountLogController extends AdminController {
             //获取截止结束时间的佣金综合
             $unset_key = '';
             foreach ($where as $k => $v) {
+                print_r($v);
                 if ($v == 'create_time' && isset($v['egt'])) {
                     $unset_key = $k;
                     break;
