@@ -380,6 +380,7 @@ class AntAccountLogController extends AdminController {
             foreach ($where as $k => $v) {
 
                 if (isset($v['create_time'][0])) {
+                    print_r($v['create_time']);
                     foreach ($v['create_time'][0] as $key => $value) {
                         echo $key;
                         if ($key == 'egt') {
