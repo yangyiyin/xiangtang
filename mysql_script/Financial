@@ -1234,3 +1234,22 @@ ALTER TABLE shopy_financial_bank_baddebt_dispose_new ADD  KEY `index` (`year`,`m
 ALTER TABLE shopy_financial_bank_baddebt_dispose_st_new ADD  KEY `index` (`year`,`month`);
 ALTER TABLE shopy_financial_bank_focus_detail_new ADD  KEY `index` (`year`,`month`);
 ALTER TABLE shopy_financial_bank_focus_detail_st_new ADD  KEY `index` (`year`,`month`);
+
+
+#短信
+create table shopy_financial_sms (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+  `year` VARCHAR(5) DEFAULT '' COMMENT '年份',
+  `month` VARCHAR(10) DEFAULT '' COMMENT '月份',
+   `phone` VARCHAR(15) DEFAULT '' COMMENT '电话',
+  `content` VARCHAR(2048) DEFAULT '' COMMENT '内容',
+  `count` INT (5) DEFAULT '0' COMMENT '催报次数',
+  `gmt_create` int(11) DEFAULT 0,
+  `deleted` TINYINT(3) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+ALTER TABLE shopy_financial_sms ADD  KEY `index` (`year`,`month`);
+
+
+alter table shopy_financial_department add filler_man_tel VARCHAR (100) DEFAULT '' ;
+alter table shopy_financial_sms add count int (5) DEFAULT '1' ;

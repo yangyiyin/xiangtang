@@ -55,6 +55,8 @@ class FinancialDepartmentModel extends NfBaseModel {
       array('fixed_phone', 'is_fixed_phone_num', '请填写正确的固定电话', self::EXISTS_VALIDATE, 'function', self::MODEL_BOTH),
       array('tel_phone','is_tel_num','请填写正确的手机号！',self::EXISTS_VALIDATE,'function',self::MODEL_BOTH),
       array('filler_man', 'require', '报表联系人不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
+      array('filler_man_tel', 'require', '报表联系人电话不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
+
       array('total_assets', 'currency', '请检查总资产格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
       array('capital', 'currency', '请检查注册资本格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
       array('staffs', 'number', '请检查员工人数格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),

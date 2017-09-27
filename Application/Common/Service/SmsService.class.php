@@ -1,26 +1,29 @@
 <?php
 /**
- * Created by newModule.
- * Time: 2017-07-28 19:20:13
+ * Created by PhpStorm.
+ * User: yyy
+ * Date: 17/4/25
+ * Time: 下午9:03
  */
 namespace Common\Service;
-class DepartmentService extends BaseService{
-    public static $name = 'Department';
+class SmsService extends BaseService{
+    public static $name = 'Sms';
 
     public function add_one($data, $is_only_create = 0) {
         $FinancialModel = D('Financial' . static::$name);
         $data['gmt_create'] = time();
-         if (!$FinancialModel->create($data)) {
+        if (!$FinancialModel->create($data)) {
             return result(FALSE, $FinancialModel->getError());
-         }
+        }
 
-         if ($is_only_create) {
-             return result(true, 'success');
-         }
+        if ($is_only_create) {
+            return result(true, 'success');
+        }
+
         if ($FinancialModel->add()) {
             return result(TRUE, '', $FinancialModel->getLastInsID());
         } else {
-            echo $FinancialModel->getLastSql();die();
+
             return result(FALSE, '网络繁忙~');
         }
     }
@@ -33,29 +36,6 @@ class DepartmentService extends BaseService{
         return $FinancialModel->where($where)->find();
     }
 
-    public function get_my_list($uid, $type) {
-
-        $DepartmentUid = D('FinancialDepartmentUid')->where(['uid'=>$uid])->find();
-        if ($DepartmentUid) {
-            $FinancialModel = D('Financial' . static::$name);
-            $where = [];
-            $where['id'] = ['EQ', $DepartmentUid['did']];
-            $where['type'] = ['EQ', $type];
-            $where['deleted'] = ['EQ', static::$NOT_DELETED];
-            return $FinancialModel->where($where)->select();
-        }
-        return [];
-    }
-
-
-    public function get_all_list($type) {
-        $FinancialModel = D('Financial' . static::$name);
-        $where = [];
-        $where['type'] = ['EQ', $type];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $FinancialModel->where($where)->select();
-    }
-
     public function update_by_id($id, $data) {
 
         if (!$id) {
@@ -63,7 +43,9 @@ class DepartmentService extends BaseService{
         }
 
         $FinancialModel = D('Financial' . static::$name);
+
         $where = ['id' => $id];
+
         if (!$FinancialModel->create($data)) {
             return result(FALSE, $FinancialModel->getError());
         }
@@ -79,7 +61,6 @@ class DepartmentService extends BaseService{
         if (!check_num_ids([$id])) {
             return false;
         }
-
         $FinancialModel = D('Financial' . static::$name);
         $where = ['id' => $id];
         $ret = $FinancialModel->where($where)->save(['deleted'=>static::$DELETED]);
@@ -91,47 +72,41 @@ class DepartmentService extends BaseService{
     }
 
 
-    public function get_by_where($where, $order = 'id desc', $page = 1) {
-         $FinancialModel = D('Financial' . static::$name);
+    public function get_by_where($where, $order = 'id desc', $page = 1, $is_all = '') {
+        $FinancialModel = D('Financial' . static::$name);
         $data = [];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        $page_size = static::$page_size;
         $count = $FinancialModel->where($where)->order($order)->count();
         if ($count > 0) {
-            $data = $FinancialModel->where($where)->order($order)->page($page . ',' . static::$page_size)->select();
+            if ($is_all) {
+                $data = $FinancialModel->where($where)->order($order)->select();
+
+            } else {
+                $data = $FinancialModel->where($where)->order($order)->page($page . ',' . $page_size)->select();
+
+            }
         }
         return [$data, $count];
     }
 
-    public function get_by_all_names($all_names, $type) {
-        if (!$all_names) {
-            return [];
-        }
+
+    public function get_by_month_year($year, $month, $phone) {
         $FinancialModel = D('Financial' . static::$name);
         $where = [];
-        $where['all_name'] = ['in', $all_names];
-        $where['type'] = ['EQ', $type];
+        $where['year'] = ['EQ', $year];
+        $where['month'] = ['EQ', $month];
+        $where['all_name'] = ['EQ', $phone];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->find();
+    }
+
+
+    public function get_by_where_all($where) {
+        $FinancialModel = D('Financial' . static::$name);
+        $data = [];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $FinancialModel->where($where)->select();
     }
 
-    public function get_all() {
-
-        $FinancialModel = D('Financial' . static::$name);
-        $where = [];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $FinancialModel->where($where)->select();
-    }
-
-
-    public function get_sub_type_options($cur_id=0) {
-        $options = '';
-        foreach (\Common\Model\FinancialDepartmentModel::$SUB_TYPE_MAP as $id => $name) {
-            if ($cur_id && $cur_id == $id) {
-                $options .= '<option value="'.$id.'" selected="selected">'.$name.'</option>';
-            } else {
-                $options .= '<option value="'.$id.'">'.$name.'</option>';
-            }
-        }
-        return $options;
-    }
 }
