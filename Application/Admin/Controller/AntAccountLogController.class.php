@@ -392,7 +392,7 @@ class AntAccountLogController extends AdminController {
             foreach ($all_datas_sum_map as $uid => $list) {
                 $uid_sum_map[$uid] = array_sum(result_to_array($list, 'sum'));
             }
-            print_r($all_datas_sum_map);die();
+            echo json_encode($all_datas_sum_map);die();
 
             foreach ($data as $key => $value) {
 //                $data[$key]['type_desc'] = isset($type_map[$value['type']]) ? $type_map[$value['type']] : '未知类型';
