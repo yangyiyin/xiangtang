@@ -40,7 +40,7 @@
 		    <thead>
 		        <tr>
 					<th width="5%"><input class="check-all" type="checkbox"/></th>
-					<th width="5%">商品id</th>
+					<th width="5%">产品id</th>
 					<th width="5%">预览</th>
 					<th width="15%">基本信息</th>
 					<th width="5%">分类</th>
@@ -54,7 +54,7 @@
 				<volist name="list" id="vo">
 				<tr>
 		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
-					<td>{$vo.id} </td>
+					<td>{$vo.pid} </td>
 					<td><img src="{$vo['img']|get_cover}" width="50" height="50"/></td>
 					<td>
 						<p class="short_info">标题:{$vo.title}</p>
