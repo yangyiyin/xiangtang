@@ -371,16 +371,34 @@ class AntAccountLogController extends AdminController {
                 $orders_map = result_to_map($orders);
             }
 
-
             $AccountService = \Common\Service\AccountService::get_instance();
             $accounts = $AccountService->get_by_uids($uids);
             $accounts_map = result_to_map($accounts, 'uid');
+
+            //获取截止结束时间的佣金综合
+            $unset_key = '';
+            foreach ($where as $k => $v) {
+                if (isset($v['create_time']['egt'])) {
+                    $unset_key = $k;
+                    break;
+                }
+            }
+            if ($unset_key) {
+                unset($where[$unset_key]);
+            }
+            list($all_datas_sum, ) = $this->AccountLogService->get_by_where_all($where);
+            $all_datas_sum_map = result_to_complex_map($all_datas_sum, 'uid');
+            $uid_sum_map = [];
+            foreach ($all_datas_sum_map as $uid => $list) {
+                $uid_sum_map[$uid] = array_sum(result_to_array($list, 'sum'));
+            }
+
             foreach ($data as $key => $value) {
 //                $data[$key]['type_desc'] = isset($type_map[$value['type']]) ? $type_map[$value['type']] : '未知类型';
 //                $data[$key]['info'] = $data[$key]['type_desc'] . format_price($value['sum']) . '元';
 
                 $data[$key]['user'] = isset($users_map[$value['uid']]) ? $users_map[$value['uid']] : [];
-                $data[$key]['account'] = isset($accounts_map[$value['uid']]['sum']) ? $accounts_map[$value['uid']]['sum'] : 0;
+                $data[$key]['account'] = isset($uid_sum_map[$value['uid']]) ? $uid_sum_map[$value['uid']] : 0;
                 if (isset($all_datas_map[$value['uid']])) {
                     foreach ($all_datas_map[$value['uid']] as $_k => $_log) {
                         $all_datas_map[$value['uid']][$_k]['type_desc'] = isset($type_map[$_log['type']]) ? $type_map[$_log['type']] : '未知类型';
