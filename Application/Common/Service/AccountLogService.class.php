@@ -110,20 +110,25 @@ class AccountLogService extends BaseService{
     public function get_group_by_uid($where, $order = 'id desc', $page = 1) {
         $NfModel = new \Think\Model();
         $data = [];
-//        $where['deleted'] = ['EQ', static::$NOT_DELETED];
 
-//        $count = $NfModel->where($where)->order($order)->count();
-//        if ($count > 0) {
-//            $data = $NfModel->where($where)->order($order)->page($page . ',' . static::$page_size)->select();
-//        }
         $count = $NfModel->query("select count(uid) as count from (select uid from shopy_nf_account_log where ".$where." group by uid order by id desc) as a ");
-     //   var_dump($NfModel->getLastSql());die();
         if ($count) {
             $count = $count[0]['count'];
             $data = $NfModel->query("select * from (select uid from shopy_nf_account_log where ".$where." group by uid order by id desc) as a limit ".($page-1)*static::$page_size.",".static::$page_size);
-
         }
 
+        return [$data, $count];
+    }
+
+    public function get_group_by_uid_all($where, $order = 'id desc') {
+        $NfModel = new \Think\Model();
+        $data = [];
+
+        $count = $NfModel->query("select count(uid) as count from (select uid from shopy_nf_account_log where ".$where." group by uid order by id desc) as a ");
+        if ($count) {
+            $count = $count[0]['count'];
+            $data = $NfModel->query("select * from (select uid from shopy_nf_account_log where ".$where." group by uid order by id desc) as a ");
+        }
 
         return [$data, $count];
     }

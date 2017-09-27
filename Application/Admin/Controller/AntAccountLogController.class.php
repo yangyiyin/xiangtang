@@ -232,8 +232,13 @@ class AntAccountLogController extends AdminController {
         $this->assign('create_end', $create_end);
         $page = I('get.p', 1);
         //list($data, $count) = $this->AccountLogService->get_by_where($where, 'id desc', $page);
+        if (I('export')) {
+            list($data, $count) = $this->AccountLogService->get_group_by_uid_all(join(' and ', $where_arr));
 
-        list($data, $count) = $this->AccountLogService->get_group_by_uid(join(' and ', $where_arr), 'id desc',$page);
+        } else {
+            list($data, $count) = $this->AccountLogService->get_group_by_uid(join(' and ', $where_arr), 'id desc',$page);
+
+        }
 
         $data = $this->convert_commission_data($data, $where);
         //echo json_encode($data);die();
@@ -246,6 +251,24 @@ class AntAccountLogController extends AdminController {
         $this->assign('list', $data);
         $this->assign('page_html', $page_html);
 
+        if (I('export')) {
+            $excel_data = [];
+            $excel_data[] = ["服务站名称","初始金额","官方充值","官方扣除","经销商佣金收入","交易支出","提现","结余金额"];
+            foreach ($data as $value) {
+                $temp = [];
+                $temp[] = $value['user']['entity_title'];
+                $temp[] = format_price($value['account_before']);
+                $temp[] = format_price($value['a_sum']);
+                $temp[] = format_price($value['b_sum']);
+                $temp[] = format_price($value['c_sum']);
+                $temp[] = format_price($value['d_sum']);
+                $temp[] = format_price($value['e_sum']);
+                $temp[] = format_price($value['account']);
+                $excel_data[] = $temp;
+            }
+            exportexcel($excel_data,'', '佣金明细');
+            exit();
+        }
 
         $this->display();
     }
