@@ -298,7 +298,7 @@ class AntProductController extends AdminController {
         $data_sku = [];
         $SkuPropertyService = \Common\Service\SkuPropertyService::get_instance();
         for($i=0; $i<count($data['stocks']); $i++) {
-            $data_sku = ['pid'=>$producy_id, 'price' => intval($data['normal_prices'][$i] * 100), 'dealer_price' => intval($data['dealer_prices'][$i] * 100), 'num'=>$data['stocks'][$i]];
+            $data_sku = ['pid'=>$producy_id, 'price' => ceil($data['normal_prices'][$i] * 100), 'dealer_price' => ceil($data['dealer_prices'][$i] * 100), 'num'=>$data['stocks'][$i]];
             $ret_sku = $productSkuService->add_one($data_sku);
             if (!$ret_sku->success) {
                 $this->error($ret_sku->message);
