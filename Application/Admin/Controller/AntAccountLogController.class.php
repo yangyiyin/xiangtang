@@ -377,7 +377,7 @@ class AntAccountLogController extends AdminController {
 
             //获取截止结束时间的佣金综合
             $unset_key = '';
-            print_r($where);
+            echo_json_die($where);
             foreach ($where as $k => $v) {
                 if (isset($v['create_time']['egt'])) {
                     $unset_key = $k;
@@ -387,7 +387,7 @@ class AntAccountLogController extends AdminController {
             if ($unset_key) {
                 unset($where[$unset_key]);
             }
-            print_r($where);
+            echo_json_die($where);
             list($all_datas_sum, ) = $this->AccountLogService->get_by_where_all($where);
             die();
             $all_datas_sum_map = result_to_complex_map($all_datas_sum, 'uid');
