@@ -91,14 +91,13 @@ class SmsService extends BaseService{
     }
 
 
-    public function get_by_month_year($year, $month, $phone) {
+    public function get_by_month_year($year, $month) {
         $FinancialModel = D('Financial' . static::$name);
         $where = [];
         $where['year'] = ['EQ', $year];
         $where['month'] = ['EQ', $month];
-        $where['all_name'] = ['EQ', $phone];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $FinancialModel->where($where)->find();
+        return $FinancialModel->where($where)->select();
     }
 
 
@@ -107,6 +106,39 @@ class SmsService extends BaseService{
         $data = [];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $FinancialModel->where($where)->select();
+    }
+
+    public function add_count($year, $month, $phones, $content) {
+        if ($phones) {
+            $FinancialModel = D('Financial' . static::$name);
+            $where = [];
+            $where['year'] = ['EQ', $year];
+            $where['month'] = ['EQ', $month];
+            $where['phone'] = ['in', $phones];
+            $where['deleted'] = ['EQ', static::$NOT_DELETED];
+            $data = $FinancialModel->where($where)->select();
+            $log_phones = result_to_array($data, 'phone');
+            $new_phones = array_diff($phones, $log_phones);
+            if ($new_phones) {
+                $add_data = [];
+                foreach ($new_phones as $_phone) {
+                    $add_data[] = [
+                        'year' => $year,
+                        'month' => $month,
+                        'phone' => $_phone,
+                        'content' => $content
+                    ];
+                }
+                $FinancialModel->addAll($add_data);
+            }
+
+           if ($log_phones) {
+               $where = [];
+               $where['phone'] = ['in', $log_phones];
+               $FinancialModel->where($where)->setInc('count',1);
+           }
+
+        }
     }
 
 }

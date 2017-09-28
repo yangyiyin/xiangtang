@@ -16,21 +16,22 @@
 
 		<!-- 数据表格 -->
 		<div class="table_list">
-
+			选择所有:<input type="checkbox" class="c c1" group="1" level="1">
 			<table class="biaoge" width="100%">
 
 				<volist name="list" id="type">
 					<tr>
-						<td rowspan="{$type.num}">{$type.name}</td>
+						<td rowspan="{$type.num}">{$type.name}<input type="checkbox" class="c c2 g1" group="{$type.group}" level="2"></td>
 					</tr>
 					<volist name="type['child']" id="unit">
 						<tr>
-							<td rowspan="{$unit.num}">{$unit.name}</td>
+							<td rowspan="{$unit.num}">{$unit.name}<input type="checkbox" class="c c3 g{$type.group}" group="{$unit.group}" level="3"></td>
 						</tr>
 						<volist name="unit['child']" id="one">
-						<tr>
-							<td >{$one.name}-{$one.tel}(已催报{$one.count}次)</td>
-						</tr>
+							<tr>
+								<td >{$one.name}-{$one.tel}(已催报{$one.count}次)<input type="checkbox" name="ids[]" value="{$one.tel}" class="ids c c4 g{$unit.group}" level="4"></td>
+							</tr>
+						</volist>
 					</volist>
 				</volist>
 
@@ -39,6 +40,7 @@
 		<div class="btn_wrap">
 			<div class="btn_wrap_pd">
 				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
+				<button class="btn J_ajax_post confirm" target-form="ids" url='{:U("send")}'>发送催报短信</button>
 
 		    </div>
 		</div>
@@ -107,6 +109,26 @@ $(function(){
         autoclose:true,
         pickerPosition:'bottom-left'
     });
+
+
+	$('.c').change(function () {
+//		var level = $(this).attr('level');
+//		level = parseInt(level)+1;
+//		$('.c'+level).prop("checked", this.checked);
+//		if (level < 4) {
+//			$('.c'+level).change();
+//		}
+
+		var group = $(this).attr('group');
+		if (group) {
+			$('.g'+group).prop("checked", this.checked);
+			var level = $(this).attr('level');
+			if (level < 4) {
+				$('.g'+group).change();
+			}
+		}
+
+	})
 
 
 });
