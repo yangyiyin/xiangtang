@@ -52,13 +52,13 @@ class SignupController extends Controller {
             $data['status'] = 2;
             $data['create_time'] = date('Y-m-d H:i:s');
 
-            $one = $NfOnes->where(['ip'=>$data['ip']])->find();
+            $one = $NfOnes->where(['ip'=>$data['ip'],'type'=>self::$type])->find();
 
             if ($one) {
                 $this->error('您已报名,不能再次报名~');
             }
 
-            $one = $NfOnes->where(['qq'=>$data['qq']])->find();
+            $one = $NfOnes->where(['qq'=>$data['qq'],'type'=>self::$type])->find();
 
             if ($one) {
                 $this->error('该qq已报名,不能再次报名~');
