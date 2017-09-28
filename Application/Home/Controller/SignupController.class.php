@@ -13,7 +13,7 @@ use Think\Controller;
  */
 class SignupController extends Controller {
 
-    public static $type = 101;
+    public static $type = 102;
     public static $free_count = 1000;
 	//系统首页
     public function index(){
