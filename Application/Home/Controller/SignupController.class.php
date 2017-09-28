@@ -81,7 +81,7 @@ class SignupController extends Controller {
 
         $this->assign('list', $list);
 
-        $one = $NfOnes->where(['ip'=>$_SERVER['REMOTE_ADDR']])->find();
+        $one = $NfOnes->where(['ip'=>$_SERVER['REMOTE_ADDR'],'type'=>self::$type])->find();
         $has_signup = $one ? 1 : 0;
         $this->assign('has_signup', $has_signup);
         $this->display();
