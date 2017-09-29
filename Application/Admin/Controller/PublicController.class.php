@@ -21,7 +21,7 @@ class PublicController extends \Think\Controller {
         if(IS_POST){
             /* 检测验证码 TODO: */
             if(!check_verify($verify)){
-                $this->error('验证码输入错误！');
+             //   $this->error('验证码输入错误！');
             }
             $User = new UserApi();
             $uid = $User->login($username, $password);

@@ -27,7 +27,7 @@ class Api{
                 result_json(FALSE, '非法请求方式');
                 break;
         }
-
+        $this->post_data = json_decode(file_get_contents('php://input'), true);
         //echo_json_die($this->post_data);
     }
 }
