@@ -41,8 +41,10 @@ class ItemDetail extends BaseApi{
 
                 if ($UserService->is_dealer($user_info['type'])) {
                     $_item['price'] = (int) $_item['min_dealer_price'];
+                    $_item['show_price'] = (int) $_item['min_normal_price'];
                 } elseif ($UserService->is_normal($user_info['type'])) {
                     $_item['price'] = (int) $_item['min_normal_price'];
+                    $_item['show_price'] = (int) $_item['min_normal_price'];
                 }
 
                 $_item['id'] = (int) $_item['id'];
@@ -50,7 +52,7 @@ class ItemDetail extends BaseApi{
                 $_item['price'] = (int) $_item['price'];
                 $_item['content'] = $_item['content'];
                 $_item['tips'] = $_item['tips'];
-                $list[] = convert_obj($_item, 'id=item_id,pid,title,img,desc,unit_desc,price,content,tips');
+                $list[] = convert_obj($_item, 'id=item_id,pid,title,img,desc,unit_desc,price,content,tips,show_price');
             }
 
         }
