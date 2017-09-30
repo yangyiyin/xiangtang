@@ -49,8 +49,8 @@ class AntItemController extends AdminController {
         //获取加盟商的uids
         $MemberService = \Common\Service\MemberService::get_instance();
         $franchisee_uids = $MemberService->get_franchisee_uids();
-        if ($franchisee_uids) {
-            $where['uid'] = ['not in', $franchisee_uids];
+        if ($franchisee_uids && in_array(UID, $franchisee_uids)) {
+            $where['uid'] = UID;//加盟商,只筛选自己的产品
         }
 
         $where['is_real'] = 1;
@@ -98,8 +98,8 @@ class AntItemController extends AdminController {
         //获取加盟商的uids
         $MemberService = \Common\Service\MemberService::get_instance();
         $franchisee_uids = $MemberService->get_franchisee_uids();
-        if ($franchisee_uids) {
-            $where['uid'] = ['not in', $franchisee_uids];
+        if ($franchisee_uids && in_array(UID, $franchisee_uids)) {
+            $where['uid'] = UID;//加盟商,只筛选自己的产品
         }
 
         $where['is_real'] = 0;

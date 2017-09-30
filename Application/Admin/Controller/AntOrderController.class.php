@@ -53,10 +53,9 @@ class AntOrderController extends AdminController {
         //获取加盟商的uids
         $MemberService = \Common\Service\MemberService::get_instance();
         $franchisee_uids = $MemberService->get_franchisee_uids();
-        if ($franchisee_uids) {
-            $where['seller_uid'] = ['not in', $franchisee_uids];
+        if ($franchisee_uids && in_array(UID, $franchisee_uids)) {
+            $where['seller_uid'] = UID;//加盟商只能看到自己的订单
         }
-
 
         $page = I('get.p', 1);
         list($data, $count) = $this->OrderService->get_by_where($where, 'id desc', $page);
@@ -99,8 +98,14 @@ class AntOrderController extends AdminController {
         //获取加盟商的uids
         $MemberService = \Common\Service\MemberService::get_instance();
         $franchisee_uids = $MemberService->get_franchisee_uids();
-        if ($franchisee_uids) {
-            $where['seller_uid'] = ['in', $franchisee_uids];
+        if ($franchisee_uids && in_array(UID, $franchisee_uids)) {
+            $where['seller_uid'] = UID;
+        } else {
+            if ($franchisee_uids) {
+                $where['seller_uid'] = ['in', $franchisee_uids];//非加盟商,筛选非加盟商的产品
+            } else {
+                $where['seller_uid'] = -1;
+            }
         }
 
 

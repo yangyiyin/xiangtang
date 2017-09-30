@@ -45,9 +45,7 @@ class AntProductController extends AdminController {
         $MemberService = \Common\Service\MemberService::get_instance();
         $franchisee_uids = $MemberService->get_franchisee_uids();
         if ($franchisee_uids && in_array(UID, $franchisee_uids)) {
-            $where['uid'] = ['in', $franchisee_uids];
-        } else {
-            $where['uid'] = ['not in', $franchisee_uids];
+            $where['uid'] = UID;//加盟商,只筛选自己的产品
         }
 
         $page = I('get.p', 1);
@@ -94,11 +92,8 @@ class AntProductController extends AdminController {
         $MemberService = \Common\Service\MemberService::get_instance();
         $franchisee_uids = $MemberService->get_franchisee_uids();
         if ($franchisee_uids && in_array(UID, $franchisee_uids)) {
-            $where['uid'] = ['in', $franchisee_uids];
-        } else {
-            $where['uid'] = ['not in', $franchisee_uids];
+            $where['uid'] = UID;//加盟商,只筛选自己的产品
         }
-
         $page = I('get.p', 1);
         list($data, $count) = $this->ProductService->get_by_where($where, 'id desc', $page);
         $this->convert_data($data);
