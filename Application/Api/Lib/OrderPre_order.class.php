@@ -20,6 +20,7 @@ class OrderPre_order extends BaseApi{
     public function excute() {
         $items_num = I('post.items');
         $items_num = $this->post_data['items'];
+        $order_from = $this->post_data['order_from'];
         if (!$items_num) {
             return result_json(FALSE, '参数错误~');
         }
@@ -114,6 +115,7 @@ class OrderPre_order extends BaseApi{
             $data_order_pre['sum'] = $_total_price;
             $data_order_pre['num'] = $_total_num;
             $data_order_pre['dealer_profit'] = $_total_dealer_profit;
+            $data_order_pre['order_from'] = $order_from ? $order_from : \Common\Model\NfOrderModel::FROM_DEALER;
             $data_order_pre['is_real'] =$_item->is_real;
             $data_order_pre['create_time'] = current_date();
             //运费

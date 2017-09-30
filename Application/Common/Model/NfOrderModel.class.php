@@ -33,6 +33,9 @@ class NfOrderModel extends Model {
     const PAY_TYPE_ALI = 4;
     const PAY_TYPE_WECHAT = 5;
 
+    const FROM_DEALER = 1;//经销商app
+    const FROM_NORMAL = 2;//零售版app
+
     public static $type_map = [
         1 => '工厂订单',
         2 => '美团订单',

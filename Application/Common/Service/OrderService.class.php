@@ -371,6 +371,7 @@ class OrderService extends BaseService{
         $data_order['is_real'] = $order_pre['is_real'];
         $data_order['seller_uid'] = $order_pre['seller_uid'];
         $data_order['type'] = $user_info['type'];//用户type和订单type保持一致
+        $data_order['order_from'] = $order_pre['order_from'];//用户type和订单type保持一致
         $data_order['inviter_id'] = $user_info['inviter_id'];
         $data_order['receiving_type'] = $extra['receiving_type'];
         $data_order['freight'] = $order_pre['freight'];
