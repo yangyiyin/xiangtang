@@ -32,11 +32,6 @@ class OrderAdd extends BaseApi{
             return result_json(FALSE, '参数错误~');
         }
 
-        if ($receiving_type == \Common\Model\NfOrderModel::RECIEVE_TYPE_ARRIVE) {
-            if (!$address || !$name || !$tel) {
-                return result_json(FALSE, '请检查收货信息是否填写~');
-            }
-        }
 
         if ($receiving_type == \Common\Model\NfOrderModel::RECIEVE_TYPE_SERVER) {
             if (!$receiving_service_name) {
@@ -58,6 +53,17 @@ class OrderAdd extends BaseApi{
         if (!$this->check_same_real($pre_orders)) {
             return result_json(false, '订单性质不一致,请稍后再试');
         }
+        if (!$pre_orders[0]['is_real']) {
+            $address = '虚拟商品没有收货地址';
+        }
+        if ($receiving_type == \Common\Model\NfOrderModel::RECIEVE_TYPE_ARRIVE) {
+
+            if (!$address || !$name || !$tel) {
+                return result_json(FALSE, '请检查收货信息是否填写~');
+            }
+        }
+
+
         $order_ids = [];
         foreach ($pre_order_ids as $pre_order_id) {
             $ret = $this->OrderService->create_by_pre_order_id($pre_order_id, $this->uid, ['receiving_type' => $receiving_type, 'receiving_service_name' => $receiving_service_name, 'address' => $address, 'name' => $name, 'tel' => $tel, 'pay_type' => $pay_type]);

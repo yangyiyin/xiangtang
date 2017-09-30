@@ -105,9 +105,12 @@ class AppVersionService extends BaseService{
         $this->update_by_id($id, $data);
     }
 
-    public function get_current() {
+    public function get_current($app_name = '') {
         $NfModel = D('Nf' . static::$name);
         $where = ['status' => 1];
+        if ($app_name) {
+            $where['app_name'] = $app_name;
+        }
         return $NfModel->where($where)->find();
     }
 
