@@ -95,8 +95,11 @@ class AppVersionService extends BaseService{
 
     public function set_current($id) {
         $NfModel = D('Nf' . static::$name);
+        $ret = $NfModel->where('id='.$id)->find();
+
+
         $data = ['status' => 0];
-        $NfModel->where('status=1')->save($data);
+        $NfModel->where('status=1 and app_name = "'.$ret['app_name'].'"')->save($data);
 
         $data = ['status' => 1];
         $this->update_by_id($id, $data);
