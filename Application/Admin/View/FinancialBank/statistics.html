@@ -52,7 +52,7 @@
 			<if condition="$statistics[0]['data']" style="display: none">
 				<table class="biaoge table1">
 					<tr>
-						<td colspan="100"><span class="title">慈溪市金融机构本外币信贷收支情况表(表1)</span><span> (单位 亿元)</span></td>
+						<td colspan="100"><span class="title">慈溪市金融机构本外币信贷收支情况表(表1)</span><span> (单位 亿元)</span><a class="btn" href="{:U('export_excel')}/type/1/year/{:I('year')}/month/{:I('month')}">导出excel</a></td>
 					</tr>
 					<tr>
 						<td >类型</td>
@@ -353,7 +353,7 @@
 			<if condition="$statistics[1]['data']">
 				<table class="biaoge table2" style="display: none">
 					<tr>
-						<td colspan="100"><span class="title">慈溪市金融机构本外币存贷情况表(表2)</span><span> (单位 万元)</span></td>
+						<td colspan="100"><span class="title">慈溪市金融机构本外币存贷情况表(表2)</span><span> (单位 万元)</span><a class="btn" href="{:U('export_excel')}/type/2/year/{:I('year')}/month/{:I('month')}">导出excel</a></td>
 					</tr>
 					<tr>
 						<td rowspan="2">类型</td>
@@ -400,7 +400,7 @@
 									<td>{$data['content']['Loans'][2]}</td>
 									<td>{$data['content']['Loans'][3]}</td>
 									<td>{$data['content']['Loans'][4]}</td>
-									<td>{$data['content']['Deposits'][5]}</td>
+									<td>{$data['content']['Loans'][5]}</td>
 									<td>{$data['content']['Deposits_Loans'][0]}</td>
 									<td>{$data['content']['Deposits_Loans'][1]}</td>
 								</tr>
@@ -422,7 +422,7 @@
 								<td>{$statistics[1]['data']['合计']['Loans'][2]}</td>
 								<td>{$statistics[1]['data']['合计']['Loans'][3]}</td>
 								<td>{$statistics[1]['data']['合计']['Loans'][4]}</td>
-								<td>{$statistics[1]['data']['合计']['Deposits'][5]}</td>
+								<td>{$statistics[1]['data']['合计']['Loans'][5]}</td>
 								<td>{$statistics[1]['data']['合计']['Deposits_Loans'][0]}</td>
 								<td>{$statistics[1]['data']['合计']['Deposits_Loans'][1]}</td>
 							</tr>
@@ -435,7 +435,7 @@
 			<if condition="$statistics[2]['data']">
 				<table class="biaoge table3" style="display: none">
 					<tr>
-						<td colspan="100"><span class="title">慈溪市金融机构本外币存贷情况表(表3)</span><span> (单位 万元)</span></td>
+						<td colspan="100"><span class="title">慈溪市金融机构本外币存贷情况表(表3)</span><span> (单位 万元)</span><a class="btn" href="{:U('export_excel')}/type/3/year/{:I('year')}/month/{:I('month')}">导出excel</a></td>
 					</tr>
 					<tr>
 						<td rowspan="2">类型</td>
@@ -522,7 +522,7 @@
 			<if condition="$statistics[3]['data']">
 				<table class="biaoge table4" style="display: none">
 					<tr>
-						<td colspan="100"><span class="title">慈溪市金融机构不良贷款50万(含以上)明细表(表4)</span><span> (单位 万元)</span></td>
+						<td colspan="100"><span class="title">慈溪市金融机构不良贷款50万(含以上)明细表(表4)</span><span> (单位 万元)</span><a class="btn" href="{:U('export_excel')}/type/4/year/{:I('year')}/month/{:I('month')}">导出excel</a></td>
 					</tr>
 					<tr>
 
@@ -566,7 +566,7 @@
 			<if condition="$statistics[4]['data']">
 				<table class="biaoge table5" style="display: none">
 					<tr>
-						<td colspan="100"><span class="title">慈溪市金融机构不良资产清收情况表(表5)</span><span> (单位 万元)</span></td>
+						<td colspan="100"><span class="title">慈溪市金融机构不良资产清收情况表(表5)</span><span> (单位 万元)</span><a class="btn" href="{:U('export_excel')}/type/5/year/{:I('year')}/month/{:I('month')}">导出excel</a></td>
 					</tr>
 					<tr>
 
@@ -611,7 +611,7 @@
 			<if condition="$statistics[5]['data']">
 				<table class="biaoge table6" style="display: none">
 					<tr>
-						<td colspan="100"><span class="title">慈溪市金融机构关注类贷款明细表(表5)</span><span> (单位 万元)</span></td>
+						<td colspan="100"><span class="title">慈溪市金融机构关注类贷款明细表(表5)</span><span> (单位 万元)</span><a class="btn" href="{:U('export_excel')}/type/6/year/{:I('year')}/month/{:I('month')}">导出excel</a></td>
 					</tr>
 
 					<tr>
@@ -651,7 +651,7 @@
 			<if condition="$statistics[6]['data']">
 				<table class="biaoge table7" style="display: none">
 					<tr>
-						<td colspan="100"><span class="title">慈溪市银行贷款利率执行水平监测表(表7)</span><span> (单位 万元)</span></td>
+						<td colspan="100"><span class="title">慈溪市银行贷款利率执行水平监测表(表7)</span><span> (单位 万元)</span><a class="btn" href="{:U('export_excel')}/type/7/year/{:I('year')}/month/{:I('month')}">导出excel</a></td>
 					</tr>
 					<tr>
 						<td rowspan="4">类型</td>
@@ -849,7 +849,7 @@
 			<if condition="$statistics[7]['data']">
 				<table class="biaoge table8" style="display: none">
 					<tr>
-						<td colspan="100"><span class="title">企业贷款利率执行水平监测表(表8)</span><span> (单位 万元)</span></td>
+						<td colspan="100"><span class="title">企业贷款利率执行水平监测表(表8)</span><span> (单位 万元)</span><a class="btn" href="{:U('export_excel')}/type/8/year/{:I('year')}/month/{:I('month')}">导出excel</a></td>
 					</tr>
 					<tr>
 						<td rowspan="2">类型</td>
@@ -921,7 +921,7 @@
 			<if condition="$statistics[8]['data']">
 				<table class="biaoge table9" style="display: none">
 					<tr>
-						<td colspan="100"><span class="title">资产质量相关情况调查表(表9)</span><span> (单位 万元)</span></td>
+						<td colspan="100"><span class="title">资产质量相关情况调查表(表9)</span><span> (单位 万元)</span><a class="btn" href="{:U('export_excel')}/type/9/year/{:I('year')}/month/{:I('month')}">导出excel</a></td>
 					</tr>
 					<tr>
 						<td >类型</td>

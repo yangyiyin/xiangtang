@@ -104,20 +104,27 @@ class FinancialSmsController extends AdminController {
         $ids = I('ids');
         $post_data = [];
         $post_data['sender'] = '74753AB482BE5C724076F9181A3FF8CB';
-        $post_data['content'] = '1q23';
-        $post_data['mobiles'] = '13646847040,杨益银';
+        $post_data['content'] = '您好,您有相关报表未填报,请登录慈溪金融办综合管理平台进行填报';
+        $post_data['mobiles'] = '13646837040;136468377';// join(';',$ids);
         $post_data['charset'] = 'utf-8';
 
-//        $ch = curl_init();
-//        $timeout = 5;
-//        curl_setopt ($ch, CURLOPT_URL, 'http://hd.cixi.gov.cn/sms.rs?Send');
-//        curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-//        curl_setopt($ch, CURLOPT_POST, 1);
-//        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-//        curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-//        $file_contents = curl_exec($ch);
-//        curl_close($ch);
-//        var_dump($file_contents);
+        $ch = curl_init();
+        $timeout = 5;
+        curl_setopt ($ch, CURLOPT_URL, 'http://hd.cixi.gov.cn/sms.rs?Send');
+        curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        $file_contents = curl_exec($ch);
+        curl_close($ch);
+        //var_dump($file_contents);
+        $result = simplexml_load_string($file_contents);
+        //var_dump($result);
+        if (isset($result->CODE) && $result->CODE == '0') {
+
+        } else {
+            $this->success('发送短信遇到问题:'.$result->DESC);
+        }
         //更新发送次数
         $year = intval(date('Y'));
         $month = intval(date('m'));

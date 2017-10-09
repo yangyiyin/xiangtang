@@ -3670,6 +3670,1391 @@
      }
 
 
+     public function export_excel() {
+         set_time_limit(0);
+         /** Include path **/
+         set_include_path(APP_PATH . '/Common/Lib/PHPExcel/Classes/');
+
+         /** PHPExcel_IOFactory */
+         include 'PHPExcel.php';
+         include 'PHPExcel/IOFactory.php';
+         include 'PHPExcel/Style/Alignment.php';
+         $PHPExcel = new \PHPExcel();
+         $PHPExcel->getProperties()->setCreator("cixijinrongban")
+             ->setLastModifiedBy("cixijinrongban")
+             ->setTitle("慈溪金融办")
+             ->setSubject("慈溪金融办")
+             ->setDescription("慈溪金融办报表")
+             ->setKeywords("金融办报表")
+             ->setCategory("金融办报表");
+         $title = '报表';
+         $year = I('year') ? I('year') : intval(date('Y'));
+         $month = I('month') ? I('month') : intval(date('m'));
+         $statistics = [
+             ['data'=>null,'name'=>'慈溪市金融机构本外币信贷收支情况表(表1)'],
+             ['data'=>null,'name'=>'慈溪市金融机构本外币存贷情况表(表2)'],
+             ['data'=>null,'name'=>'慈溪市金融机构不良贷款情况表(表3)'],
+             ['data'=>null,'name'=>'慈溪市金融机构不良贷款50万(含以上)明细表(表4)'],
+             ['data'=>null,'name'=>'慈溪市金融机构不良资产清收情况表(表5)'],
+             ['data'=>null,'name'=>'慈溪市金融机构关注类贷款明细表(表6)'],
+             ['data'=>null,'name'=>'慈溪市银行贷款利率执行水平监测表(表7)'],
+             ['data'=>null,'name'=>'企业贷款利率执行水平监测表(表8)'],
+             ['data'=>null,'name'=>'资产质量相关情况调查表(表9)']
+
+         ];
+         switch (I('type')) {
+             case 1:
+                 $title = $statistics[0]['name'];
+                 $Service = \Common\Service\BankCreditAStNewService::get_instance();
+                 $statistics[0]['data'] = $Service->get_by_month_year($year, $month);
+                 $statistics = $this->convert_statistics_datas($statistics);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A1', $title);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A2', '类型')
+                     ->setCellValue('B2', '金融机构名称!')
+                     ->setCellValue('C2', '')
+                     ->setCellValue('D2', '一、各项存款')
+                     ->setCellValue('E2', '1、对公存款')
+                     ->setCellValue('F2', '(1)活期存款')
+                     ->setCellValue('G2', '(2)定期存款')
+                     ->setCellValue('H2', '2、储蓄存款')
+                     ->setCellValue('I2', '(1)活期储蓄')
+                     ->setCellValue('J2', '(2)定期储蓄')
+                     ->setCellValue('K2', '3、保证金存款')
+                     ->setCellValue('L2', '(1)开证保证金')
+                     ->setCellValue('M2', '(2)签发银票保证金')
+                     ->setCellValue('N2', '(3)商票保贴保证金')
+                     ->setCellValue('O2', '(4)开立保函保证金')
+                     ->setCellValue('P2', '4、其他存款')
+                     ->setCellValue('Q2', '二、各项贷款')
+                     ->setCellValue('R2', '1、小企业贷款')
+                     ->setCellValue('S2', '2、担保公司担保贷款')
+                     ->setCellValue('T2', '3、政府平台公司贷款')
+                     ->setCellValue('U2', '4、涉农贷款')
+                     ->setCellValue('V2', '(1)农业贷款')
+                     ->setCellValue('W2', '(2)农户贷款')
+                     ->setCellValue('X2', '5、固定资产贷款')
+                     ->setCellValue('Y2', '6、房地产开发贷款')
+                     ->setCellValue('Z2', '7、个人住房贷款')
+                     ->setCellValue('AA2', '8、个人经营性贷款')
+                     ->setCellValue('AB2', '9、票据贴现')
+                     ->setCellValue('AC2', '(1)银票贴现')
+                     ->setCellValue('AD2', '(2)商票贴现');
+
+                // echo json_encode($statistics);die();
+                 if ($statistics[0]['data']) {
+                     $start = 3;
+                     foreach ($statistics[0]['data'] as $key => $value) {
+                         if ($key != '合计') {
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$start, $key);
+                             $num = $value ? count($value) : 0;
+                             $end = $start + $num * 4 - 1;
+                             if ($end > $start) {
+                                 $PHPExcel->setActiveSheetIndex(0)->mergeCells('A'.$start.':A'.$end);
+                                 $PHPExcel->getActiveSheet(0)->getStyle('A'.$start)->applyFromArray(
+                                     [
+                                         'alignment' => [
+                                             'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER
+                                         ]
+                                     ]
+                                 );
+                             }
+                             if ($value) {
+                                 $unit_start = $start;
+                                 foreach ($value as $unit) {
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$unit_start, $unit['all_name']);
+
+                                     $PHPExcel->setActiveSheetIndex(0)->mergeCells('B'.$unit_start.':B'.($unit_start+3));
+
+
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$unit_start, '上年末余额');
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.($unit_start+1), '本期余额');
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.($unit_start+2), '比上年末');
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.($unit_start+3), '同比增长%');
+
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$unit_start, $unit['content']['Deposits'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$unit_start, $unit['content']['Deposits_A'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$unit_start, $unit['content']['Deposits_A1'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$unit_start, $unit['content']['Deposits_A2'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$unit_start, $unit['content']['Deposits_B'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$unit_start, $unit['content']['Deposits_B1'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$unit_start, $unit['content']['Deposits_B2'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.$unit_start, $unit['content']['Deposits_C'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.$unit_start, $unit['content']['Deposits_C1'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.$unit_start, $unit['content']['Deposits_C2'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.$unit_start, $unit['content']['Deposits_C3'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.$unit_start, $unit['content']['Deposits_C4'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.$unit_start, $unit['content']['Deposits_D'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('Q'.$unit_start, $unit['content']['Loans'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('R'.$unit_start, $unit['content']['Loans_A'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('S'.$unit_start, $unit['content']['Loans_B'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('T'.$unit_start, $unit['content']['Loans_C'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('U'.$unit_start, $unit['content']['Loans_D'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('V'.$unit_start, $unit['content']['Loans_D1'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('W'.$unit_start, $unit['content']['Loans_D2'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('X'.$unit_start, $unit['content']['Loans_E'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('Y'.$unit_start, $unit['content']['Loans_F'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('Z'.$unit_start, $unit['content']['Loans_G'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AA'.$unit_start, $unit['content']['Loans_H'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AB'.$unit_start, $unit['content']['Loans_I'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AC'.$unit_start, $unit['content']['Loans_I1'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AD'.$unit_start, $unit['content']['Loans_I2'][0]);
+
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.($unit_start+1), $unit['content']['Deposits'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.($unit_start+1), $unit['content']['Deposits_A'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($unit_start+1), $unit['content']['Deposits_A1'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.($unit_start+1), $unit['content']['Deposits_A2'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($unit_start+1), $unit['content']['Deposits_B'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.($unit_start+1), $unit['content']['Deposits_B1'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.($unit_start+1), $unit['content']['Deposits_B2'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.($unit_start+1), $unit['content']['Deposits_C'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.($unit_start+1), $unit['content']['Deposits_C1'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.($unit_start+1), $unit['content']['Deposits_C2'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.($unit_start+1), $unit['content']['Deposits_C3'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.($unit_start+1), $unit['content']['Deposits_C4'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.($unit_start+1), $unit['content']['Deposits_D'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('Q'.($unit_start+1), $unit['content']['Loans'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('R'.($unit_start+1), $unit['content']['Loans_A'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('S'.($unit_start+1), $unit['content']['Loans_B'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('T'.($unit_start+1), $unit['content']['Loans_C'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('U'.($unit_start+1), $unit['content']['Loans_D'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('V'.($unit_start+1), $unit['content']['Loans_D1'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('W'.($unit_start+1), $unit['content']['Loans_D2'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('X'.($unit_start+1), $unit['content']['Loans_E'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('Y'.($unit_start+1), $unit['content']['Loans_F'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('Z'.($unit_start+1), $unit['content']['Loans_G'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AA'.($unit_start+1), $unit['content']['Loans_H'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AB'.($unit_start+1), $unit['content']['Loans_I'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AC'.($unit_start+1), $unit['content']['Loans_I1'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AD'.($unit_start+1), $unit['content']['Loans_I2'][1]);
+
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.($unit_start+2), $unit['content']['Deposits'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.($unit_start+2), $unit['content']['Deposits_A'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($unit_start+2), $unit['content']['Deposits_A1'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.($unit_start+2), $unit['content']['Deposits_A2'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($unit_start+2), $unit['content']['Deposits_B'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.($unit_start+2), $unit['content']['Deposits_B1'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.($unit_start+2), $unit['content']['Deposits_B2'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.($unit_start+2), $unit['content']['Deposits_C'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.($unit_start+2), $unit['content']['Deposits_C1'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.($unit_start+2), $unit['content']['Deposits_C2'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.($unit_start+2), $unit['content']['Deposits_C3'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.($unit_start+2), $unit['content']['Deposits_C4'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.($unit_start+2), $unit['content']['Deposits_D'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('Q'.($unit_start+2), $unit['content']['Loans'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('R'.($unit_start+2), $unit['content']['Loans_A'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('S'.($unit_start+2), $unit['content']['Loans_B'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('T'.($unit_start+2), $unit['content']['Loans_C'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('U'.($unit_start+2), $unit['content']['Loans_D'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('V'.($unit_start+2), $unit['content']['Loans_D1'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('W'.($unit_start+2), $unit['content']['Loans_D2'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('X'.($unit_start+2), $unit['content']['Loans_E'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('Y'.($unit_start+2), $unit['content']['Loans_F'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('Z'.($unit_start+2), $unit['content']['Loans_G'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AA'.($unit_start+2), $unit['content']['Loans_H'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AB'.($unit_start+2), $unit['content']['Loans_I'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AC'.($unit_start+2), $unit['content']['Loans_I1'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AD'.($unit_start+2), $unit['content']['Loans_I2'][2]);
+
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.($unit_start+3), $unit['content']['Deposits'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.($unit_start+3), $unit['content']['Deposits_A'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($unit_start+3), $unit['content']['Deposits_A1'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.($unit_start+3), $unit['content']['Deposits_A2'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($unit_start+3), $unit['content']['Deposits_B'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.($unit_start+3), $unit['content']['Deposits_B1'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.($unit_start+3), $unit['content']['Deposits_B2'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.($unit_start+3), $unit['content']['Deposits_C'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.($unit_start+3), $unit['content']['Deposits_C1'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.($unit_start+3), $unit['content']['Deposits_C2'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.($unit_start+3), $unit['content']['Deposits_C3'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.($unit_start+3), $unit['content']['Deposits_C4'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.($unit_start+3), $unit['content']['Deposits_D'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('Q'.($unit_start+3), $unit['content']['Loans'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('R'.($unit_start+3), $unit['content']['Loans_A'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('S'.($unit_start+3), $unit['content']['Loans_B'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('T'.($unit_start+3), $unit['content']['Loans_C'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('U'.($unit_start+3), $unit['content']['Loans_D'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('V'.($unit_start+3), $unit['content']['Loans_D1'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('W'.($unit_start+3), $unit['content']['Loans_D2'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('X'.($unit_start+3), $unit['content']['Loans_E'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('Y'.($unit_start+3), $unit['content']['Loans_F'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('Z'.($unit_start+3), $unit['content']['Loans_G'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AA'.($unit_start+3), $unit['content']['Loans_H'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AB'.($unit_start+3), $unit['content']['Loans_I'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AC'.($unit_start+3), $unit['content']['Loans_I1'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AD'.($unit_start+3), $unit['content']['Loans_I2'][3]);
+
+                                     $unit_start+= 4;
+                                 }
+                             }
+
+                             $start = $start + $num * 4;
+                         } else {
+                            // echo json_encode($statistics[0]['data'][$key]);die();
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$start, $key);
+
+                             $PHPExcel->setActiveSheetIndex(0)->mergeCells('A'.$start.':A'.($start+3));
+                             $PHPExcel->getActiveSheet(0)->getStyle('A'.$start)->applyFromArray(
+                                 [
+                                     'alignment' => [
+                                         'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER
+                                     ]
+                                 ]
+                             );
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$start, '');
+                             $PHPExcel->setActiveSheetIndex(0)->mergeCells('B'.$start.':B'.($start+3));
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$start, '上年末余额');
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.($start+1), '本期余额');
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.($start+2), '比上年末');
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.($start+3), '同比增长%');
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$start, $statistics[0]['data'][$key]['Deposits'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$start, $statistics[0]['data'][$key]['Deposits_A'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$start, $statistics[0]['data'][$key]['Deposits_A1'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$start, $statistics[0]['data'][$key]['Deposits_A2'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$start, $statistics[0]['data'][$key]['Deposits_B'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$start, $statistics[0]['data'][$key]['Deposits_B1'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$start, $statistics[0]['data'][$key]['Deposits_B2'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.$start, $statistics[0]['data'][$key]['Deposits_C'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.$start, $statistics[0]['data'][$key]['Deposits_C1'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.$start, $statistics[0]['data'][$key]['Deposits_C2'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.$start, $statistics[0]['data'][$key]['Deposits_C3'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.$start, $statistics[0]['data'][$key]['Deposits_C4'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.$start, $statistics[0]['data'][$key]['Deposits_D'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('Q'.$start, $statistics[0]['data'][$key]['Loans'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('R'.$start, $statistics[0]['data'][$key]['Loans_A'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('S'.$start, $statistics[0]['data'][$key]['Loans_B'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('T'.$start, $statistics[0]['data'][$key]['Loans_C'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('U'.$start, $statistics[0]['data'][$key]['Loans_D'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('V'.$start, $statistics[0]['data'][$key]['Loans_D1'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('W'.$start, $statistics[0]['data'][$key]['Loans_D2'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('X'.$start, $statistics[0]['data'][$key]['Loans_E'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('Y'.$start, $statistics[0]['data'][$key]['Loans_F'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('Z'.$start, $statistics[0]['data'][$key]['Loans_G'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AA'.$start, $statistics[0]['data'][$key]['Loans_H'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AB'.$start, $statistics[0]['data'][$key]['Loans_I'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AC'.$start, $statistics[0]['data'][$key]['Loans_I1'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AD'.$start, $statistics[0]['data'][$key]['Loans_I2'][0]);
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.($start+1), $statistics[0]['data'][$key]['Deposits'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.($start+1), $statistics[0]['data'][$key]['Deposits_A'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($start+1), $statistics[0]['data'][$key]['Deposits_A1'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.($start+1), $statistics[0]['data'][$key]['Deposits_A2'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($start+1), $statistics[0]['data'][$key]['Deposits_B'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.($start+1), $statistics[0]['data'][$key]['Deposits_B1'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.($start+1), $statistics[0]['data'][$key]['Deposits_B2'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.($start+1), $statistics[0]['data'][$key]['Deposits_C'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.($start+1), $statistics[0]['data'][$key]['Deposits_C1'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.($start+1), $statistics[0]['data'][$key]['Deposits_C2'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.($start+1), $statistics[0]['data'][$key]['Deposits_C3'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.($start+1), $statistics[0]['data'][$key]['Deposits_C4'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.($start+1), $statistics[0]['data'][$key]['Deposits_D'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('Q'.($start+1), $statistics[0]['data'][$key]['Loans'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('R'.($start+1), $statistics[0]['data'][$key]['Loans_A'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('S'.($start+1), $statistics[0]['data'][$key]['Loans_B'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('T'.($start+1), $statistics[0]['data'][$key]['Loans_C'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('U'.($start+1), $statistics[0]['data'][$key]['Loans_D'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('V'.($start+1), $statistics[0]['data'][$key]['Loans_D1'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('W'.($start+1), $statistics[0]['data'][$key]['Loans_D2'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('X'.($start+1), $statistics[0]['data'][$key]['Loans_E'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('Y'.($start+1), $statistics[0]['data'][$key]['Loans_F'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('Z'.($start+1), $statistics[0]['data'][$key]['Loans_G'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AA'.($start+1), $statistics[0]['data'][$key]['Loans_H'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AB'.($start+1), $statistics[0]['data'][$key]['Loans_I'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AC'.($start+1), $statistics[0]['data'][$key]['Loans_I1'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AD'.($start+1), $statistics[0]['data'][$key]['Loans_I2'][1]);
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.($start+2), $statistics[0]['data'][$key]['Deposits'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.($start+2), $statistics[0]['data'][$key]['Deposits_A'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($start+2), $statistics[0]['data'][$key]['Deposits_A1'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.($start+2), $statistics[0]['data'][$key]['Deposits_A2'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($start+2), $statistics[0]['data'][$key]['Deposits_B'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.($start+2), $statistics[0]['data'][$key]['Deposits_B1'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.($start+2), $statistics[0]['data'][$key]['Deposits_B2'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.($start+2), $statistics[0]['data'][$key]['Deposits_C'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.($start+2), $statistics[0]['data'][$key]['Deposits_C1'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.($start+2), $statistics[0]['data'][$key]['Deposits_C2'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.($start+2), $statistics[0]['data'][$key]['Deposits_C3'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.($start+2), $statistics[0]['data'][$key]['Deposits_C4'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.($start+2), $statistics[0]['data'][$key]['Deposits_D'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('Q'.($start+2), $statistics[0]['data'][$key]['Loans'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('R'.($start+2), $statistics[0]['data'][$key]['Loans_A'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('S'.($start+2), $statistics[0]['data'][$key]['Loans_B'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('T'.($start+2), $statistics[0]['data'][$key]['Loans_C'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('U'.($start+2), $statistics[0]['data'][$key]['Loans_D'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('V'.($start+2), $statistics[0]['data'][$key]['Loans_D1'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('W'.($start+2), $statistics[0]['data'][$key]['Loans_D2'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('X'.($start+2), $statistics[0]['data'][$key]['Loans_E'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('Y'.($start+2), $statistics[0]['data'][$key]['Loans_F'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('Z'.($start+2), $statistics[0]['data'][$key]['Loans_G'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AA'.($start+2), $statistics[0]['data'][$key]['Loans_H'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AB'.($start+2), $statistics[0]['data'][$key]['Loans_I'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AC'.($start+2), $statistics[0]['data'][$key]['Loans_I1'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AD'.($start+2), $statistics[0]['data'][$key]['Loans_I2'][2]);
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.($start+3), $statistics[0]['data'][$key]['Deposits'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.($start+3), $statistics[0]['data'][$key]['Deposits_A'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.($start+3), $statistics[0]['data'][$key]['Deposits_A1'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.($start+3), $statistics[0]['data'][$key]['Deposits_A2'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.($start+3), $statistics[0]['data'][$key]['Deposits_B'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.($start+3), $statistics[0]['data'][$key]['Deposits_B1'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.($start+3), $statistics[0]['data'][$key]['Deposits_B2'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.($start+3), $statistics[0]['data'][$key]['Deposits_C'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.($start+3), $statistics[0]['data'][$key]['Deposits_C1'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.($start+3), $statistics[0]['data'][$key]['Deposits_C2'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.($start+3), $statistics[0]['data'][$key]['Deposits_C3'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.($start+3), $statistics[0]['data'][$key]['Deposits_C4'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.($start+3), $statistics[0]['data'][$key]['Deposits_D'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('Q'.($start+3), $statistics[0]['data'][$key]['Loans'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('R'.($start+3), $statistics[0]['data'][$key]['Loans_A'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('S'.($start+3), $statistics[0]['data'][$key]['Loans_B'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('T'.($start+3), $statistics[0]['data'][$key]['Loans_C'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('U'.($start+3), $statistics[0]['data'][$key]['Loans_D'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('V'.($start+3), $statistics[0]['data'][$key]['Loans_D1'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('W'.($start+3), $statistics[0]['data'][$key]['Loans_D2'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('X'.($start+3), $statistics[0]['data'][$key]['Loans_E'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('Y'.($start+3), $statistics[0]['data'][$key]['Loans_F'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('Z'.($start+3), $statistics[0]['data'][$key]['Loans_G'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AA'.($start+3), $statistics[0]['data'][$key]['Loans_H'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AB'.($start+3), $statistics[0]['data'][$key]['Loans_I'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AC'.($start+3), $statistics[0]['data'][$key]['Loans_I1'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AD'.($start+3), $statistics[0]['data'][$key]['Loans_I2'][3]);
+
+
+
+                         }
+
+
+                     }
+
+
+                 }
+
+
+                 $PHPExcel->getActiveSheet()->mergeCells('A1:AD1');
+                 $PHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray(
+                     [
+                         'alignment' => [
+                             'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                         ]
+                     ]
+                 );
+
+
+
+                 break;
+             case 2:
+                 $title = $statistics[1]['name'];
+                 $Service = \Common\Service\BankCreditBStNewService::get_instance();
+                 $statistics[1]['data'] = $Service->get_by_month_year($year, $month);
+                 $statistics = $this->convert_statistics_datas($statistics);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A1', $title);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A2', '类型')
+                     ->setCellValue('B2', '金融机构名称!')
+                     ->setCellValue('C2', '各项存款')
+                     ->setCellValue('I2', '各项贷款')
+                     ->setCellValue('O2', '本月存贷比')
+                     ->setCellValue('C3', '年初余额')
+                     ->setCellValue('D3', '上月余额')
+                     ->setCellValue('E3', '月末余额')
+                     ->setCellValue('F3', '比上月')
+                     ->setCellValue('G3', '比年初')
+                     ->setCellValue('H3', '同比')
+                     ->setCellValue('I3', '年初余额')
+                     ->setCellValue('J3', '上月余额')
+                     ->setCellValue('K3', '月末余额')
+                     ->setCellValue('L3', '比上月')
+                     ->setCellValue('M3', '比年初')
+                     ->setCellValue('N3', '同比')
+                     ->setCellValue('O3', '余额比%')
+                     ->setCellValue('P3', '增量比%');
+
+                 // echo json_encode($statistics);die();
+                 if ($statistics[1]['data']) {
+                     $start = 4;
+                     foreach ($statistics[1]['data'] as $key => $value) {
+                         if ($key != '合计') {
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$start, $key);
+                             $num = $value ? count($value) : 0;
+                             $end = $start + $num  - 1;
+                             if ($end > $start) {
+                                 $PHPExcel->setActiveSheetIndex(0)->mergeCells('A'.$start.':A'.$end);
+                                 $PHPExcel->getActiveSheet(0)->getStyle('A'.$start)->applyFromArray(
+                                     [
+                                         'alignment' => [
+                                             'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER
+                                         ]
+                                     ]
+                                 );
+                             }
+                             if ($value) {
+                                 $unit_start = $start;
+                                 foreach ($value as $unit) {
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$unit_start, $unit['all_name']);
+
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$unit_start, $unit['content']['Deposits'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$unit_start, $unit['content']['Deposits'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$unit_start, $unit['content']['Deposits'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$unit_start, $unit['content']['Deposits'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$unit_start, $unit['content']['Deposits'][4]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$unit_start, $unit['content']['Deposits'][5]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$unit_start, $unit['content']['Loans'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$unit_start, $unit['content']['Loans'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.$unit_start, $unit['content']['Loans'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.$unit_start, $unit['content']['Loans'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.$unit_start, $unit['content']['Loans'][4]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.$unit_start, $unit['content']['Loans'][5]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.$unit_start, $unit['content']['Deposits_Loans'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.$unit_start, $unit['content']['Deposits_Loans'][1]);
+                                     $unit_start++;
+                                 }
+                             }
+
+                             $start = $start + $num ;
+                         } else {
+                             // echo json_encode($statistics[0]['data'][$key]);die();
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$start, $key);
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$start, '');
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$start,  $statistics[1]['data'][$key]['Deposits'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$start,  $statistics[1]['data'][$key]['Deposits'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$start,  $statistics[1]['data'][$key]['Deposits'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$start,  $statistics[1]['data'][$key]['Deposits'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$start,  $statistics[1]['data'][$key]['Deposits'][4]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$start,  $statistics[1]['data'][$key]['Deposits'][5]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$start,  $statistics[1]['data'][$key]['Loans'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$start,  $statistics[1]['data'][$key]['Loans'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.$start,  $statistics[1]['data'][$key]['Loans'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.$start,  $statistics[1]['data'][$key]['Loans'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.$start,  $statistics[1]['data'][$key]['Loans'][4]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.$start,  $statistics[1]['data'][$key]['Loans'][5]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.$start,  $statistics[1]['data'][$key]['Deposits_Loans'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.$start,  $statistics[1]['data'][$key]['Deposits_Loans'][1]);
+
+                         }
+
+
+                     }
+
+
+                 }
+
+
+                 $PHPExcel->getActiveSheet(0)->mergeCells('A1:P1');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('A2:A3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('B2:B3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('C2:H2');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('I2:N2');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('O2:P2');
+
+                 $PHPExcel->getActiveSheet(0)->getStyle('A1')->applyFromArray(
+                     [
+                         'alignment' => [
+                             'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                         ]
+                     ]
+                 );
+
+
+
+                 break;
+             case 3:
+                 $title = $statistics[2]['name'];
+                 $Service = \Common\Service\BankBaddebtStNewService::get_instance();
+                 $statistics[2]['data'] = $Service->get_by_month_year($year, $month);
+                 $statistics = $this->convert_statistics_datas($statistics);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A1', $title);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A2', '类型')
+                     ->setCellValue('B2', '金融机构名称!')
+                     ->setCellValue('C2', '贷款余额')
+                     ->setCellValue('D2', '其中:五级分类')
+                     ->setCellValue('D3', '正常')
+                     ->setCellValue('E3', '关注')
+                     ->setCellValue('F3', '次级')
+                     ->setCellValue('G3', '可疑')
+                     ->setCellValue('H3', '损失')
+                     ->setCellValue('I2', '年初后三类不良贷款额')
+                     ->setCellValue('J2', '本月末后三类不良贷款额')
+                     ->setCellValue('K2', '比年初')
+                     ->setCellValue('L2', '比上月')
+                     ->setCellValue('M2', '比去年同期')
+                     ->setCellValue('N2', '年初不良贷款率')
+                     ->setCellValue('O2', '本月末不良贷款率')
+                     ->setCellValue('P2', '比年初%')
+                     ->setCellValue('Q2', '比上月%')
+                     ->setCellValue('R2', '比去年同期%');
+
+                 // echo json_encode($statistics);die();
+                 if ($statistics[2]['data']) {
+                     $start = 4;
+                     foreach ($statistics[2]['data'] as $key => $value) {
+                         if ($key != '合计') {
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$start, $key);
+                             $num = $value ? count($value) : 0;
+                             $end = $start + $num  - 1;
+                             if ($end > $start) {
+                                 $PHPExcel->setActiveSheetIndex(0)->mergeCells('A'.$start.':A'.$end);
+                                 $PHPExcel->getActiveSheet(0)->getStyle('A'.$start)->applyFromArray(
+                                     [
+                                         'alignment' => [
+                                             'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER
+                                         ]
+                                     ]
+                                 );
+                             }
+                             if ($value) {
+                                 $unit_start = $start;
+                                 foreach ($value as $unit) {
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$unit_start, $unit['all_name']);
+
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$unit_start, $unit['content']['Loans']);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$unit_start, $unit['content']['Baddebt_A']);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$unit_start, $unit['content']['Baddebt_B']);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$unit_start, $unit['content']['Baddebt_C']);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$unit_start, $unit['content']['Baddebt_D']);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$unit_start, $unit['content']['Baddebt_E']);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$unit_start, $unit['content']['Baddebt_CDE_year_begin']);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$unit_start, $unit['content']['Baddebt_CDE']);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.$unit_start, $unit['content']['Baddebt_CDE_year_begin_modify']);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.$unit_start, $unit['content']['Baddebt_CDE_last_month_modify']);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.$unit_start, $unit['content']['Baddebt_CDE_past_modify']);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.$unit_start, $unit['content']['Baddebt_Month_Rate_year_begin']);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.$unit_start, $unit['content']['Baddebt_Month_Rate']);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.$unit_start, $unit['content']['Baddebt_Month_Rate_year_begin_modify']);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('Q'.$unit_start, $unit['content']['Baddebt_Month_Rate_last_month_modify']);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('R'.$unit_start, $unit['content']['Baddebt_Month_Rate_past_modify']);
+
+                                     $unit_start++;
+                                 }
+                             }
+
+                             $start = $start + $num ;
+                         } else {
+                             // echo json_encode($statistics[0]['data'][$key]);die();
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$start, $key);
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$start, '');
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$unit_start, $statistics[2]['data'][$key]['Loans']);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$unit_start, $statistics[2]['data'][$key]['Baddebt_A']);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$unit_start, $statistics[2]['data'][$key]['Baddebt_B']);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$unit_start, $statistics[2]['data'][$key]['Baddebt_C']);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$unit_start, $statistics[2]['data'][$key]['Baddebt_D']);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$unit_start, $statistics[2]['data'][$key]['Baddebt_E']);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$unit_start, $statistics[2]['data'][$key]['Baddebt_CDE_year_begin']);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$unit_start, $statistics[2]['data'][$key]['Baddebt_CDE']);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.$unit_start, $statistics[2]['data'][$key]['Baddebt_CDE_year_begin_modify']);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.$unit_start, $statistics[2]['data'][$key]['Baddebt_CDE_last_month_modify']);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.$unit_start, $statistics[2]['data'][$key]['Baddebt_CDE_past_modify']);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.$unit_start, $statistics[2]['data'][$key]['Baddebt_Month_Rate_year_begin']);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.$unit_start, $statistics[2]['data'][$key]['Baddebt_Month_Rate']);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.$unit_start, $statistics[2]['data'][$key]['Baddebt_Month_Rate_year_begin_modify']);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('Q'.$unit_start, $statistics[2]['data'][$key]['Baddebt_Month_Rate_last_month_modify']);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('R'.$unit_start, $statistics[2]['data'][$key]['Baddebt_Month_Rate_past_modify']);
+
+                         }
+
+
+                     }
+
+
+                 }
+
+
+                 $PHPExcel->getActiveSheet(0)->mergeCells('A1:R1');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('A2:A3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('B2:B3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('C2:C3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('D2:H2');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('I2:I3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('J2:J3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('K2:K3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('L2:L3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('M2:M3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('N2:N3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('O2:O3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('P2:P3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('Q2:Q3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('R2:R3');
+
+
+                 $PHPExcel->getActiveSheet(0)->getStyle('A1')->applyFromArray(
+                     [
+                         'alignment' => [
+                             'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                         ]
+                     ]
+                 );
+
+
+
+                 break;
+             case 4:
+                 $title = $statistics[3]['name'];
+                 $Service = \Common\Service\BankBaddebtDetailStNewService::get_instance();
+                 $statistics[3]['data'] = $Service->get_by_month_year($year, $month);
+                 $statistics = $this->convert_statistics_datas($statistics);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A1', $title);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A2', '金融机构')
+                     ->setCellValue('B2', '企业名称(包括个人)')
+                     ->setCellValue('C2', '法定代表人')
+                     ->setCellValue('D2', '地址')
+                     ->setCellValue('E2', '不良贷款余额')
+                     ->setCellValue('F2', '不良贷款分类')
+                     ->setCellValue('G2', '行业分类')
+                     ->setCellValue('H2', '列入不良时间')
+                     ->setCellValue('I2', '收回不良时间')
+                     ->setCellValue('J2', '不良产生的原因')
+                     ->setCellValue('K2', '清收措施')
+                     ->setCellValue('L2', '企业基本情况(1000万以上填写)')
+                     ->setCellValue('M2', '下步处置计划(1000万以上填写)')
+                     ->setCellValue('N2', '要求/建议(1000万以上填写)');
+
+
+                  //echo json_encode($statistics);die();
+                 if ($statistics[3]['data']) {
+                     $unit_start = 3;
+                     foreach ($statistics[3]['data'] as $key => $unit) {
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$unit_start, $unit['all_name']);
+
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$unit_start, $unit['enterprise']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$unit_start, $unit['content']['Principal']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$unit_start,  $unit['content']['Address']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$unit_start,  $unit['content']['Loans']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$unit_start,  $unit['content']['Loans_Type']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$unit_start,  $unit['content']['Industry']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$unit_start,  time_to_date($unit['content']['Startdate']));
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$unit_start,  time_to_date($unit['content']['Enddate']));
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$unit_start,  $unit['content']['Reason']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.$unit_start,  $unit['content']['Handle']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.$unit_start,  $unit['content']['Info']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.$unit_start,  $unit['content']['Plan']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.$unit_start,  $unit['content']['Recommend']);
+                         $unit_start++;
+                     }
+
+
+                 }
+
+
+                 $PHPExcel->getActiveSheet(0)->mergeCells('A1:N1');
+
+
+                 $PHPExcel->getActiveSheet(0)->getStyle('A1')->applyFromArray(
+                     [
+                         'alignment' => [
+                             'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                         ]
+                     ]
+                 );
+
+
+
+                 break;
+             case 5:
+                 $title = $statistics[4]['name'];
+                 $Service = \Common\Service\BankBaddebtDisposeStNewService::get_instance();
+                 $statistics[4]['data'] = $Service->get_by_month_year($year, $month);
+                 $statistics = $this->convert_statistics_datas($statistics);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A1', $title);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A2', '金融机构')
+                     ->setCellValue('B2', '企业或个人名称')
+                     ->setCellValue('C2', '不良贷款余额')
+                     ->setCellValue('D2', '清收金额合计(一月至累计)')
+                     ->setCellValue('E2', '其中:清收方式及金额')
+                     ->setCellValue('E3', '以资抵债金额')
+                     ->setCellValue('F3', '法院清收金额')
+                     ->setCellValue('G3', '核销金额')
+                     ->setCellValue('H3', '划转上级行金额')
+                     ->setCellValue('I3', '政策性剥离金额')
+                     ->setCellValue('J3', '打包出售(注明打包对象)')
+                     ->setCellValue('K3', '金额')
+                     ->setCellValue('L3', '其他(注明清收方式)')
+                     ->setCellValue('M3', '金额');
+
+
+
+                 //echo json_encode($statistics);die();
+                 if ($statistics[4]['data']) {
+                     $unit_start = 4;
+                     foreach ($statistics[4]['data'] as $key => $unit) {
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$unit_start, $unit['all_name']);
+
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$unit_start, $unit['enterprise']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$unit_start, $unit['content']['Loans']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$unit_start,  $unit['content']['Recover']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$unit_start,  $unit['content']['Recover_Ot_1']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$unit_start,  $unit['content']['Recover_Ot_2']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$unit_start,  $unit['content']['Recover_Ot_3']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$unit_start,  ($unit['content']['Recover_Ot_4']));
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$unit_start,  ($unit['content']['Recover_Ot_5']));
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$unit_start,  $unit['content']['Recover_Ot_6']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.$unit_start,  $unit['content']['Recover_Ot']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.$unit_start,  $unit['content']['Recover_Ot_other_name']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.$unit_start,  $unit['content']['Recover_Ot_other']);
+                         $unit_start++;
+                     }
+
+
+                 }
+
+
+                 $PHPExcel->getActiveSheet(0)->mergeCells('A1:M1');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('E2:M2');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('A2:A3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('B2:B3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('C2:C3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('D2:D3');
+
+                 $PHPExcel->getActiveSheet(0)->getStyle('E2')->applyFromArray(
+                     [
+                         'alignment' => [
+                             'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                         ]
+                     ]
+                 );
+
+                 $PHPExcel->getActiveSheet(0)->getStyle('A1')->applyFromArray(
+                     [
+                         'alignment' => [
+                             'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                         ]
+                     ]
+                 );
+
+
+
+                 break;
+             case 6:
+                 $title = $statistics[5]['name'];
+                 $Service = \Common\Service\BankFocusDetailStNewService::get_instance();
+                 $statistics[5]['data'] = $Service->get_by_month_year($year, $month);
+                 $statistics = $this->convert_statistics_datas($statistics);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A1', $title);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A2', '金融机构')
+                     ->setCellValue('B2', '企业或个人名称')
+                     ->setCellValue('C2', '贷款余额')
+                     ->setCellValue('D2', '逾期贷款余额')
+                     ->setCellValue('E2', '发放日期')
+                     ->setCellValue('F2', '到期日期')
+                     ->setCellValue('G2', '行业分类')
+                     ->setCellValue('H2', '企业规模(工信部标准)')
+                     ->setCellValue('I2', '法定代表人')
+                     ->setCellValue('J2', '联系电话')
+                     ->setCellValue('K2', '注册地址')
+                     ->setCellValue('L2', '所属镇街道')
+                     ->setCellValue('M2', '备注');
+
+
+                 //echo json_encode($statistics);die();
+                 if ($statistics[5]['data']) {
+                     $unit_start = 3;
+                     foreach ($statistics[5]['data'] as $key => $unit) {
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$unit_start, $unit['all_name']);
+
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$unit_start, $unit['enterprise']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$unit_start, $unit['content']['Loans']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$unit_start,  $unit['content']['Overdue_Loans']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$unit_start,  time_to_date($unit['content']['Startdate']));
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$unit_start,  time_to_date($unit['content']['Enddate']));
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$unit_start,  $unit['content']['Industry']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$unit_start,  ($unit['content']['Scale']));
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$unit_start,  ($unit['content']['Principal']));
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$unit_start,  $unit['content']['Address']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.$unit_start,  $unit['content']['Phone']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.$unit_start,  $unit['content']['Area']);
+                         $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.$unit_start,  $unit['content']['Remark']);
+                         $unit_start++;
+                     }
+
+
+                 }
+
+
+                 $PHPExcel->getActiveSheet(0)->mergeCells('A1:M1');
+
+
+                 $PHPExcel->getActiveSheet(0)->getStyle('A1')->applyFromArray(
+                     [
+                         'alignment' => [
+                             'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                         ]
+                     ]
+                 );
+
+
+
+                 break;
+             case 7:
+                 $title = $statistics[6]['name'];
+                 $Service = \Common\Service\BankQuarterlyQuantityAStNewService::get_instance();
+                 $statistics[6]['data'] = $Service->get_by_month_year($year, $month);
+                 $statistics = $this->convert_statistics_datas($statistics);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A1', $title);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A2', '类型')
+                     ->setCellValue('B2', '金融机构名称!')
+                     ->setCellValue('C2', '一年以内')
+                     ->setCellValue('C3', '贷款利率')
+                     ->setCellValue('E3', '最高利率')
+                     ->setCellValue('G3', '最低利率')
+                     ->setCellValue('I3', '贷款方式')
+                     ->setCellValue('I4', '信用')
+                     ->setCellValue('K4', '抵押(质押)')
+                     ->setCellValue('M4', '保证')
+                     ->setCellValue('O4', '抵押(质押+保证)')
+                     ->setCellValue('C5', '发生额')
+                     ->setCellValue('D5', '加权平均利率')
+                     ->setCellValue('E5', '发生额')
+                     ->setCellValue('F5', '利率')
+                     ->setCellValue('G5', '发生额')
+                     ->setCellValue('H5', '利率')
+                     ->setCellValue('I5', '发生额')
+                     ->setCellValue('J5', '加权平均利率')
+                     ->setCellValue('K5', '发生额')
+                     ->setCellValue('L5', '加权平均利率')
+                     ->setCellValue('M5', '发生额')
+                     ->setCellValue('N5', '加权平均利率')
+                     ->setCellValue('O5', '发生额')
+                     ->setCellValue('P5', '加权平均利率')
+
+                     ->setCellValue('Q2', '一年至五年(含5年)')
+                     ->setCellValue('Q3', '贷款利率')
+                     ->setCellValue('S3', '最高利率')
+                     ->setCellValue('U3', '最低利率')
+                     ->setCellValue('W3', '贷款方式')
+                     ->setCellValue('W4', '信用')
+                     ->setCellValue('Y4', '抵押(质押)')
+                     ->setCellValue('AA4', '保证')
+                     ->setCellValue('AC4', '抵押(质押+保证)')
+                     ->setCellValue('Q5', '发生额')
+                     ->setCellValue('R5', '加权平均利率')
+                     ->setCellValue('S5', '发生额')
+                     ->setCellValue('T5', '利率')
+                     ->setCellValue('U5', '发生额')
+                     ->setCellValue('V5', '利率')
+                     ->setCellValue('W5', '发生额')
+                     ->setCellValue('X5', '加权平均利率')
+                     ->setCellValue('Y5', '发生额')
+                     ->setCellValue('Z5', '加权平均利率')
+                     ->setCellValue('AA5', '发生额')
+                     ->setCellValue('AB5', '加权平均利率')
+                     ->setCellValue('AC5', '发生额')
+                     ->setCellValue('AD5', '加权平均利率')
+
+                     ->setCellValue('AE2', '五年以上')
+                     ->setCellValue('AE3', '贷款利率')
+                     ->setCellValue('AG3', '最高利率')
+                     ->setCellValue('AI3', '最低利率')
+                     ->setCellValue('AK3', '贷款方式')
+                     ->setCellValue('AK4', '信用')
+                     ->setCellValue('AM4', '抵押(质押)')
+                     ->setCellValue('AO4', '保证')
+                     ->setCellValue('AQ4', '抵押(质押+保证)')
+                     ->setCellValue('AE5', '发生额')
+                     ->setCellValue('AF5', '加权平均利率')
+                     ->setCellValue('AG5', '发生额')
+                     ->setCellValue('AH5', '利率')
+                     ->setCellValue('AI5', '发生额')
+                     ->setCellValue('AJ5', '利率')
+                     ->setCellValue('AK5', '发生额')
+                     ->setCellValue('AL5', '加权平均利率')
+                     ->setCellValue('AM5', '发生额')
+                     ->setCellValue('AN5', '加权平均利率')
+                     ->setCellValue('AO5', '发生额')
+                     ->setCellValue('AP5', '加权平均利率')
+                     ->setCellValue('AQ5', '发生额')
+                     ->setCellValue('AR5', '加权平均利率')
+
+                     ;
+
+
+                 // echo json_encode($statistics);die();
+                 if ($statistics[6]['data']) {
+                     $start = 6;
+                     foreach ($statistics[6]['data'] as $key => $value) {
+                         if ($key != '合计') {
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$start, $key);
+                             $num = $value ? count($value) : 0;
+                             $end = $start + $num  - 1;
+                             if ($end > $start) {
+                                 $PHPExcel->setActiveSheetIndex(0)->mergeCells('A'.$start.':A'.$end);
+                                 $PHPExcel->getActiveSheet(0)->getStyle('A'.$start)->applyFromArray(
+                                     [
+                                         'alignment' => [
+                                             'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER
+                                         ]
+                                     ]
+                                 );
+                             }
+                             if ($value) {
+                                 $unit_start = $start;
+                                 foreach ($value as $unit) {
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$unit_start, $unit['all_name']);
+
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$unit_start, $unit['content']['first'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$unit_start, $unit['content']['first'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$unit_start, $unit['content']['first'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$unit_start, $unit['content']['first'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$unit_start, $unit['content']['first'][4]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$unit_start, $unit['content']['first'][5]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$unit_start, $unit['content']['first'][6]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$unit_start, $unit['content']['first'][7]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.$unit_start, $unit['content']['first'][8]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.$unit_start, $unit['content']['first'][9]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.$unit_start, $unit['content']['first'][10]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.$unit_start, $unit['content']['first'][11]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.$unit_start, $unit['content']['first'][12]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.$unit_start, $unit['content']['first'][13]);
+
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('Q'.$unit_start, $unit['content']['second'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('R'.$unit_start, $unit['content']['second'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('S'.$unit_start, $unit['content']['second'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('T'.$unit_start, $unit['content']['second'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('U'.$unit_start, $unit['content']['second'][4]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('V'.$unit_start, $unit['content']['second'][5]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('W'.$unit_start, $unit['content']['second'][6]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('X'.$unit_start, $unit['content']['second'][7]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('Y'.$unit_start, $unit['content']['second'][8]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('Z'.$unit_start, $unit['content']['second'][9]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AA'.$unit_start, $unit['content']['second'][10]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AB'.$unit_start, $unit['content']['second'][11]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AC'.$unit_start, $unit['content']['second'][12]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AD'.$unit_start, $unit['content']['second'][13]);
+
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AE'.$unit_start, $unit['content']['third'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AF'.$unit_start, $unit['content']['third'][1]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AG'.$unit_start, $unit['content']['third'][2]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AH'.$unit_start, $unit['content']['third'][3]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AI'.$unit_start, $unit['content']['third'][4]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AJ'.$unit_start, $unit['content']['third'][5]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AK'.$unit_start, $unit['content']['third'][6]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AL'.$unit_start, $unit['content']['third'][7]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AM'.$unit_start, $unit['content']['third'][8]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AN'.$unit_start, $unit['content']['third'][9]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AO'.$unit_start, $unit['content']['third'][10]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AP'.$unit_start, $unit['content']['third'][11]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AQ'.$unit_start, $unit['content']['third'][12]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('AR'.$unit_start, $unit['content']['third'][13]);
+
+                                     $unit_start++;
+                                 }
+                             }
+
+                             $start = $start + $num ;
+                         } else {
+                             // echo json_encode($statistics[0]['data'][$key]);die();
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$start, $key);
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$start, '');
+
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$unit_start, $statistics[6]['data']['合计']['first'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$unit_start, $statistics[6]['data']['合计']['first'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$unit_start, $statistics[6]['data']['合计']['first'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$unit_start, $statistics[6]['data']['合计']['first'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$unit_start, $statistics[6]['data']['合计']['first'][4]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$unit_start, $statistics[6]['data']['合计']['first'][5]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$unit_start, $statistics[6]['data']['合计']['first'][6]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$unit_start, $statistics[6]['data']['合计']['first'][7]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.$unit_start, $statistics[6]['data']['合计']['first'][8]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.$unit_start, $statistics[6]['data']['合计']['first'][9]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.$unit_start, $statistics[6]['data']['合计']['first'][10]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.$unit_start, $statistics[6]['data']['合计']['first'][11]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.$unit_start, $statistics[6]['data']['合计']['first'][12]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.$unit_start, $statistics[6]['data']['合计']['first'][13]);
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('Q'.$unit_start, $statistics[6]['data']['合计']['second'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('R'.$unit_start, $statistics[6]['data']['合计']['second'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('S'.$unit_start, $statistics[6]['data']['合计']['second'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('T'.$unit_start, $statistics[6]['data']['合计']['second'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('U'.$unit_start, $statistics[6]['data']['合计']['second'][4]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('V'.$unit_start, $statistics[6]['data']['合计']['second'][5]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('W'.$unit_start, $statistics[6]['data']['合计']['second'][6]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('X'.$unit_start, $statistics[6]['data']['合计']['second'][7]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('Y'.$unit_start, $statistics[6]['data']['合计']['second'][8]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('Z'.$unit_start, $statistics[6]['data']['合计']['second'][9]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AA'.$unit_start, $statistics[6]['data']['合计']['second'][10]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AB'.$unit_start, $statistics[6]['data']['合计']['second'][11]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AC'.$unit_start, $statistics[6]['data']['合计']['second'][12]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AD'.$unit_start, $statistics[6]['data']['合计']['second'][13]);
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AE'.$unit_start, $statistics[6]['data']['合计']['third'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AF'.$unit_start, $statistics[6]['data']['合计']['third'][1]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AG'.$unit_start, $statistics[6]['data']['合计']['third'][2]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AH'.$unit_start, $statistics[6]['data']['合计']['third'][3]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AI'.$unit_start, $statistics[6]['data']['合计']['third'][4]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AJ'.$unit_start, $statistics[6]['data']['合计']['third'][5]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AK'.$unit_start, $statistics[6]['data']['合计']['third'][6]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AL'.$unit_start, $statistics[6]['data']['合计']['third'][7]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AM'.$unit_start, $statistics[6]['data']['合计']['third'][8]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AN'.$unit_start, $statistics[6]['data']['合计']['third'][9]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AO'.$unit_start, $statistics[6]['data']['合计']['third'][10]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AP'.$unit_start, $statistics[6]['data']['合计']['third'][11]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AQ'.$unit_start, $statistics[6]['data']['合计']['third'][12]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('AR'.$unit_start, $statistics[6]['data']['合计']['third'][13]);
+
+                         }
+
+
+                     }
+
+
+                 }
+
+
+                 $PHPExcel->getActiveSheet(0)->mergeCells('A1:AR1');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('A2:A5');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('B2:B5');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('C2:P2');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('Q2:AD2');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('AE2:AR2');
+
+
+                 $PHPExcel->getActiveSheet(0)->mergeCells('C3:D4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('E3:F4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('G3:H4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('I3:P3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('I4:J4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('K4:L4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('M4:N4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('O4:P4');
+
+                 $PHPExcel->getActiveSheet(0)->mergeCells('Q3:R4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('S3:T4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('U3:V4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('W3:AD3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('W4:X4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('Y4:Z4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('AA4:AB4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('AC4:AD4');
+
+                 $PHPExcel->getActiveSheet(0)->mergeCells('AE3:AF4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('AG3:AH4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('AI3:AJ4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('AK3:AR3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('AK4:AL4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('AM4:AN4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('AO4:AP4');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('AQ4:AR4');
+
+                 $PHPExcel->getActiveSheet(0)->getStyle('A1')->applyFromArray(
+                     [
+                         'alignment' => [
+                             'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                         ]
+                     ]
+                 );
+
+                 $PHPExcel->getActiveSheet(0)->getStyle('I3')->applyFromArray(
+                     [
+                         'alignment' => [
+                             'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                         ]
+                     ]
+                 );
+                 $PHPExcel->getActiveSheet(0)->getStyle('W3')->applyFromArray(
+                     [
+                         'alignment' => [
+                             'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                         ]
+                     ]
+                 );
+                 $PHPExcel->getActiveSheet(0)->getStyle('AK3')->applyFromArray(
+                     [
+                         'alignment' => [
+                             'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                         ]
+                     ]
+                 );
+
+                 break;
+             case 8:
+                 $title = $statistics[7]['name'];
+                 $Service = \Common\Service\BankQuarterlyQuantityBStNewService::get_instance();
+                 $statistics[7]['data'] = $Service->get_by_month_year($year, $month);
+                 $statistics = $this->convert_statistics_datas($statistics);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A1', $title);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A2', '类型')
+                     ->setCellValue('B2', '金融机构名称!')
+                     
+                     ->setCellValue('C2', '大型企业')
+                     ->setCellValue('C3', '本季发生额')
+                     ->setCellValue('D3', '加权平均利率')
+
+                     ->setCellValue('E2', '中型企业')
+                     ->setCellValue('E3', '本季发生额')
+                     ->setCellValue('F3', '加权平均利率')
+
+                     ->setCellValue('G2', '小型企业')
+                     ->setCellValue('G3', '本季发生额')
+                     ->setCellValue('H3', '加权平均利率')
+
+                     ->setCellValue('I2', '微型企业')
+                     ->setCellValue('I3', '本季发生额')
+                     ->setCellValue('J3', '加权平均利率')
+
+                 ;
+
+
+                 // echo json_encode($statistics);die();
+                 if ($statistics[7]['data']) {
+                     $start = 4;
+                     foreach ($statistics[7]['data'] as $key => $value) {
+                         if ($key != '合计') {
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$start, $key);
+                             $num = $value ? count($value) : 0;
+                             $end = $start + $num  - 1;
+                             if ($end > $start) {
+                                 $PHPExcel->setActiveSheetIndex(0)->mergeCells('A'.$start.':A'.$end);
+                                 $PHPExcel->getActiveSheet(0)->getStyle('A'.$start)->applyFromArray(
+                                     [
+                                         'alignment' => [
+                                             'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER
+                                         ]
+                                     ]
+                                 );
+                             }
+                             if ($value) {
+                                 $unit_start = $start;
+                                 foreach ($value as $unit) {
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$unit_start, $unit['all_name']);
+
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$unit_start, $unit['content']['first'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$unit_start, $unit['content']['first'][1]);
+
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$unit_start, $unit['content']['second'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$unit_start, $unit['content']['second'][1]);
+
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$unit_start, $unit['content']['third'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$unit_start, $unit['content']['third'][1]);
+
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$unit_start, $unit['content']['forth'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$unit_start, $unit['content']['forth'][1]);
+                                     $unit_start++;
+                                 }
+                             }
+
+                             $start = $start + $num ;
+                         } else {
+                             // echo json_encode($statistics[0]['data'][$key]);die();
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$start, $key);
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$start, '');
+
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$unit_start, $statistics[7]['data']['合计']['first'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$unit_start, $statistics[7]['data']['合计']['first'][1]);
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$unit_start, $statistics[7]['data']['合计']['second'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$unit_start, $statistics[7]['data']['合计']['second'][1]);
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$unit_start, $statistics[7]['data']['合计']['third'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$unit_start, $statistics[7]['data']['合计']['third'][1]);
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$unit_start, $statistics[7]['data']['合计']['forth'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$unit_start, $statistics[7]['data']['合计']['forth'][1]);
+
+                         }
+
+
+                     }
+
+
+                 }
+
+
+                 $PHPExcel->getActiveSheet(0)->mergeCells('A1:J1');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('A2:A3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('B2:B3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('C2:D2');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('E2:F2');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('G2:H2');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('I2:J2');
+
+
+                 $PHPExcel->getActiveSheet(0)->getStyle('A1')->applyFromArray(
+                     [
+                         'alignment' => [
+                             'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                         ]
+                     ]
+                 );
+
+
+                 break;
+             case 9:
+                 $title = $statistics[8]['name'];
+                 $Service = \Common\Service\BankQuarterlyQuantityCStNewService::get_instance();
+                 $statistics[8]['data'] = $Service->get_by_month_year($year, $month);
+                 $statistics = $this->convert_statistics_datas($statistics);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A1', $title);
+                 $PHPExcel->setActiveSheetIndex(0)
+                     ->setCellValue('A2', '类型')
+                     ->setCellValue('B2', '金融机构名称!')
+
+                     ->setCellValue('C2', '关注类贷款余额')
+                     ->setCellValue('D2', '剪刀差')
+                     ->setCellValue('E2', '逾期90天以上未纳入不良')
+                     ->setCellValue('F2', '应收未收利息')
+
+
+                 ;
+
+
+                 // echo json_encode($statistics);die();
+                 if ($statistics[8]['data']) {
+                     $start = 3;
+                     foreach ($statistics[8]['data'] as $key => $value) {
+                         if ($key != '合计') {
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$start, $key);
+                             $num = $value ? count($value) : 0;
+                             $end = $start + $num  - 1;
+                             if ($end > $start) {
+                                 $PHPExcel->setActiveSheetIndex(0)->mergeCells('A'.$start.':A'.$end);
+                                 $PHPExcel->getActiveSheet(0)->getStyle('A'.$start)->applyFromArray(
+                                     [
+                                         'alignment' => [
+                                             'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER
+                                         ]
+                                     ]
+                                 );
+                             }
+                             if ($value) {
+                                 $unit_start = $start;
+                                 foreach ($value as $unit) {
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$unit_start, $unit['all_name']);
+
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$unit_start, $unit['content']['first'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$unit_start, $unit['content']['second'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$unit_start, $unit['content']['third'][0]);
+                                     $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$unit_start, $unit['content']['forth'][0]);
+
+
+                                     $unit_start++;
+                                 }
+                             }
+
+                             $start = $start + $num ;
+                         } else {
+                             // echo json_encode($statistics[0]['data'][$key]);die();
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$start, $key);
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$start, '');
+
+
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$unit_start, $statistics[8]['data']['合计']['first'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$unit_start, $statistics[8]['data']['合计']['second'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$unit_start, $statistics[8]['data']['合计']['third'][0]);
+                             $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$unit_start, $statistics[8]['data']['合计']['forth'][0]);
+
+                         }
+
+
+                     }
+
+
+                 }
+
+
+                 $PHPExcel->getActiveSheet(0)->mergeCells('A1:J1');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('A2:A3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('B2:B3');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('C2:D2');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('E2:F2');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('G2:H2');
+                 $PHPExcel->getActiveSheet(0)->mergeCells('I2:J2');
+
+
+                 $PHPExcel->getActiveSheet(0)->getStyle('A1')->applyFromArray(
+                     [
+                         'alignment' => [
+                             'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                         ]
+                     ]
+                 );
+
+
+                 break;
+         }
+
+
+         header('Content-Type: application/vnd.ms-excel');
+         header('Content-Disposition: attachment;filename="'.$title.'.xls"');
+         header('Cache-Control: max-age=0');
+// If you're serving to IE 9, then the following may be needed
+         header('Cache-Control: max-age=1');
+
+// If you're serving to IE over SSL, then the following may be needed
+         header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+         header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+         header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+         header ('Pragma: public'); // HTTP/1.0
+
+         $objWriter = \PHPExcel_IOFactory::createWriter($PHPExcel, 'Excel5');
+         $objWriter->save('php://output');
+
+     }
+
+     private function convert_statistics_datas($statistics) {
+         $sub_type_map = \Common\Model\FinancialDepartmentModel::$SUB_TYPE_MAP;
+
+         foreach ($statistics as $k => $_data) {
+             $_data = $_data['data'];
+             if (!$_data ) {
+                 continue;
+             }
+             foreach ($_data as $_k => $_v) {
+                 $statistics[$k]['data'][$_k]['content'] = json_decode($_v['content']);
+             }
+
+             if (in_array($k, [0,1,2,6,7,8])) {
+                 $statistics[$k]['data'] = result_to_complex_map($statistics[$k]['data'], 'department_sub_type');
+                 $temp = [];
+                 $all = [];
+                 foreach ($statistics[$k]['data'] as $_sub_type => $data) {
+                     $sub_type_name = isset($sub_type_map[$_sub_type]) ? $sub_type_map[$_sub_type] : '未知';
+                     $temp[$sub_type_name] = $data;
+                     foreach ($data as $in_value) {
+                         foreach ($in_value['content'] as $field => $value) {
+                             if (is_array($value)) {
+                                 foreach ($value as $_key => $_value) {
+                                     $all[$field][$_key] += $_value;
+                                 }
+                             } else {
+                                 $all[$field] += $value;
+                             }
+                         }
+
+                     }
+                 }
+                 $statistics[$k]['data'] = $temp;
+                 $statistics[$k]['data']['合计'] = $all;
+             }
+         }
+
+         $statistics = json_decode(json_encode($statistics), TRUE);
+         return $statistics;
+     }
+
      /**
       * 信贷情况月报
       */
