@@ -227,6 +227,27 @@ class UserService extends BaseService{
         }
     }
 
+
+    public function be_dealer($ids) {
+        if (!check_num_ids($ids)) {
+            return result(FALSE, 'uids为空~');
+        }
+        $NfUser = D('NfUser');
+        $users = $NfUser->where('id in ('. join(',', $ids) .')')->select();
+        foreach ($users as $user) {
+            $data = [
+                'type'=>\Common\Model\NfUserModel::TYPE_DEALER,
+                'entity_title' => $user['disabled_name'],
+                'entity_tel' => $user['disabled_tel']
+            ];
+            $ret = $NfUser->where(['id' => $user['id']])->save($data);
+            if (!$ret) {
+                return result(FALSE, $NfUser->getError());
+            }
+        }
+        return result(TRUE);
+    }
+
     public function can_be_inviter($uid) {
         $info = $this->get_info_by_id($uid);
         if ($info['verify_status'] != \Common\Model\NfUserModel::VERIFY_STATUS_OK) {
@@ -240,6 +261,19 @@ class UserService extends BaseService{
         return result(TRUE);
     }
 
+
+    public function can_be_dealer($uid) {
+        $info = $this->get_info_by_id($uid);
+        if ($info['verify_status'] != \Common\Model\NfUserModel::VERIFY_STATUS_OK) {
+            return result(FALSE, '没有认证为残疾人,不能成为分佣者');
+        }
+
+//        if ($info['is_inviter'] != \Common\Model\NfUserModel::IS_INVITER_SUBMIT) {
+//            return result(FALSE, '当前分佣者状态不是提交状态,不能通过成为分佣者');
+//        }
+
+        return result(TRUE);
+    }
 
     public function nbe_inviter($ids) {
         if (!check_num_ids($ids)) {

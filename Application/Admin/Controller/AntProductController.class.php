@@ -260,11 +260,7 @@ class AntProductController extends AdminController {
                     }
 
                     action_user_log('修改产品信息');
-                    if($data['is_real']) {
-                        $this->success('修改成功！', U('index'));
-                    } else {
-                        $this->success('修改成功！', U('unreal'));
-                    }
+                    $this->success('修改成功！','javascript:history.back(-1);');
 
                 } else {
                     $this->error($ret->message);
@@ -274,11 +270,7 @@ class AntProductController extends AdminController {
                 if ($ret->success) {
                     $this->set_skus($data, $ret->data);
                     action_user_log('添加产品');
-                    if($data['is_real']) {
-                        $this->success('修改成功！', U('index'));
-                    } else {
-                        $this->success('修改成功！', U('unreal'));
-                    }
+                    $this->success('添加成功！','javascript:history.back(-1);');
                 } else {
                     $this->error($ret->message);
                 }

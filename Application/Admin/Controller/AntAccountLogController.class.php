@@ -113,25 +113,38 @@ class AntAccountLogController extends AdminController {
         $create_begin = I('get.create_begin');
         $create_end = I('get.create_end');
 
-        if (!$create_begin) {
-            $create_begin = date('Y-m-d', time()-7*24*3600);
+        if ($create_begin) {
+            $where[] = ['create_time' => ['egt', $create_begin]];
+        }
+        if ($create_end) {
+            $where[] = ['create_time' => ['elt', $create_end]];
         }
 
-        if (!$create_end) {
-            $create_end = date('Y-m-d', time()+7*24*3600);
-        }
-
-        $where[] = ['create_time' => ['egt', $create_begin]];
-        $where[] = ['create_time' => ['elt', $create_end]];
         if (I('get.uid')) {
             $where[] = ['uid' => ['eq', I('get.uid')]];
         }
+
+        $MemberService = \Common\Service\MemberService::get_instance();
+        $franchisee_uids = $MemberService->get_franchisee_uids();
+        if ($franchisee_uids && in_array(UID, $franchisee_uids)) {
+            $this->assign('is_franchisee',1);
+            $where['uid'] = UID;//加盟商只能看到自己的订单
+        }
+
+
         $this->assign('create_begin', $create_begin);
         $this->assign('create_end', $create_end);
         $page = I('get.p', 1);
         list($data, $count) = $this->AccountLogService->get_by_where($where, 'id desc', $page);
         list($sum,$total_pay_num) = $this->AccountLogService->get_totals($where);
-        $this->convert_data($data);
+
+        list($all_list,$count) = $this->AccountLogService->get_by_where_all($where);
+
+
+        $data = $this->convert_data($data);
+        $all_list = $this->convert_data($all_list);
+
+        $dealer_profit_sum = array_sum(result_to_array($all_list,'dealer_profit'));
         $PageInstance = new \Think\Page($count, \Common\Service\AccountLogService::$page_size);
         if($total>\Common\Service\AccountLogService::$page_size){
             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
@@ -141,6 +154,7 @@ class AntAccountLogController extends AdminController {
         $this->assign('total_sum', $sum);
         $this->assign('total_pay_num', $total_pay_num);
         $this->assign('total_order_num', $total_pay_num);
+        $this->assign('dealer_profit_sum', $dealer_profit_sum);
         $this->assign('list', $data);
         $this->assign('page_html', $page_html);
 
@@ -349,7 +363,24 @@ class AntAccountLogController extends AdminController {
         $this->display();
     }
 
-    public function convert_data(&$data) {
+    public function convert_data($data) {
+
+        if ($data) {
+            $oids = result_to_array($data, 'oid');
+            $OrderService = \Common\Service\OrderService::get_instance();
+            $orders = $OrderService->get_by_ids($oids);
+            $orders_map = result_to_map($orders, 'id');
+            $UserService = \Common\Service\UserService::get_instance();
+            foreach ($data as $key => $log) {
+                if (isset($orders_map[$log['id']]) && $UserService->is_dealer($orders_map[$log['id']]['type'])) {
+                    $data[$key]['dealer_profit'] = $orders_map[$log['id']]['dealer_profit'];
+                } else {
+                    $data[$key]['dealer_profit'] = 0;
+                }
+            }
+        }
+
+        return $data;
 
     }
     public function convert_commission_data($data, $where='') {

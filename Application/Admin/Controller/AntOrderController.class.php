@@ -23,6 +23,10 @@ class AntOrderController extends AdminController {
             $where['order_no'] = ['LIKE', '%' . I('get.order_no') . '%'];
         }
 
+        if (I('get.order_id')) {
+            $where['id'] = ['eq', I('get.order_id')];
+        }
+
         if (I('get.entity_title')) {
             $where_user = [];
             $where_user['entity_title'] = ['LIKE', '%' . I('get.entity_title') . '%'];

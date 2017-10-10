@@ -206,7 +206,7 @@ class AntUserController extends AdminController {
         if (!$ret->success) {
             $this->error($ret->message);
         }
-        action_user_log('设置用户id:' . $id . '为分佣者');
+        action_user_log('设置用户id:' . $id . '为邀请者');
         $this->success('设置成功！');
     }
 
@@ -225,8 +225,28 @@ class AntUserController extends AdminController {
         if (!$ret->success) {
             $this->error($ret->message);
         }
-        action_user_log('用户id:' . $id . '退回分佣者');
+        action_user_log('用户id:' . $id . '退回邀请者');
         $this->success('退回成功！');
+    }
+
+    public function be_dealer() {
+        $id = I('get.id');
+
+        if ($id) {
+            $ret = $this->UserService->can_be_dealer($id);
+            if (!$ret->success) {
+                $this->error($ret->message);
+            }
+            $ret = $this->UserService->be_dealer([$id]);
+        } else {
+            $this->error('id没有');
+        }
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        action_user_log('设置用户id:' . $id . '为分佣者');
+        $this->success('设置成功！');
+
     }
 
 }

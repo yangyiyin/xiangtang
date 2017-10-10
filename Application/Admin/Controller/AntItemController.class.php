@@ -296,11 +296,7 @@ class AntItemController extends AdminController {
                 $ret = $this->ItemService->update_by_id($id, $data);
                 if ($ret->success) {
                     action_user_log('修改商品信息');
-                    if($data['is_real']) {
-                        $this->success('修改成功！', U('index'));
-                    } else {
-                        $this->success('修改成功！', U('unreal'));
-                    }
+                    $this->success('修改成功！','javascript:history.back(-1);');
                 } else {
                     $this->error($ret->message);
                 }
@@ -310,11 +306,7 @@ class AntItemController extends AdminController {
 
                 if ($ret->success) {
                     action_user_log('添加商品信息');
-                    if($data['is_real']) {
-                        $this->success('修改成功！', U('index'));
-                    } else {
-                        $this->success('修改成功！', U('unreal'));
-                    }
+                    $this->success('添加成功！','javascript:history.back(-1);');
                 } else {
                     $this->error($ret->message);
                 }

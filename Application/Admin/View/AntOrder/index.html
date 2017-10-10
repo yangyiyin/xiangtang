@@ -10,8 +10,8 @@
 		</div>
 	    <div class="search_type cc mb10 search-form">
 	      <div class="mb10">
-			  &nbsp;订单编号：
-			  <input type="text" class="input length_2" name="order_no" style="width:100px;" value="{:I('order_no')}" >
+			  &nbsp;订单id：
+			  <input type="text" class="input length_2" name="order_id" style="width:100px;" value="{:I('order_id')}" >
 
 			  &nbsp;服务站名称：
 			  <input type="text" class="input length_2" name="entity_title" style="width:100px;" value="{:I('entity_title')}" >
@@ -53,7 +53,7 @@
 		        <tr>
 					<th width="5%"><input class="check-all" type="checkbox"/></th>
 
-					<th width="10%">订单编号</th>
+					<th width="10%">订单id</th>
 					<th width="20%">基本信息</th>
 					<th width="35%">详情</th>
 					<th width="15%">收货地址</th>
@@ -66,9 +66,8 @@
 				<volist name="list" id="vo">
 				<tr style="border-bottom: 1px solid #999">
 		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
-					<td>{$vo.order_no} </td>
+					<td>{$vo.id} </td>
 					<td>
-						<p class="short_info">订单id:{$vo.id}</p>
 						<p class="short_info">总价:{$vo.sum|format_price}元(含运费{$vo.freight|format_price}元)</p>
 
 						<p class="short_info">总数量:{$vo.num}</p>

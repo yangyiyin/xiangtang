@@ -203,4 +203,17 @@ class ItemService extends BaseService{
             return result(FALSE, $NfItem->getError());
         }
     }
+
+    public function check_min_limit($item_nums, $item_map) {
+        foreach ($item_nums as $id => $num) {
+            if (!isset($item_map[$id])) {
+                return result(false, '商品信息异常~');
+            }
+            if ($num < $item_map[$id]['min_limit']) {
+                return result(false, $item_map[$id]['title'].'最小购买量为'.$item_map[$id]['min_limit']);
+            }
+        }
+
+        return result(TRUE);
+    }
 }

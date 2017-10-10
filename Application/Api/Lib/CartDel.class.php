@@ -20,9 +20,20 @@ class CartDel extends BaseApi{
         $item_ids = $this->post_data['iids'];
         $sku_ids = $this->post_data['sku_ids'];
 
-        if (!$item_ids) {
+        $all_del = $this->post_data['all_del'];
+
+        if (!$item_ids && !$all_del) {
             return result_json(FALSE, '参数错误');
         }
+
+        if ($all_del) {//全部删除
+            $ret = $this->CartService->del_by_uid($this->uid);
+            if (!$ret->success) {
+                result_json(FALSE, $ret->message);
+            }
+            result_json(TRUE, '删除成功');
+        }
+
         $iids_arr = explode('_', $item_ids);
         $sku_ids_arr = explode('_', $sku_ids);
         if (count($iids_arr) != count($sku_ids_arr)) {

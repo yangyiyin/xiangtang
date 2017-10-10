@@ -50,7 +50,7 @@
 					<th width="15%">基本信息</th>
 					<th width="15%">创建时间</th>
 					<th width="5%">状态</th>
-					<th>分佣者</th>
+					<th>邀请者</th>
 					<th>审核操作</th>
 					<th>修改操作</th>
 				</tr>
@@ -69,11 +69,11 @@
 					<td ><span>{$vo.status_desc}</span></td>
 					<td>
 						<if condition="$vo['is_inviter'] == 1 ">
-							<a  class="u-btn confirm J_ajax_get" href="{:U('be_inviter')}/id/{$vo.id}" >成为分佣者</a>
+							<a  class="u-btn confirm J_ajax_get" href="{:U('be_inviter')}/id/{$vo.id}" >成为邀请者</a>
 							<elseif condition="$vo['is_inviter'] == 2"/>
-							已成为分佣者
+							已成为邀请者
 							<else />
-							非分佣者
+							非邀请者
 						</if>
 					</td>
 					<td>

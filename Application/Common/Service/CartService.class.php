@@ -93,6 +93,22 @@ class CartService extends BaseService{
         }
     }
 
+    public function del_by_uid($uid) {
+        if (!$uid) {
+            return result(FALSE, '参数不合法');
+        }
+
+        $NfCart = D('NfCart');
+        $ret = $NfCart->where('uid=' . $uid )->delete();
+        if ($ret) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, '网络繁忙~');
+        }
+
+    }
+
+
     public function del_by_uid_iids($uid, $iids) {
         if (!$uid || !check_num_ids($iids)) {
             return result(FALSE, '参数不合法');

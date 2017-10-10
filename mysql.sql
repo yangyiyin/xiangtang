@@ -98,3 +98,6 @@ alter table shopy_nf_order add print_count int (5) DEFAULT '0';
 
 alter table shopy_nf_order_pre add `order_from` int (5) DEFAULT '1';
 alter table shopy_nf_order add `order_from` int (5) DEFAULT '1';
+
+
+alter table shopy_nf_item add min_limit int (11) DEFAULT '0';

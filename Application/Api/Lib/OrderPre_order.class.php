@@ -27,6 +27,8 @@ class OrderPre_order extends BaseApi{
 
         $items_num_arr = $items_num;
 
+        $items_num_arr = json_decode($items_num,true);
+
         if (!is_array($items_num_arr)) {
             return result_json(FALSE, '参数错误~');
         }
@@ -83,6 +85,17 @@ class OrderPre_order extends BaseApi{
         if (!$ret->success) {
             return result_json(FALSE, $ret->message);
         }
+
+        //检测最低购买量
+        $items_nums = [];
+        foreach ($items_num_arr as $li) {
+            $items_nums[$li['item_id']] += $li['num'];
+        }
+        $ret = $ItemService->check_min_limit($items_nums, $items_map);
+        if (!$ret->success) {
+            return result_json(FALSE, $ret->message);
+        }
+
         //格式化,获取返回需要的字段
         $items = $this->convert_data($items_num_arr, $skus_map, $items_map);
 

@@ -138,6 +138,8 @@ class ProductSkuService extends BaseService{
                 if ($_item['num'] < $_item['buy_num']) {
                     return result(FALSE, $_item['item']['title'] . $sku_props_map[$_item['id']] .'库存不足~');
                 }
+
+
             }
 
         } else {

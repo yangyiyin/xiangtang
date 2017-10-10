@@ -139,8 +139,6 @@ class AccountLogService extends BaseService{
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         $sum = $NfModel->where($where)->sum('sum');
         $count = $NfModel->where($where)->count();
-
-
         return [$sum, $count];
     }
 

@@ -58,5 +58,4 @@
 //foreach ($list as $k => $_li) {
 //    $list[$_li['pid']][] = $_li;
 //}
-$da = [1];
-unset($da['a']);
+echo base64_encode('123456');
