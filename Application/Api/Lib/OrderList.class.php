@@ -79,8 +79,11 @@ class OrderList extends BaseApi{
                     foreach ($value->order_detail as $key => $_item) {
                         if (isset($comments_map[$_item['sku_id']])) {
                             $value->order_detail[$key]['comment'] = $comments_map[$_item['sku_id']]['comment'];
+                            $value->order_detail[$key]['has_comment'] = true;
                         } else {
                             $value->order_detail[$key]['comment'] = '';
+                            $value->order_detail[$key]['has_comment'] = false;
+
                         }
                     }
                 }
