@@ -26,7 +26,14 @@ class OrderList extends BaseApi{
             if ($status == 1) {//1是全部
                 //$where['status'] = ['EQ', $status];
             } else {
-                $where['status'] = ['EQ', $status];
+                if ($status == '1_1') {
+                    $where['status'] = ['EQ', 1];
+                }elseif ($status == '2_4') {
+                    $where['status'] = ['in', [2,4]];
+                } else {
+                    $where['status'] = ['EQ', $status];
+                }
+
             }
         }
         $where['uid'] = ['EQ', $this->uid];
