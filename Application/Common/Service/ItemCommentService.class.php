@@ -45,6 +45,15 @@ class ItemCommentService extends BaseService{
         return $NfModel->where($where)->select();
     }
 
+    public function get_by_sku_ids_uid($sku_ids, $uid) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['sku_ids'] = ['in', $sku_ids];
+        $where['uid'] = ['eq', $uid];
+        $where['deleted'] = ['eq', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
     public function update_by_id($id, $data) {
 
         if (!$id) {

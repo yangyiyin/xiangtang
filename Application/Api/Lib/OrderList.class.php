@@ -46,6 +46,7 @@ class OrderList extends BaseApi{
             $OrderSnapshotService = \Common\Service\OrderSnapshotService::get_instance();
             $snaps = $OrderSnapshotService->get_by_order_ids($order_ids);
             $snaps_oid_map = result_to_map($snaps, 'order_id');
+            $sku_ids = [];
             foreach ($list as $_order) {
                 if (!isset($snaps_oid_map[$_order['id']]['content'])) {
                     continue;
@@ -55,6 +56,7 @@ class OrderList extends BaseApi{
                 $_order['sum'] = (int) $_order['sum'];
                 $_order['status'] = (int) $_order['status'];
                 $_order['order_detail'] = json_decode($snaps_oid_map[$_order['id']]['content'], TRUE);
+                $sku_ids = array_merge($sku_ids, result_to_array($_order['order_detail'], 'sku_id'));
                 $_order['status_desc'] = $this->OrderService->get_status_txt($_order['status']);
                 $_order['to_pay'] = true;
                 $_order['can_complete'] = true;
@@ -65,6 +67,29 @@ class OrderList extends BaseApi{
                 $tmp = convert_obj($_order, 'id=order_id,order_no,status,status_desc,create_time,num=total_num,sum=total_price,order_detail,to_pay,receiving_address,receiving_name,receiving_tel,receiving_service_name,receiving_service_address,receiving_type,can_complete');
                 $data[] = $tmp;
             }
+
+            //获取商品评论
+            if ($sku_ids) {
+                $sku_ids = array_unique($sku_ids);
+                $ItemCommentService = \Common\Service\ItemCommentService::get_instance();
+                $comments = $ItemCommentService->get_by_sku_ids_uid($sku_ids, $this->uid);
+                $comments_map = result_to_map($comments,'sku_id');
+
+                foreach ($data as &$value) {
+                    foreach ($value->order_detail as $key => $_item) {
+                        if (isset($comments_map[$_item['sku_id']])) {
+                            $value->order_detail[$key]['comment'] = $comments_map[$_item['sku_id']]['comment'];
+                        } else {
+                            $value->order_detail[$key]['comment'] = '';
+                        }
+                    }
+                }
+
+
+            }
+
+
+
         }
         return $data;
     }
