@@ -42,6 +42,13 @@ class ServicesService extends BaseService{
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->select();
     }
+    public function get_by_out_ids($ids) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['out_id'] = ['in', $ids];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
 
     public function update_by_id($id, $data) {
 

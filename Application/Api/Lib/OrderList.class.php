@@ -64,7 +64,7 @@ class OrderList extends BaseApi{
                     $_order['can_complete'] = false;
                 }
                 $tmp = [];
-                $tmp = convert_obj($_order, 'id=order_id,order_no,status,status_desc,create_time,num=total_num,sum=total_price,order_detail,to_pay,receiving_address,receiving_name,receiving_tel,receiving_service_name,receiving_service_address,receiving_type,can_complete');
+                $tmp = convert_obj($_order, 'id=order_id,type,order_no,status,status_desc,create_time,num=total_num,sum=total_price,order_detail,to_pay,receiving_address,receiving_name,receiving_tel,receiving_service_name,receiving_service_address,receiving_type,can_complete,is_real,dealer_profit');
                 $data[] = $tmp;
             }
 
@@ -74,7 +74,7 @@ class OrderList extends BaseApi{
                 $ItemCommentService = \Common\Service\ItemCommentService::get_instance();
                 $comments = $ItemCommentService->get_by_sku_ids_uid($sku_ids, $this->uid);
                 $comments_map = result_to_map($comments,'sku_id');
-
+                $UserService = \Common\Service\UserService::get_instance();
                 foreach ($data as &$value) {
                     foreach ($value->order_detail as $key => $_item) {
                         if (isset($comments_map[$_item['sku_id']])) {
@@ -85,6 +85,13 @@ class OrderList extends BaseApi{
                             $value->order_detail[$key]['has_comment'] = false;
 
                         }
+
+                        if ($UserService->is_normal($value->type)) {
+                            $value->order_detail[$key]['sum_dealer_profit'] = 0;
+                        }
+                    }
+                    if ($UserService->is_normal($value->type)) {
+                        $value->dealer_profit = 0;
                     }
                 }
 

@@ -248,6 +248,34 @@ class UserService extends BaseService{
         return result(TRUE);
     }
 
+    public function be_service($ids) {
+        if (!check_num_ids($ids)) {
+            return result(FALSE, 'uids为空~');
+        }
+        $NfUser = D('NfUser');
+        $users = $NfUser->where('id in ('. join(',', $ids) .')')->select();
+
+        $ServicesService = \Common\Service\ServicesService::get_instance();
+        if ($ServicesService->get_by_out_ids($ids)) {
+            return result(FALSE, '当前网点已存在,请检查');
+        }
+        $data = [];
+        foreach ($users as $user) {
+            $data[] = [
+                'out_id' => $user['id'],
+                'title' => $user['entity_title']
+            ];
+
+        }
+
+        $ret = $ServicesService->add_batch($data);
+        if (!$ret) {
+            return result(FALSE, $NfUser->getError());
+        }
+        return result(TRUE);
+    }
+
+
     public function can_be_inviter($uid) {
         $info = $this->get_info_by_id($uid);
         if ($info['verify_status'] != \Common\Model\NfUserModel::VERIFY_STATUS_OK) {
@@ -301,6 +329,8 @@ class UserService extends BaseService{
 
         return result(TRUE);
     }
+
+
 
     public function get_inviter_code($uid) {
         return mt_rand(10,99) . $uid;

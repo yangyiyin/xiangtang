@@ -51,6 +51,7 @@
 					<th width="15%">创建时间</th>
 					<th width="5%">状态</th>
 					<th>邀请者</th>
+					<th>收货网点</th>
 					<th>审核操作</th>
 					<th>修改操作</th>
 				</tr>
@@ -76,6 +77,15 @@
 							非邀请者
 						</if>
 					</td>
+
+					<td>
+						<if condition="!$vo['is_service'] ">
+							<a  class="u-btn confirm J_ajax_get" href="{:U('be_service')}/id/{$vo.id}" >设为网点</a>
+							<else />
+							已设为网点
+						</if>
+					</td>
+
 					<td>
 						<if condition="$vo['status'] == 1 ">
 							<a  class="u-btn confirm J_ajax_get" href="{:U('forbid')}/id/{$vo.id}" >禁用</a>

@@ -72,9 +72,9 @@ class AntUserController extends AdminController {
     protected function convert_data(&$data) {
         if ($data) {
             $ServicesService = \Common\Service\ServicesService::get_instance();
-            $ids = result_to_array($data, 'service_id');
-            $services = $ServicesService->get_by_ids($ids);
-            $services_map = result_to_map($services, 'id');
+            $ids = result_to_array($data, 'id');
+            $services = $ServicesService->get_by_out_ids($ids);
+            $services_map = result_to_map($services, 'out_id');
            // $user_courier = $userCourierService->get_by_uids($uids);
           //  $user_courier_map = result_to_map($user_courier, 'uid');
 
@@ -83,8 +83,10 @@ class AntUserController extends AdminController {
 
                 $data[$key]['status_desc'] = $this->UserService->get_status_txt($_item['status']);
 
-                if (isset($services_map[$_item['service_id']])) {
-                    $data[$key]['service'] = $services_map[$_item['service_id']];
+                if (isset($services_map[$_item['id']])) {
+                    $data[$key]['is_service'] = true;
+                } else {
+                    $data[$key]['is_service'] = false;
                 }
 
 
@@ -245,6 +247,23 @@ class AntUserController extends AdminController {
             $this->error($ret->message);
         }
         action_user_log('设置用户id:' . $id . '为分佣者');
+        $this->success('设置成功！');
+
+    }
+
+    public function be_service() {
+        $id = I('get.id');
+
+        if ($id) {
+
+            $ret = $this->UserService->be_service([$id]);
+        } else {
+            $this->error('id没有');
+        }
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        action_user_log('设置用户id:' . $id . '为网点');
         $this->success('设置成功！');
 
     }
