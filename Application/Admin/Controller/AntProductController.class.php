@@ -243,11 +243,17 @@ class AntProductController extends AdminController {
                     $productSkuService = \Common\Service\ProductSkuService::get_instance();
                     $SkuPropertyService = \Common\Service\SkuPropertyService::get_instance();
                     $skus = $productSkuService->get_by_pids([$id]);
-                    $productSkuService->del_by_pid($id);
+                    //$productSkuService->del_by_pid($id);
                     $sku_ids = result_to_array($skus);
+
+                    $del_sku_ids = array_diff($sku_ids, $data['ids']);
+                    if ($del_sku_ids) {
+                        $productSkuService->del_by_ids($del_sku_ids);
+                    }
+
                     $SkuPropertyService->del_by_sku_ids($sku_ids);
 
-                    $this->set_skus($data, $id);
+                    $this->set_skus($data, $id, $sku_ids);
 
                     //修改item的显示价
                     $ItemService = \Common\Service\ItemService::get_instance();
@@ -260,7 +266,7 @@ class AntProductController extends AdminController {
                     }
 
                     action_user_log('修改产品信息');
-                    $this->success('修改成功！','javascript:history.back(-1);');
+                    $this->success('修改成功！','javascript:self.location=document.referrer;');
 
                 } else {
                     $this->error($ret->message);
@@ -270,7 +276,7 @@ class AntProductController extends AdminController {
                 if ($ret->success) {
                     $this->set_skus($data, $ret->data);
                     action_user_log('添加产品');
-                    $this->success('添加成功！','javascript:history.back(-1);');
+                    $this->success('添加成功！','javascript:self.location=document.referrer;');
                 } else {
                     $this->error($ret->message);
                 }
@@ -279,20 +285,33 @@ class AntProductController extends AdminController {
         }
     }
 
-    private function set_skus($data, $producy_id) {
+    private function set_skus($data, $producy_id, $sku_ids = '') {
         //新增sku
         $productSkuService = \Common\Service\ProductSkuService::get_instance();
         $data_sku = [];
         $SkuPropertyService = \Common\Service\SkuPropertyService::get_instance();
         for($i=0; $i<count($data['stocks']); $i++) {
-            $data_sku = ['pid'=>$producy_id, 'price' => ceil($data['normal_prices'][$i] * 100), 'dealer_price' => ceil($data['dealer_prices'][$i] * 100), 'num'=>$data['stocks'][$i]];
-            $ret_sku = $productSkuService->add_one($data_sku);
-            if (!$ret_sku->success) {
-                $this->error($ret_sku->message);
+            if ($sku_ids && in_array($data['ids'][$i], $sku_ids)) {
+                //更新
+                $data_sku = ['price' => ceil($data['normal_prices'][$i] * 100), 'dealer_price' => ceil($data['dealer_prices'][$i] * 100), 'num'=>$data['stocks'][$i],'code'=>$data['codes'][$i]];
+                $ret_sku = $productSkuService->update_by_id($data['ids'][$i], $data_sku);
+//                if (!$ret_sku->success) {
+//                    $this->error($ret_sku->message);
+//                }
+                $sku_id = $data['ids'][$i];
+            } else {
+                //新增
+                $data_sku = ['pid'=>$producy_id, 'price' => ceil($data['normal_prices'][$i] * 100), 'dealer_price' => ceil($data['dealer_prices'][$i] * 100), 'num'=>$data['stocks'][$i],'code'=>$data['codes'][$i]];
+                $ret_sku = $productSkuService->add_one($data_sku);
+                if (!$ret_sku->success) {
+                    $this->error($ret_sku->message);
+                }
+
+                //新增sku属性
+                $sku_id = $ret_sku->data;
+
             }
 
-            //新增sku属性
-            $sku_id = $ret_sku->data;
             $prop_vals = explode('|+|', $data['prop_vals'][$i]);
             foreach ($prop_vals as $vals) {
                 if ($vals) {

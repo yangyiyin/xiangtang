@@ -58,4 +58,4 @@
 //foreach ($list as $k => $_li) {
 //    $list[$_li['pid']][] = $_li;
 //}
-echo base64_encode('123456');
+print_r(array_diff([1,2], [2,3,4]));

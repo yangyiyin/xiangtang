@@ -198,8 +198,8 @@ class OrderPre_order extends BaseApi{
             //获取产品信息
             $ProductService = \Common\Service\ProductService::get_instance();
             $pids = result_to_array($items_map, 'pid');
-            $products = $ProductService->get_by_ids($pids);
-            $products_map = result_to_map($products);
+//            $products = $ProductService->get_by_ids($pids);
+//            $products_map = result_to_map($products);
             foreach ($data as $key => $_item) {
                 $_item['img'] = item_img(get_cover($items_map[$_item['item_id']]['img'], 'path'));//todo 这种方式后期改掉
 
@@ -220,7 +220,8 @@ class OrderPre_order extends BaseApi{
                 $_item['id'] = (int) $_item['item_id'];
                 $_item['seller_uid'] =  (int) $items_map[$_item['item_id']]['uid'];
                 $_item['pid'] = (int) $items_map[$_item['item_id']]['pid'];
-                $_item['code'] = isset($products_map[$_item['pid']]['code']) ? $products_map[$_item['pid']]['code'] : '';
+                //$_item['code'] = isset($products_map[$_item['pid']]['code']) ? $products_map[$_item['pid']]['code'] : '';
+                $_item['code'] = $skus_map[$_item['sku_id']]['code'];
                 $_item['title'] = $items_map[$_item['item_id']]['title'];
                 $_item['desc'] =  $items_map[$_item['item_id']]['desc'];
                 $_item['is_real'] =  $items_map[$_item['item_id']]['is_real'];

@@ -70,6 +70,14 @@ class ProductSkuService extends BaseService{
         return $NfProductSku->where('id=' . $id)->delete();
     }
 
+    public function del_by_ids($ids) {
+        if (!check_num_ids($ids)) {
+            return false;
+        }
+        $NfProductSku = D('NfProductSku');
+        return $NfProductSku->where(['id' => ['in',$ids]])->delete();
+    }
+
     public function get_by_pids($pids) {
         if (!check_num_ids($pids)) {
             return false;

@@ -101,3 +101,6 @@ alter table shopy_nf_order add `order_from` int (5) DEFAULT '1';
 
 
 alter table shopy_nf_item add min_limit int (11) DEFAULT '0';
+alter table shopy_nf_item add lables varchar (255) DEFAULT '';
+
+alter table shopy_nf_product_sku add code varchar (50) DEFAULT '';

@@ -38,7 +38,7 @@ class AntOrderController extends AdminController {
                 $where['uid'] = ['in', [0]];
             }
         }
-
+        $where['status'] = ['neq', \Common\Model\NfOrderModel::STATUS_CANCEL];
         if (I('get.status')) {
             $where['status'] = ['EQ', I('get.status')];
         }

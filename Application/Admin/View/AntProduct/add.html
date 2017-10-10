@@ -196,18 +196,20 @@
 											<td>经销商价格</td>
 											<td>普通会员价格</td>
 											<td>库存</td>
+											<td>编码</td>
 										</tr>
 
 											<if condition="$skus">
 
 												<volist name="skus" id="sku">
 													<tr>
-														<td>{$sku.props}</td>
+														<td class="_prop_">{$sku.props}<input type="hidden" value="{$sku.prop_vals}" name="prop_vals[]"/></td>
 														<td><input value="{$sku.dealer_price|format_price}" name="dealer_prices[]" type="text"/></td>
 														<td><input value="{$sku.price|format_price}" name="normal_prices[]" type="text"/></td>
 														<td><input value="{$sku.num}" name="stocks[]" type="text"/></td>
+														<td><input value="{$sku.code}" name="codes[]" type="text"/></td>
+														<td><input value="{$sku.id}" name="ids[]" type="hidden"/></td>
 													</tr>
-													<input type="hidden" value="{$sku.prop_vals}" name="prop_vals[]"/>
 												</volist>
 											<else/>
 												<tr>
@@ -215,6 +217,8 @@
 													<td><input name="dealer_prices[]" type="text"/></td>
 													<td><input name="normal_prices[]" type="text"/></td>
 													<td><input name="stocks[]" type="text"/></td>
+													<td><input name="codes[]" type="text"/></td>
+													<td><input value="{$sku.id}" name="ids[]" type="hidden"/></td>
 												</tr>
 											</if>
 
@@ -293,24 +297,49 @@ $(function(){
 					'<td>经销商价格</td>'+
 					'<td>普通会员价格</td>'+
 					'<td>库存</td>'+
+					'<td>编码</td>'+
 					'</tr>';
 			//console.log(skus);
 			for(var i in skus) {
 				var prop = '';
 				var prop_vals = '';
 				for(var j in skus[i]) {
-					prop += '<span>['+skus[i][j].name+']</span>';
+					prop += '['+skus[i][j].name+']';
 					prop_vals += skus[i][j].pid + '_' + skus[i][j].p_name + '_' + skus[i][j].id + '_' + skus[i][j].name + '|+|';
 
 				}
-				prop+= '<input type="hidden" value="'+prop_vals+'" name="prop_vals[]"/>';
+				prop+= '<input type="hidden" value="'+prop_vals+'" name="prop_vals[]">';
 
-				sku_html += '<tr>'+
-						'<td>'+prop+'</td>'+
-						'<td><input name="dealer_prices[]" type="text"/></td>'+
-						'<td><input name="normal_prices[]" type="text"/></td>'+
-						'<td><input name="stocks[]" type="text"/></td>'+
-						'</tr>';
+				if (skus.length && $('._prop_').length) {
+					var has = 0;
+					var cur_ele = null;
+					$('._prop_').each(function (e,ele) {
+
+						if ($(ele).html() == prop) {
+
+							has = 1;
+							cur_ele = ele;
+
+						}
+					});
+					if (has) {
+						$(cur_ele).parent('tr').find('input').each(function(e,ele){
+							$(ele).attr('value',$(ele).val());
+						})
+						sku_html += '<tr>' + $(cur_ele).parent('tr').html() + '</tr>';
+					} else {
+						sku_html += '<tr>'+
+								'<td class="_prop_">'+prop+'</td>'+
+								'<td><input name="dealer_prices[]" type="text"/></td>'+
+								'<td><input name="normal_prices[]" type="text"/></td>'+
+								'<td><input name="stocks[]" type="text"/></td>'+
+								'<td><input name="codes[]" type="text"/></td>'+
+								'<td><input name="ids[]" type="hidden"/></td>'+
+								'</tr>';
+					}
+				}
+
+
 
 			}
 			if (skus.length) {
@@ -340,12 +369,15 @@ $(function(){
 					'<td>经销商价格</td>'+
 					'<td>普通会员价格</td>'+
 					'<td>库存</td>'+
+					'<td>编码</td>'+
 					'</tr>';
 			sku_html += '<tr>'+
 					'<td>默认</td>' +
 					'<td><input name="dealer_prices[]" type="text"/></td>'+
 					'<td><input name="normal_prices[]" type="text"/></td>'+
 					'<td><input name="stocks[]" type="text"/></td>'+
+					'<td><input name="codes[]" type="text"/></td>'+
+					'<td><input name="ids[]" type="hidden"/></td>'+
 					'</tr>'
 			$('.skus').html(sku_html);
 		}

@@ -21,6 +21,7 @@ class OrderList extends BaseApi{
         if ($status && !$this->OrderService->is_available_status($status)) {
             return result_json(FALSE, '非法参数');
         }
+        $where['status'] = ['neq', \Common\Model\NfOrderModel::STATUS_CANCEL];
         if ($status) {
             if ($status == 1) {//1是全部
                 //$where['status'] = ['EQ', $status];
