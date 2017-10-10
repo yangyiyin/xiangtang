@@ -19,7 +19,7 @@ class OrderList extends BaseApi{
         $status = I('get.type');
         $page = I('get.p', 1);
         if ($status && !$this->OrderService->is_available_status($status)) {
-            return result_json(FALSE, '非法参数');
+            //return result_json(FALSE, '非法参数');
         }
         $where['status'] = ['neq', \Common\Model\NfOrderModel::STATUS_CANCEL];
         if ($status) {
