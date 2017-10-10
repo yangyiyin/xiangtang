@@ -56,5 +56,5 @@ return array(
 
     'GROUP_FRANCHISEE' => 4,
     'SERVER_CIDS' => [8,19],
-    'INVITER_RATE' => 0.01
+    'INVITER_RATE' => 0.4
 );

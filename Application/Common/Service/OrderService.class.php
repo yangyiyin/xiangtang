@@ -213,12 +213,12 @@ class OrderService extends BaseService{
             if ($order['inviter_id'] && $order['dealer_profit']) {
                 $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_INVITER_ADD;
                 //$account_data['sum'] = intval($order['sum'] * C('INVITER_RATE'));
-                $account_data['sum'] = intval($order['sum'] * C('INVITER_RATE'));
+                $account_data['sum'] = intval($order['dealer_profit'] * C('INVITER_RATE'));
                 $account_data['oid'] = $order['id'];
                 $account_data['uid'] = $order['inviter_id'];
                 $account_data['pay_no'] = '';
                 $AccountLogService->add_one($account_data);
-                $AccountService->add_account($order['inviter_id'], $order['dealer_profit']);
+                $AccountService->add_account($order['inviter_id'], $account_data['sum']);
             }
             $user_info = $UserService->get_info_by_id($order['uid']);
             if ($user_info && $UserService->is_dealer($user_info['type']) && $order['dealer_profit']) {
