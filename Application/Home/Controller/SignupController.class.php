@@ -13,17 +13,20 @@ use Think\Controller;
  */
 class SignupController extends Controller {
 
-    public static $type = 102;
+    public static $type = 103;
     public static $free_count = 1000;
 	//系统首页
     public function index(){
+       // echo '等待第三期到来~';die();
+
+//        $this->success('等待第三期到来~','http://www.88plus.net/public/index.php/Home/History/index');
 
         //增加点击量
         $NfClicks = M('NfClicks');
 
-        $one = $NfClicks->where(['ip'=>$_SERVER['REMOTE_ADDR']])->find();
+        $one = $NfClicks->where(['ip'=>$_SERVER['REMOTE_ADDR'], 'type' => 0])->find();
         if ($one) {
-            $NfClicks->where(['ip'=>$_SERVER['REMOTE_ADDR']])->setInc('count',1);
+            $NfClicks->where(['id'=>$one['id']])->setInc('count',1);
         } else {
             $add_click_data = [];
             $add_click_data['ip'] = $_SERVER['REMOTE_ADDR'];

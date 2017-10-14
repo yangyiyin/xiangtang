@@ -17,6 +17,16 @@ class HistoryController extends Controller {
 	//系统首页
     public function index(){
 
+
+        //增加点击量
+        $NfClicks = M('NfClicks');
+
+        $ones = $NfClicks->where(['type'=>['gt',0]])->select();
+        $ones_map = result_to_complex_map($ones, 'type');
+        foreach ($ones_map as $type => $value) {
+            $ones_map[$type] = array_sum(result_to_array($value, 'count'));
+        }
+        $this->assign('map',$ones_map);
         //增加点击量
 
         $this->display();
@@ -30,6 +40,10 @@ class HistoryController extends Controller {
             $path = __ROOT__ . '/Public/' . MODULE_NAME . '/images/1.wmv';
         } elseif ($type == 2) {
             $path = __ROOT__ . '/Public/' . MODULE_NAME . '/images/1.pptx';
+        } elseif ($type == 3) {
+            $path = __ROOT__ . '/Public/' . MODULE_NAME . '/images/2.wmv';
+        } elseif ($type == 4) {
+            $path = __ROOT__ . '/Public/' . MODULE_NAME . '/images/2.pptx';
         }
 
         //增加点击量
