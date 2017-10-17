@@ -44,6 +44,10 @@ class HistoryController extends Controller {
             $path = __ROOT__ . '/Public/' . MODULE_NAME . '/images/2.wmv';
         } elseif ($type == 4) {
             $path = __ROOT__ . '/Public/' . MODULE_NAME . '/images/2.pptx';
+        } elseif ($type == 5) {
+            $path = __ROOT__ . '/Public/' . MODULE_NAME . '/images/3.wmv';
+        } elseif ($type == 6) {
+            $path = __ROOT__ . '/Public/' . MODULE_NAME . '/images/3-myweb.rar';
         }
 
         //增加点击量
