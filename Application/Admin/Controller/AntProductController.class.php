@@ -28,8 +28,8 @@ class AntProductController extends AdminController {
             if (isset($prop_values_map[$item['property_id']])) {
                 foreach ($prop_values_map[$item['property_id']] as $value) {
                     if ($item['property_value_name'] == $value['name']) {
-                        //$NfSkuProperty->update_by_id($item['id'],['property_value_id'=>$value['id']]);
-                        echo $value['id'];
+                        $NfSkuProperty->update_by_id($item['id'],['property_value_id'=>$value['id']]);
+                       // echo $value['id'];
                         break;
                     }
                 }
