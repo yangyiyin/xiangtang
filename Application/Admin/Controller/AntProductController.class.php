@@ -14,6 +14,28 @@ class AntProductController extends AdminController {
         $this->ProductService = \Common\Service\ProductService::get_instance();
     }
 
+    public function set_sku_prop_vids() {
+        $NfSkuProperty = D('NfSkuProperty');
+//        $NfProperty = D('NfProperty');
+        $NfPropertyValue = D('NfPropertyValue');
+
+        $all = $NfSkuProperty->where(['id'=>1907])->select();
+//        $props = $NfProperty->select();
+        $prop_values = $NfPropertyValue->select();
+        $prop_values_map = result_to_complex_map($prop_values, 'property_id');
+
+        foreach ($all as $item) {
+            if (isset($prop_values_map[$item['property_id']])) {
+                foreach ($prop_values_map[$item['property_id']] as $value) {
+                    if ($item['property_value_name'] == $value['name']) {
+                        //$NfSkuProperty->update_by_id($item['id'],['property_value_id'=>$value['id']]);
+                        echo $value['id'];
+                        break;
+                    }
+                }
+            }
+        }
+    }
     public function index() {
         $categoryService = \Common\Service\CategoryService::get_instance();
         $catetree = $categoryService->get_all_tree_option(I('get.cid'));
