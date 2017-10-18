@@ -68,7 +68,9 @@
 		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
 					<td>{$vo.id} </td>
 					<td>
-						<p class="short_info">总价:{$vo.sum|format_price}元(含运费{$vo.freight|format_price}元)</p>
+						<p class="short_info">总价:{$vo.sum|format_price}元(含运费{$vo.freight|format_price}元)
+						<a class="btn show_box" order_id="{$vo.id}" tmp_id="edit_total">修改总价</a>
+						</p>
 
 						<p class="short_info">总数量:{$vo.num}</p>
 						<p class="short_info">佣金:{$vo.dealer_profit|format_price}元</p>
@@ -191,6 +193,20 @@
 			<a class="u-btn	close_show_box" href="javascript:;">取消</a>
 		</p>
 	</div>
+
+	<div id="edit_total" class="show_box_temp" style="display:none;position: fixed;width: 500;left: 50%;top:30%;z-index: 1000;background: #ddd;border: 1px solid #000000;padding: 10px">
+		<p class="title" style="padding: 10px;font-size: 20px">修改总价</p>
+		<p style="padding: 10px">
+			总价:<input value="" class="input total"/>
+		</p>
+
+		<input type="hidden" value="" class="order_id"/>
+		<p style="padding: 10px">
+			<a class="u-btn submit confirm" href="javascript:;">确定</a>
+			<a class="u-btn	close_show_box" href="javascript:;">取消</a>
+		</p>
+	</div>
+
 </block>
 <block name="script">
 <link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
@@ -281,6 +297,19 @@ $(function(){
 			data+='&'+'express_name='+$('#express').find('.express_name').val() +'&'+'express_no='+$('#express').find('.express_no').val()
 		}
 
+		do_post(url, data, this);
+	});
+
+	$('#edit_total').find('.submit').on('click',function () {
+		var url = "{:U('order_modify_total')}";
+		var data = {
+			total:$('#edit_total').find('.total').val(),
+		}
+		var order_id = $('#edit_total').find('.order_id').val();
+
+		if (order_id) {
+			data.id = order_id;
+		}
 		do_post(url, data, this);
 	});
 
