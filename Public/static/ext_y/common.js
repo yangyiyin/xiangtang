@@ -43,23 +43,30 @@ var gain_labels = function (option) {
     this.get_labels = function () {
         this.lables = [];
         var _that = this;
+        var data = [];
         $('.label_input').each(function (a,b) {
             _that.lables.push($(b).val());
+            if ($(b).attr('id')) {
+                data.push($(b).val() + '|' + $(b).attr('id'));
+            } else {
+                data.push($(b).val());
+            }
         });
 
         if (option.hidden_input) {
-            $('.hidden_input').val( this.lables.join(','));
+            $('.hidden_input').val(data.join(','));
         }
     }
 
     if (option && option.current_labels) {
-        var labels = option.current_labels.split(',');
+        var labels = JSON.parse(option.current_labels);
         for(var i in labels) {
             this.add_input();
         }
 
         for(var i in labels) {
-            $('.label_input').eq(i).val(labels[i]);
+            $('.label_input').eq(i).val(labels[i].name);
+            $('.label_input').eq(i).attr('id',labels[i].id);
         }
         this.get_labels();
     } else {

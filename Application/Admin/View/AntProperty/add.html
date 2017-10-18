@@ -52,11 +52,15 @@
 	<script type="text/javascript" src="__STATIC__/ext_y/common.js"></script>
 
 	<script>
-		var opt = {
-			hidden_input:1,
-			current_labels: '{$labels}'
-		}
-		var gain_label_ins = new gain_labels(opt);
+		$(document).ready(function(){
+			var opt = {
+				hidden_input:1,
+				current_labels: '{$labels}'
+			}
+
+			var gain_label_ins = new gain_labels(opt);
+		})
+
 
 	</script>
 </block>

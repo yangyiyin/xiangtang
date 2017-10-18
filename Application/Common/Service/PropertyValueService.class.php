@@ -102,6 +102,21 @@ class PropertyValueService extends BaseService{
         }
     }
 
+
+    public function del_by_ids($ids) {
+        if (!check_num_ids($ids)) {
+            return false;
+        }
+        $NfModel = D('Nf' . static::$name);
+        $ret = $NfModel->where(['id'=>['in',$ids]])->delete();
+        if ($ret) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, '网络繁忙~');
+        }
+    }
+
+
     public function add_batch($data) {
         $NfModel = D('Nf' . static::$name);
 

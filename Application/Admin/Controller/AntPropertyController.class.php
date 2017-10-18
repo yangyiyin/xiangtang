@@ -58,14 +58,14 @@ class AntPropertyController extends AdminController {
             $info = $this->PropertyService->get_info_by_id($id);
             if ($info) {
                 $values = $this->PropertyValueService->get_by_property_id($info['id']);
-                $names = result_to_array($values, 'name');
-                $labels = join(',',$names);
+//                $names = result_to_array($values, 'name');
+//                $labels = join(',',$names);
                 $this->assign('info',$info);
             } else {
                 $this->error('没有找到对应的信息~');
             }
         }
-        $this->assign('labels', $labels);
+        $this->assign('labels', json_encode($values));
         $this->display();
     }
 
@@ -82,18 +82,36 @@ class AntPropertyController extends AdminController {
 
             if ($id) {
                 $ret = $this->PropertyService->update_by_id($id, $data);
-                $this->PropertyValueService->del_by_property_id($id);
-                //添加属性值
+
+
+                //$this->PropertyValueService->del_by_property_id($id);
+                $prop_values = $this->PropertyValueService->get_by_property_id($id);
+                $old_ids = result_to_array($prop_values);
+
+                 //添加属性值
                 if ($values) {
                     $data = [];
+                    $update_ids = [];
                     foreach ($values as $name) {
                         if ($name) {
-                            $data[] = ['property_id'=> $id, 'name'=> $name];
+
+                            $arr = explode('|', $name);
+
+                            if (isset($arr[1])) {
+                                $update_ids[] = $arr[1];
+                                $this->PropertyValueService->update_by_id($arr[1],['name'=>$arr[0]]);
+                            } else {
+                                $data[] = ['property_id'=> $id, 'name'=> $arr[0]];//新增
+                            }
                         }
                     }
                     if ($data) {
                         // print_r($data);die();
                         $this->PropertyValueService->add_batch($data);
+                    }
+                    $del_ids = array_diff($old_ids, $update_ids);
+                    if ($del_ids) {
+                        $this->PropertyValueService->del_by_ids($del_ids);
                     }
 
                 }
