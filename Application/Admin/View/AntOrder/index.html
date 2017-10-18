@@ -79,6 +79,7 @@
 						</if>
 
 						<p class="short_info">创建时间:{$vo.create_time}</p>
+						<p class="short_info">备注:{$vo.remark}</p>
 					</td>
 
 
@@ -199,7 +200,9 @@
 		<p style="padding: 10px">
 			总价:<input value="" class="input total"/>
 		</p>
-
+		<p style="padding: 10px">
+			备注:<input value="" class="input remark"/>
+		</p>
 		<input type="hidden" value="" class="order_id"/>
 		<p style="padding: 10px">
 			<a class="u-btn submit confirm" href="javascript:;">确定</a>
@@ -304,6 +307,7 @@ $(function(){
 		var url = "{:U('order_modify_total')}";
 		var data = {
 			total:$('#edit_total').find('.total').val(),
+			remark:$('#edit_total').find('.remark').val(),
 		}
 		var order_id = $('#edit_total').find('.order_id').val();
 

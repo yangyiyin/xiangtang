@@ -106,3 +106,5 @@ alter table shopy_nf_item add lables varchar (255) DEFAULT '';
 alter table shopy_nf_product_sku add code varchar (50) DEFAULT '';
 
 alter table shopy_nf_services add out_id int (11) DEFAULT '0';
+
+alter table shopy_nf_order add remark varchar (200) DEFAULT '';

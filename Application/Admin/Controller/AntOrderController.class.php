@@ -265,12 +265,14 @@ class AntOrderController extends AdminController {
     public function order_modify_total() {
         $order_id = I('id');
         $total = I('total');
+        $remark = I('remark');
         if (!$order_id || !$total) {
             $this->error('参数错误');
 
         }
         $data = [];
         $data['sum'] = $total * 100;
+        $data['remark'] = $remark;
         $ret = $this->OrderService->update_by_id($order_id,$data);
 
         if (!$ret->success){
