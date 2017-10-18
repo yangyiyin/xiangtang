@@ -19,7 +19,7 @@ class AntProductController extends AdminController {
 //        $NfProperty = D('NfProperty');
         $NfPropertyValue = D('NfPropertyValue');
 
-        $all = $NfSkuProperty->where(['id'=>1907])->select();
+        $all = $NfSkuProperty->where()->select();
 //        $props = $NfProperty->select();
         $prop_values = $NfPropertyValue->select();
         $prop_values_map = result_to_complex_map($prop_values, 'property_id');
