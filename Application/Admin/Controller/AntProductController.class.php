@@ -29,6 +29,7 @@ class AntProductController extends AdminController {
                 foreach ($prop_values_map[$item['property_id']] as $value) {
                     if ($item['property_value_name'] == $value['name']) {
                         $NfSkuProperty->where(['id'=>$item['id']])->save(['property_value_id'=>$value['id']]);
+                        echo $NfSkuProperty->getLastSql();
                        // echo $value['id'];
                         break;
                     }
