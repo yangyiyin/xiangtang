@@ -18,9 +18,9 @@ class SignupController extends Controller {
 	//系统首页
     public function index(){
        // echo '等待第三期到来~';die();
+        $this->waitSecond = 3;
 
-//        $this->success('等待第三期到来~','http://www.88plus.net/public/index.php/Home/History/index');
-
+        $this->success('下期直播未定,暂以录制视频为主,请下载相关视频学习','http://www.88plus.net/public/index.php/Home/History/index');die();
         //增加点击量
         $NfClicks = M('NfClicks');
 
