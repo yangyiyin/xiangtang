@@ -88,3 +88,20 @@ CREATE TABLE `shopy_nf_clicks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 alter table shopy_nf_clicks add type int (11) DEFAULT '0';
+
+
+CREATE TABLE `shopy_nf_docs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` int(11) NOT NULL DEFAULT '0',
+  `title` VARCHAR(50) DEFAULT '',
+  `method` VARCHAR(10) DEFAULT '',
+`content_from` text ,
+`content_to` text ,
+`create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+alter table shopy_nf_docs add url varchar (200) DEFAULT '';
+alter table shopy_nf_docs add last_edit_time datetime DEFAULT NULL;

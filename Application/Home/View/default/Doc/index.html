@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>接口</title>
+
+
+    <script type="text/javascript" src="__STATIC__/jquery_danchu/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/jquery_danchu/jquery.reveal.js"></script>
+    <link rel="stylesheet" href="__STATIC__/jquery_danchu/reveal.css">
+
+    <style>
+        *{
+            font-size: 12px;
+        }
+        .menu, .content{
+            float: left;
+        }
+        .menu{
+            width: 30%;
+
+        }
+        ul{
+            padding: 3px;
+            max-height: 700px;
+            overflow-y: auto;
+        }
+        li{
+            list-style: none;
+        }
+        .doc{
+            cursor: pointer;
+            padding: 10px;
+
+
+        }
+        .doc span{
+            color: #fff;
+            background: #00aaaa;
+            padding: 5px;
+            border-radius: 6px;
+        }
+
+        .info{
+            padding: 20px;
+            border-radius: 20px;
+            background: #eee;
+        }
+
+    </style>
+</head>
+<body>
+<div class="menu">
+    <form action="" method="get">
+        <select name="doc_type">
+            {$type_options}
+        </select>
+        <input name="title" value="{$title}" type="text" placeholder="接口名称"/>
+        <input type="submit" value="查询"/>
+    </form>
+    <ul>
+    <volist name="list" id="vo">
+        <li class="doc" title="{$vo.title}" url="{$vo.url}" content_from="{$vo.content_from}" content_to="{$vo.content_to}" method="{$vo.method}" last_edit_time="{$vo.last_edit_time}"><span>接口:{$vo.title}</span></li>
+    </volist>
+    </ul>
+</div>
+<div class="content">
+    <p>
+        <span>接口名称:</span>
+        <div class="title info"></div>
+    </p>
+
+    <p>
+        <span>接口地址:</span>
+        <div class="url info"></div>
+    </p>
+    <p>
+        <span>请求方式:</span>
+        <div class="method info"></div>
+    </p>
+    <p>
+        <span>请求参数:</span>
+        <div class="content_from info"></div>
+    </p>
+    <p>
+        <span>返回参数:</span>
+        <div class="content_to info"></div>
+    </p>
+
+    <p>
+        <span>最后修改时间:<span class="last_edit_time "></span></span>
+    </p>
+</div>
+
+<script>
+    $('.doc').click(function() {
+        $('.title').html($(this).attr('title'));
+        $('.url').html($(this).attr('url'));
+        $('.method').html($(this).attr('method'));
+        $('.content_from').html($(this).attr('content_from'));
+        $('.content_to').html($(this).attr('content_to'));
+        $('.last_edit_time').html($(this).attr('last_edit_time'));
+    })
+    $('.doc').eq(0).click();
+</script>
+</body>
+</html>

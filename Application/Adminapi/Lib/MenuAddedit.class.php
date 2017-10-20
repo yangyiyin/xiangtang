@@ -21,7 +21,7 @@ class MenuAddedit extends BaseApi{
         $Menu = D('Menu');
         if ($this->post_data['action'] == 'add') {
             $data['title'] = $post['name'];
-            $data['pid'] = $post['pid'];
+            $data['pid'] = $post['pid'] ? $post['pid'] : 0;
             $data['sort'] = $post['listorder'];
             $data['module'] = $post['module'];
             $data['url'] = $post['url'];
