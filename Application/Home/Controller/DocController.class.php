@@ -65,6 +65,9 @@ class DocController extends Controller {
                 $list[$key]['type_desc'] = isset($map[$li['type']]) ? $map[$li['type']] : '';
                 $list[$key]['content_from'] = str_replace("\n", '<br/>', $li['content_from']);
                 $list[$key]['content_to'] = str_replace("\n", '<br/>', $li['content_to']);
+
+                $list[$key]['content_from'] = str_replace(" ", '&nbsp;', $list[$key]['content_from']);
+                $list[$key]['content_to'] = str_replace(" ", '&nbsp;', $list[$key]['content_to']);
             }
         }
     }
