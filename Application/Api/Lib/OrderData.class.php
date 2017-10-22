@@ -25,7 +25,7 @@ class OrderData extends BaseApi{
         $result->submit = (int) $this->OrderService->get_count_by_where($where);
         $result->paying = $result->submit;
 
-        $where['status'] = ['eq', $status_recieved];
+        $where['status'] = ['eq', \Common\Model\NfOrderModel::STATUS_PAY];
         $result->to_sending = (int) $this->OrderService->get_count_by_where($where);
 
         $where['status'] = ['eq', $status_sending];
