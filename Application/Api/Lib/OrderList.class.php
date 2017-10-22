@@ -23,7 +23,7 @@ class OrderList extends BaseApi{
         }
         $where['status'] = ['neq', \Common\Model\NfOrderModel::STATUS_CANCEL];
         if ($status) {
-            if ($status == 1) {//1是全部
+            if ($status == 1 && $status !== '1_1') {//1是全部
                 //$where['status'] = ['EQ', $status];
             } else {
                 if ($status == '1_1') {

@@ -58,4 +58,4 @@
 //foreach ($list as $k => $_li) {
 //    $list[$_li['pid']][] = $_li;
 //}
-print_r(array_diff([1,2], [2,3,4]));
+var_dump('1_1' == 1);
