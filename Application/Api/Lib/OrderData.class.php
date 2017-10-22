@@ -19,13 +19,23 @@ class OrderData extends BaseApi{
         $result = new \stdClass();
         $where = [];
         list($status_submit, $status_recieved, $status_sending) = $this->OrderService->get_my_status();
+
         $where['uid'] = ['eq', $this->uid];
         $where['status'] = ['eq', $status_submit];
         $result->submit = (int) $this->OrderService->get_count_by_where($where);
+        $result->paying = $result->submit;
+
         $where['status'] = ['eq', $status_recieved];
         $result->to_sending = (int) $this->OrderService->get_count_by_where($where);
+
         $where['status'] = ['eq', $status_sending];
         $result->to_verify = (int) $this->OrderService->get_count_by_where($where);
+
+        $result->confirming = $result->to_sending + $result->to_verify;
+
+        $where['status'] = ['eq', \Common\Model\NfOrderModel::STATUS_DONE];
+        $result->confirmed = (int) $this->OrderService->get_count_by_where($where);
+
         return result_json(TRUE, '', $result);
     }
 
