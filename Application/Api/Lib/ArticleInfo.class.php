@@ -49,17 +49,4 @@ class ArticleInfo extends BaseSapi{
         return result_json(TRUE, '', $result);
     }
 
-    private function convert_data($list) {
-        $data = [];
-        if ($list) {
-            foreach ($list as $_item) {
-                $_item['id'] = (int) $_item['id'];
-                $tmp = [];
-                $tmp = convert_obj($_item, 'id,title,create_time=date');
-                $data[] = $tmp;
-            }
-        }
-        return $data;
-    }
-
 }

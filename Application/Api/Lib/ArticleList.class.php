@@ -33,7 +33,7 @@ class ArticleList extends BaseSapi{
         list($list, $count) = $this->ArticleService->get_by_where($where, 'id desc', $p);
         $result = new \stdClass();
         $result->list = $this->convert_data($list);
-
+        $result->has_more = has_more($count, $p, Service\ArticleService::$page_size);
         return result_json(TRUE, '', $result);
     }
 
