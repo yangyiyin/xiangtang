@@ -17,11 +17,11 @@ class NeedsOutCashDefault extends BaseApi{
     public function excute() {
 
         $ret = $this->OutCashService->get_last_info($this->uid);
-        $data = [];
+        $data = new \stdClass();
         if ($ret) {
-            $data['name'] = $ret['name'];
-            $data['bank_name'] = $ret['bank_name'];
-            $data['bank_code'] = $ret['bank_code'];
+            $data->name = $ret['name'];
+            $data->bank_name = $ret['bank_name'];
+            $data->bank_code = $ret['bank_code'];
         }
 
         return result_json(TRUE, '', $data);
