@@ -9,6 +9,8 @@ class NfArticleModel extends NfBaseModel {
     const TYPE_NEWS = 'news';
     const TYPE_ABOUT = 'about';
     const TYPE_CONTACT = 'contact';
+    const TYPE_PUBLIC = 'public';
+    public static $type_map = ['news'=>'新闻','public'=>'公告'];
     protected $_validate = array(
         /**
         array('title', 'require', '名称不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT),

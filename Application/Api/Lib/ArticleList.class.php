@@ -10,6 +10,7 @@ use Common\Model;
 use Common\Service;
 class ArticleList extends BaseSapi{
     const block_type_news = 'news';
+    const block_type_public = 'public';
     protected $method = parent::API_METHOD_GET;
     private $ArticleService;
     public function init() {
@@ -17,13 +18,17 @@ class ArticleList extends BaseSapi{
     }
 
     public function excute() {
-        $p = I('get.p');
+        $p = I('get.p',1);
         $block = I('get.block'); //暂时不做处理
 
         $where = [];
 
         if ($block == self::block_type_news) {
             $where['type'] = Model\NfArticleModel::TYPE_NEWS;
+        } elseif ($block == self::block_type_public) {
+            $where['type'] = Model\NfArticleModel::TYPE_PUBLIC;
+        } else {
+            $where['type'] = 0;
         }
         list($list, $count) = $this->ArticleService->get_by_where($where, 'id desc', $p);
         $result = new \stdClass();

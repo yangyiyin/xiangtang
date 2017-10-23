@@ -27,9 +27,10 @@ class AntArticleController extends AdminController {
         if (I('get.title')) {
             $where['title'] = ['LIKE', '%' . I('get.title') . '%'];
         }
-        $where['type'] = \Common\Model\NfArticleModel::TYPE_NEWS;
+        $where['type'] = ['in', [\Common\Model\NfArticleModel::TYPE_NEWS,\Common\Model\NfArticleModel::TYPE_PUBLIC]];
         $page = I('get.p', 1);
         list($data, $count) = $this->ArticleService->get_by_where($where, 'id desc', $page);
+        $data = $this->convert_data($data);
         $PageInstance = new \Think\Page($count, \Common\Service\ArticleService::$page_size);
         if($total>\Common\Service\ArticleService::$page_size){
             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
@@ -43,7 +44,13 @@ class AntArticleController extends AdminController {
     }
 
 
-
+    private function convert_data($data) {
+        $map = \Common\Model\NfArticleModel::$type_map;
+        foreach ($data as $key => $value) {
+            $data[$key]['type_desc'] = isset($map[$value['type']]) ? $map[$value['type']] : '未知';
+        }
+        return $data;
+    }
     public function del() {
         $id = I('get.id');
         $ids = I('post.ids');
