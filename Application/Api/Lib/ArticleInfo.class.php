@@ -32,8 +32,8 @@ class ArticleInfo extends BaseSapi{
                 result_json(FALSE, '没有找到文章~');
             }
             list($pre, $next) = $this->ArticleService->get_pre_next($id, $info['type']);
-            $result->pre = convert_obj($pre, 'id,title');
-            $result->next = convert_obj($next, 'id,title');
+            $result->pre = convert_obj($pre, 'id,title,create_time');
+            $result->next = convert_obj($next, 'id,title,create_time');
         } elseif ($block == self::block_type_about) {
             $info = $this->ArticleService->get_about();
         } elseif ($block == self::block_type_contact) {
@@ -46,6 +46,7 @@ class ArticleInfo extends BaseSapi{
             $result->id = $info['id'];
             $result->title = $info['title'];
             $result->content = $info['content'];
+            $result->create_time = $info['create_time'];
         }
 
         return result_json(TRUE, '', $result);
