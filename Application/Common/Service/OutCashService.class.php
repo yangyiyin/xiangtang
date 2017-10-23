@@ -94,6 +94,7 @@ class OutCashService extends BaseService{
     }
 
     public function get_last_info($uid) {
+        $NfModel = D('Nf' . static::$name);
         $where = [];
         $where['uid'] = $uid;
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
