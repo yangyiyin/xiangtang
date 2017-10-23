@@ -6,7 +6,12 @@
         <div class="g-wrap tab-wrap">
         <div class="u-tab">
             <ul class="cc tab-nav">
-                <li data-tab="tab1" class="current"><a href="javascript:void(0);">新增用户</a></li>
+                <if condition="I('id')">
+                    <li data-tab="tab1" class="current"><a href="javascript:void(0);">编辑用户</a></li>
+                    <else/>
+                    <li data-tab="tab1" class="current"><a href="javascript:void(0);">新增用户</a></li>
+
+                </if>
             </ul>
         </div>
         <div class="common-form tab-content">
@@ -15,9 +20,29 @@
                     <table width="100%">
                     <tbody>
                         <tr>
-                          <td width="12%"><label class="item-label">用户名:</label></td>
-                          <td width="88%"><input type="text" class="input input-large" name="username" value=""></td>
+                          <td width="12%"><label class="item-label">登录名:</label></td>
+                          <td width="88%"><input type="text" class="input input-large" name="username" value="{$info.username}"></td>
                         </tr>
+                        <tr>
+                            <td width="12%"><label class="item-label">姓名:</label></td>
+                            <td width="88%"><input type="text" class="input input-large" name="nickname" value="{$info.nickname}"></td>
+                        </tr>
+                        <tr>
+                            <td width="12%"><label class="item-label">手机号:</label></td>
+                            <td width="88%"><input type="text" class="input input-large" name="entity_tel" value="{$info.entity_tel}"></td>
+                        </tr>
+
+                        <tr>
+                            <td width="12%"><label class="item-label">所属部门:</label></td>
+
+
+                        </tr>
+
+                        <tr>
+                            <td width="12%"><label class="item-label">所属组:</label></td>
+                            <td width="88%"><input type="text" class="input input-large" name="entity_tel" value=""></td>
+                        </tr>
+
                         <tr>
                           <td width="12%">密码:</td>
                           <td width="88%"><input type="password" class="input input-large" name="password" value=""></td>
