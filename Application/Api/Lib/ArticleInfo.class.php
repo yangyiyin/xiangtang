@@ -11,6 +11,7 @@ use Common\Service;
 class ArticleInfo extends BaseSapi{
     const block_type_about = 'about';
     const block_type_contact = 'contact';
+    const block_type_public = 'public';
     protected $method = parent::API_METHOD_GET;
     private $ArticleService;
     public function init() {
@@ -37,6 +38,8 @@ class ArticleInfo extends BaseSapi{
             $info = $this->ArticleService->get_about();
         } elseif ($block == self::block_type_contact) {
             $info = $this->ArticleService->get_contact();
+        } elseif ($block == self::block_type_public) {
+            $info = $this->ArticleService->get_puclic();
         }
 
         if ($info) {

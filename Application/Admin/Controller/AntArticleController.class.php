@@ -27,7 +27,7 @@ class AntArticleController extends AdminController {
         if (I('get.title')) {
             $where['title'] = ['LIKE', '%' . I('get.title') . '%'];
         }
-        $where['type'] = ['in', [\Common\Model\NfArticleModel::TYPE_NEWS,\Common\Model\NfArticleModel::TYPE_PUBLIC]];
+        $where['type'] = ['in', [\Common\Model\NfArticleModel::TYPE_NEWS]];
         $page = I('get.p', 1);
         list($data, $count) = $this->ArticleService->get_by_where($where, 'id desc', $page);
         $data = $this->convert_data($data);
@@ -87,6 +87,12 @@ class AntArticleController extends AdminController {
 
     public function add_contact() {
         $info = $this->ArticleService->get_contact();
+        $this->assign('info',$info);
+        $this->display();
+    }
+
+    public function add_public() {
+        $info = $this->ArticleService->get_public();
         $this->assign('info',$info);
         $this->display();
     }
