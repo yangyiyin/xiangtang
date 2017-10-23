@@ -198,29 +198,273 @@ class UserController extends AdminController {
     }
 
     public function add($username = '', $password = '', $repassword = '', $email = ''){
+        $id = I('get.id');
+
         if(IS_POST){
+
+            $nickname = I('nickname');
+            $entity_tel = I('entity_tel');
+            $did = I('did');
+            $gid = I('gid');
+
+            if (!$nickname || !$entity_tel || !$did || !$gid) {
+                $this->error('请填写完信息再提交~');
+            }
             /* 检测密码 */
-            if($password != $repassword){
-                $this->error('密码和重复密码不一致！');
-            }
-            /* 调用注册接口注册用户 */
-            $User   =   new UserApi();
-            $uid    =   $User->register($username, $password, $email);
-            if(0 < $uid){ //注册成功
-                $user = array('uid' => $uid, 'nickname' => $username, 'status' => 1);
-                if(!M('Member')->add($user)){
-                    $this->error('用户添加失败！');
-                } else {
-                    $this->success('用户添加成功！',U('index'));
+            if ($id) {
+
+                if(($password && $repassword) && $password != $repassword){
+                    $this->error('密码和重复密码不一致！');
                 }
-            } else { //注册失败，显示错误信息
-                $this->error($this->showRegError($uid));
+                if ($password && $repassword) {
+                    $User   =   new UserApi();
+                    $data = ['password'=>$password];
+                    if (!$User->update_by_uid($id,$data)) {
+                        //$this->error('修改失败,请稍后再试！');
+                    }
+                }
+                $member_data = [];
+                $member_data['nickname'] = $nickname;
+                $member_data['entity_tel'] = $entity_tel;
+                $ret = M('Member')->where(['uid'=>$id])->save($member_data);
+                if (!$ret) {
+                    //$this->error('修改失败,请稍后再试!');
+                }
+
+                D('FinancialDepartmentUid')->where(['uid'=>$id])->save(['did'=>$did]);
+                D('AuthGroupAccess')->where(['uid'=>$id])->save(['group_id'=>$gid]);
+                action_user_log('用户信息修改');
+                $this->success('用户修改成功！',U('index'));
+
+
+
+            } else {
+                if($password != $repassword){
+                    $this->error('密码和重复密码不一致！');
+                }
+                /* 调用注册接口注册用户 */
+                $User   =   new UserApi();
+                $uid    =   $User->register($username, $password, $email);
+                if(0 < $uid){ //注册成功
+
+                    $user = array('uid' => $uid, 'nickname' => $nickname, 'entity_tel' => $entity_tel, 'status' => 1);
+                    if(!M('Member')->add($user)){
+                        $this->error('用户添加失败！');
+                    } else {
+                        D('FinancialDepartmentUid')->add(['uid'=>$uid,'did'=>$did]);
+                        D('AuthGroupAccess')->add(['uid'=>$uid,'group_id'=>$gid]);
+                        action_user_log('用户信息添加');
+                        $this->success('用户添加成功！',U('index'));
+                    }
+                } else { //注册失败，显示错误信息
+                    $this->error($this->showRegError($uid));
+                }
+
+
             }
+
         } else {
+            $cat = 0;
+            $did = 0;
+            $gid = 0;
+            if ($id) {
+                $User   =   new UserApi();
+                $users = $User->get_by_uids([$id]);
+                if (!$users) {
+                    $this->error('用户信息获取失败');
+                }
+                $user_info = $users[0];
+
+                $MemberService = \Common\Service\MemberService::get_instance();
+                $member = $MemberService->get_info_by_id($id);
+                $member['username'] = $user_info['username'];
+                $this->assign('info',$member);
+                $duid = D('FinancialDepartmentUid')->where(['uid'=>$id])->find();
+               // var_dump(D('FinancialDepartmentUid')->getLastSql());die();
+                if ($duid) {
+                    $DepartmentService = \Common\Service\DepartmentService::get_instance();
+                    $department = $DepartmentService->get_info_by_id($duid['did']);
+
+                    if ($department) {
+                        $did = $department['id'];
+                        $cat = $department['type'];
+                    }
+                }
+
+                $group = D('AuthGroupAccess')->where(['uid'=>$id])->find();
+                if ($group) {
+                    $gid = $group['group_id'];
+                }
+
+            }
+            $this->assign('cat_options', $this->get_cat_options($cat));
+            if (!$cat) {
+                $cat = 1;
+            }
+            $this->assign('department_options', $this->get_department_options($cat, $did));
+            $this->assign('group_options', $this->get_group_options($cat, $gid));
             $this->meta_title = '新增用户';
             $this->display();
         }
     }
+
+
+
+    public function single_add($username = '', $password = '', $repassword = '', $email = ''){
+        $id = UID;
+
+        if(IS_POST){
+
+            $nickname = I('nickname');
+            $entity_tel = I('entity_tel');
+
+            if (!$nickname || !$entity_tel) {
+                $this->error('请填写完信息再提交~');
+            }
+            /* 检测密码 */
+            if ($id) {
+
+                if(($password && $repassword) && $password != $repassword){
+                    $this->error('密码和重复密码不一致！');
+                }
+                if ($password && $repassword) {
+                    $User   =   new UserApi();
+                    $data = ['password'=>$password];
+                    if (!$User->update_by_uid($id,$data)) {
+                        //$this->error('修改失败,请稍后再试！');
+                    }
+                }
+                $member_data = [];
+                $member_data['nickname'] = $nickname;
+                $member_data['entity_tel'] = $entity_tel;
+                $ret = M('Member')->where(['uid'=>$id])->save($member_data);
+                if (!$ret) {
+                    //$this->error('修改失败,请稍后再试!');
+                }
+
+                action_user_log('用户信息修改');
+                $this->success('用户修改成功！',U('index'));
+
+
+
+            } else {
+                $this->error('参数错误!');
+            }
+
+        } else {
+            $cat = 0;
+            $did = 0;
+            $gid = 0;
+            if ($id) {
+                $User   =   new UserApi();
+                $users = $User->get_by_uids([$id]);
+                if (!$users) {
+                    $this->error('用户信息获取失败');
+                }
+                $user_info = $users[0];
+
+                $MemberService = \Common\Service\MemberService::get_instance();
+                $member = $MemberService->get_info_by_id($id);
+                $member['username'] = $user_info['username'];
+                $this->assign('info',$member);
+                $duid = D('FinancialDepartmentUid')->where(['uid'=>$id])->find();
+                // var_dump(D('FinancialDepartmentUid')->getLastSql());die();
+                if ($duid) {
+                    $DepartmentService = \Common\Service\DepartmentService::get_instance();
+                    $department = $DepartmentService->get_info_by_id($duid['did']);
+
+                    if ($department) {
+                        $did = $department['id'];
+                        $cat = $department['type'];
+                    }
+                }
+
+                $group = D('AuthGroupAccess')->where(['uid'=>$id])->find();
+                if ($group) {
+                    $gid = $group['group_id'];
+                }
+
+            }
+            $this->assign('cat_options', $this->get_cat_options($cat));
+            if (!$cat) {
+                $cat = 1;
+            }
+            $this->assign('department_options', $this->get_department_options($cat, $did));
+            $this->assign('group_options', $this->get_group_options($cat, $gid));
+            $this->meta_title = '新增用户';
+            $this->display();
+        }
+    }
+
+
+
+    public function get_did() {
+        $options = $this->get_department_options(I('type'));
+        $this->ajaxReturn($options);
+    }
+    public function get_gid() {
+        $options = $this->get_group_options(I('type'));
+        $this->ajaxReturn($options);
+    }
+
+    private function get_cat_options($selected_id = 0) {
+        $all = C('GROUP_Financial_CATS_MAP');
+        $options = '';
+        if ($all) {
+            foreach ($all as $key=>$value) {
+                if ($selected_id && $selected_id == $key) {
+                    $options .= '<option selected="selected" value="'.$key.'">'.$value.'</option>';
+                } else {
+                    $options .= '<option value="'.$key.'">'.$value.'</option>';
+                }
+            }
+        }
+        return $options;
+    }
+
+    private function get_group_options($type = 0, $selected_id = 0)
+    {
+        $group_options = '';
+        $group_cats = D('GroupCat')->where(['cid' => $type])->select();
+
+        $gids = result_to_array($group_cats, 'gid');
+        $group_options = '';
+        if ($gids) {
+            $groups = D('AuthGroup')->where(['id' => ['in', $gids], 'module' => 'admin', 'status' => 1])->select();
+
+            if ($groups) {
+                foreach ($groups as $_group) {
+                    if ($selected_id && $selected_id == $_group['id']) {
+                        $group_options .= '<option selected="selected" value="' . $_group['id'] . '">' . $_group['title'] . '</option>';
+                    } else {
+                        $group_options .= '<option value="' . $_group['id'] . '">' . $_group['title'] . '</option>';
+                    }
+                }
+            }
+
+
+        }
+        return $group_options;
+    }
+
+    private function get_department_options($type = 0, $selected_id = 0) {
+        $options = '';
+        $DepartmentService = \Common\Service\DepartmentService::get_instance();
+        $departments = $DepartmentService->get_by_type($type);
+
+        if ($departments) {
+            foreach ($departments as $key=>$value) {
+                if ($selected_id && $selected_id == $value['id']) {
+                    $options .= '<option selected="selected" value="'.$value['id'].'">'.$value['all_name'].'</option>';
+                } else {
+                    $options .= '<option value="'.$value['id'].'">'.$value['all_name'].'</option>';
+                }
+            }
+        }
+
+        return $options;
+    }
+
 
     /**
      * 获取用户注册错误信息

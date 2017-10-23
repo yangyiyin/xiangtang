@@ -58,9 +58,7 @@ class FinancialBaseController extends AdminController {
 
         //获取所有相关的公司
         $DepartmentService = \Common\Service\DepartmentService::get_instance();
-
         $departments = $DepartmentService->get_my_list(UID, $this->type);
-
         $all_name = '';
         if (!$departments) {
             $departments = $DepartmentService->get_all_list($this->type);

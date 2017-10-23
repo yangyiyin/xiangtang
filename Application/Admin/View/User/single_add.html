@@ -19,11 +19,11 @@
                 <div id="tab1" class="tab-pane in tab1 table_list">
                     <table width="100%">
                     <tbody>
-                        <tr  <if condition="I('id')">style="display:none"</if> >
-                            <td width="12%"><label class="item-label">*登录名:</label></td>
-                            <td width="88%"><input type="text" class="input input-large" name="username" value="{$info.username}"></td>
-                        </tr>
 
+                    <tr >
+                        <td width="12%"><label class="item-label">*登录名:</label></td>
+                        <td width="88%"><input type="text" style="background: #ddd" disabled="disabled"  class="input input-large" name="username" value="{$info.username}"></td>
+                    </tr>
                         <tr>
                             <td width="12%"><label class="item-label">*姓名:</label></td>
                             <td width="88%"><input type="text" class="input input-large" name="nickname" value="{$info.nickname}"></td>
@@ -37,7 +37,7 @@
                             <td width="12%"><label class="item-label">*类型:</label></td>
 
                             <td width="88%">
-                                <select name="type" class="type">
+                                <select style="background: #ddd" name="type" class="type" disabled="disabled">
                                     {$cat_options}
                                 </select>
                             </td>
@@ -47,7 +47,7 @@
                             <td width="12%"><label class="item-label">*所属部门:</label></td>
 
                             <td width="88%">
-                                <select name="did" class="did">
+                                <select style="background: #ddd" name="did" class="did" disabled="disabled">
                                     {$department_options}
                                 </select>
                             </td>
@@ -56,7 +56,7 @@
                         <tr>
                             <td width="12%"><label class="item-label">*所属组:</label></td>
                             <td width="88%">
-                                <select name="gid" class="gid">{$group_options}</select>
+                                <select name="gid" style="background: #ddd" class="gid" disabled="disabled">{$group_options}</select>
                             </td>
                         </tr>
                         <if condition="I('get.id')">
@@ -91,27 +91,6 @@
             <script>
 
                 $(document).ready(function(){
-                    $('.type').change(function(){
-                        var type = $(this).val();
-                        //获取部门列表
-                        $.get('{:U("get_did")}',{type:type}).success(function(data){
-
-                            if (data) {
-                                $('.did').html(data);
-                            }else{
-                                updateAlert(data.info ,'网络繁忙');
-                            }
-                        });
-                        //获取所属组列表
-                        $.get('{:U("get_gid")}',{type:type}).success(function(data){
-
-                            if (data) {
-                                $('.gid').html(data);
-                            }else{
-                                updateAlert(data.info ,'网络繁忙');
-                            }
-                        });
-                    });
 
                     $('.show_password').click(function() {
                         $('.password').show();

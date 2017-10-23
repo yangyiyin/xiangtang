@@ -114,6 +114,18 @@ class DepartmentService extends BaseService{
         return $FinancialModel->where($where)->select();
     }
 
+    public function get_by_type($type) {
+        if (!$type) {
+            return [];
+        }
+        $FinancialModel = D('Financial' . static::$name);
+        $where = [];
+        $where['type'] = ['EQ', $type];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->select();
+    }
+
+
     public function get_all() {
 
         $FinancialModel = D('Financial' . static::$name);
