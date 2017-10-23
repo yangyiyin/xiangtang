@@ -18,16 +18,32 @@ class CartList extends BaseApi{
     public function excute() {
         $carts = $this->CartService->get_by_uid($this->uid);
         if (!$carts) {
-            return result_json(FALSE, '您的购物车空空如也~');
+            $result = new \stdClass();
+            $result->success = FALSE;
+            $result->message = '您的购物车空空如也~';
+            $result->data = NULL;
+            $result->callback = I('get.callback');
+            $result->error_code = 100;
+            $result->total_count = 0;
+            echo json_encode($result);
+            exit;
         }
         $carts_iid_map = result_to_complex_map($carts, 'iid');
         $iids = result_to_array($carts, 'iid');
         $ItemService = Service\ItemService::get_instance();
         $items = $ItemService->get_by_ids($iids);
         $sku_ids = result_to_array($carts, 'sku_id');
-        $result = $this->convert_data($items, $carts_iid_map, $sku_ids);
-        return result_json(TRUE, '', $result);
+        list($result, $all_count) = $this->convert_data($items, $carts_iid_map, $sku_ids);
 
+        $ret = new \stdClass();
+        $ret->success = TRUE;
+        $ret->message = '';
+        $ret->data = $result;
+        $ret->callback = I('get.callback');
+        $ret->error_code = 0;
+        $ret->total_count = $all_count;
+        echo json_encode($ret);
+        exit;
     }
 
     private function convert_data($data, $carts_iid_map, $sku_ids) {
@@ -51,7 +67,7 @@ class CartList extends BaseApi{
             $skus = $ProductSkuService->get_by_ids($sku_ids);
             $skus_map = result_to_map($skus);
 
-
+            $all_count = 0;
             foreach ($data as $key => $_item) {
                 $_item['img'] = item_img(get_cover($_item['img'], 'path'));//todo 这种方式后期改掉
 
@@ -68,6 +84,7 @@ class CartList extends BaseApi{
                     foreach ($carts_iid_map[$_item['id']] as $cart) {
 
                         $_item['num'] = (int) $cart['num'];
+                        $all_count += $_item['num'];
                         $_item['sku_id'] = (int) $cart['sku_id'];
                         if (isset($sku_props_map[$_item['sku_id']])) {
                             $_item['props'] = $sku_props_map[$_item['sku_id']];
@@ -91,6 +108,6 @@ class CartList extends BaseApi{
             }
 
         }
-        return array_values($list);
+        return [array_values($list), $all_count];
     }
 }

