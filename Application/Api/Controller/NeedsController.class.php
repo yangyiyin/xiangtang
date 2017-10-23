@@ -26,6 +26,11 @@ class NeedsController extends BaseController {
         $this->excute_api('Api\Lib\NeedsOutCash');
     }
 
+    public function out_cash_default() {
+        $this->excute_api('Api\Lib\NeedsOutCashDefault');
+    }
+
+
     public function out_cash_index_info() {
         $this->excute_api('Api\Lib\NeedsOutCashIndexInfo');
     }

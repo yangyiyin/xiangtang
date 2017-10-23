@@ -92,6 +92,14 @@ class OutCashService extends BaseService{
         }
         return [$data, $count];
     }
+
+    public function get_last_info($uid) {
+        $where = [];
+        $where['uid'] = $uid;
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->order('id desc')->find();
+    }
+
     public function approve($ids) {
         return $this->update_by_ids($ids, ['status'=>\Common\Model\NfOutCashModel::STATUS_NORMAL]);
     }
