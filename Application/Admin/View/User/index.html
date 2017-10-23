@@ -23,10 +23,10 @@
 		            <th class="row-selected row-selected"><input class="check-all" type="checkbox"/></th>
 					<th class="">UID</th>
 					<th class="">昵称</th>
-					<th class="">积分</th>
-					<th class="">登录次数</th>
+					<!--<th class="">积分</th>-->
+					<!--<th class="">登录次数</th>-->
 					<th class="">最后登录时间</th>
-					<th class="">最后登录IP</th>
+					<!--<th class="">最后登录IP</th>-->
 					<th class="">状态</th>
 					<th class="">操作</th>
 		          </tr>
@@ -36,17 +36,20 @@
 			            <td><input class="ids" type="checkbox" name="id[]" value="{$vo.uid}" /></td>
 						<td>{$vo.uid} </td>
 						<td>{$vo.nickname}</td>
-						<td>{$vo.score}</td>
-						<td>{$vo.login}</td>
+						<!--<td>{$vo.score}</td>-->
+						<!--<td>{$vo.login}</td>-->
 						<td><span>{$vo.last_login_time|time_format}</span></td>
-						<td><span>{:long2ip($vo['last_login_ip'])}</span></td>
+						<!--<td><span>{:long2ip($vo['last_login_ip'])}</span></td>-->
 						<td>{$vo.status_text}</td>
 						<td><eq name="vo.status" value="1">
-							<a href="{:U('User/changeStatus?method=forbidUser&id='.$vo['uid'])}" class="J_ajax_get">禁用</a>
+							<a href="{:U('User/changeStatus?method=forbidUser&id='.$vo['uid'])}" class="btn J_ajax_get">禁用</a>
+							<a href="javascript:;" class="btn">修改</a>
 							<else/>
-							<a href="{:U('User/changeStatus?method=resumeUser&id='.$vo['uid'])}" class="J_ajax_get">启用</a>
+							<a href="{:U('User/changeStatus?method=resumeUser&id='.$vo['uid'])}" class="btn J_ajax_get">启用</a>
 							</eq>
-		                </td>
+							<a href="{:U('User/changeStatus?method=deleteUser&id='.$vo['uid'])}" class="btn J_ajax_get">删除</a>
+
+						</td>
 		          	</tr>
 	          </foreach>
 	          </table>
@@ -57,7 +60,7 @@
 	      	</div>
 	      	<div class="btn_wrap">
 		        <div class="btn_wrap_pd">
-		        	<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
+		        	<!--<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>-->
 			        <button class="btn J_ajax_post" url="{:U('User/changeStatus',array('method'=>'resumeUser'))}" target-form="ids">启 用</button>
 		            <button class="btn J_ajax_post" url="{:U('User/changeStatus',array('method'=>'forbidUser'))}" target-form="ids">禁 用</button>
 		            <button class="btn J_ajax_post confirm" url="{:U('User/changeStatus',array('method'=>'deleteUser'))}" target-form="ids">删 除</button>
