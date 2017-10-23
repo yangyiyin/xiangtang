@@ -43,6 +43,8 @@ class ArticleInfo extends BaseSapi{
         }
 
         if ($info) {
+            $result->id = $info['id'];
+            $result->title = $info['title'];
             $result->content = $info['content'];
         }
 
