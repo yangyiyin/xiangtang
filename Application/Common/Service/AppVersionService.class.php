@@ -111,7 +111,7 @@ class AppVersionService extends BaseService{
         if ($app_name) {
             $where['app_name'] = $app_name;
         } else {
-            $app_name = 'huoshaoyun';
+            $where['app_name'] = 'huoshaoyun';
         }
         return $NfModel->where($where)->find();
     }
