@@ -153,6 +153,20 @@ class AuthManagerController extends AdminController{
      * @author 朱亚杰 <zhuyajie@topthink.net>
      */
     public function access(){
+        $gid = $_GET['group_id'];
+        $group_info = D('AuthGroup')->where(['id'=>$gid])->find();
+        $this->assign('group_info', $group_info);
+
+
+        if ($group_info) {
+            $groupCat = D('groupCat');
+            $group_cat = $groupCat->where(['gid'=>$group_info['id']])->find();
+        }
+        $select_id = isset($group_cat['cid']) ? $group_cat['cid'] : 0;
+        $financial_cat_options = $this->get_financial_cat_options($select_id);
+        $this->assign('financial_cat_options', $financial_cat_options);
+
+
         $this->updateRules();
         $auth_group = M('AuthGroup')->where( array('status'=>array('egt','0'),'module'=>'admin','type'=>AuthGroupModel::TYPE_ADMIN) )
                                     ->getfield('id,id,title,rules');

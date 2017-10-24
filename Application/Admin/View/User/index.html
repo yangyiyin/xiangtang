@@ -45,9 +45,9 @@
 							<a href="{:U('User/changeStatus?method=forbidUser&id='.$vo['uid'])}" class="btn J_ajax_get">禁用</a>
 							<a href="{:U('add')}/id/{$vo.uid}" class="btn">修改</a>
 							<else/>
-							<a href="{:U('User/changeStatus?method=resumeUser&id='.$vo['uid'])}" class="btn J_ajax_get">启用</a>
+							<a href="{:U('User/changeStatus?method=resumeUser&id='.$vo['uid'])}" class="btn confirm J_ajax_get">启用</a>
 							</eq>
-							<a href="{:U('User/changeStatus?method=deleteUser&id='.$vo['uid'])}" class="btn J_ajax_get">删除</a>
+							<a href="{:U('User/changeStatus?method=deleteUser&id='.$vo['uid'])}" class="btn confirm J_ajax_get">删除</a>
 
 						</td>
 		          	</tr>

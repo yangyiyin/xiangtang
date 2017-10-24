@@ -5,19 +5,46 @@
         <div class="g-wrap jj">
         <div class="u-tab">
             <ul class="cc">
-                <li class="current"><a href="javascript:;">访问授权</a></li>
-                <li><a href="{:U('AuthManager/user',array('group_name'=>I('group_name') ,'group_id'=> I('group_id')))}">成员授权</a></li>
-                <li class="fr">
-                    <select name="group">
-                        <volist name="auth_group" id="vo">
-                            <option value="{:U('AuthManager/access',array('group_id'=>$vo['id'],'group_name'=>$vo['title']))}" <eq name="vo['id']" value="$this_group['id']">selected</eq> >{$vo.title}</option>
-                        </volist>
-                    </select>
-                </li>
+                <if condition="I('group_name')">
+                    <li class="current"><a href="javascript:;">编辑用户组({:I('group_name')})</a></li>
+                    <else/>
+                    <li class="current"><a href="javascript:;">新增用户组</a></li>
+                </if>
+
+                <!--<li><a href="{:U('AuthManager/user',array('group_name'=>I('group_name') ,'group_id'=> I('group_id')))}">成员授权</a></li>-->
+                <!--<li class="fr">-->
+                    <!--<select name="group">-->
+                        <!--<volist name="auth_group" id="vo">-->
+                            <!--<option value="{:U('AuthManager/access',array('group_id'=>$vo['id'],'group_name'=>$vo['title']))}" <eq name="vo['id']" value="$this_group['id']">selected</eq> >{$vo.title}</option>-->
+                        <!--</volist>-->
+                    <!--</select>-->
+                <!--</li>-->
             </ul>
         </div>
+
+
         <div class="common-form">
+
+
             <form action="{:U('AuthManager/writeGroup')}" enctype="application/x-www-form-urlencoded" method="POST" class="form-horizontal auth-form">
+                <div class="form-item">
+                    <label for="auth-title" class="item-label">用户组:</label>
+                    <div class="controls">
+                        <input id="auth-title" type="hidden" name="id" class="input input-large" value="{$group_info.id}"/>
+                        <input id="auth-title" type="text" name="title" class="input input-large" value="{$group_info.title}"/>
+                    </div>
+                </div>
+                <br/>
+                <div class="form-item">
+                    <label for="auth-title" class="item-label">所属机构类型:</label>
+                    <div class="controls">
+                        <select name="cid">
+                            {$financial_cat_options}
+                        </select>
+                    </div>
+                </div>
+                <br/>
+                权限设置:
               <div class="table_list">
                     <table width="100%">
                     <tbody>

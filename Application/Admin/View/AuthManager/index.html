@@ -7,6 +7,7 @@
 		    <ul class="cc">
 		      <li class="current"><a href="javascript:;">权限管理</a></li>
 		    </ul>
+			<a style="float: right" class="u-btn btn-success" href="{:U('AuthManager/access')}">新增用户组</a>
 		</div>
 		<!-- 数据表格 -->
 	    <div class="table_list">
@@ -15,9 +16,7 @@
 				        <tr>
 						<th class="row-selected row-selected"><input class="check-all" type="checkbox"/></th>
 						<th class="">用户组</th>
-						<th class="">描述</th>
-
-						<th class="">授权</th>
+						<!--<th class="">描述</th>-->
 						<th class="">状态</th>
 						<th class="">操作</th>
 						</tr>
@@ -28,19 +27,18 @@
 						<tr>
 				            <td><input class="ids" type="checkbox" name="id[]" value="{$vo.id}" /></td>
 							<td><a href="{:U('AuthManager/editgroup?id='.$vo['id'])}">{$vo.title}</a> </td>
-							<td><span>{:mb_strimwidth($vo['description'],0,60,"...","utf-8")}</span></td>
+							<!--<td><span>{:mb_strimwidth($vo['description'],0,60,"...","utf-8")}</span></td>-->
 
-
-							<td><a href="{:U('AuthManager/access?group_name='.$vo['title'].'&group_id='.$vo['id'])}" >访问授权</a>
-							<a href="{:U('AuthManager/user?group_name='.$vo['title'].'&group_id='.$vo['id'])}" >成员授权</a>
-							</td>
 							<td>{$vo.status_text}</td>
-							<td><eq name="vo.status" value="1">
-								<a href="{:U('AuthManager/changeStatus?method=forbidGroup&id='.$vo['id'])}" class="J_ajax_get">禁用</a>
+
+							<td>
+								<a class="btn" href="{:U('AuthManager/access?group_name='.$vo['title'].'&group_id='.$vo['id'])}" >修改</a>
+								<eq name="vo.status" value="1">
+								<a href="{:U('AuthManager/changeStatus?method=forbidGroup&id='.$vo['id'])}" class="btn J_ajax_get">禁用</a>
 								<else/>
-								<a href="{:U('AuthManager/changeStatus?method=resumeGroup&id='.$vo['id'])}" class="J_ajax_get">启用</a>
+								<a  href="{:U('AuthManager/changeStatus?method=resumeGroup&id='.$vo['id'])}" class="btn J_ajax_get">启用</a>
 								</eq>
-								<a href="{:U('AuthManager/changeStatus?method=deleteGroup&id='.$vo['id'])}" class="confirm J_ajax_get">删除</a>
+								<a  href="{:U('AuthManager/changeStatus?method=deleteGroup&id='.$vo['id'])}" class="btn confirm J_ajax_get">删除</a>
 				                </td>
 						</tr>
 						</volist>
@@ -52,8 +50,7 @@
 		</div>
 		<div class="btn_wrap">
 			<div class="btn_wrap_pd">
-		        <a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
-		        <a id="add-group" class="u-btn" href="{:U('createGroup')}">新 增</a>
+				批量操作:
 		        <a url="{:U('changestatus',array('method'=>'resumeGroup'))}" class="u-btn J_ajax_post" target-form="ids" >启 用</a>
 		        <a url="{:U('changestatus',array('method'=>'forbidGroup'))}" class="u-btn J_ajax_post" target-form="ids" >禁 用</a>
 		        <a url="{:U('changestatus',array('method'=>'deleteGroup'))}" class="u-btn J_ajax_post confirm" target-form="ids" >删 除</a>
