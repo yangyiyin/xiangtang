@@ -22,16 +22,16 @@ class CategoryIndex extends BaseSapi{
         return result_json(TRUE, '', ['categories' => $result, 'level' => intval($level)]);
     }
 
-    private function make_tree($tree_old, $level, $cid, $from) {
+    private function make_tree($tree_old, $level, $cid, $from=1) {
 
         $tree = [];
         foreach ($tree_old as $_tree1) {
 
-            if ($from == self::FROM_SERVICE && ($_tree1['content']['platform'] != self::FROM_SERVICE || $_tree1['content']['platform'] != self::FROM_ALL)) {
+            if ($from == self::FROM_SERVICE && ($_tree1['content']['platform'] != self::FROM_SERVICE && $_tree1['content']['platform'] != self::FROM_ALL)) {
                 continue;
             }
 
-            if ($from == self::FROM_RETAIL && ($_tree1['content']['platform'] != self::FROM_RETAIL || $_tree1['content']['platform'] != self::FROM_ALL)) {
+            if ($from == self::FROM_RETAIL && ($_tree1['content']['platform'] != self::FROM_RETAIL && $_tree1['content']['platform'] != self::FROM_ALL)) {
                 continue;
             }
 
