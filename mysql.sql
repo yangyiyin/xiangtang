@@ -118,3 +118,19 @@ alter table shopy_nf_order_pre add platform tinyint (3) DEFAULT '1';
 
 alter table shopy_nf_ad add platform tinyint (3) DEFAULT '1';
 alter table shopy_nf_article add platform tinyint (3) DEFAULT '1';
+
+
+CREATE TABLE `shopy_nf_volunteer` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+`name` varchar(10)  NOT NULL,
+`id_no` varchar(15)  NOT NULL,
+`address` varchar(100)  NOT NULL,
+`free_time` varchar(50)  NOT NULL,
+`status` tinyint(3)  NOT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+alter table shopy_nf_volunteer add pay_sum int (11) DEFAULT '0';
+alter table shopy_nf_volunteer add remark VARCHAR (200) DEFAULT '';
+alter table shopy_nf_volunteer add uid int (11) DEFAULT '0';
