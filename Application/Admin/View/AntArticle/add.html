@@ -8,11 +8,11 @@
 		<!-- 按钮工具栏 -->
 		<div class="u-tab">
 		    <ul class="cc tab-nav">
-				<li><a href="{:U('index')}">所有新闻</a></li>
+				<li><a href="{:U('index')}">所有文章</a></li>
 				<if condition="I('get.id')">
-					<li class="current"><a href="javascript:;">编辑新闻</a></li>
+					<li class="current"><a href="javascript:;">编辑文章</a></li>
 					<else/>
-					<li class="current"><a href="javascript:;">添加新闻</a></li>
+					<li class="current"><a href="javascript:;">添加文章</a></li>
 				</if>
 		    </ul>
 		</div>
@@ -37,6 +37,13 @@
 						<td width="80%">
 							<textarea name="content">{$info.content}</textarea>
 							{:hook('adminArticleEdit', array('name'=>'content','value'=>$info['content']))}
+						</td>
+					</tr>
+					<tr>
+						<td width="20%"><label class="item-label">平台</label></td>
+						<td width="80%">
+							<input name="platform[]" <if condition="$info.platform == 1 || $info.platform == 3">checked="checked"</if> type="checkbox" value="1"/>服务版
+							<input name="platform[]"  <if condition="$info.platform == 2 || $info.platform == 3">checked="checked"</if> type="checkbox" value="2"/>零售版
 						</td>
 					</tr>
 					</tbody>

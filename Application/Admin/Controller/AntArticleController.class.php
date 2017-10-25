@@ -27,6 +27,9 @@ class AntArticleController extends AdminController {
         if (I('get.title')) {
             $where['title'] = ['LIKE', '%' . I('get.title') . '%'];
         }
+        if (I('get.platform')) {
+            $where['platform'] = ['eq', I('get.platform')];
+        }
         $where['type'] = ['in', [\Common\Model\NfArticleModel::TYPE_NEWS]];
         $page = I('get.p', 1);
         list($data, $count) = $this->ArticleService->get_by_where($where, 'id desc', $page);
@@ -101,6 +104,10 @@ class AntArticleController extends AdminController {
         if (IS_POST) {
             $id = I('get.id');
             $data = I('post.');
+            if (!$data['platform']) {
+                $this->error('请选择平台');
+            }
+            $data['platform'] = array_sum($data['platform']);
             if ($id) {
                 $ret = $this->ArticleService->update_by_id($id, $data);
                 if ($ret->success) {

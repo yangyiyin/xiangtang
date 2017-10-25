@@ -203,4 +203,16 @@ class CategoryService extends BaseService{
 
         return $cids;
     }
+
+    public function get_platform_by_cid($cid) {
+        if (!$cid) {
+            return 0;
+        }
+        $info = $this->get_info_by_id($cid);
+        if ($info['parent_id'] == 0) {
+            return $info['platform'];
+        } else {
+            return $this->get_platform_by_cid($info['parent_id']);
+        }
+    }
 }

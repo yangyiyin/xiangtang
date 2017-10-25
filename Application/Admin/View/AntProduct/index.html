@@ -14,6 +14,20 @@
 		</div>
 	    <div class="search_type cc mb10 search-form">
 	      <div class="mb10">
+			    <span class="mr20">平台：
+						<php>
+
+        		$a = (I('get.platform')==1)?'selected':'';
+        		$b = (I('get.platform')==2)?'selected':'';
+							$c = (I('get.platform')==3)?'selected':'';
+        	</php>
+	        <select class="select_2 select" name="platform">
+	          	<option value='' >全部</option>
+				<option value="1" {$a}>服务版</option>
+	          	<option value="2" {$b}>零售版</option>
+				 	<option value="3" {$c}>服务+零售</option>
+	        </select>
+
 	        <span class="mr20">分类：
 	        <select class="select_2 select" name="cid">
 	          	<option value='' >全部</option>
@@ -30,7 +44,8 @@
 	          	<option value="1" {$first}>正常</option>
 	          	<option value="99" {$second}>已下架</option>
 	        </select>
-	        &nbsp;&nbsp;创建时间：
+				<br/>	<br/>
+	        创建时间：
 	        <input type="text" name="create_begin" id="time-start" class="input length_2" value="{:I('create_begin')}" style="width:80px;" autocomplete="off" placeholder="起始时间">-<span class="input-append date" id="datetimepicker"><input type="text" id="time-end" name="create_end" class="input input" value="{:I('create_end')}" placeholder="结束时间" /><span class="add-on" style="background:none;border:none;"><i class="icon-th"></i></span></span>
 	        &nbsp; &nbsp;标题：
 	        <input type="text" class="input length_2" name="title" style="width:200px;" value="{:I('title')}" placeholder="请输入标题文档">
@@ -63,6 +78,11 @@
 					<td>
 						<p class="short_info">标题:{$vo.title}</p>
 						<p class="short_info">创建时间:{$vo.create_time}</p>
+						<p>
+							<if condition="$vo.platform == 1 || $vo.platform == 3"><span class="btn-success">服务版</span></if>
+							<if condition="$vo.platform == 2 || $vo.platform == 3"><span class="btn-success">零售版</span></if>
+
+						</p>
 					</td>
 					<td><span>{$vo['cate']['name']}</span></td>
 

@@ -1,5 +1,7 @@
 <extend name="Public/base"/>
+
 <block name="body">
+
 	<div class="g-wrap">
 		<div class="u-tab">
 		    <ul class="cc">
@@ -16,6 +18,7 @@
                     <th width="80">排序</th>
                     <th width="100">ID</th>
                     <th>分类名称</th>
+                      <th>展示平台</th>
                     <th>操作</th>
                   </tr>
                 </thead>
@@ -27,6 +30,10 @@
                         <td width="80">{$cat.content.sort}</td>
                         <td width="100">{$cat.content.id}</td>
                         <td>{$cat.content.name}</td>
+                        <td>
+                            <if condition="$cat['content']['platform'] == 1"><span class="btn-primary change_platform" platform="2" cid="{$cat.content.id}">服务站</span></if>
+                            <if condition="$cat['content']['platform'] == 2"><span class="btn-success change_platform" platform="1" cid="{$cat.content.id}">零售版</span></if>
+                        </td>
                         <td>
                             <a href="{:U('add')}/pid/{$cat['content']['id']}">添加子分类</a> |
                             <a href="{:U('edit')}/id/{$cat['content']['id']}">修改</a> |
@@ -42,6 +49,7 @@
                                 <td width="80">{$_cat.content.sort}</td>
                                 <td width="100">{$_cat.content.id}</td>
                                 <td>{$_cat.content.name}</td>
+                                <td></td>
                                 <td>
                                     <a href="{:U('add')}/pid/{$_cat['content']['id']}">添加子分类</a> |
                                     <a href="{:U('edit')}/id/{$_cat['content']['id']}">修改</a> |
@@ -58,6 +66,7 @@
                                         <td width="80">{$__cat.content.sort}</td>
                                         <td width="100">{$__cat.content.id}</td>
                                         <td>{$__cat.content.name}</td>
+                                        <td></td>
                                         <td>
                                             <a href="{:U('add')}/pid/{$__cat['content']['id']}">添加子分类</a> |
                                             <a href="{:U('edit')}/id/{$__cat['content']['id']}">修改</a> |
@@ -272,6 +281,19 @@
                 });
 
             });
+
+            $('.change_platform').click(function () {
+                var cid = $(this).attr('cid');
+                var platform = $(this).attr('platform');
+                do_post('{:U("change_platform")}',{'cid':cid,'platform':platform},this, function(data){
+                    if (data.status){
+                        history.go(0);
+                    } else {
+                        alert(data.message);
+                    }
+
+                });
+            })
 
 
         })

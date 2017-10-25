@@ -21,7 +21,7 @@ class AdsIndex extends BaseSapi{
         }
         $ids_arr = explode('_', $ids);
 
-        $ads = $this->AdService->get_by_names($ids_arr);
+        $ads = $this->AdService->get_by_names($ids_arr, $this->from);
         if (!$ads) {
             result_json(FALSE, '没有任何广告');
         }

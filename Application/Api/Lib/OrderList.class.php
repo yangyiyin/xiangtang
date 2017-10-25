@@ -36,6 +36,7 @@ class OrderList extends BaseApi{
 
             }
         }
+        $where['platform'] = $this->from;
         $where['uid'] = ['EQ', $this->uid];
         list($list, $count) = $this->OrderService->get_by_where($where, 'id desc', $page);
         $result = new \stdClass();

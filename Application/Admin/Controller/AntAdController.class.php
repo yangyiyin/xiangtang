@@ -28,6 +28,9 @@ class AntAdController extends AdminController {
         if (I('get.keyword')) {
             $where['info'] = ['LIKE', '%' . I('get.keyword') . '%'];
         }
+        if (I('get.platform')) {
+            $where['platform'] = ['eq', I('get.platform')];
+        }
 
         $page = I('get.p', 1);
         list($data, $count) = $this->AdService->get_by_where($where, 'id desc', $page);
@@ -77,6 +80,10 @@ class AntAdController extends AdminController {
         if (IS_POST) {
             $id = I('get.id');
             $data = I('post.');
+            if (!$data['platform']) {
+                $this->error('请选择平台');
+            }
+            $data['platform'] = array_sum($data['platform']);
             if ($data['imgs']) {
                 $data['imgs'] = join(',', $data['imgs']);
             }

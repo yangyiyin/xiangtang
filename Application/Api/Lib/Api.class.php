@@ -10,9 +10,13 @@ class Api{
     const API_METHOD_GET = 'get';
     const API_METHOD_POST= 'post';
     const API_METHOD_ALL = 'all';
+    const FROM_SERVICE = 1;//服务站
+    const FROM_RETAIL = 2;//零售版
+    const FROM_ALL = 3;//零售版
     protected $method = 'get';
     protected $callback = '';
     protected $post_data = [];
+    protected $from = self::FROM_SERVICE;//默认
     public function __construct() {
         header('Content-Type:application/json; charset=utf-8');
         switch ($this->method) {
@@ -36,7 +40,9 @@ class Api{
         if (I('get.callback')) {
             $this->callback = I('get.callback');
         }
-
+        if (I('get.from')) {
+            $this->from = I('get.from');
+        }
         $this->post_data = json_decode(file_get_contents('php://input'), true);
 
         if (I('get.dev_y') == 'yyy') {

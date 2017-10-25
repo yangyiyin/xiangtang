@@ -18,10 +18,12 @@ class OrderData extends BaseApi{
     public function excute() {
         $result = new \stdClass();
         $where = [];
+        $where['platform'] = $this->from;
         list($status_submit, $status_recieved, $status_sending) = $this->OrderService->get_my_status();
 
         $where['uid'] = ['eq', $this->uid];
         $where['status'] = ['eq', $status_submit];
+
         $result->submit = (int) $this->OrderService->get_count_by_where($where);
         $result->paying = $result->submit;
 

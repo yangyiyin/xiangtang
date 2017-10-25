@@ -18,14 +18,24 @@ class CategoryIndex extends BaseSapi{
         $cid = I('get.cid');
         $level = I('get.level');
         $tree = $this->CategoryService->get_all_tree();
-        $result = $this->make_tree($tree, $level, $cid);
+        $result = $this->make_tree($tree, $level, $cid, $this->from);
         return result_json(TRUE, '', ['categories' => $result, 'level' => intval($level)]);
     }
 
-    private function make_tree($tree_old, $level, $cid) {
+    private function make_tree($tree_old, $level, $cid, $from) {
 
         $tree = [];
         foreach ($tree_old as $_tree1) {
+
+            if ($from == self::FROM_SERVICE && ($_tree1['content']['platform'] != self::FROM_SERVICE || $_tree1['content']['platform'] != self::FROM_ALL)) {
+                continue;
+            }
+
+            if ($from == self::FROM_RETAIL && ($_tree1['content']['platform'] != self::FROM_RETAIL || $_tree1['content']['platform'] != self::FROM_ALL)) {
+                continue;
+            }
+
+
             $tmp_tree = [];
 
             $tmp_tree['cid'] = (int) $_tree1['content']['id'];

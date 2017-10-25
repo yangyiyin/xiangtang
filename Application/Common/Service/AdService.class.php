@@ -31,9 +31,11 @@ class AdService extends BaseService{
         return $NfAd->where('id in ( ' . join(',', $ids) . ')')->select();
 
     }
-    public function get_by_names($names) {
+    public function get_by_names($names, $platform=1) {
         $NfAd = D('NfAd');
         $where = ['name' => ['in', $names]];
+
+        $where['platform'] = ['in' , [$platform, 3]];
         return $NfAd->where($where)->select();
 
     }

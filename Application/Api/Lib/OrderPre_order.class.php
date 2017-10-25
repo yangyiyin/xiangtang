@@ -131,6 +131,7 @@ class OrderPre_order extends BaseApi{
             $data_order_pre['order_from'] = $order_from ? $order_from : \Common\Model\NfOrderModel::FROM_DEALER;
             $data_order_pre['is_real'] =$_item->is_real;
             $data_order_pre['create_time'] = current_date();
+            $data_order_pre['platform'] = $this->from;
             //运费
             $ConfService = \Common\Service\ConfService::get_instance();
             $info = $ConfService->get_by_key_name('order_freight');

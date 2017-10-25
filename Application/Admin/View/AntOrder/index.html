@@ -10,12 +10,23 @@
 		</div>
 	    <div class="search_type cc mb10 search-form">
 	      <div class="mb10">
+			   <span class="mr20">平台：
+						<php>
+
+        		$a = (I('get.platform')==1)?'selected':'';
+        		$b = (I('get.platform')==2)?'selected':'';
+        	</php>
+	        <select class="select_2 select" name="platform">
+	          	<option value='' >全部</option>
+				<option value="1" {$a}>服务版</option>
+	          	<option value="2" {$b}>零售版</option>
+	        </select>
+
 			  &nbsp;订单id：
 			  <input type="text" class="input length_2" name="order_id" style="width:100px;" value="{:I('order_id')}" >
 
 			  &nbsp;服务站名称：
 			  <input type="text" class="input length_2" name="entity_title" style="width:100px;" value="{:I('entity_title')}" >
-
 
 			  <span class="mr20">状态：
         	<php>
@@ -38,6 +49,7 @@
 				<option value="6" {$sixth}>已取消</option>
 				<option value="7" {$seventh}>支付中</option>
 	        </select>
+				  <br/><br/>
 			&nbsp;创建时间：
 	        <input type="text" name="create_begin" id="time-start" class="input length_2" value="{:I('create_begin')}" style="width:80px;" autocomplete="off" placeholder="起始时间">-<span class="input-append date" id="datetimepicker"><input type="text" id="time-end" name="create_end" class="input length_2" value="{:I('create_end')}" placeholder="结束时间" /><span class="add-on" style="background:none;border:none;"><i class="icon-th"></i></span></span>
 
@@ -66,7 +78,15 @@
 				<volist name="list" id="vo">
 				<tr style="border-bottom: 1px solid #999">
 		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
-					<td>{$vo.id} </td>
+					<td>
+						<p>{$vo.id}</p>
+						<br/>
+						<p>
+							<if condition="$vo.platform == 1 || $vo.platform == 3"><span class="btn-success">服务版</span></if>
+							<if condition="$vo.platform == 2 || $vo.platform == 3"><span class="btn-success">零售版</span></if>
+
+						</p>
+					</td>
 					<td>
 						<p class="short_info">总价:{$vo.sum|format_price}元(含运费{$vo.freight|format_price}元)
 						<a class="btn show_box" order_id="{$vo.id}" tmp_id="edit_total">修改总价</a>
@@ -80,6 +100,7 @@
 
 						<p class="short_info">创建时间:{$vo.create_time}</p>
 						<p class="short_info">备注:{$vo.remark}</p>
+
 					</td>
 
 

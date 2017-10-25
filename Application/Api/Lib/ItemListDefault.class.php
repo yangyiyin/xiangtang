@@ -30,6 +30,15 @@ class ItemListDefault extends BaseSapi{
         if ($keyword) {
             $where['keyword'] = ['LIKE', '%'.$keyword.'%'];
         }
+
+        if ($this->from == self::FROM_SERVICE) {
+            $where['platform'] = ['in', [self::FROM_SERVICE, self::FROM_ALL]];
+        } elseif($this->from == self::FROM_RETAIL) {
+            $where['platform'] =  ['in', [self::FROM_RETAIL, self::FROM_ALL]];
+        } else {
+            $where['platform'] =  ['eq', self::FROM_ALL];
+        }
+
         $where['is_real'] = 1;
         $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
         list($data, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc', $page);

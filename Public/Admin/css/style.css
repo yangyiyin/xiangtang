@@ -3158,3 +3158,25 @@ overflow: hidden;
 	font-weight: bold;padding:0 10px;
 }
 .check-tips{margin-left: 5px;color:rgba(226, 30, 30, 1);-webkit-text-size-adjust: none;font-size: 11px;}
+
+.btn-primary{
+	background: #00a2d4;
+	color: #fff;
+	padding: 3px;
+	cursor: pointer;
+
+}
+.btn-primary:hover{
+	background: #00a233;
+}
+
+.btn-success{
+	background: #00a233;
+	color: #fff;
+	padding: 3px;
+	cursor: pointer;
+
+}
+.btn-success:hover{
+	background: #00a2d4;
+}

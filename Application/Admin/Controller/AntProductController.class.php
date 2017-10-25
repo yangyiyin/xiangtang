@@ -61,6 +61,10 @@ class AntProductController extends AdminController {
             $where['title'] = ['LIKE', '%'.I('get.title').'%'];
         }
 
+        if (I('get.platform')) {
+            $where['platform'] = ['eq', I('get.platform')];
+        }
+
         $where['is_real'] = 1;
 
         //获取加盟商的uids
@@ -246,8 +250,12 @@ class AntProductController extends AdminController {
 
     public function update() {
         if (IS_POST) {
+
             $id = I('get.id');
             $data = I('post.');
+            if (!$data['platform']) {
+                $this->error('请选择平台');
+            }
             $data['price'] = intval($data['price'] * 100);
             $data['min_normal_price'] = intval(min($data['normal_prices']) * 100);
             $data['min_dealer_price'] = intval(min($data['dealer_prices']) * 100);
@@ -259,6 +267,12 @@ class AntProductController extends AdminController {
             } else {
                 $data['uid'] = 1;//1为平台
             }
+
+            //根据分类获取platform
+//            $CategoryService = \Common\Service\CategoryService::get_instance();
+//            $platform = $CategoryService->get_platform_by_cid($data['cid']);
+//            $data['platform'] = $platform;
+            $data['platform'] = array_sum($data['platform']);
             if ($id) {
                 $ret = $this->ProductService->update_by_id($id, $data);
                 if ($ret->success) {
@@ -538,6 +552,7 @@ class AntProductController extends AdminController {
             $data['price'] = $product['price'];
             $data['unit_desc'] = $product['unit_desc'];
             $data['is_real'] = $product['is_real'];
+            $data['platform'] = $product['platform'];
             $data['min_normal_price'] = $product['min_normal_price'];
             $data['min_dealer_price'] = $product['min_dealer_price'];
             if ($is_franchisee) {
@@ -574,6 +589,7 @@ class AntProductController extends AdminController {
                 $data['price'] = $product['price'];
                 $data['unit_desc'] = $product['unit_desc'];
                 $data['is_real'] = $product['is_real'];
+                $data['platform'] = $product['platform'];
                 $data['create_time'] = current_date();
                 $data['min_normal_price'] = $product['min_normal_price'];
                 $data['min_dealer_price'] = $product['min_dealer_price'];

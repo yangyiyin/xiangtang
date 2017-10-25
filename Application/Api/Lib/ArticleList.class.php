@@ -30,6 +30,13 @@ class ArticleList extends BaseSapi{
         } else {
             $where['type'] = 0;
         }
+        if ($this->from == self::FROM_SERVICE) {
+            $where['platform'] = ['in', [self::FROM_SERVICE, self::FROM_ALL]];
+        } elseif($this->from == self::FROM_RETAIL) {
+            $where['platform'] =  ['in', [self::FROM_RETAIL, self::FROM_ALL]];
+        } else {
+            $where['platform'] =  ['eq', self::FROM_ALL];
+        }
         list($list, $count) = $this->ArticleService->get_by_where($where, 'id desc', $p);
         $result = new \stdClass();
         $result->list = $this->convert_data($list);

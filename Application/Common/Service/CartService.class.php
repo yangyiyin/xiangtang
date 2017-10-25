@@ -9,7 +9,7 @@ namespace Common\Service;
 class CartService extends BaseService{
     public static $page_size = 20;
 
-    public function add_one($uid, $iid, $num, $sku_id = 0) {
+    public function add_one($uid, $iid, $num, $sku_id = 0, $platform = 1) {
         $NfCart = D('NfCart');
         //查询有没有数据
         $cart = $NfCart->where('uid = ' . $uid . ' and iid = ' . $iid . ' and sku_id= ' . $sku_id)->find();
@@ -31,7 +31,7 @@ class CartService extends BaseService{
             $data['iid'] = $iid;
             $data['num'] = $num;
             $data['sku_id'] = $sku_id;
-
+            $data['platform'] = $platform;
             if ($NfCart->add($data)) {
                 return result(TRUE, '', $NfCart->getLastInsID());
             } else {
@@ -46,9 +46,12 @@ class CartService extends BaseService{
         return $NfCart->where('id = ' . $id)->find();
     }
 
-    public function get_by_uid($uid) {
+    public function get_by_uid($uid, $platform=1) {
         $NfCart = D('NfCart');
-        return $NfCart->where('uid = ' . $uid)->select();
+        $where = [];
+        $where['uid'] = $uid;
+        $where['platform'] = $platform;
+        return $NfCart->where($where)->select();
     }
 
     public function update_by_id($id, $data) {

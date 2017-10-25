@@ -10,7 +10,22 @@
 		    </ul>
 		</div>
 	    <div class="search_type cc mb10 search-form">
+
 	      <div class="mb10">
+			    <span class="mr20">平台：
+						<php>
+
+        		$a = (I('get.platform')==1)?'selected':'';
+        		$b = (I('get.platform')==2)?'selected':'';
+							$c = (I('get.platform')==3)?'selected':'';
+        	</php>
+	        <select class="select_2 select" name="platform">
+	          	<option value='' >全部</option>
+				<option value="1" {$a}>服务版</option>
+	          	<option value="2" {$b}>零售版</option>
+				 	<option value="3" {$c}>服务+零售</option>
+	        </select>
+
 	        <span class="mr20">分类：
 	        <select class="select_2 select" name="cid">
 	          	<option value='' >全部</option>
@@ -62,6 +77,11 @@
 						<p class="short_info">描述:{$vo.desc}</p>
 						<p class="short_info">购买须知:{$vo.tips}</p>
 						<p class="short_info">创建时间:{$vo.create_time}</p>
+						<p>
+							<if condition="$vo.platform == 1 || $vo.platform == 3"><span class="btn-success">服务版</span></if>
+							<if condition="$vo.platform == 2 || $vo.platform == 3"><span class="btn-success">零售版</span></if>
+
+						</p>
 					</td>
 					<td><span>{$vo['cate']['name']}</span></td>
 

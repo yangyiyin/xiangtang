@@ -108,3 +108,13 @@ alter table shopy_nf_product_sku add code varchar (50) DEFAULT '';
 alter table shopy_nf_services add out_id int (11) DEFAULT '0';
 
 alter table shopy_nf_order add remark varchar (200) DEFAULT '';
+
+alter table shopy_nf_category add platform tinyint (3) DEFAULT '1';
+alter table shopy_nf_product add platform tinyint (3) DEFAULT '1';
+alter table shopy_nf_item add platform tinyint (3) DEFAULT '1';
+alter table shopy_nf_cart add platform tinyint (3) DEFAULT '1';
+alter table shopy_nf_order add platform tinyint (3) DEFAULT '1';
+alter table shopy_nf_order_pre add platform tinyint (3) DEFAULT '1';
+
+alter table shopy_nf_ad add platform tinyint (3) DEFAULT '1';
+alter table shopy_nf_article add platform tinyint (3) DEFAULT '1';

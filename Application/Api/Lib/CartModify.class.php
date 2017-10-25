@@ -43,7 +43,7 @@ class CartModify extends BaseApi{
             return result_json(FALSE, $ret->message);
         }
 
-        $ret = $this->CartService->add_one($this->uid, $iid, $num, $sku_id);
+        $ret = $this->CartService->add_one($this->uid, $iid, $num, $sku_id, $this->from);
         if (!$ret->success) {
             return result_json(FALSE, $ret->message);
         }

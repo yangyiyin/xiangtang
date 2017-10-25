@@ -107,5 +107,18 @@ class AntCategoryController extends AdminController {
         return $this->CategoryService->get_all_tree_option($id);
     }
 
+    public function change_platform() {
+        $cid = I('cid');
+        $platform = I('platform');
+
+        $ret = $this->CategoryService->update_info_by_id($cid, ['platform'=>$platform]);
+        if ($ret) {
+            $this->success('操作成功!');
+        } else {
+            $this->success('操作失败!');
+        }
+
+
+    }
 
 }

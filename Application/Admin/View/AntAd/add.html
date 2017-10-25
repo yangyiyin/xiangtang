@@ -175,6 +175,13 @@
 									</script>
 								</td>
 							</tr>
+					<tr>
+						<td width="20%"><label class="item-label">平台</label></td>
+						<td width="80%">
+							<input name="platform[]" <if condition="$info.platform == 1 || $info.platform == 3">checked="checked"</if> type="checkbox" value="1"/>服务版
+							<input name="platform[]"  <if condition="$info.platform == 2 || $info.platform == 3">checked="checked"</if> type="checkbox" value="2"/>零售版
+						</td>
+					</tr>
 					</tbody>
 				    </table> 
 			     </div>

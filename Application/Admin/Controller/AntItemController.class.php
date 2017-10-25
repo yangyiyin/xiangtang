@@ -46,6 +46,10 @@ class AntItemController extends AdminController {
             $where['title'] = ['LIKE', '%'.I('get.title').'%'];
         }
 
+        if (I('get.platform')) {
+            $where['platform'] = ['eq', I('get.platform')];
+        }
+
         //获取加盟商的uids
         $MemberService = \Common\Service\MemberService::get_instance();
         $franchisee_uids = $MemberService->get_franchisee_uids();

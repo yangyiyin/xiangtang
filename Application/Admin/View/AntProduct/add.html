@@ -172,6 +172,14 @@
 							</tr>
 
 							<tr>
+								<td width="20%"><label class="item-label">平台</label></td>
+								<td width="80%">
+									<input name="platform[]" <if condition="$product.platform == 1 || $product.platform == 3">checked="checked"</if> type="checkbox" value="1"/>服务版
+									<input name="platform[]"  <if condition="$product.platform == 2 || $product.platform == 3">checked="checked"</if> type="checkbox" value="2"/>零售版
+								</td>
+							</tr>
+
+							<tr>
 								<td width="20%"><label class="item-label">品牌</label></td>
 								<td width="80%">
 									<select class="select_2 select" name="brand_id">
