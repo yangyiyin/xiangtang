@@ -295,9 +295,10 @@ class AdminController extends Controller {
             return $tree_nodes[$tree];
         }
         if((int)$tree){
-            $list = M('Menu')->field('id,pid,title,url,tip,hide,module')->order('sort asc')->select();
+            $list = M('Menu')->field('id,pid,title,url,tip,hide,module,urls')->order('sort asc')->select();
             foreach ($list as $key => $value) {
                 $list[$key]['url'] = $value['module'].'/'.$value['url'];
+                $list[$key]['url_class'] = str_replace('/','-',$value['url']);
             }
             $nodes = list_to_tree($list,$pk='id',$pid='pid',$child='operator',$root=0);
             foreach ($nodes as $key => $value) {
@@ -307,7 +308,7 @@ class AdminController extends Controller {
                 }
             }
         }else{
-            $nodes = M('Menu')->field('title,url,tip,pid,module')->order('sort asc')->select();
+            $nodes = M('Menu')->field('title,url,tip,pid,module,urls')->order('sort asc')->select();
             foreach ($nodes as $key => $value) {
                 $nodes[$key]['url'] = $value['module'].'/'.$value['url'];
             }

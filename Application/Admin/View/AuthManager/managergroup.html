@@ -38,7 +38,7 @@
                 <div class="form-item">
                     <label for="auth-title" class="item-label">所属机构类型:</label>
                     <div class="controls">
-                        <select name="cid">
+                        <select name="cid" class="cat">
                             {$financial_cat_options}
                         </select>
                     </div>
@@ -58,7 +58,7 @@
                                         <tr>
                                             <td width="12%">
                                                 <label class="checkbox" <notempty name="child['tip']">title='{$child.tip}'</notempty>>
-                                                <input class="auth_rules rules_row" type="checkbox" name="rules[]" value="<?php echo $auth_rules[$child['url']] ?>"/>{$child.title}
+                                                <input class="auth_rules rules_row {$child['url_class']}" type="checkbox" name="rules[]" value="<?php echo $auth_rules[$child['url']] ?>"/>{$child.title}
                                                 </label>
                                             </td>
                                             <td width="88%">
@@ -143,6 +143,15 @@
 
         $('select[name=group]').change(function(){
             location.href = this.value;
+        });
+
+        $('.cat').change(function() {
+            $('input').prop('checked',false);
+           var type_name = $(this).find('option:selected').attr('type_name');
+            if ($('.'+type_name+'-index_list')) {
+                $('.'+type_name+'-index_list').parents('td').parents('td').prev().find('input').prop('checked',true);
+                $('.'+type_name+'-index_list').prop('checked',true);
+            }
         });
     }(jQuery);
 </script>

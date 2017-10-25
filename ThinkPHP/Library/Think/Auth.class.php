@@ -194,8 +194,8 @@ class Auth{
         );
 
         //读取用户组所有权限规则
-        $rules = M()->table($this->_config['AUTH_RULE'])->where($map)->field('condition,name')->select();
-
+        $rules = M()->table($this->_config['AUTH_RULE'])->where($map)->field('condition,module,name,urls')->select();
+        //var_dump($rules);die();
         //var_dump(M()->table($this->_config['AUTH_RULE'])->getlastsql());die;
         //循环规则，判断结果。
         $authList = array();   //
@@ -211,7 +211,15 @@ class Auth{
                 }
             } else {
                 //只要存在就记录
-                $authList[] = strtolower($rule['name']);
+                if ($rule['urls']) {
+                    $urls = explode(',',$rule['urls']);
+                    foreach ($urls as $_url) {
+                        $authList[] = strtolower($rule['module'] . '/' . $_url);
+                    }
+                } else {
+                    $authList[] = strtolower($rule['name']);
+                }
+
             }
         }
         $_authList[$uid.$t] = $authList;

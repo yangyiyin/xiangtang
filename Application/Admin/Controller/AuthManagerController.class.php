@@ -32,6 +32,7 @@ class AuthManagerController extends AdminController{
         $data     = array();//保存需要插入和更新的新节点
         foreach ($nodes as $value){
             $temp['name']   = $value['url'];
+            $temp['urls']   = $value['urls'];
             $temp['title']  = $value['title'];
             $temp['module'] = $value['module'];
             if($value['pid'] >0){
@@ -135,13 +136,14 @@ class AuthManagerController extends AdminController{
 
     private function get_financial_cat_options($selected_id = 0) {
         $all = C('GROUP_Financial_CATS_MAP');
+        $map = \Common\Model\FinancialDepartmentModel::$TYPE_MAP;
         $options = '';
         if ($all) {
             foreach ($all as $key=>$value) {
                 if ($selected_id && $selected_id == $key) {
-                    $options .= '<option selected="selected" value="'.$key.'">'.$value.'</option>';
+                    $options .= '<option type_name="'.$map[$key].'" selected="selected" value="'.$key.'">'.$value.'</option>';
                 } else {
-                    $options .= '<option value="'.$key.'">'.$value.'</option>';
+                    $options .= '<option type_name="'.$map[$key].'" value="'.$key.'">'.$value.'</option>';
                 }
             }
         }

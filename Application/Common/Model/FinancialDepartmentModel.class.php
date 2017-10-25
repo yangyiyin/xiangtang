@@ -20,6 +20,8 @@ class FinancialDepartmentModel extends NfBaseModel {
     const TYPE_FinancialTransferFunds = 11;
     const TYPE_FinancialBank = 12;
 
+    public static $TYPE_MAP = [1=>'FinancialInsuranceProperty',2=>'FinancialInsuranceLife',3=>'FinancialInsuranceMutual',4=>'FinancialVouch', 5=>'FinancialInvestment', 6=>'FinancialInvestmentManager',7=>'FinancialFutures',8=>'FinancialLease',9=>'FinancialLoan',10=>'FinancialSecurities',11=>'FinancialTransferFunds',12=>'FinancialBank'];
+
     const SUB_TYPE_A = 1;
     const SUB_TYPE_B = 2;
     const SUB_TYPE_C = 3;

@@ -29,6 +29,10 @@
                           <td><input type="text" class="input input-large" name="url" value="{$info.url|default=''}"><span class="check-tips">U函数解析的URL或者外链,如：Admin/Menu</span></td>
                         </tr>
                         <tr>
+                            <td><label class="item-label">权限urls:</label></td>
+                            <td><input type="text" class="input input-large" name="urls" value="{$info.urls|default=''}"><span class="check-tips">U函数解析的URL或者外链,如：Admin/Menu</span></td>
+                        </tr>
+                        <tr>
                           <td><label class="item-label">上级菜单</label></td>
                           <td><select name="pid">
                             <volist name="Menus" id="menu">
