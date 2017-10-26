@@ -8,7 +8,15 @@
 		<!-- 按钮工具栏 -->
 		<div class="u-tab">
 		    <ul class="cc tab-nav">
-				<li class="current"><a href="javascript:;">公告</a></li>
+
+				<if condition="I('platform',1) == 1">
+					<li class="current"><a href="javascript:;">服务版公告</a></li>
+					<li><a href="{:U('add_public')}/platform/2">零售版公告</a></li>
+				</if>
+				<if condition="I('platform',1) == 2">
+					<li><a href="{:U('add_public')}/platform/1">服务版公告</a></li>
+					<li class="current"><a href="javascript:;">零售版公告</a></li>
+				</if>
 		    </ul>
 		</div>
 		<!-- 数据表格 -->
@@ -19,6 +27,7 @@
 					<table class="" width="100%">
 				    <tbody>
 					<input type="hidden" name="type" value="public"/>
+					<input type="hidden" name="platform[]" value="{:I('get.platform',1)}"/>
 							<tr>
 					            <td width="20%"><label class="item-label">标题</label></td>
 					            <td width="80%">

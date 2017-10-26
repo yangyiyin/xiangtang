@@ -95,7 +95,7 @@ class AntArticleController extends AdminController {
     }
 
     public function add_public() {
-        $info = $this->ArticleService->get_public();
+        $info = $this->ArticleService->get_public(I('get.platform',1));
         $this->assign('info',$info);
         $this->display();
     }

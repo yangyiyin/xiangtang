@@ -121,10 +121,11 @@ class ArticleService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
-    public function get_public() {
+    public function get_public($platform=1) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
         $where['type'] = ['EQ', $NfModel::TYPE_PUBLIC];
+        $where['platform'] = ['EQ', $platform];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->find();
     }
