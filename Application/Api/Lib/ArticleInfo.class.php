@@ -41,7 +41,7 @@ class ArticleInfo extends BaseSapi{
         } elseif ($block == self::block_type_contact) {
             $info = $this->ArticleService->get_contact();
         } elseif ($block == self::block_type_public) {
-            $info = $this->ArticleService->get_public();
+            $info = $this->ArticleService->get_public($this->from);
         } elseif ($block == self::block_type_volunteer_agree) {
             $info = $this->ArticleService->get_volunteer_agree();
         } elseif ($block == self::block_type_disabled_help_agree) {
