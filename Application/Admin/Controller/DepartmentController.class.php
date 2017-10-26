@@ -144,7 +144,7 @@ class DepartmentController extends AdminController {
 
                 break;
         }
-
+        array_push($fields,'other_name');
         return $fields;
     }
 
@@ -164,6 +164,7 @@ class DepartmentController extends AdminController {
             $data_new['type'] = $type;
             $data = $data_new;
             if ($id) {
+                unset($data['all_name']);//不能修改全称,因为都是靠all_name查询
                 $ret = $this->DepartmentService->update_by_id($id, $data);
                 if ($ret->success) {
                     action_user_log('修改部门信息');

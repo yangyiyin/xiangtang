@@ -1255,3 +1255,5 @@ alter table shopy_financial_department add filler_man_tel VARCHAR (100) DEFAULT 
 alter table shopy_financial_sms add count int (5) DEFAULT '1' ;
 alter table shopy_menu add urls VARCHAR (255) DEFAULT '' ;
 alter table shopy_auth_group add urls VARCHAR (255) DEFAULT '' ;
+
+alter table shopy_financial_department add other_name VARCHAR (20) DEFAULT '' ;

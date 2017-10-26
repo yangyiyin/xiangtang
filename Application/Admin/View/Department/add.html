@@ -40,11 +40,24 @@
 						</td>
 					</tr>
 							<tr class="all_name">
-					            <td width="20%"><label class="item-label">*全称</label></td>
+					            <td width="20%"><label class="item-label">*全称(添加后不可修改)</label></td>
 					            <td width="80%">
-									<input type="text" class="input input-medium" name="all_name" value="{$info.all_name}">
+									<if condition="I('get.id')">
+
+										<input type="text" class="input input-medium" style="background: #ddd" disabled="disabled" name="all_name" value="{$info.all_name}">
+										<else/>
+										<input type="text" class="input input-medium" name="all_name" value="{$info.all_name}">
+									</if>
+
 								</td>
 							</tr>
+					<tr class="all_name">
+						<td width="20%"><label class="item-label">*别称(简称)</label></td>
+						<td width="80%">
+							<input type="text" class="input input-medium" name="other_name" value="{$info.other_name}">
+						</td>
+					</tr>
+
 							<tr class="address">
 								<td width="20%"><label class="item-label">*地址</label></td>
 								<td width="80%">

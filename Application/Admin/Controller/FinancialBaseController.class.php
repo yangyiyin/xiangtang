@@ -400,4 +400,47 @@ class FinancialBaseController extends AdminController {
 
     }
 
+    public function index_list() {
+        $list = [];
+        $p = I('p',1);
+        $DepartmentService = \Common\Service\DepartmentService::get_instance();
+        $my_list = $DepartmentService->get_my_list(UID,$this->type);
+        $my_department = isset($my_list[0]) ? $my_list[0] : [];
+        $where = [];
+        if ($year = intval(I('year'))) {
+            $where['year'] = $year;
+        }
+        if ($month = intval(I('month'))) {
+            $where['month'] = $month;
+        }
+        if ($status = I('status')) {
+            $where['status'] = $status;
+        }
+        $where['all_name'] = $my_department['all_name'];
+        if ($my_department) {
+            switch ($this->type) {
+                case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty:
+
+
+
+                    $InsurancePropertyService = \Common\Service\InsurancePropertyService::get_instance();
+                    list($list, $count) = $InsurancePropertyService->get_by_where($where, 'id desc', $p);
+                break;
+            }
+        }
+
+        $PageInstance = new \Think\Page($count, \Common\Service\BaseService::$page_size);
+        if($count>\Common\Service\BaseService::$page_size){
+            $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+        }
+        $page_html = $PageInstance->show();
+
+        $this->assign('list', $list);
+        $this->assign('page_html', $page_html);
+
+
+        $this->display();
+
+    }
+
 }
