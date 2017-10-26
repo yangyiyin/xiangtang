@@ -137,16 +137,17 @@ class OrderAdd extends BaseApi{
                 }
                 //财务记录
                 $account_data = [];
-                if (in_array($order['seller_uid'], $franchisee_uids)) {
-                    $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_FRANCHISEE_ADD;
-                } else {
-                    $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_PLATFORM_ADD;
-                }
-                $account_data['sum'] = $order['sum'];
-                $account_data['oid'] = $order_id;
-                $account_data['uid'] = $order['seller_uid'];
-                $account_data['pay_no'] = '';
-                $AccountLogService->add_one($account_data);
+//                if (in_array($order['seller_uid'], $franchisee_uids)) {
+//                    $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_FRANCHISEE_ADD;
+//                } else {
+//                    $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_PLATFORM_ADD;
+//                }
+//                $account_data['sum'] = $order['sum'];
+//                $account_data['oid'] = $order_id;
+//                $account_data['uid'] = $order['seller_uid'];
+//                $account_data['pay_no'] = '';
+//                $AccountLogService->add_one($account_data);
+
 
                 //扣除佣金
                 $ret = $AccountService->minus_account($data['uid'], $order['sum']);

@@ -231,6 +231,26 @@ class OrderService extends BaseService{
                 $AccountLogService->add_one($account_data);
                 $AccountService->add_account($order['uid'], $order['dealer_profit']);
             }
+
+
+            //加盟商和平台的财务记录
+            $account_data = [];
+            $MemberService = \Common\Service\MemberService::get_instance();
+            $franchisee_uids = $MemberService->get_franchisee_uids();
+            if (in_array($order['seller_uid'], $franchisee_uids)) {
+                $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_FRANCHISEE_ADD;
+            } else {
+                $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_PLATFORM_ADD;
+            }
+            $account_data['sum'] = $order['sum'];
+            $account_data['oid'] = $order['id'];
+            $account_data['uid'] = $order['seller_uid'];
+            $account_data['pay_no'] = '';
+            $extra = ['fee_rate'=>0.03, 'actual_sum'=>ceil($order['sum'] * 0.97), 'fee'=>ceil($order['sum'] * 0.03)];
+            $account_data['extra'] = json_encode($extra);
+            $AccountLogService->add_one($account_data);
+
+
         }
         return $ret;
     }

@@ -29,33 +29,71 @@
 			<table class="" width="100%">
 		    <thead>
 		        <tr>
-					<th>交易号</th>
+					<if condition="!$is_franchisee">
+						<th width="5%"><input class="check-all" type="checkbox"/></th>
+					</if>
 					<th>订单id</th>
-					<th>总金额</th>
-					<th>订单佣金</th>
-					<th>用户id</th>
-					<th>创建时间</th>
+					<th>收货信息</th>
+
+					<th>订单总金额</th>
+					<th>支付方式</th>
+					<th>交易手续费</th>
+					<th>实收金额</th>
+					<th>操作</th>
 				</tr>
 		    </thead>
 		    <tbody>
 				<volist name="list" id="vo">
-				<tr>
-					<td>{$vo.pay_no} </td>
 
+				<tr>
+					<if condition="!$is_franchisee">
+						<td>
+							<if condition="$vo.status == 0">
+								<input class="ids" actual_sum="{$vo.extra.actual_sum|format_price}" type="checkbox" name="ids[]" value="{$vo.id}" />
+							</if>
+						</td>
+					</if>
 					<td>
-						{$vo.oid}
+						{$vo.order.id}
+					</td>
+					<td>
+						<if condition="$vo['order']['receiving_type'] == 2">
+							<p class="short_info">收货方式:自提</p>
+							<p class="short_info">网点:{$vo.order.receiving_service_name}</p>
+						</if>
+						<if condition="$vo['order']['receiving_type'] == 1">
+							<p class="short_info">收货方式:物流配送</p>
+							<p class="short_info">收货地址:{$vo.order.receiving_address}</p>
+							<p class="short_info">收货人:{$vo.order.receiving_name}</p>
+							<p class="short_info">联系电话:{$vo.order.receiving_tel}</p>
+						</if>
 					</td>
 					<td>
 						{$vo.sum|format_price}
 					</td>
-					<td>{$vo.dealer_profit|format_price}</td>
 					<td>
-						{$vo.uid}
+						{$vo.order.pay_type_desc}
+					</td>
+					<td>
+						{$vo.extra.fee|format_price}
 					</td>
 
 					<td>
-						{$vo.create_time}
+						{$vo.extra.actual_sum|format_price}
 					</td>
+					<td>
+						<if condition="$vo.status == 0">
+							<if condition="!$is_franchisee">
+								<a  class="u-btn confirm J_ajax_get" href="{:U('close_account')}/id/{$vo.id}">结算</a>
+								<else/>
+								未结算
+							</if>
+						</if>
+						<if condition="$vo.status == 1">
+							已结算
+						</if>
+					</td>
+
 				</tr>
 				</volist>
 			</tbody>
@@ -63,11 +101,14 @@
 		</div>
 		<div class="btn_wrap">
 			<div class="btn_wrap_pd">
-				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
-				<a href="javascript:;">总计金额:{$total_sum|format_price}元</a>
-				<a href="javascript:;">总计佣金:{$dealer_profit_sum|format_price}元</a>
-				<a href="javascript:;">总计交易数:{$total_pay_num}</a>
-				<a href="javascript:;">总计订单数:{$total_order_num}</a>
+				<!--<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>-->
+				<if condition="!$is_franchisee">
+					<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("close_account")}'>批量结算<span class="all_account">(0)</span></button>
+
+				</if>
+				<a href="javascript:;">总计已结算订单总金额:{$total_order_sum|format_price}元</a>
+				<a href="javascript:;">总计已结算实收总金额:{$total_actual_sum|format_price}元</a>
+				<a href="javascript:;">总计已结算订单数:{$total_order_num}</a>
 				<a href="javascript:;">总计起止时间:{$create_begin} 至 {$create_end}</a>
 		    </div>
 		</div>
@@ -139,6 +180,13 @@ $(function(){
         pickerPosition:'bottom-left'
     });
 
+	$('.ids').change(function(){
+		var actual_sum = 0;
+		$('.ids:checked').each(function(index,ele){
+			actual_sum += parseFloat($(ele).attr('actual_sum'));
+		});
+		$('.all_account').html('('+actual_sum+')');
+	})
 
 });
 

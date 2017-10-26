@@ -134,3 +134,5 @@ CREATE TABLE `shopy_nf_volunteer` (
 alter table shopy_nf_volunteer add pay_sum int (11) DEFAULT '0';
 alter table shopy_nf_volunteer add remark VARCHAR (200) DEFAULT '';
 alter table shopy_nf_volunteer add uid int (11) DEFAULT '0';
+alter table shopy_nf_account_log add status tinyint (3) DEFAULT '0';
+alter table shopy_nf_account_log add extra varchar (100) DEFAULT '0';

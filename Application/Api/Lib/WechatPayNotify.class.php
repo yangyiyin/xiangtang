@@ -89,18 +89,18 @@ class WechatPayNotify extends BaseSapi{
                     exit;
                 }
                 //财务记录
-                $account_data = [];
-                if (in_array($order['seller_uid'], $franchisee_uids)) {
-                    $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_FRANCHISEE_ADD;
-                } else {
-                    $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_PLATFORM_ADD;
-                }
-                $account_data['sum'] = $order['sum'];
-                $account_data['oid'] = $order_id;
-                $account_data['uid'] = $order['seller_uid'];
-                $account_data['pay_no'] = $data_notify['pay_no'];
-                $AccountLogService->add_one($account_data);
-//
+//                $account_data = [];
+//                if (in_array($order['seller_uid'], $franchisee_uids)) {
+//                    $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_FRANCHISEE_ADD;
+//                } else {
+//                    $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_PLATFORM_ADD;
+//                }
+//                $account_data['sum'] = $order['sum'];
+//                $account_data['oid'] = $order_id;
+//                $account_data['uid'] = $order['seller_uid'];
+//                $account_data['pay_no'] = $data_notify['pay_no'];
+//                $AccountLogService->add_one($account_data);
+////
 //                if ($order['inviter_id']) {
 //                    $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_INVITER_ADD;
 //                    //$account_data['sum'] = intval($order['sum'] * C('INVITER_RATE'));

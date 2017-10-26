@@ -58,4 +58,5 @@
 //foreach ($list as $k => $_li) {
 //    $list[$_li['pid']][] = $_li;
 //}
-var_dump('1_1' == 1);
+$extra = ['fee_rate'=>0.03, 'actual_sum'=>97, 'fee'=>3];
+echo json_encode($extra);

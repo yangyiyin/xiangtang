@@ -19,6 +19,9 @@ class NfAccountLogModel extends NfBaseModel {
     const TYPE_OFFICIAL_ADD = 11;
     const TYPE_OFFICIAL_MINUS = 12;
 
+    const STATUS_INIT = 0;
+    const STATUS_CLOSE = 1;
+
     public static $TYPE_MAP = [
         self::TYPE_PLATFORM_ADD => '',
         self::TYPE_PLATFORM_MINUS => '',

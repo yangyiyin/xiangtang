@@ -108,7 +108,7 @@ class AntAccountLogController extends AdminController {
     public function franchisee() {
 
         $where = [];
-        $where['type'] = ['in', [\Common\Model\NfAccountLogModel::TYPE_FRANCHISEE_ADD, \Common\Model\NfAccountLogModel::TYPE_FRANCHISEE_MINUS]];
+        $where['type'] = ['in', [\Common\Model\NfAccountLogModel::TYPE_FRANCHISEE_ADD]];
 
         $create_begin = I('get.create_begin');
         $create_end = I('get.create_end');
@@ -129,15 +129,18 @@ class AntAccountLogController extends AdminController {
         if ($franchisee_uids && in_array(UID, $franchisee_uids)) {
             $this->assign('is_franchisee',1);
             $where['uid'] = UID;//加盟商只能看到自己的订单
+            $this->is_franchisee = 1;
+
         }
 
+        $this->assign('is_franchisee', $this->is_franchisee);
 
         $this->assign('create_begin', $create_begin);
         $this->assign('create_end', $create_end);
         $page = I('get.p', 1);
         list($data, $count) = $this->AccountLogService->get_by_where($where, 'id desc', $page);
-        list($sum,$total_pay_num) = $this->AccountLogService->get_totals($where);
-
+//        list($sum,$total_pay_num) = $this->AccountLogService->get_totals($where);
+        $where['status'] = \Common\Model\NfAccountLogModel::STATUS_CLOSE;
         list($all_list,$count) = $this->AccountLogService->get_by_where_all($where);
 
 
@@ -150,11 +153,17 @@ class AntAccountLogController extends AdminController {
             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
         }
         $page_html = $PageInstance->show();
+        $sum = $total_actual_num = 0;
+        foreach ($all_list as $log) {
+            $sum += $log['sum'];
+            $total_actual_sum += $log['extra'] ? $log['extra']['actual_sum'] : 0;
+        }
 
-        $this->assign('total_sum', $sum);
-        $this->assign('total_pay_num', $total_pay_num);
-        $this->assign('total_order_num', $total_pay_num);
-        $this->assign('dealer_profit_sum', $dealer_profit_sum);
+
+        $this->assign('total_order_sum', $sum);
+        $this->assign('total_actual_sum', $total_actual_sum);
+        $this->assign('total_order_num', count($all_list));
+
         $this->assign('list', $data);
         $this->assign('page_html', $page_html);
 
@@ -371,15 +380,26 @@ class AntAccountLogController extends AdminController {
             $orders = $OrderService->get_by_ids($oids);
             $orders_map = result_to_map($orders, 'id');
             $UserService = \Common\Service\UserService::get_instance();
+            $pay_type_map = \Common\Model\NfOrderModel::$pay_type_map;
             foreach ($data as $key => $log) {
-                if (isset($orders_map[$log['id']]) && $UserService->is_dealer($orders_map[$log['id']]['type'])) {
+                if (isset($orders_map[$log['oid']]) && $UserService->is_dealer($orders_map[$log['oid']]['type'])) {
                     $data[$key]['dealer_profit'] = $orders_map[$log['id']]['dealer_profit'];
                 } else {
                     $data[$key]['dealer_profit'] = 0;
                 }
+
+                if (isset($orders_map[$log['oid']])) {
+                    $data[$key]['order'] = $orders_map[$log['oid']];
+                    $data[$key]['order']['pay_type_desc'] = isset($pay_type_map[$data[$key]['order']['pay_type']]) ? $pay_type_map[$data[$key]['order']['pay_type']] : '未知支付方式';
+                }
+
+                if ($log['extra']) {
+                    $data[$key]['extra'] = json_decode($log['extra'],true);
+                }
+
             }
         }
-
+        //echo_json_die($data);
         return $data;
 
     }
@@ -529,6 +549,26 @@ class AntAccountLogController extends AdminController {
             }
             //var_dump($data);die();
         }
+    }
+
+    public function close_account() {
+        $ids = I('post.ids');
+        $id = I('get.id');
+
+        if ($id) {
+            $ret = $this->AccountLogService->close_account([$id]);
+        }
+
+        if ($ids) {
+            $ret = $this->AccountLogService->close_account($ids);
+        }
+
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        $ids = $ids ? $ids : [$id];
+        action_user_log('结算:'.join(',',$ids));
+        $this->success('结算成功！');
     }
 
 }

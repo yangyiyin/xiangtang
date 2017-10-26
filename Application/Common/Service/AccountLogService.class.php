@@ -142,4 +142,18 @@ class AccountLogService extends BaseService{
         return [$sum, $count];
     }
 
+    public function close_account($ids) {
+        if (!check_num_ids($ids)) {
+            return result(FALSE, 'ids不能为空');
+        }
+        $NfModel = D('Nf' . static::$name);
+        $ret = $NfModel->where(['id'=>['in',$ids]])->save(['status'=>\Common\Model\NfAccountLogModel::STATUS_CLOSE]);
+
+        if ($ret) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, '网络繁忙~');
+        }
+    }
+
 }
