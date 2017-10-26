@@ -65,15 +65,22 @@ class AntProductController extends AdminController {
             $where['platform'] = ['eq', I('get.platform')];
         }
 
+        if (I('get.is_self') == 1) {
+            $where['uid'] = ['eq', 1];
+        } elseif(I('get.is_self') == 2) {
+            $where['uid'] = ['neq', 1];
+        }
+
         $where['is_real'] = 1;
 
-        //获取加盟商的uids
         //获取加盟商的uids
         $MemberService = \Common\Service\MemberService::get_instance();
         $franchisee_uids = $MemberService->get_franchisee_uids();
         if ($franchisee_uids && in_array(UID, $franchisee_uids)) {
             $where['uid'] = UID;//加盟商,只筛选自己的产品
+            $this->is_franchisee = 1;
         }
+
 
         $page = I('get.p', 1);
         list($data, $count) = $this->ProductService->get_by_where($where, 'id desc', $page);
@@ -384,6 +391,11 @@ class AntProductController extends AdminController {
             $item_pid_map = result_to_map($items, 'pid');
             $no_skus = $productNoSkuService->get_by_pids($pids);
             $no_skus_map = result_to_complex_map($no_skus, 'pid');
+
+            $uids = result_to_array($data, 'uid');
+            $MemberService = \Common\Service\MemberService::get_instance();
+            $franchisees = $MemberService->get_franchisees($uids);
+            $franchisees_map = result_to_map($franchisees, 'uid');
             foreach ($data as $key => $_product) {
                 if (isset($sku_pid_map[$_product['id']])) {
                     $data[$key]['sku'] = $sku_pid_map[$_product['id']];
@@ -404,6 +416,12 @@ class AntProductController extends AdminController {
                 }
 
                 $data[$key]['status_text'] = $this->ProductService->get_status_txt($_product['status']);
+
+                if (!$this->is_franchisee) {
+                    $data[$key]['franchisee_info'] = isset($franchisees_map[$_product['uid']]) ? $franchisees_map[$_product['uid']] : [];
+                } else {
+                    $data[$key]['franchisee_info'] = [];
+                }
             }
         }
     }

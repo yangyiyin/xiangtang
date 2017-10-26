@@ -58,12 +58,17 @@ class AntOrderController extends AdminController {
             $where['platform'] = ['eq', I('get.platform')];
         }
 
-
+        if (I('get.is_self') == 1) {
+            $where['seller_uid'] = ['eq', 1];
+        } elseif(I('get.is_self') == 2) {
+            $where['seller_uid'] = ['neq', 1];
+        }
         //获取加盟商的uids
         $MemberService = \Common\Service\MemberService::get_instance();
         $franchisee_uids = $MemberService->get_franchisee_uids();
         if ($franchisee_uids && in_array(UID, $franchisee_uids)) {
             $where['seller_uid'] = UID;//加盟商只能看到自己的订单
+            $this->is_franchisee = 1;
         }
 
         $page = I('get.p', 1);
@@ -155,6 +160,12 @@ class AntOrderController extends AdminController {
             $expresses = $OrderExpressService->get_by_oids($order_ids);
             $expresses_map = result_to_map($expresses, 'oid');
             $pay_type_map = \Common\Model\NfOrderModel::$pay_type_map;
+
+            $seller_uids = result_to_array($data, 'seller_uid');
+            $MemberService = \Common\Service\MemberService::get_instance();
+            $franchisees = $MemberService->get_franchisees($seller_uids);
+            $franchisees_map = result_to_map($franchisees, 'uid');
+
             foreach ($data as $key => $_item) {
                 if (isset($snapshots_map[$_item['id']])) {
                     $data[$key]['order_snapshot'] = json_decode($snapshots_map[$_item['id']]['content'], TRUE);
@@ -172,7 +183,11 @@ class AntOrderController extends AdminController {
                 $data[$key]['express'] = isset($expresses_map[$_item['id']]) ? $expresses_map[$_item['id']] : [];
                 $data[$key]['pay_type_desc'] = isset($pay_type_map[$_item['pay_type']]) ? $pay_type_map[$_item['pay_type']] : '未知支付方式';
                 $data[$key]['user'] = isset($users_map[$_item['uid']]) ? $users_map[$_item['uid']] : [];
-
+                if (!$this->is_franchisee) {
+                    $data[$key]['franchisee_info'] = isset($franchisees_map[$_item['seller_uid']]) ? $franchisees_map[$_item['seller_uid']] : [];
+                } else {
+                    $data[$key]['franchisee_info'] = [];
+                }
 
             }
             //var_dump($data);die();

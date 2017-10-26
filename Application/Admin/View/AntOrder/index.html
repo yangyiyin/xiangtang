@@ -22,6 +22,18 @@
 	          	<option value="2" {$b}>零售版</option>
 	        </select>
 
+				   <span class="mr20">自营：
+						<php>
+
+        		$a = (I('get.is_self')==1)?'selected':'';
+        		$b = (I('get.is_self')==2)?'selected':'';
+        	</php>
+	        <select class="select_2 select" name="is_self">
+	          	<option value='' >全部</option>
+				<option value="1" {$a}>是</option>
+	          	<option value="2" {$b}>否</option>
+	        </select>
+
 			  &nbsp;订单id：
 			  <input type="text" class="input length_2" name="order_id" style="width:100px;" value="{:I('order_id')}" >
 
@@ -88,6 +100,10 @@
 						</p>
 					</td>
 					<td>
+						<p>
+							<if condition="$vo['franchisee_info']"><span class="btn-primary">所属加盟商:{$vo.franchisee_info.nickname}</span></if>
+
+						</p>
 						<p class="short_info">总价:{$vo.sum|format_price}元(含运费{$vo.freight|format_price}元)
 						<a class="btn show_box" order_id="{$vo.id}" tmp_id="edit_total">修改总价</a>
 						</p>

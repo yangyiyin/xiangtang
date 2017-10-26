@@ -9,6 +9,7 @@ use Admin\Model\AuthGroupModel;
  */
 class AdminController extends Controller {
 
+    protected $is_franchisee = 0;
     /**
      * 后台控制器初始化
      */

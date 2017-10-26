@@ -43,6 +43,13 @@ class MemberService extends BaseService{
         $members = $NfUser->where($where)->select();
         return result_to_array($members, 'uid');
     }
+    public function get_franchisees($uids) {
+        $NfUser = D('Member');
+        $where = [];
+        $where['attr'] = ['eq', MemberModel::ATTR_FRANCHISEE];
+        $where['uid'] = ['in', $uids];
+        return $NfUser->where($where)->select();
+    }
 //
 //    public function update_by_ids($ids, $data) {
 //        if (!check_num_ids($ids)) {

@@ -28,6 +28,18 @@
 				 	<option value="3" {$c}>服务+零售</option>
 	        </select>
 
+					    <span class="mr20">自营：
+						<php>
+
+        		$a = (I('get.is_self')==1)?'selected':'';
+        		$b = (I('get.is_self')==2)?'selected':'';
+        	</php>
+	        <select class="select_2 select" name="is_self">
+	          	<option value='' >全部</option>
+				<option value="1" {$a}>是</option>
+	          	<option value="2" {$b}>否</option>
+	        </select>
+
 	        <span class="mr20">分类：
 	        <select class="select_2 select" name="cid">
 	          	<option value='' >全部</option>
@@ -77,6 +89,11 @@
 					<td><img src="{$vo['img']|get_cover}" width="50" height="50"/></td>
 					<td>
 						<p class="short_info">标题:{$vo.title}</p>
+						<p>
+							<if condition="$vo['franchisee_info']"><span class="btn-primary">所属加盟商:{$vo.franchisee_info.nickname}</span></if>
+
+						</p>
+
 						<p class="short_info">创建时间:{$vo.create_time}</p>
 						<p>
 							<if condition="$vo.platform == 1 || $vo.platform == 3"><span class="btn-success">服务版</span></if>

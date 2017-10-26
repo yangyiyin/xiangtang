@@ -50,11 +50,18 @@ class AntItemController extends AdminController {
             $where['platform'] = ['eq', I('get.platform')];
         }
 
+        if (I('get.is_self') == 1) {
+            $where['uid'] = ['eq', 1];
+        } elseif(I('get.is_self') == 2) {
+            $where['uid'] = ['neq', 1];
+        }
+
         //获取加盟商的uids
         $MemberService = \Common\Service\MemberService::get_instance();
         $franchisee_uids = $MemberService->get_franchisee_uids();
         if ($franchisee_uids && in_array(UID, $franchisee_uids)) {
             $where['uid'] = UID;//加盟商,只筛选自己的产品
+            $this->is_franchisee = 1;
         }
 
         $where['is_real'] = 1;
@@ -173,6 +180,11 @@ class AntItemController extends AdminController {
             $item_promotion_iids = result_to_array($item_promotion, 'iid');
             $item_recommend_iids = result_to_array($item_recommend, 'iid');
 
+            $uids = result_to_array($data, 'uid');
+            $MemberService = \Common\Service\MemberService::get_instance();
+            $franchisees = $MemberService->get_franchisees($uids);
+            $franchisees_map = result_to_map($franchisees, 'uid');
+
             foreach ($data as $key => $_product) {
                 if (isset($cates_map[$_product['cid']])) {
                     $data[$key]['cate'] = $cates_map[$_product['cid']];
@@ -190,6 +202,12 @@ class AntItemController extends AdminController {
                 }
                 if (in_array($_product['id'], $item_recommend_iids)) {
                     $data[$key]['is_recommend'] = TRUE;
+                }
+
+                if (!$this->is_franchisee) {
+                    $data[$key]['franchisee_info'] = isset($franchisees_map[$_product['uid']]) ? $franchisees_map[$_product['uid']] : [];
+                } else {
+                    $data[$key]['franchisee_info'] = [];
                 }
 
             }
