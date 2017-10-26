@@ -12,6 +12,8 @@ class ArticleInfo extends BaseSapi{
     const block_type_about = 'about';
     const block_type_contact = 'contact';
     const block_type_public = 'public';
+    const block_type_volunteer_agree = 'volunteer_agree';
+    const block_type_disabled_help_agree = 'disabled_help_agree';
     protected $method = parent::API_METHOD_GET;
     private $ArticleService;
     public function init() {
@@ -40,6 +42,10 @@ class ArticleInfo extends BaseSapi{
             $info = $this->ArticleService->get_contact();
         } elseif ($block == self::block_type_public) {
             $info = $this->ArticleService->get_public();
+        } elseif ($block == self::block_type_volunteer_agree) {
+            $info = $this->ArticleService->get_volunteer_agree();
+        } elseif ($block == self::block_type_disabled_help_agree) {
+            $info = $this->ArticleService->get_disabled_help_agree();
         }
 
         if ($info) {

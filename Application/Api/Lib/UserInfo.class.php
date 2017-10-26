@@ -32,6 +32,17 @@ class UserInfo extends BaseApi{
             }
         }
 
+        //获取是否是志愿者
+        $VolunteerService = \Common\Service\VolunteerService::get_instance();
+        $volunteer = $VolunteerService->get_info_by_uid($this->uid);
+
+        if ($volunteer) {
+            $data->volunteer_status = $volunteer['status'];
+            $map = \Common\Model\NfVolunteerModel::$status_map;
+            $data->volunteer_status_desc = isset($map[$volunteer['status']]) ? $map[$volunteer['status']] : '未知状态';
+        }
+
+
         return result_json(TRUE, '', $data);
     }
 }

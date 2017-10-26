@@ -5,14 +5,13 @@
  */
 namespace Common\Model;
 use Think\Model;
-class NfArticleModel extends NfBaseModel {
-    const TYPE_NEWS = 'news';
-    const TYPE_ABOUT = 'about';
-    const TYPE_CONTACT = 'contact';
-    const TYPE_PUBLIC = 'public';
-    const TYPE_VOLUNTEER_AGREE = 'volunteer_agree';
-    const TYPE_DISABLED_HELP_AGREE = 'disabled_help_agree';
-    public static $type_map = ['news'=>'新闻','public'=>'公告'];
+class NfDisabledHelpModel extends NfBaseModel {
+    const STATUS_READY = 1;
+    const STATUS_NORMAL = 2;
+    const STATUS_REJECT = 99;
+    const STATUS_COMPLETE = 3;
+
+    public static $status_map = [self::STATUS_READY=>'已提交,审核中', self::STATUS_NORMAL=>'已通过审核', self::STATUS_REJECT=>'已拒绝', self::STATUS_COMPLETE=>'已完成'];
     protected $_validate = array(
         /**
         array('title', 'require', '名称不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT),

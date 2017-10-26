@@ -102,5 +102,34 @@ class VolunteerService extends BaseService{
         return [$data, $count];
     }
 
+    public function is_available_paying($id,$uid) {
+        $info = $this->get_info_by_id($id);
+        if (!$info) {
+            return result(FALSE, '申请记录不存在');
+        }
+
+        if ($info['uid'] != $uid) {
+            return result(FALSE, '申请记录不存在');
+        }
+
+        if ($info['status'] != \Common\Model\NfVolunteerModel::STATUS_SUBMIT) {
+            $status_desc = isset(\Common\Model\NfVolunteerModel::$status_map[$info['status']]) ? \Common\Model\NfOrderModel::$status_map[$info['status']] : '未知';
+            return result(FALSE, '记录状态为:' . $status_desc . ',不可支付!');
+        }
+
+        return result(TRUE, '', $info);
+    }
+
+    public function is_available_complete($id) {
+        $info = $this->get_info_by_id($id);
+        if (!$info) {
+            return false;
+        }
+        return true;
+    }
+
+    public function complete($id) {
+
+    }
 
 }

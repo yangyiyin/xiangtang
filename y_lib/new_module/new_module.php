@@ -115,7 +115,7 @@ class newModule {
 }
 
 
-$newModule = new newModule('volunteer', '志愿者申请');
+$newModule = new newModule('disabledHelp', '残疾人救助类型');
 //['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]
-$newModule->gain([ 'controller'=>1, 'service'=>1, 'view'=>1]);
+//$newModule->gain([ 'controller'=>1, 'service'=>1, 'view'=>1]);
 $newModule->gain_power([ 'controller'=>1, 'service'=>1, 'view'=>1]);

@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-06-08 12:20:24
+ * Time: 2017-10-26 23:53:09
  */
 namespace Common\Service;
-class ArticleService extends BaseService{
-    public static $name = 'Article';
+class DisabledHelpService extends BaseService{
+    public static $name = 'DisabledHelp';
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
@@ -93,56 +93,5 @@ class ArticleService extends BaseService{
         return [$data, $count];
     }
 
-    public function get_pre_next($id, $type) {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['type'] = ['eq', $type];
-        $where['id'] = ['lt', $id];
-        $where['deleted'] = ['eq', static::$NOT_DELETED];
-        $pre = $NfModel->order('id desc')->where($where)->find();
-        $where['id'] = ['gt', $id];
-        $next = $NfModel->order('id asc')->where($where)->find();
-        return [$pre, $next];
-    }
 
-    public function get_about() {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['type'] = ['EQ', $NfModel::TYPE_ABOUT];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->find();
-    }
-
-    public function get_contact() {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['type'] = ['EQ', $NfModel::TYPE_CONTACT];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->find();
-    }
-
-    public function get_public($platform=1) {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['type'] = ['EQ', $NfModel::TYPE_PUBLIC];
-        $where['platform'] = ['EQ', $platform];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->find();
-    }
-
-
-    public function get_volunteer_agree() {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['type'] = ['EQ', $NfModel::TYPE_VOLUNTEER_AGREE];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->find();
-    }
-    public function get_disabled_help_agree() {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['type'] = ['EQ', $NfModel::TYPE_DISABLED_HELP_AGREE];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->find();
-    }
 }

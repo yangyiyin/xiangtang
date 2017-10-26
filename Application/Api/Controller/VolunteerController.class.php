@@ -8,6 +8,10 @@
 namespace Api\Controller;
 class VolunteerController extends BaseController {
     public function apply() {
-        $this->excute_api('Api\Lib\VounteerApply');
+        $this->excute_api('Api\Lib\VolunteerApply');
+
     }
+
+
+
 }

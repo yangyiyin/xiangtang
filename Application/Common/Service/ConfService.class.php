@@ -9,14 +9,12 @@ class ConfService extends BaseService{
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
-        $data['create_time'] = isset($data['create_time']) ? $data['create_time'] : current_date();
          if (!$NfModel->create($data)) {
             return result(FALSE, $NfModel->getError());
          }
         if ($NfModel->add()) {
             return result(TRUE, '', $NfModel->getLastInsID());
         } else {
-
             return result(FALSE, '网络繁忙~');
         }
     }

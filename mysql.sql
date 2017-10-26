@@ -136,3 +136,30 @@ alter table shopy_nf_volunteer add remark VARCHAR (200) DEFAULT '';
 alter table shopy_nf_volunteer add uid int (11) DEFAULT '0';
 alter table shopy_nf_account_log add status tinyint (3) DEFAULT '0';
 alter table shopy_nf_account_log add extra varchar (100) DEFAULT '0';
+
+CREATE TABLE `shopy_nf_disabled_help` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  uid int (11) DEFAULT '0',
+`name` varchar(10)  NOT NULL,
+`id_no` varchar(15)  NOT NULL,
+`address` varchar(100)  NOT NULL,
+`tel` varchar(15)  NOT NULL,
+`directly_tel` varchar(15)  DEFAULT '',
+`help_cat` int (11) DEFAULT '0',
+`remark` VARCHAR (200) DEFAULT '',
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `shopy_nf_disabled_help_cat` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+`title` varchar(50)  NOT NULL,
+`tips` varchar(100) DEFAULT '',
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+alter table shopy_nf_volunteer add `create_time` datetime DEFAULT NULL;
+alter table shopy_nf_disabled_help add `create_time` datetime DEFAULT NULL;
+alter table shopy_nf_disabled_help add `directly_name` varchar(10) DEFAULT '';
+alter table shopy_nf_disabled_help add `status` tinyint(3) DEFAULT 1;

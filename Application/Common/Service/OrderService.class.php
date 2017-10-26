@@ -239,7 +239,10 @@ class OrderService extends BaseService{
             $franchisee_uids = $MemberService->get_franchisee_uids();
             if (in_array($order['seller_uid'], $franchisee_uids)) {
                 $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_FRANCHISEE_ADD;
-                $extra = ['fee_rate'=>0.03, 'actual_sum'=>ceil($order['sum'] * 0.97), 'fee'=>ceil($order['sum'] * 0.03)];
+                $ConfService = \Common\Service\ConfService::get_instance();
+                $conf = $ConfService->get_by_key_name('franchisee_fee_rate');
+                $fee_rate = isset($conf['content']) ? $conf['content'] : 0.03;
+                $extra = ['fee_rate'=>$fee_rate, 'actual_sum'=>ceil($order['sum'] * (1-$fee_rate)), 'fee'=>ceil($order['sum'] * $fee_rate)];
                 $account_data['extra'] = json_encode($extra);
             } else {
                 $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_PLATFORM_ADD;

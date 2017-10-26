@@ -21,6 +21,10 @@ class VolunteerApply extends BaseSapi{
         $data['address'] = $this->post_data['address'];
         $data['free_time'] = $this->post_data['free_time'];
         $data['status'] = \Common\Model\NfVolunteerModel::STATUS_SUBMIT;
+
+        $ConfService = \Common\Service\ConfService::get_instance();
+        $conf = $ConfService->get_by_key_name('volunteer_pay_sum');
+        $data['pay_sum'] = isset($conf['content']) ? $conf['content'] : 10000;
         $info = $this->VolunteerService->get_info_by_uid($this->uid);
 
         if ($info) {

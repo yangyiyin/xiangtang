@@ -100,6 +100,18 @@ class AntArticleController extends AdminController {
         $this->display();
     }
 
+    public function add_volunteer_agree() {
+        $info = $this->ArticleService->get_volunteer_agree();
+        $this->assign('info',$info);
+        $this->display();
+    }
+
+    public function add_disabled_help_agree() {
+        $info = $this->ArticleService->get_disabled_help_agree();
+        $this->assign('info',$info);
+        $this->display();
+    }
+
     public function update() {
         if (IS_POST) {
             $id = I('get.id');

@@ -23,4 +23,20 @@ class PayController extends BaseController {
         $this->excute_api('Api\Lib\WechatPayNotify');
     }
 
+    public function volunteer_alipay_create() {
+        $this->excute_api('Api\Lib\VolunteerAlipayCreate');
+    }
+
+    public function volunteer_alipay_notify() {
+        $this->excute_api('Api\Lib\VolunteerAlipayNotify');
+    }
+
+    public function volunteer_wechat_pay_create() {
+        $this->excute_api('Api\Lib\VolunteerWechatPayCreate');
+    }
+
+    public function volunteer_wechat_pay_notify() {
+        $this->excute_api('Api\Lib\VolunteerWechatPayNotify');
+    }
+
 }
