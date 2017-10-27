@@ -16,14 +16,15 @@ class MenuController extends AdminController {
     public function add_menu_direct() {
 
         $arr = [
-            ['title' => '通过', 'url'=>'AntNeedsLocal/approve'],
-            ['title' => '拒绝', 'url'=>'AntNeedsLocal/reject'],
-            ['title' => '完成', 'url'=>'AntNeedsLocal/complete']
+            ['title' => '新增', 'url'=>'AntVolunteer/add'],
+            ['title' => '修改', 'url'=>'AntVolunteer/update'],
+            ['title' => '删除', 'url'=>'AntVolunteer/del'],
+            ['title' => '审核', 'url'=>'AntVolunteer/change_status']
         ];
 
         $data = [];
         foreach ($arr as $_value) {
-            $data[] = ['title'=>$_value['title'], 'pid'=>188, 'module'=>'Admin', 'sort'=>99, 'url'=>$_value['url'], 'hide'=>1];
+            $data[] = ['title'=>$_value['title'], 'pid'=>279, 'module'=>'Admin', 'sort'=>99, 'url'=>$_value['url'], 'hide'=>1];
         }
 
         M('menu')->addAll($data);
