@@ -17,11 +17,11 @@ class IndexSections extends BaseSapi{
     public function excute() {
         $list = [
             ['type' => 'mall', 'name'=>'商城', 'img'=>item_img('/Uploads/Picture/12.png')],
-            ['type' => 'wedding', 'name'=>'婚庆礼仪', 'img'=>item_img('/Uploads/Picture/13.png')],
-            ['type' => 'farm_happy', 'name'=>'农家乐', 'img'=>item_img('/Uploads/Picture/14.png')],
-            ['type' => 'farm_goods', 'name'=>'农资产品', 'img'=>item_img('/Uploads/Picture/15.png')],
-            ['type' => 'travel', 'name'=>'旅游', 'img'=>item_img('/Uploads/Picture/16.png')],
-            ['type' => 'needs', 'name'=>'生活服务', 'img'=>item_img('/Uploads/Picture/17.png')],
+            ['type' => 'volunteer_apply', 'name'=>'志愿者申请', 'img'=>item_img('/Uploads/Picture/13.png')],
+            ['type' => 'aid_apply', 'name'=>'残疾人救助申请', 'img'=>item_img('/Uploads/Picture/14.png')],
+            ['type' => 'regulation', 'name'=>'政策法规', 'img'=>item_img('/Uploads/Picture/15.png')],
+            ['type' => 'disable_family_info', 'name'=>'残疾人家庭状况', 'img'=>item_img('/Uploads/Picture/16.png')],
+            ['type' => 'infomation_center', 'name'=>'信息中心', 'img'=>item_img('/Uploads/Picture/17.png')],
         ];
         return result_json(TRUE, '', $list);
 

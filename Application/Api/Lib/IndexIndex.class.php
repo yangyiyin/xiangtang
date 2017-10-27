@@ -52,29 +52,29 @@ class IndexIndex extends BaseSapi{
             $result->list[] = ['items' => $this->convert_data($data), 'title' => '推荐商品', 'icon' => item_img('/Uploads/Picture/12.png'), 'type' => 'mall'];
         }
 
-        //农家乐
-        $where = [];
-        $where['is_real'] = 0;
-        $where['cid'] = 19;
-        $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
-        list($data, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc');
-        $result->list[] = ['items' => $this->convert_data($data), 'title'=>'农家乐', 'icon'=>item_img('/Uploads/Picture/12.png'),'type'=>'farm_happy'];
-        //旅游
-        $where = [];
-        $where['is_real'] = 0;
-        $where['cid'] = 2;
-        $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
-        list($data, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc');
-        $result->list[] = ['items' => $this->convert_data($data), 'title'=>'旅游', 'icon'=>item_img('/Uploads/Picture/12.png'),'type'=>'travel'];
-
-        //婚庆
-        $result->list[] = ['items' => [], 'title'=>'婚庆', 'icon'=>item_img('/Uploads/Picture/12.png'),'type'=>'wedding'];
-
-        //农资产品
-        $result->list[] = ['items' => [], 'title'=>'农资产品', 'icon'=>item_img('/Uploads/Picture/12.png'),'type'=>'farm_goods'];
-
-        //生活服务
-        $result->list[] = ['items' => [], 'title'=>'生活服务', 'icon'=>item_img('/Uploads/Picture/12.png'),'type'=>'needs'];
+//        //农家乐
+//        $where = [];
+//        $where['is_real'] = 0;
+//        $where['cid'] = 19;
+//        $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
+//        list($data, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc');
+//        $result->list[] = ['items' => $this->convert_data($data), 'title'=>'农家乐', 'icon'=>item_img('/Uploads/Picture/12.png'),'type'=>'farm_happy'];
+//        //旅游
+//        $where = [];
+//        $where['is_real'] = 0;
+//        $where['cid'] = 2;
+//        $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
+//        list($data, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc');
+//        $result->list[] = ['items' => $this->convert_data($data), 'title'=>'旅游', 'icon'=>item_img('/Uploads/Picture/12.png'),'type'=>'travel'];
+//
+//        //婚庆
+//        $result->list[] = ['items' => [], 'title'=>'婚庆', 'icon'=>item_img('/Uploads/Picture/12.png'),'type'=>'wedding'];
+//
+//        //农资产品
+//        $result->list[] = ['items' => [], 'title'=>'农资产品', 'icon'=>item_img('/Uploads/Picture/12.png'),'type'=>'farm_goods'];
+//
+//        //生活服务
+//        $result->list[] = ['items' => [], 'title'=>'生活服务', 'icon'=>item_img('/Uploads/Picture/12.png'),'type'=>'needs'];
 
         return result_json(TRUE, '', $result);
     }
