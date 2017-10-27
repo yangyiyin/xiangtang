@@ -42,6 +42,7 @@
 					<th>银行</th>
 					<th>姓名</th>
 					<th>卡号</th>
+					<th>申请时间</th>
 					<th>金额(元)</th>
 					<th >操作</th>
 				</tr>
@@ -59,6 +60,9 @@
 					</td>
 					<td>
 						{$vo.bank_code}
+					</td>
+					<td>
+						{$vo.create_time}
 					</td>
 					<td>
 						{$vo.sum|format_price}
