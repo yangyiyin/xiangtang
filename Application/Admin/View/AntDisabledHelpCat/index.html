@@ -24,7 +24,7 @@
 			<table class="" width="100%">
 		    <thead>
 		        <tr>
-					<th><input class="check-all" type="checkbox"/></th>
+					<!--<th><input class="check-all" type="checkbox"/></th>-->
 					<th>id</th>
 					<th>名称</th>
 					<th >操作</th>
@@ -33,7 +33,7 @@
 		    <tbody>
 				<volist name="list" id="vo">
 				<tr>
-		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
+		            <!--<td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>-->
 					<td>{$vo.id} </td>
 
 					<td>
@@ -51,7 +51,7 @@
 		</div>
 		<div class="btn_wrap">
 			<div class="btn_wrap_pd">
-				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
+				<!--<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>-->
 
 		    </div>
 		</div>
