@@ -40,7 +40,6 @@ class UserInfo extends BaseApi{
             $data->volunteer_status = $volunteer['status'];
             $map = \Common\Model\NfVolunteerModel::$status_map;
             $data->volunteer_status_desc = isset($map[$volunteer['status']]) ? $map[$volunteer['status']] : '未知状态';
-            $data->volunteer_pay_info = '您已提交申请志愿者表,马上支付志愿费';
 
         }
 

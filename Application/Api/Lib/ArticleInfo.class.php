@@ -14,6 +14,7 @@ class ArticleInfo extends BaseSapi{
     const block_type_public = 'public';
     const block_type_volunteer_agree = 'volunteer_agree';
     const block_type_disabled_help_agree = 'disabled_help_agree';
+    const block_type_volunteer_pay_info = 'volunteer_pay_info';
     protected $method = parent::API_METHOD_GET;
     private $ArticleService;
     public function init() {
@@ -46,6 +47,13 @@ class ArticleInfo extends BaseSapi{
             $info = $this->ArticleService->get_volunteer_agree();
         } elseif ($block == self::block_type_disabled_help_agree) {
             $info = $this->ArticleService->get_disabled_help_agree();
+        } elseif ($block == self::block_type_volunteer_pay_info) {
+            $info = [
+                'id'=>1,
+                'title' => '您已提交申请志愿者表,马上支付志愿费',
+                'content' => '您已提交申请志愿者表,马上支付志愿费',
+                'create_time' => '2017-10-26'
+            ];
         }
 
         if ($info) {
