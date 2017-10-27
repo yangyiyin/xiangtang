@@ -59,6 +59,13 @@
 								<input type="text" class="input input-medium" name="entity_tel" value="{$info.entity_tel}">
 							</td>
 						</tr>
+						<tr>
+							<td width="20%"><label class="item-label">结算手续费率(小数,如0.03)</label></td>
+							<td width="80%">
+								<input type="text" class="input input-medium" name="extra[fee_rate]" value="{$info.extra.fee_rate}">
+							</td>
+						</tr>
+
 						<if condition="!I('get.id')">
 							<tr>
 								<td width="20%"><label class="item-label" style="color: #af8133">用户初始密码为:123456</label></td>

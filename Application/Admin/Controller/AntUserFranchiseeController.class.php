@@ -52,7 +52,11 @@ class AntUserFranchiseeController extends AdminController  {
         if (IS_POST) {
             $id = I('get.id');
             $data = I('post.');
+            if (!is_numeric($data['extra']['fee_rate']) || $data['extra']['fee_rate'] <=0 || $data['extra']['fee_rate'] >= 1) {
+                $this->error('请检查手续费率是否填写正确');
+            }
             $data['extra'] = json_encode($data['extra']);
+
             if ($id) {
                 $ret = $this->MemberService->update_by_id($id, $data);
                 if ($ret->success) {

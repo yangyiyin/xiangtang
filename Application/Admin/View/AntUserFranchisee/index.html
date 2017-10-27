@@ -26,7 +26,7 @@
 					<th class="">UID</th>
 					  <th class="">基本信息</th>
 					<th class="">昵称</th>
-					<th class="">登录次数</th>
+					<th class="">结算手续费率</th>
 					<th class="">最后登录时间</th>
 					<th class="">状态</th>
 					<th class="">操作</th>
@@ -48,7 +48,7 @@
 							{$vo.nickname}<br/>
 							<a target="_blank" class="u-btn" href="{:U('entity_info')}/id/{$vo.uid}" class="confirm J_ajax_get">查看单位信息</a>
 						</td>
-						<td>{$vo.login}</td>
+						<td>{$vo.extra.fee_rate}</td>
 						<td><span>{$vo.last_login_time|time_format}</span></td>
 						<td>{$vo.status_text}</td>
 						<td><eq name="vo.status" value="1">
