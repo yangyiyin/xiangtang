@@ -16,18 +16,47 @@ class MenuController extends AdminController {
     public function add_menu_direct() {
 
         $arr = [
-            ['title' => '新增', 'url'=>'AntVolunteer/add'],
-            ['title' => '修改', 'url'=>'AntVolunteer/update'],
-            ['title' => '删除', 'url'=>'AntVolunteer/del'],
-            ['title' => '审核', 'url'=>'AntVolunteer/change_status']
+            ['title' => '新增', 'url'=>'AntDisabledHelp/add'],
+            ['title' => '修改', 'url'=>'AntDisabledHelp/update'],
+            ['title' => '删除', 'url'=>'AntDisabledHelp/del'],
+            ['title' => '审核', 'url'=>'AntDisabledHelp/change_status']
         ];
 
         $data = [];
         foreach ($arr as $_value) {
-            $data[] = ['title'=>$_value['title'], 'pid'=>279, 'module'=>'Admin', 'sort'=>99, 'url'=>$_value['url'], 'hide'=>1];
+            $data[] = ['title'=>$_value['title'], 'pid'=>280, 'module'=>'Admin', 'sort'=>99, 'url'=>$_value['url'], 'hide'=>1];
         }
 
         M('menu')->addAll($data);
+
+        $arr = [
+            ['title' => '新增', 'url'=>'AntDisabledHelpCat/add'],
+            ['title' => '修改', 'url'=>'AntDisabledHelpCat/update'],
+            ['title' => '删除', 'url'=>'AntDisabledHelpCat/del'],
+        ];
+
+        $data = [];
+        foreach ($arr as $_value) {
+            $data[] = ['title'=>$_value['title'], 'pid'=>281, 'module'=>'Admin', 'sort'=>99, 'url'=>$_value['url'], 'hide'=>1];
+        }
+
+        M('menu')->addAll($data);
+
+
+        $arr = [
+            ['title' => '新增', 'url'=>'AntDisabledMan/add'],
+            ['title' => '修改', 'url'=>'AntDisabledMan/update'],
+            ['title' => '删除', 'url'=>'AntDisabledMan/del'],
+            ['title' => '审核', 'url'=>'AntDisabledMan/change_status']
+        ];
+
+        $data = [];
+        foreach ($arr as $_value) {
+            $data[] = ['title'=>$_value['title'], 'pid'=>282, 'module'=>'Admin', 'sort'=>99, 'url'=>$_value['url'], 'hide'=>1];
+        }
+
+        M('menu')->addAll($data);
+
     }
 
     /**
