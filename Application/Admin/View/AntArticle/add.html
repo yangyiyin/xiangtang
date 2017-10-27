@@ -23,8 +23,16 @@
 				<div id="tab">
 					<table class="" width="100%">
 				    <tbody>
-					<input type="hidden" name="type" value="news"/>
+					<!--<input type="hidden" name="type" value="news"/>-->
 
+					<tr>
+						<td width="20%"><label class="item-label">类型</label></td>
+						<td width="80%">
+							<select name="type">
+								{$type_options}
+							</select>
+						</td>
+					</tr>
 					<tr>
 						<td width="20%"><label class="item-label">标题</label></td>
 						<td width="80%">

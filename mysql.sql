@@ -163,3 +163,26 @@ alter table shopy_nf_volunteer add `create_time` datetime DEFAULT NULL;
 alter table shopy_nf_disabled_help add `create_time` datetime DEFAULT NULL;
 alter table shopy_nf_disabled_help add `directly_name` varchar(10) DEFAULT '';
 alter table shopy_nf_disabled_help add `status` tinyint(3) DEFAULT 1;
+alter table shopy_nf_article add `status` tinyint(3) DEFAULT 1;
+alter table shopy_nf_article add `from_uid` int(11) DEFAULT 0;
+
+
+CREATE TABLE `shopy_nf_disabled_man` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+`name` varchar(10)  NOT NULL,
+`id_no` varchar(15)  NOT NULL,
+`address` varchar(100)  NOT NULL,
+`tel` varchar(15)  NOT NULL,
+`directly_tel` varchar(15)  DEFAULT '',
+`directly_name` varchar(10) DEFAULT '',
+`content` text,
+`remark` VARCHAR (200) DEFAULT '',
+`status` tinyint(3) DEFAULT 1,
+`create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+alter table shopy_nf_disabled_man add `img` VARCHAR (100) DEFAULT '';
+
+alter table shopy_member add `extra` VARCHAR (1000) DEFAULT '';
+

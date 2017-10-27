@@ -24,11 +24,10 @@
 		          <tr>
 		            <th class="row-selected row-selected"><input class="check-all" type="checkbox"/></th>
 					<th class="">UID</th>
+					  <th class="">基本信息</th>
 					<th class="">昵称</th>
-					<th class="">积分</th>
 					<th class="">登录次数</th>
 					<th class="">最后登录时间</th>
-					<th class="">最后登录IP</th>
 					<th class="">状态</th>
 					<th class="">操作</th>
 					  <th class="">修改</th>
@@ -39,13 +38,18 @@
 			            <td><input class="ids" type="checkbox" name="id[]" value="{$vo.uid}" /></td>
 						<td>{$vo.uid} </td>
 						<td>
+							<p>单位名称:{$vo.entity_name}</p>
+							<p>户名:{$vo.extra.name}</p>
+							<p>开户银行:{$vo.extra.bank_account}</p>
+							<p>银行账号:{$vo.extra.bank_name}</p>
+							<p>支付宝账号:{$vo.extra.alipay_account}</p>
+						</td>
+						<td>
 							{$vo.nickname}<br/>
 							<a target="_blank" class="u-btn" href="{:U('entity_info')}/id/{$vo.uid}" class="confirm J_ajax_get">查看单位信息</a>
 						</td>
-						<td>{$vo.score}</td>
 						<td>{$vo.login}</td>
 						<td><span>{$vo.last_login_time|time_format}</span></td>
-						<td><span>{:long2ip($vo['last_login_ip'])}</span></td>
 						<td>{$vo.status_text}</td>
 						<td><eq name="vo.status" value="1">
 							<a href="{:U('User/changeStatus?method=forbidUser&id='.$vo['uid'])}" class="J_ajax_get">禁用</a>

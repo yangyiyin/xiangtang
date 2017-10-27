@@ -221,6 +221,7 @@ class OrderService extends BaseService{
                 $AccountService->add_account($order['inviter_id'], $account_data['sum']);
             }
             $user_info = $UserService->get_info_by_id($order['uid']);
+            $actual_sum = $order['sum'];
             if ($user_info && $UserService->is_dealer($user_info['type']) && $order['dealer_profit']) {
                 $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_DEALER_ADD;
                 //$account_data['sum'] = intval($order['sum'] * C('INVITER_RATE'));
@@ -230,6 +231,8 @@ class OrderService extends BaseService{
                 $account_data['pay_no'] = '';
                 $AccountLogService->add_one($account_data);
                 $AccountService->add_account($order['uid'], $order['dealer_profit']);
+
+                $actual_sum = $order['sum'] - $order['dealer_profit'];
             }
 
 
@@ -242,7 +245,7 @@ class OrderService extends BaseService{
                 $ConfService = \Common\Service\ConfService::get_instance();
                 $conf = $ConfService->get_by_key_name('franchisee_fee_rate');
                 $fee_rate = isset($conf['content']) ? $conf['content'] : 0.03;
-                $extra = ['fee_rate'=>$fee_rate, 'actual_sum'=>ceil($order['sum'] * (1-$fee_rate)), 'fee'=>ceil($order['sum'] * $fee_rate)];
+                $extra = ['fee_rate'=>$fee_rate, 'actual_sum'=>ceil($actual_sum * (1-$fee_rate)), 'fee'=>ceil($actual_sum * $fee_rate)];
                 $account_data['extra'] = json_encode($extra);
             } else {
                 $account_data['type'] = \Common\Model\NfAccountLogModel::TYPE_PLATFORM_ADD;

@@ -1,6 +1,9 @@
 <extend name="Public/base"/>
 
 <block name="body">
+	<!--百度webuploader-->
+	<link rel="stylesheet" type="text/css" href="__STATIC__/webuploader/webuploader.css">
+	<script type="text/javascript" src="__STATIC__/webuploader/webuploader.min.js"></script>
 	<div class="g-wrap">
 		<!-- 按钮工具栏 -->
 		<div class="u-tab">
@@ -61,6 +64,301 @@
 								<td width="20%"><label class="item-label" style="color: #af8133">用户初始密码为:123456</label></td>
 							</tr>
 						</if>
+
+
+						<tr>
+							<td width="20%"><label class="item-label">户名</label></td>
+							<td width="80%">
+								<input type="text" class="input input-medium" name="extra[name]" value="{$info.extra.name}">
+							</td>
+						</tr>
+						<tr>
+							<td width="20%"><label class="item-label">开户银行</label></td>
+							<td width="80%">
+								<input type="text" class="input input-medium" name="extra[bank_name]" value="{$info.extra.bank_name}">
+							</td>
+						</tr>
+						<tr>
+							<td width="20%"><label class="item-label">银行账号</label></td>
+							<td width="80%">
+								<input type="text" class="input input-medium" name="extra[bank_account]" value="{$info.extra.bank_account}">
+							</td>
+						</tr>
+						<tr>
+							<td width="20%"><label class="item-label">支付宝账号</label></td>
+							<td width="80%">
+								<input type="text" class="input input-medium" name="extra[alipay_account]" value="{$info.extra.alipay_account}">
+							</td>
+						</tr>
+						<tr>
+							<td width="20%"><label class="item-label">营业执照</label></td>
+							<td width="80%">
+
+								<div class="controls">
+									<div id="filePicker">选择图片</div>
+									<input type="hidden" value="{$info.extra.entity_license_img}" name="extra[entity_license_img]" id="cover_id_1"/>
+									<div class="upload-img-box">
+										<notempty name="info['extra']['entity_license_img']">
+											<div class="upload-pre-item"><img class="pro_img" src="{$info['extra']['entity_license_img']|get_cover}" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic1()"><i class="fa fa-times-circle u-close"></i></a></div>
+										</notempty>
+									</div>
+								</div>
+								<script type="text/javascript">
+
+									var uploader1 = WebUploader.create({
+
+										// 选完文件后，是否自动上传。
+										auto: true,
+
+										// swf文件路径
+										swf: '__STATIC__/webuploader/Uploader.swf',
+
+										// 文件接收服务端。
+										server: "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+
+										// 选择文件的按钮。可选。
+										// 内部根据当前运行是创建，可能是input元素，也可能是flash.
+										pick: '#filePicker',
+										fileVal: 'download',
+										duplicate: true,
+										// 只允许选择图片文件。
+										accept: {
+											title: 'Images',
+											extensions: 'gif,jpg,jpeg,bmp,png',
+											mimeTypes: 'image/*'
+										}
+									});
+									uploader1.on( 'uploadSuccess', function(file, response) {
+										uploadPicture1(file, response);
+									});
+									function delpic1(){
+										$("#cover_id_1").attr("value",'');
+										$("#cover_id_1").parent().find('.upload-img-box').html('');
+									}
+									function uploadPicture1(file, data){
+										/*var data = $.parseJSON(data);*/
+										//var data = window["eval"]("(" + data + ")");
+										var src = '';
+										if(data.status){
+											$("#cover_id_1").val(data.path);
+											src = data.url || '__ROOT__' + data.path
+											$("#cover_id_1").parent().find('.upload-img-box').html(
+													'<div class="upload-pre-item j_1"><img class="pro_img" src="' + src + '" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic1()"><i class="fa fa-times-circle u-close"></i></a></div>'
+											);
+										} else {
+											updateAlert(data.info);
+											setTimeout(function(){
+												$('#top-alert').find('button').click();
+												$(that).removeClass('disabled').prop('disabled',false);
+											},1500);
+										}
+									}
+								</script>
+							</td>
+						</tr>
+
+						<tr>
+							<td width="20%"><label class="item-label">联系人身份证</label></td>
+							<td width="80%">
+
+								<div class="controls">
+									<div id="filePicker2">选择图片</div>
+									<input type="hidden" value="{$info.extra.id_card_img}" name="extra[id_card_img]" id="cover_id_2"/>
+									<div class="upload-img-box">
+										<notempty name="info['extra']['id_card_img']">
+											<div class="upload-pre-item"><img class="pro_img" src="{$info['extra']['id_card_img']|get_cover}" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic2()"><i class="fa fa-times-circle u-close"></i></a></div>
+										</notempty>
+									</div>
+								</div>
+								<script type="text/javascript">
+
+									var uploader2 = WebUploader.create({
+
+										// 选完文件后，是否自动上传。
+										auto: true,
+
+										// swf文件路径
+										swf: '__STATIC__/webuploader/Uploader.swf',
+
+										// 文件接收服务端。
+										server: "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+
+										// 选择文件的按钮。可选。
+										// 内部根据当前运行是创建，可能是input元素，也可能是flash.
+										pick: '#filePicker2',
+										fileVal: 'download',
+										duplicate: true,
+										// 只允许选择图片文件。
+										accept: {
+											title: 'Images',
+											extensions: 'gif,jpg,jpeg,bmp,png',
+											mimeTypes: 'image/*'
+										}
+									});
+									uploader2.on( 'uploadSuccess', function(file, response) {
+										uploadPicture2(file, response);
+									});
+									function delpic2(){
+										$("#cover_id_2").attr("value",'');
+										$("#cover_id_2").parent().find('.upload-img-box').html('');
+									}
+									function uploadPicture2(file, data){
+										/*var data = $.parseJSON(data);*/
+										//var data = window["eval"]("(" + data + ")");
+										var src = '';
+										if(data.status){
+											$("#cover_id_2").val(data.path);
+											src = data.url || '__ROOT__' + data.path
+											$("#cover_id_2").parent().find('.upload-img-box').html(
+													'<div class="upload-pre-item j_1"><img class="pro_img" src="' + src + '" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic2()"><i class="fa fa-times-circle u-close"></i></a></div>'
+											);
+										} else {
+											updateAlert(data.info);
+											setTimeout(function(){
+												$('#top-alert').find('button').click();
+												$(that).removeClass('disabled').prop('disabled',false);
+											},1500);
+										}
+									}
+								</script>
+							</td>
+						</tr>
+
+
+						<tr>
+							<td width="20%"><label class="item-label">银行卡上传</label></td>
+							<td width="80%">
+
+								<div class="controls">
+									<div id="filePicker3">选择图片</div>
+									<input type="hidden" value="{$info.extra.bank_img}" name="extra[bank_img]" id="cover_id_3"/>
+									<div class="upload-img-box">
+										<notempty name="info['extra']['bank_img']">
+											<div class="upload-pre-item"><img class="pro_img" src="{$info['extra']['bank_img']|get_cover}" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic3()"><i class="fa fa-times-circle u-close"></i></a></div>
+										</notempty>
+									</div>
+								</div>
+								<script type="text/javascript">
+
+									var uploader3 = WebUploader.create({
+
+										// 选完文件后，是否自动上传。
+										auto: true,
+
+										// swf文件路径
+										swf: '__STATIC__/webuploader/Uploader.swf',
+
+										// 文件接收服务端。
+										server: "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+
+										// 选择文件的按钮。可选。
+										// 内部根据当前运行是创建，可能是input元素，也可能是flash.
+										pick: '#filePicker3',
+										fileVal: 'download',
+										duplicate: true,
+										// 只允许选择图片文件。
+										accept: {
+											title: 'Images',
+											extensions: 'gif,jpg,jpeg,bmp,png',
+											mimeTypes: 'image/*'
+										}
+									});
+									uploader3.on( 'uploadSuccess', function(file, response) {
+										uploadPicture3(file, response);
+									});
+									function delpic3(){
+										$("#cover_id_3").attr("value",'');
+										$("#cover_id_3").parent().find('.upload-img-box').html('');
+									}
+									function uploadPicture3(file, data){
+										/*var data = $.parseJSON(data);*/
+										//var data = window["eval"]("(" + data + ")");
+										var src = '';
+										if(data.status){
+											$("#cover_id_3").val(data.path);
+											src = data.url || '__ROOT__' + data.path
+											$("#cover_id_3").parent().find('.upload-img-box').html(
+													'<div class="upload-pre-item j_1"><img class="pro_img" src="' + src + '" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic3()"><i class="fa fa-times-circle u-close"></i></a></div>'
+											);
+										} else {
+											updateAlert(data.info);
+											setTimeout(function(){
+												$('#top-alert').find('button').click();
+												$(that).removeClass('disabled').prop('disabled',false);
+											},1500);
+										}
+									}
+								</script>
+							</td>
+						</tr>
+
+						<tr>
+							<td width="20%"><label class="item-label">账户授权书</label></td>
+							<td width="80%">
+
+								<div class="controls">
+									<div id="filePicker4">选择图片</div>
+									<input type="hidden" value="{$info.extra.authorization}" name="extra[authorization]" id="cover_id_4"/>
+									<div class="upload-img-box">
+										<notempty name="info['extra']['authorization']">
+											<div class="upload-pre-item"><img class="pro_img" src="{$info['extra']['authorization']|get_cover}" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic4()"><i class="fa fa-times-circle u-close"></i></a></div>
+										</notempty>
+									</div>
+								</div>
+								<script type="text/javascript">
+
+									var uploader4 = WebUploader.create({
+
+										// 选完文件后，是否自动上传。
+										auto: true,
+
+										// swf文件路径
+										swf: '__STATIC__/webuploader/Uploader.swf',
+
+										// 文件接收服务端。
+										server: "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+
+										// 选择文件的按钮。可选。
+										// 内部根据当前运行是创建，可能是input元素，也可能是flash.
+										pick: '#filePicker4',
+										fileVal: 'download',
+										duplicate: true,
+										// 只允许选择图片文件。
+										accept: {
+											title: 'Images',
+											extensions: 'gif,jpg,jpeg,bmp,png',
+											mimeTypes: 'image/*'
+										}
+									});
+									uploader4.on( 'uploadSuccess', function(file, response) {
+										uploadPicture4(file, response);
+									});
+									function delpic4(){
+										$("#cover_id_4").attr("value",'');
+										$("#cover_id_4").parent().find('.upload-img-box').html('');
+									}
+									function uploadPicture4(file, data){
+										/*var data = $.parseJSON(data);*/
+										//var data = window["eval"]("(" + data + ")");
+										var src = '';
+										if(data.status){
+											$("#cover_id_4").val(data.path);
+											src = data.url || '__ROOT__' + data.path
+											$("#cover_id_4").parent().find('.upload-img-box').html(
+													'<div class="upload-pre-item j_1"><img class="pro_img" src="' + src + '" width="125" height="75"/><a title="删除" href="javascript:;" onclick="delpic4()"><i class="fa fa-times-circle u-close"></i></a></div>'
+											);
+										} else {
+											updateAlert(data.info);
+											setTimeout(function(){
+												$('#top-alert').find('button').click();
+												$(that).removeClass('disabled').prop('disabled',false);
+											},1500);
+										}
+									}
+								</script>
+							</td>
+						</tr>
+
 						</tbody>
 					</table>
 				</div>

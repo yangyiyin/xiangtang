@@ -24,13 +24,20 @@ class AntArticleController extends AdminController {
             $where['name'] = ['LIKE', '%' . I('get.name') . '%'];
         }
         */
+
+
         if (I('get.title')) {
             $where['title'] = ['LIKE', '%' . I('get.title') . '%'];
         }
         if (I('get.platform')) {
             $where['platform'] = ['eq', I('get.platform')];
         }
-        $where['type'] = ['in', [\Common\Model\NfArticleModel::TYPE_NEWS]];
+        $where['type'] = ['in', [\Common\Model\NfArticleModel::TYPE_NEWS,\Common\Model\NfArticleModel::TYPE_RULES,\Common\Model\NfArticleModel::TYPE_WORKINFO]];
+        $type = I('type');
+        if ($type) {
+            $where['type'] = ['eq', $type];
+        }
+
         $page = I('get.p', 1);
         list($data, $count) = $this->ArticleService->get_by_where($where, 'id desc', $page);
         $data = $this->convert_data($data);
@@ -39,7 +46,7 @@ class AntArticleController extends AdminController {
             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
         }
         $page_html = $PageInstance->show();
-
+        $this->assign('type_options', $this->ArticleService->get_type_options($type));
         $this->assign('list', $data);
         $this->assign('page_html', $page_html);
 
@@ -49,8 +56,12 @@ class AntArticleController extends AdminController {
 
     private function convert_data($data) {
         $map = \Common\Model\NfArticleModel::$type_map;
+        $UserService = \Common\Service\UserService::get_instance();
+        $users = $UserService->get_by_ids(result_to_array($data,'from_uid'));
+        $users_map = result_to_map($users);
         foreach ($data as $key => $value) {
             $data[$key]['type_desc'] = isset($map[$value['type']]) ? $map[$value['type']] : '未知';
+            $data[$key]['from_user'] = isset($users_map[$value['from_uid']]) ? $users_map[$value['from_uid']] : [];
         }
         return $data;
     }
@@ -71,14 +82,18 @@ class AntArticleController extends AdminController {
     }
 
     public function add() {
-        if ($id = I('get.id')) {
+        $type = '';
+        if ($id = I('get.id',0)) {
             $info = $this->ArticleService->get_info_by_id($id);
             if ($info) {
                 $this->assign('info',$info);
             } else {
                 $this->error('没有找到对应的信息~');
             }
+            $type = $info['type'];
         }
+
+        $this->assign('type_options', $this->ArticleService->get_type_options($type));
         $this->display();
     }
 
@@ -147,6 +162,28 @@ class AntArticleController extends AdminController {
             }
 
         }
+    }
+
+    public function change_status() {
+        $ids = I('post.ids');
+        $id = I('get.id');
+
+        $status = I('get.status');
+        $status = $status ? $status : I('post.status');
+        $data = ['status'=>$status];
+        if ($id) {
+            $ret = $this->ArticleService->update_by_ids([$id], $data);
+        }
+
+        if ($ids) {
+            $ret = $this->ArticleService->update_by_ids($ids, $data);
+        }
+
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        action_user_log('求职信息审核操作'.$status);
+        $this->success('操作成功！');
     }
 
 }

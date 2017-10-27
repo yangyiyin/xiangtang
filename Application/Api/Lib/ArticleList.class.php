@@ -11,6 +11,9 @@ use Common\Service;
 class ArticleList extends BaseSapi{
     const block_type_news = 'news';
     const block_type_public = 'public';
+    const block_type_rules = 'rules';
+    const block_type_workinfo = 'workinfo';
+
     protected $method = parent::API_METHOD_GET;
     private $ArticleService;
     public function init() {
@@ -27,9 +30,15 @@ class ArticleList extends BaseSapi{
             $where['type'] = Model\NfArticleModel::TYPE_NEWS;
         } elseif ($block == self::block_type_public) {
             $where['type'] = Model\NfArticleModel::TYPE_PUBLIC;
+        } elseif ($block == self::block_type_rules) {
+            $where['type'] = Model\NfArticleModel::TYPE_RULES;
+        } elseif ($block == self::block_type_workinfo) {
+            $where['type'] = ['in', [Model\NfArticleModel::TYPE_WORKINFO,Model\NfArticleModel::TYPE_WORKAPPLY]];
         } else {
             $where['type'] = 0;
         }
+
+
         if ($this->from == self::FROM_SERVICE) {
             $where['platform'] = ['in', [self::FROM_SERVICE, self::FROM_ALL]];
         } elseif($this->from == self::FROM_RETAIL) {
@@ -37,6 +46,7 @@ class ArticleList extends BaseSapi{
         } else {
             $where['platform'] =  ['eq', self::FROM_ALL];
         }
+        $where['status'] = \Common\Model\NfArticleModel::STATUS_NORMAL;
         list($list, $count) = $this->ArticleService->get_by_where($where, 'id desc', $p);
         $result = new \stdClass();
         $result->list = $this->convert_data($list);

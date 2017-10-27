@@ -7,9 +7,15 @@
  */
 namespace Api\Controller;
 class DisabledController extends BaseController {
+    public function _empty() {
+        $this->excute_api('Api\Lib\DisabledList');
+    }
+    public function info() {
+        $this->excute_api('Api\Lib\DisabledInfo');
+    }
+
     public function help_apply() {
         $this->excute_api('Api\Lib\DisabledHelpApply');
-
     }
 
     public function help_apply_list() {
@@ -17,5 +23,8 @@ class DisabledController extends BaseController {
 
     }
 
+    public function work_info_apply() {
+        $this->excute_api('Api\Lib\DisabledWorkInfoApply');
+    }
 
 }

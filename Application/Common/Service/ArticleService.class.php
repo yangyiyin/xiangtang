@@ -145,4 +145,25 @@ class ArticleService extends BaseService{
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->find();
     }
+
+
+    public function get_type_options($selected_id = '') {
+        $all = [];
+        foreach (\Common\Model\NfArticleModel::$type_map as $key => $value) {
+            $all[] = ['id'=>$key,'name'=>$value];
+        }
+
+        $options = '';
+        if ($all) {
+            foreach ($all as $_provider) {
+                if ($selected_id && $selected_id == $_provider['id']) {
+                    $options .= '<option selected="selected" value="'.$_provider['id'].'">'.$_provider['name'].'</option>';
+                } else {
+                    $options .= '<option value="'.$_provider['id'].'">'.$_provider['name'].'</option>';
+                }
+            }
+        }
+        return $options;
+    }
+
 }

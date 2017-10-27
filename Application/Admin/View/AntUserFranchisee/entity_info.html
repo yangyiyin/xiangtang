@@ -10,5 +10,10 @@
     <p>联系号码:{$info.entity_tel}</p>
     <p>联系人:{$info.entity_name}</p>
     <p>营业执照号:{$info.entity_license}</p>
+
+    <p>联系人身份证:<img src="{$info['extra']['id_card_img']|get_cover}" width="500px" /></p>
+    <p>营业执照:<img src="{$info['extra']['entity_license_img']|get_cover}" width="500px" /></p>
+    <p>银行卡上传:<img src="{$info['extra']['bank_img']|get_cover}" width="500px" /></p>
+    <p>账户授权书:<img src="{$info['extra']['authorization']|get_cover}" width="500px" /></p>
 </body>
 </html>

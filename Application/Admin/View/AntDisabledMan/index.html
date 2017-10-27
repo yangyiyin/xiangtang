@@ -5,37 +5,14 @@
 		<div class="u-tab">
 
 		    <ul class="cc">
-		      	<li class="current"><a href="javascript:;">所有文章</a></li>
-				<li ><a href="{:U('add')}">添加文章</a></li>
+		      	<li class="current"><a href="javascript:;">所有残疾人</a></li>
+				<li ><a href="{:U('add')}">添加残疾人</a></li>
 		    </ul>
 		</div>
 	    <div class="search_type cc mb10 search-form">
 	      <div class="mb10">
-
-			  <span class="mr20">类型：
-
-        	</php>
-	        <select class="select_2 select" name="type">
-				<option value="">全部</option>
-	          {$type_options}
-	        </select>
-
-
-			  <span class="mr20">平台：
-						<php>
-
-        		$a = (I('get.platform')==1)?'selected':'';
-        		$b = (I('get.platform')==2)?'selected':'';
-							$c = (I('get.platform')==3)?'selected':'';
-        	</php>
-	        <select class="select_2 select" name="platform">
-	          	<option value='' >全部</option>
-				<option value="1" {$a}>服务版</option>
-	          	<option value="2" {$b}>零售版</option>
-				 	<option value="3" {$c}>服务+零售</option>
-	        </select>
-			  &nbsp;标题：
-			  <input type="text" class="input length_2" name="title" style="width:100px;" value="{:I('title')}" >
+			  &nbsp;姓名：
+			  <input type="text" class="input length_2" name="name" style="width:100px;" value="{:I('name')}" >
 
 			  <a class="u-btn" href="javascript:;" id="search" url="{:U('index')}">搜索</a>
 	        <!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
@@ -47,54 +24,29 @@
 			<table class="" width="100%">
 		    <thead>
 		        <tr>
-					<th width="5%"><input class="check-all" type="checkbox"/></th>
-					<th width="15%">用户</th>
-					<th width="30%">标题</th>
-					<th width="30%">类型</th>
-					<th width="30%">操作</th>
+					<th>姓名</th>
+					<th>图片</th>
+					<th>电话</th>
+					<th>住址</th>
+					<th >操作</th>
 				</tr>
 		    </thead>
 		    <tbody>
 				<volist name="list" id="vo">
 				<tr>
-		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
-					<td>
-						<p>
-						<if condition="$vo['from_user']">
-							{$vo.from_user.user_tel}
-							<else/>
-							后台
-						</if>
-						</p>
-						<br/>
-						<p>
-							<if condition="$vo.platform == 1 || $vo.platform == 3"><span class="btn-success">服务版</span></if>
-							<if condition="$vo.platform == 2 || $vo.platform == 3"><span class="btn-success">零售版</span></if>
 
-						</p>
+					<td>
+						{$vo.name}
 					</td>
-
+					<td><img src="{$vo['img']|get_cover}" width="80" height="80"/></td>
 					<td>
-						{$vo.title}
+						{$vo.tel}
 					</td>
-					<td>{$vo.type_desc}</td>
 					<td>
-						<if condition="!$vo['from_user']">
-							<a  class="u-btn" href="{:U('add')}/id/{$vo.id}">编辑</a>|
-						</if>
-						<if condition="$vo['from_user'] && $vo['status'] == 2">
-							<a href="{:U('change_status')}/id/{$vo.id}/status/1" class="u-btn confirm J_ajax_get">审核通过</a>|
-							<a href="{:U('change_status')}/id/{$vo.id}/status/3" class="u-btn confirm J_ajax_get">审核拒绝</a>|
-						</if>
-
-						<if condition="$vo['from_user'] && $vo['status'] == 1">
-							已通过
-						</if>
-
-						<if condition="$vo['from_user'] && $vo['status'] == 3">
-							已拒绝
-						</if>
-
+						{$vo.address}
+					</td>
+					<td>
+						<a  href="{:U('add')}/id/{$vo.id}" class="u-btn">编辑</a>|
 						<a  href="{:U('del')}/id/{$vo.id}" class="u-btn confirm J_ajax_get">删除</a>
 
 					</td>
@@ -105,7 +57,7 @@
 		</div>
 		<div class="btn_wrap">
 			<div class="btn_wrap_pd">
-				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
+				<!--<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>-->
 
 		    </div>
 		</div>

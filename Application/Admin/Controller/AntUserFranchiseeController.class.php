@@ -26,6 +26,9 @@ class AntUserFranchiseeController extends AdminController  {
         $map['attr'] = MemberModel::ATTR_FRANCHISEE;
         $list   = $this->lists('Member', $map);
         int_to_string($list);
+        foreach ($list as $key => $value) {
+            $list[$key]['extra'] = $value['extra'] ? json_decode($value['extra'], true) : [];
+        }
         $this->assign('_list', $list);
         $this->meta_title = '用户信息';
         $this->display();
@@ -34,6 +37,8 @@ class AntUserFranchiseeController extends AdminController  {
 
         if ($id = I('get.id')) {
             $user = $this->MemberService->get_info_by_id($id);
+            $user['extra'] = json_decode($user['extra'],true);
+
             if ($user) {
                 $this->assign('info',$user);
             } else {
@@ -47,7 +52,7 @@ class AntUserFranchiseeController extends AdminController  {
         if (IS_POST) {
             $id = I('get.id');
             $data = I('post.');
-
+            $data['extra'] = json_encode($data['extra']);
             if ($id) {
                 $ret = $this->MemberService->update_by_id($id, $data);
                 if ($ret->success) {
@@ -102,6 +107,7 @@ class AntUserFranchiseeController extends AdminController  {
             $this->error('id没有');
         }
         $user = $this->MemberService->get_info_by_id($id);
+        $user['extra'] = json_decode($user['extra'],true);
         if (!$user) {
             $this->error('没有找到信息~');
         }
