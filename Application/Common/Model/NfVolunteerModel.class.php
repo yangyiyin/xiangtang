@@ -15,6 +15,14 @@ class NfVolunteerModel extends NfBaseModel {
 
     public static $status_map = [0=>'已退回',1=>'已提交',2=>'支付中',3=>'已支付',4=>'已通过'];
 
+    const PAY_TYPE_ALI = 4;
+    const PAY_TYPE_WECHAT = 5;
+
+    public static $pay_type_map = [
+        self::PAY_TYPE_ALI => '支付宝支付',
+        self::PAY_TYPE_WECHAT => '微信支付'
+    ];
+
   protected $_validate = array(
         /**
         array('title', 'require', '名称不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT),

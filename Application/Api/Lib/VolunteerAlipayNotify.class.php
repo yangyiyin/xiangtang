@@ -53,6 +53,7 @@ class VolunteerAlipayNotify extends BaseSapi{
             }
             $data_update = [];
             $data_update['status'] = \Common\Model\NfVolunteerModel::STATUS_PAYED;
+            $data_update['pay_type'] = \Common\Model\NfVolunteerModel::PAY_TYPE_ALI;
             $ret = $VolunteerService->update_by_id($data_notify['pay_no'], $data_update);
 
             if (!$ret->success) {

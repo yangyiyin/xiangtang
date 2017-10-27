@@ -97,8 +97,10 @@ class AntVolunteerController extends AdminController {
     public function convert_data(&$data) {
         if ($data) {
             $map = \Common\Model\NfVolunteerModel::$status_map;
+            $pay_type_map = \Common\Model\NfVolunteerModel::$pay_type_map;
             foreach ($data as $k => $v) {
                 $data[$k]['status_desc'] = isset($map[$v['status']]) ? $map[$v['status']] : '未知';
+                $data[$k]['pay_type_desc'] = isset($pay_type_map[$v['pay_type']]) ? $pay_type_map[$v['pay_type']] : '支付方式未知';
             }
         }
 

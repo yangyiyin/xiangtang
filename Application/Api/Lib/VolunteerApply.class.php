@@ -18,6 +18,7 @@ class VolunteerApply extends BaseSapi{
         $data = [];
         $data['name'] = $this->post_data['name'];
         $data['id_no'] = $this->post_data['id_no'];
+        $data['tel'] = $this->post_data['tel'];
         $data['address'] = $this->post_data['address'];
         $data['free_time'] = $this->post_data['free_time'];
         $data['status'] = \Common\Model\NfVolunteerModel::STATUS_SUBMIT;

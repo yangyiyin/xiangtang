@@ -186,3 +186,7 @@ alter table shopy_nf_disabled_man add `img` VARCHAR (100) DEFAULT '';
 
 alter table shopy_member add `extra` VARCHAR (1000) DEFAULT '';
 
+
+alter table shopy_nf_volunteer add `tel` varchar(15)  DEFAULT '';
+alter table shopy_nf_volunteer add `pay_type` tinyint(3)  DEFAULT '1';
+

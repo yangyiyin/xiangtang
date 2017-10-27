@@ -23,11 +23,13 @@
 			<table class="" width="100%">
 		    <thead>
 		        <tr>
-					<th><input class="check-all" type="checkbox"/></th>
+					<!--<th><input class="check-all" type="checkbox"/></th>-->
 					<th>姓名</th>
+					<th>电话</th>
 					<th>身份证号</th>
 					<th>住址</th>
 					<th>空余时间</th>
+					<th>创建时间</th>
 					<th>状态</th>
 					<th >操作</th>
 				</tr>
@@ -35,9 +37,11 @@
 		    <tbody>
 				<volist name="list" id="vo">
 				<tr>
-		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
+		            <!--<td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>-->
 					<td>{$vo.name} </td>
-
+					<td>
+						{$vo.tel}
+					</td>
 					<td>
 						{$vo.id_no}
 					</td>
@@ -48,7 +52,11 @@
 						{$vo.free_time}
 					</td>
 					<td>
-						{$vo.status_desc}
+						{$vo.create_time}
+					</td>
+					<td>
+						{$vo.status_desc}【{$vo['pay_type_desc']}】
+
 					</td>
 					<td>
 						<if condition="$vo['status'] == 0">
@@ -67,7 +75,7 @@
 		</div>
 		<div class="btn_wrap">
 			<div class="btn_wrap_pd">
-				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
+				<!--<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>-->
 
 		    </div>
 		</div>
