@@ -62,12 +62,12 @@ class ArticleList extends BaseSapi{
                 $tmp = [];
                 $tmp = convert_obj($_item, 'id,title,create_time=date');
                 if ($tmp == \Common\Model\NfArticleModel::TYPE_WORKINFO) {
-                    $tmp['help_cat'] = 1;
-                    $tmp['help_cat_desc'] = '招聘';
+                    $tmp->help_cat = 1;
+                    $tmp->help_cat_desc = '招聘';
                 }
                 if ($tmp == \Common\Model\NfArticleModel::TYPE_WORKAPPLY) {
-                    $tmp['help_cat'] = 2;
-                    $tmp['help_cat_desc'] = '求职';
+                    $tmp->help_cat = 2;
+                    $tmp->help_cat_desc = '求职';
                 }
                 $data[] = $tmp;
             }
