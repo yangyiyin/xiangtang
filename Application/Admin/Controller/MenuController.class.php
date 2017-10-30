@@ -16,22 +16,22 @@ class MenuController extends AdminController {
     public function add_menu_direct() {
 
         $arr = [
-            ['title' => '提交审核', 'url'=>'FinancialBank/submit_verify'],
-            ['title' => '审核通过', 'url'=>'FinancialBank/approve'],
-            ['title' => '审核退回', 'url'=>'FinancialBank/reject'],
-            ['title' => '上传excel', 'url'=>'FinancialBank/upload_excel'],
-            ['title' => '退回不符合要求的excel', 'url'=>'FinancialBank/get_excel'],
-            ['title' => '导出明细', 'url'=>'FinancialBank/log_export_excel']
+            ['title' => '股权投资机构填报本单位数据','url'=>'FinancialInvestmentManager/submit_monthly','urls'=>'FinancialInvestmentManager/submit_monthly,FinancialInvestmentManager/submit_monthly_verify_new','pid'=>195,'module'=>'Admin','sort'=>0,'hide'=>1],
+            ['title' => '股权投资机构填报所有单位数据', 'url'=>'FinancialInvestmentManager/submit_monthly_all','urls'=>'FinancialInvestmentManager/submit_monthly_all,FinancialInvestmentManager/submit_monthly,FinancialInvestmentManager/submit_monthly_verify_new','pid'=>195,'module'=>'Admin','sort'=>0,'hide'=>1],
+            ['title' => '股权投资机构填报本单位数据', 'url'=>'FinancialInvestmentManager/index_list','urls'=>'FinancialInvestmentManager/index_list','pid'=>195,'module'=>'Admin','sort'=>0,'hide'=>0],
+            ['title' => '股权投资机构填报所有单位数据', 'url'=>'FinancialInvestmentManager/index_all_list','urls'=>'FinancialInvestmentManager/index_all_list','pid'=>195,'module'=>'Admin','sort'=>0,'hide'=>0],
+            ['title' => '股权投资机构审核所有单位数据', 'url'=>'FinancialInvestmentManager/verify_change_status','urls'=>'FinancialInvestmentManager/verify_change_status','pid'=>195,'module'=>'Admin','sort'=>0,'hide'=>1],
+
 
         ];
 
 
-        $data = [];
-        foreach ($arr as $_value) {
-            $data[] = ['title'=>$_value['title'], 'pid'=>212, 'module'=>'Admin', 'sort'=>99, 'url'=>$_value['url'], 'hide'=>1,'icon'=>'fa-square'];
-        }
+//        $data = [];
+//        foreach ($arr as $_value) {
+//            $data[] = ['title'=>$_value['title'], 'pid'=>212, 'module'=>'Admin', 'sort'=>99, 'url'=>$_value['url'], 'hide'=>1,'icon'=>'fa-square'];
+//        }
 
-        M('menu')->addAll($data);
+        M('menu')->addAll($arr);
     }
 
 

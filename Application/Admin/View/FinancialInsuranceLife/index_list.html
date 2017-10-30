@@ -118,7 +118,7 @@
 
 
 								<tr>
-									<td rowspan="4">保费</td>
+									<td rowspan="6">保费</td>
 									<td colspan="2">
 										保费收入:
 									</td>
@@ -127,28 +127,49 @@
 									</td>
 								</tr>
 
+
 								<tr>
-									<td rowspan="3">
-										其中
-									</td>
-									<td>
-										企业财产险:
+									<td colspan="2">
+										1.个人营销:
 									</td>
 									<td>
 										<input type="text" class="input input-medium" name="income_a" value="{$vo.data.income_a}">
 									</td>
 								</tr>
+
+								<tr>
+									<td rowspan="2">
+										其中
+									</td>
+									<td>
+										新单首期:
+									</td>
+									<td>
+										<input type="text" class="input input-medium" name="income_a_a" value="{$vo.data.income_a_a}">
+									</td>
+								</tr>
 								<tr>
 									<td>
-										机动车辆险:
+										新单期缴:
+									</td>
+									<td>
+										<input type="text" class="input input-medium" name="income_a_b" value="{$vo.data.income_a_b}">
+									</td>
+								</tr>
+
+								<tr>
+									<td colspan="2">
+										2.团体业务
 									</td>
 									<td>
 										<input type="text" class="input input-medium" name="income_b" value="{$vo.data.income_b}">
 									</td>
 								</tr>
+
+
 								<tr>
-									<td>
-										其他险:
+									<td colspan="2">
+										3.银行代理
 									</td>
 									<td>
 										<input type="text" class="input input-medium" name="income_c" value="{$vo.data.income_c}">
@@ -156,38 +177,19 @@
 								</tr>
 
 								<tr>
-									<td colspan="3">储金金额:</td>
-									<td>
-										<input type="text" class="input input-medium" name="reserves" value="{$vo.data.reserves}">
-									</td>
-								</tr>
-
-
-								<tr>
 									<td rowspan="4">赔付</td>
 									<td colspan="2">
-										赔款支出:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="payoff" value="{$vo.data.payoff}">
-									</td>
-								</tr>
-
-								<tr>
-									<td rowspan="3">
-										其中
-									</td>
-									<td>
-										企业财产险:
+										短险赔款金额:
 									</td>
 									<td>
 										<input type="text" class="input input-medium" name="payoff_a" value="{$vo.data.payoff_a}">
 									</td>
 								</tr>
 
+
 								<tr>
-									<td>
-										机动车辆险:
+									<td colspan="2">
+										死伤医给付金额
 									</td>
 									<td>
 										<input type="text" class="input input-medium" name="payoff_b" value="{$vo.data.payoff_b}">
@@ -195,20 +197,34 @@
 								</tr>
 
 								<tr>
-									<td>
-										其他险:
+									<td colspan="2">
+										满期给付金额
 									</td>
 									<td>
 										<input type="text" class="input input-medium" name="payoff_c" value="{$vo.data.payoff_c}">
 									</td>
 								</tr>
 
-
-
 								<tr>
-									<td rowspan="2">营销员人数</td>
 									<td colspan="2">
-										期末在岗人数:
+										年金给付金额
+									</td>
+									<td>
+										<input type="text" class="input input-medium" name="payoff_d" value="{$vo.data.payoff_d}">
+									</td>
+								</tr>
+								<tr>
+									<td colspan="3">
+										退保金额
+									</td>
+									<td>
+										<input type="text" class="input input-medium" name="backoff" value="{$vo.data.backoff}">
+									</td>
+								</tr>
+								<tr>
+
+									<td colspan="3">
+										营销员人数:
 									</td>
 									<td>
 										<input type="text" class="input input-medium" name="staff" value="{$vo.data.staff}">
@@ -216,8 +232,8 @@
 								</tr>
 
 								<tr>
-									<td colspan="2">
-										期末持证人数:
+									<td colspan="3">
+										持证人数:
 									</td>
 									<td>
 										<input type="text" class="input input-medium" name="authorized" value="{$vo.data.authorized}">

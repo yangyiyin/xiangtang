@@ -15,6 +15,8 @@ class FinancialBaseController extends AdminController {
     protected $local_service;
     protected $local_service_name;
     protected $is_history = false;
+    protected $verify_info = [];
+    protected $detail_type = '';
     protected function _initialize() {
         parent::_initialize();
         //FinancialInsuranceMutual
@@ -29,6 +31,9 @@ class FinancialBaseController extends AdminController {
         } catch (Exception $e) {
 
         }
+
+        $this->type_map = \Common\Model\FinancialDepartmentModel::$TYPE_MAP;
+        $this->type_name = $this->type_map[$this->type];
 
         if (ACTION_NAME == 'index') {
             $group_options = '';
@@ -54,37 +59,236 @@ class FinancialBaseController extends AdminController {
     }
 
     public function submit_monthly() {
-        $this->assign('title', $this->title);
+        $can_all_edit = $this->check_rule('Admin/'.$this->type_name.'/submit_monthly_all');
+        $this->assign('can_all_edit', $can_all_edit);
 
         //获取所有相关的公司
         $DepartmentService = \Common\Service\DepartmentService::get_instance();
         $departments = $DepartmentService->get_my_list(UID, $this->type);
         $all_name = '';
-        if (!$departments) {
-            $departments = $DepartmentService->get_all_list($this->type);
+        if (!$departments && !$can_all_edit) {
+            $this->error('找不到您所属的部门信息');
         }
+
         $data = $departments[0];
         $all_name = $data['all_name'];
-        $all_name = I('all_name') ? I('all_name') : $all_name;
 
-        $departments = result_to_array($departments, 'all_name');
-        $this->assign('departments', $departments);
-
-        //获取当期的数据
-        $info = [];
-
-        if (!$this->is_history) {
-            if ($all_name) {
-                $year = I('year') ? I('year') : intval(date('Y'));
-                $month = I('month') ? I('month') : intval(date('m'));
-                $info = $this->local_service->get_by_month_year($year, $month, $all_name);
-                $this->convert_data_submit_monthly($info);
-            }
+        if ($can_all_edit) {
+            $departments = $DepartmentService->get_all_list($this->type);
+            $this->assign('departments',result_to_array($departments,'all_name'));
+            $all_name = I('all_name');
         }
-        $this->assign('info', $info);
+
+
+        $year = I('year');
+        $month = I('month');
+
+        //获取编辑数据
+        $info = [];
+        if ($year && $month && !IS_POST) {
+            $info = $this->local_service->get_by_month_year($year,$month,$all_name);
+            if (!$info || $info['all_name'] != $all_name) {
+                $this->error('您没有权限查看该部门的信息');
+            }
+            $this->convert_data_submit_monthly($info);
+        }
+
+        $VerifyService = \Common\Service\VerifyService::get_instance();
+        $type = $VerifyService->get_type($this->type);
+        $this->verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
+
+        if (isset($this->verify_info['status']) && $this->verify_info['status'] != \Common\Model\FinancialVerifyModel::STATUS_INIT) {
+            $this->error('当前信息已存在或不可编辑');
+        }
+        $jump_url = '';
+        if (IS_POST) {
+
+            $id = I('get.id');
+            $data = I('post.');
+            $data['uid'] = UID;
+
+            $data['year'] = I('year') ? I('year') : intval(date('Y'));
+            $data['month'] = I('month') ? I('month') : intval(date('m'));
+
+            if (strtotime($data['year'].'-'.$data['month']) > strtotime(date('Y-m',time()))){
+                $this->error('该月份还不能填报!');
+            }
+
+            if ($id) {
+                $ret = $this->local_service->update_by_id($id, $data);
+                if ($ret->success) {
+                    action_user_log('修改月报表type:'.$this->type.'--id:'.$id);
+
+                } else {
+                    $this->error($ret->message);
+                }
+            } else {
+                $check_ret = $this->check_by_month_year($data['year'], $data['month'], $data['all_name']);
+                if ($check_ret === true){
+                    //新增 不做处理
+                } elseif($check_ret) {
+                    $this->error('该月已提交报表,请不要重复提交');
+                } else {
+                    $this->error('参数错误');
+                }
+                $ret = $this->local_service->add_one($data);
+                if ($ret->success) {
+
+                    $jump_url = U('index_list');
+                    if ($can_all_edit) {
+                        $jump_url = U('index_all_list');
+                    }
+                    action_user_log('新增月报表type:'.$this->type);
+
+                } else {
+                    $this->error($ret->message);
+                }
+            }
+
+            if(I('post.submit_verify')) {
+                $ret = $this->_submit_verify($this->verify_info, $data['year'], $data['month'], $all_name, $type,I('post.submit_verify'));//提交审核
+                if (!$ret->success) {
+                    $this->error($ret->message);
+                } else {
+                    $jump_url = U('index_list');
+                    if ($can_all_edit) {
+                        $jump_url = U('index_all_list');
+                    }
+                    $this->success('提交成功！',$jump_url);
+                }
+            } else {
+                $ret = $this->_submit_verify($this->verify_info, $data['year'], $data['month'], $all_name, $type);//提交审核
+
+                $this->success('保存成功！',$jump_url);
+            }
+
+        } else {
+            $this->assign('title', $this->title);
+            $this->assign('all_name', $all_name);
+            $this->assign('info', $info);
+            $this->display();
+        }
+
     }
 
+
+    public function detail_submit_monthly() {
+        $can_all_edit = $this->check_rule('Admin/'.$this->type_name.'/submit_monthly_all');
+        $this->assign('can_all_edit', $can_all_edit);
+
+        //获取所有相关的公司
+        $DepartmentService = \Common\Service\DepartmentService::get_instance();
+        $departments = $DepartmentService->get_my_list(UID, $this->type);
+        $all_name = '';
+        if (!$departments && !$can_all_edit) {
+            $this->error('找不到您所属的部门信息');
+        }
+
+        $data = $departments[0];
+        $all_name = $data['all_name'];
+
+        if ($can_all_edit) {
+            $departments = $DepartmentService->get_all_list($this->type);
+            $this->assign('departments',result_to_array($departments,'all_name'));
+            $all_name = I('all_name');
+        }
+
+
+        $year = I('year');
+        $month = I('month');
+
+        //获取编辑数据
+        $info = [];
+        if ($year && $month && !IS_POST) {
+            $infos = $this->local_service->get_by_month_year($year,$month,$all_name,$this->detail_type);
+            if (!$infos || $infos[0]['all_name'] != $all_name) {
+                $this->error('您没有权限查看该部门的信息');
+            }
+            $function_name = 'convert_data_'. ACTION_NAME;
+            $this->$function_name($infos);
+        }
+
+
+
+        $VerifyService = \Common\Service\VerifyService::get_instance();
+        $type = $VerifyService->get_type($this->type);
+        $this->verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
+
+        if (isset($this->verify_info['status']) && $this->verify_info['status'] != \Common\Model\FinancialVerifyModel::STATUS_INIT) {
+            $this->error('当前信息已存在或不可编辑');
+        }
+        $jump_url = '';
+        if (IS_POST) {
+
+            $id = I('get.id');
+            $data = I('post.');
+            $data['uid'] = UID;
+            $data['Types'] = $this->detail_type;
+
+            $data['year'] = I('year') ? I('year') : intval(date('Y'));
+            $data['month'] = I('month') ? I('month') : intval(date('m'));
+
+            if (strtotime($data['year'].'-'.$data['month']) > strtotime(date('Y-m',time()))){
+                $this->error('该月份还不能填报!');
+            }
+            if (!$data['logs1']) {
+                $this->error('请填写完整的信息~');
+            }
+
+            $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name'], $this->detail_type);
+
+            if ($ret) {
+                $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name'], $this->detail_type);
+            } else {
+                $jump_url = U('index_list');
+                if ($can_all_edit) {
+                    $jump_url = U('index_all_list');
+                }
+            }
+            $function_name = 'get_add_data_'. ACTION_NAME;
+            $this->$function_name($info);
+            $batch_data = $this->$function_name($data);
+            $ret = $this->local_service->add_batch($batch_data);
+
+            if ($ret->success) {
+
+                action_user_log('编辑明细报表type:'.$this->type.','.ACTION_NAME);
+
+            } else {
+                $this->error($ret->message);
+            }
+
+
+            if(I('post.submit_verify')) {
+                $ret = $this->_submit_verify($this->verify_info, $data['year'], $data['month'], $all_name, $type,I('post.submit_verify'));//提交审核
+                if (!$ret->success) {
+                    $this->error($ret->message);
+                } else {
+                    $jump_url = U('index_list');
+                    if ($can_all_edit) {
+                        $jump_url = U('index_all_list');
+                    }
+                    $this->success('提交成功！',$jump_url);
+                }
+            } else {
+                $ret = $this->_submit_verify($this->verify_info, $data['year'], $data['month'], $all_name, $type);//提交审核
+                $this->success('保存成功！',$jump_url);
+            }
+
+        } else {
+            $this->assign('title', $this->title);
+            $this->assign('all_name', $all_name);
+            $this->assign('infos', $infos);
+            $this->display();
+        }
+
+    }
+
+
     protected function convert_data_submit_monthly(&$info) {
+
+    }
+    protected function convert_data_detail_submit_monthly(&$info) {
 
     }
     public function statistics() {
@@ -405,7 +609,13 @@ class FinancialBaseController extends AdminController {
         $p = I('p',1);
         $DepartmentService = \Common\Service\DepartmentService::get_instance();
         $my_list = $DepartmentService->get_my_list(UID,$this->type);
-        $my_department = isset($my_list[0]) ? $my_list[0] : [];
+        if (!$my_list) {
+            $this->error('找不到您所属的部门信息');
+        }
+
+        $my_department = $my_list[0];
+
+
         $where = [];
         if ($year = intval(I('year'))) {
             $where['year'] = $year;
@@ -413,21 +623,40 @@ class FinancialBaseController extends AdminController {
         if ($month = intval(I('month'))) {
             $where['month'] = $month;
         }
-        if ($status = I('status')) {
+        $status = I('status');
+        if ($status || $status==='0') {
             $where['status'] = $status;
         }
         $where['all_name'] = $my_department['all_name'];
-        if ($my_department) {
-            switch ($this->type) {
-                case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty:
 
-
-
-                    $InsurancePropertyService = \Common\Service\InsurancePropertyService::get_instance();
-                    list($list, $count) = $InsurancePropertyService->get_by_where($where, 'id desc', $p);
+        //审核信息
+        $VerifyService = \Common\Service\VerifyService::get_instance();
+        $type = $VerifyService->get_type($this->type);
+        $where['type'] = $type;
+        $data_map = [];
+        switch ($this->type) {
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty:
+                $InsurancePropertyService = \Common\Service\InsurancePropertyService::get_instance();
+                $_where = $where;
+                unset($_where['status']);
+                $data = $InsurancePropertyService->get_by_where_all($_where);
+                foreach ($data as $da) {
+                    $data_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']] = $da;
+                }
                 break;
+        }
+
+      //  var_dump($where);die();
+        list($list, $count) = $VerifyService->get_by_where($where, 'id desc', $p);
+        if ($list){
+            foreach ($list as $k => $info) {
+                $list[$k]['status_desc'] = \Common\Model\FinancialVerifyModel::$status_map[$info['status']];
+                if (isset($data_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
+                    $list[$k]['data'] = $data_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
+                }
             }
         }
+
 
         $PageInstance = new \Think\Page($count, \Common\Service\BaseService::$page_size);
         if($count>\Common\Service\BaseService::$page_size){
@@ -438,9 +667,198 @@ class FinancialBaseController extends AdminController {
         $this->assign('list', $list);
         $this->assign('page_html', $page_html);
 
+        $this->assign('can_edit',$this->check_rule('Admin/'.$this->type_name.'/submit_monthly'));
 
         $this->display();
 
     }
 
+
+    public function index_all_list() {
+        $list = [];
+        $p = I('p',1);
+        $DepartmentService = \Common\Service\DepartmentService::get_instance();
+        $my_list = $DepartmentService->get_all_list($this->type);
+        if (!$my_list) {
+            $this->error('找不到该类型下部门信息');
+        }
+        $this->assign('departments',result_to_array($my_list,'all_name'));
+        $where = [];
+        if ($year = intval(I('year'))) {
+            $where['year'] = $year;
+        }
+        if ($month = intval(I('month'))) {
+            $where['month'] = $month;
+        }
+        if (($all_name = I('all_name')) && $all_name!='全部') {
+            $where['all_name'] = $all_name;
+        }
+
+        if ($this->check_rule('Admin/'.$this->type_name.'/submit_monthly_all')) {
+
+        } else {
+            $where['status'] = ['neq',0];
+        }
+        //$where['status'] = ['neq',0];
+        $status = I('status');
+        if ($status || $status==='0') {
+            $where['status'] = $status;
+        }
+        $data_map = [];
+        switch ($this->type) {
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty:
+                $Service = \Common\Service\InsurancePropertyService::get_instance();
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceLife:
+                $Service = \Common\Service\InsuranceLifeService::get_instance();
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceMutual:
+                $Service = \Common\Service\InsuranceMutualService::get_instance();
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialVouch:
+                $Service = \Common\Service\VouchService::get_instance();
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestment:
+                $Service = \Common\Service\InvestmentService::get_instance();
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager:
+                $Service = \Common\Service\InvestmentManagerService::get_instance();
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialFutures:
+                $Service = \Common\Service\FuturesService::get_instance();
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialLease:
+                $Service = \Common\Service\LeaseService::get_instance();
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialLoan:
+                $Service = \Common\Service\LoanService::get_instance();
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialSecurities:
+                $Service = \Common\Service\SecuritiesService::get_instance();
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialTransferFunds:
+                $Service = \Common\Service\TransferFundsService::get_instance();
+                break;
+        }
+
+        if (isset($Service)) {
+            $_where = $where;
+            unset($_where['status']);
+            $data = $Service->get_by_where_all($_where);
+            foreach ($data as $da) {
+                $data_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']] = $da;
+            }
+
+        }
+        //echo_json_die($data_map);
+
+        //审核信息
+        $VerifyService = \Common\Service\VerifyService::get_instance();
+        $type = $VerifyService->get_type($this->type);
+        $where['type'] = $type;
+        list($list, $count) = $VerifyService->get_by_where($where, 'id desc', $p);
+        if ($list){
+            foreach ($list as $k => $info) {
+                $list[$k]['status_desc'] = \Common\Model\FinancialVerifyModel::$status_map[$info['status']];
+                if (isset($data_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
+                    $list[$k]['data'] = $data_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
+                }
+            }
+        }
+
+
+        $PageInstance = new \Think\Page($count, \Common\Service\BaseService::$page_size);
+        if($count>\Common\Service\BaseService::$page_size){
+            $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+        }
+        $page_html = $PageInstance->show();
+
+        $this->assign('list', $list);
+        $this->assign('page_html', $page_html);
+
+        $this->assign('is_all',1);
+
+        $this->assign('can_edit', $this->check_rule('Admin/'.$this->type_name.'/submit_monthly_all'));
+        $this->assign('can_change_status',$this->check_rule('Admin/'.$this->type_name.'/verify_change_status'));
+
+        $this->display('index_list');
+
+    }
+
+
+    protected function _submit_verify($verify_info=[],$year=0,$month=0,$all_name='',$type=0,$status=0) {
+        $VerifyService = \Common\Service\VerifyService::get_instance();
+        //提交审核
+        if ($verify_info && $verify_info['status'] != \Common\Model\FinancialVerifyModel::STATUS_INIT) {
+            $this->error('对不起,您无法提交审核,该月审核记录已经提交!');
+        }
+        $data = [];
+        $data['status'] = $status;
+        $data['uid'] = UID;
+
+        if ($verify_info) {
+
+            $ret = $VerifyService->update_by_id($verify_info['id'], $data);
+            if (!$ret->success) {
+                return $ret;
+            }
+            action_user_log('提交审核,id:'.$verify_info['id']);
+        } else {
+            $data['year'] = $year;
+            $data['month'] = $month;
+            $data['all_name'] = $all_name;
+            $data['type'] = $type;
+            $ret = $VerifyService->add_one($data);
+            if (!$ret->success) {
+                return $ret;
+            }
+            action_user_log('提交审核,id:'.$ret->data);
+        }
+        $ret->success = true;
+        return $ret;
+
+    }
+
+    public function submit_monthly_verify_new() {
+        $id = I('get.id');
+        $can_all_edit = $this->check_rule('Admin/'.$this->type_name.'/submit_monthly_all');
+
+        $DepartmentService = \Common\Service\DepartmentService::get_instance();
+        $my_list = $DepartmentService->get_my_list(UID,$this->type);
+        if (!$my_list && !$can_all_edit) {
+            $this->error('找不到您所属的部门信息');
+        }
+
+        $VerifyService = \Common\Service\VerifyService::get_instance();
+        $type = $VerifyService->get_type($this->type);
+        $this->verify_info = $VerifyService->get_info_by_id($id);
+        if (!$this->verify_info) {
+            $this->error('找不到数据');
+        }
+        $ret = $this->_submit_verify($this->verify_info,$this->verify_info['year'],$this->verify_info['month'],$this->verify_info['all_name'],$type,\Common\Model\FinancialVerifyModel::STATUS_SUBMIT);
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+
+        $this->success('提交成功!');
+    }
+
+
+    public function verify_change_status() {
+        $id = I('get.id');
+        $VerifyService = \Common\Service\VerifyService::get_instance();
+        $this->verify_info = $VerifyService->get_info_by_id($id);
+        if (!$this->verify_info) {
+            $this->error('找不到数据');
+        }
+
+        $status = I('status');
+
+        $ret = $VerifyService->update_by_id($id,['status'=>$status]);
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+
+        $this->success('操作成功!');
+    }
 }

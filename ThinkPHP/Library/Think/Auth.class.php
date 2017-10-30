@@ -186,15 +186,16 @@ class Auth{
             $_authList[$uid.$t] = array();
             return array();
         }
-
         $map=array(
             'id'=>array('in',$ids),
             'type'=>$type,
             'status'=>array('neq',0),
         );
 
+
         //读取用户组所有权限规则
         $rules = M()->table($this->_config['AUTH_RULE'])->where($map)->field('condition,module,name,urls')->select();
+
         //var_dump($rules);die();
         //var_dump(M()->table($this->_config['AUTH_RULE'])->getlastsql());die;
         //循环规则，判断结果。

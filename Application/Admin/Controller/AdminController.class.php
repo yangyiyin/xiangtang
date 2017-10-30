@@ -54,6 +54,24 @@ class AdminController extends Controller {
         $this->assign('Menu', $this->getMenus());
     }
 
+    protected function check_rule($url) {
+        // 检测访问权限
+        $access =   $this->accessControl();
+
+        if ( $access === false ) {
+            return false;
+        }elseif( $access === null ){
+            $dynamic        =   $this->checkDynamic();//检测分类栏目有关的各项动态权限
+            if( $dynamic === false ){
+                //检测非动态权限
+                $rule  = strtolower($url);
+                if ( !$this->checkRule($rule,array('in','1,2')) ){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
     /**
      * 权限检测
      * @param string  $rule    检测的规则

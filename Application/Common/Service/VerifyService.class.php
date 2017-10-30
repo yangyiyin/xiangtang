@@ -104,6 +104,19 @@ class VerifyService extends BaseService{
     }
 
 
+    public function get_infos($all_name, $type = FALSE) {
+        $FinancialModel = D('Financial' . static::$name);
+        $where = [];
+
+        $where['all_name'] = ['EQ', $all_name];
+        if ($type !== FALSE) {
+            $where['type'] = ['EQ', $type];
+        }
+
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->select();
+    }
+
     public function get_by_where_all($where) {
         $FinancialModel = D('Financial' . static::$name);
         $data = [];
@@ -111,6 +124,46 @@ class VerifyService extends BaseService{
         return $FinancialModel->where($where)->select();
     }
 
+    public function get_type($type) {
+        $verify_type = 0;
+        switch ($type) {
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty:
+                $verify_type = \Common\Model\FinancialVerifyModel::TYPE_FinancialInsuranceProperty;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceLife:
+                $verify_type = \Common\Model\FinancialVerifyModel::TYPE_FinancialInsuranceLife;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceMutual:
+                $verify_type = \Common\Model\FinancialVerifyModel::TYPE_FinancialInsuranceMutual;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialVouch:
+                $verify_type = \Common\Model\FinancialVerifyModel::TYPE_FinancialVouch;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestment:
+                $verify_type = \Common\Model\FinancialVerifyModel::TYPE_FinancialInvestment;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager:
+                $verify_type = \Common\Model\FinancialVerifyModel::TYPE_FinancialInvestmentManager;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialFutures:
+                $verify_type = \Common\Model\FinancialVerifyModel::TYPE_FinancialFutures;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialLease:
+                $verify_type = \Common\Model\FinancialVerifyModel::TYPE_FinancialLease;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialLoan:
+                $verify_type = \Common\Model\FinancialVerifyModel::TYPE_FinancialLoan;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialSecurities:
+                $verify_type = \Common\Model\FinancialVerifyModel::TYPE_FinancialSecurities;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialTransferFunds:
+                $verify_type = \Common\Model\FinancialVerifyModel::TYPE_FinancialTransferFunds;
+                break;
+
+        }
+        return $verify_type;
+    }
 
 
 }

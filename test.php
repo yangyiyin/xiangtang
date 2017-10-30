@@ -38,6 +38,4 @@
 //echo dechex($_num);
 //$_str = encode_big_endian($_num);
 //echo 'encode: ', $_num, '=', $_str, "\n";
-$a = ['公司1','公司2','公司3'];
-$b = ['公司2'];
-print_r(array_diff($a, $b));
+var_dump( '2017-2'>'2017-03');

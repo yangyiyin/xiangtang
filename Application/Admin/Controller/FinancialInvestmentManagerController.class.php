@@ -15,72 +15,10 @@
 
      public function submit_monthly()
      {
-                if (IS_POST) {
-                     $id = I('get.id');
-                     $data = I('post.');
-                     $data['uid'] = UID;
-                    $data['Types'] = \Common\Model\FinancialInvestmentModel::TYPE_B;
-                    foreach ($data['Staff_Sub'] as $sub) {
-                        if ($sub == '' || !is_numeric($sub)) {
-                            $this->error('请检查从业人员相关数据是否正确');
-                        }
-                    }
-                    $data['Staff_Sub'] = join(',', $data['Staff_Sub']);
-                     if (!$this->is_history) {
-                         $data['year'] = intval(date('Y'));
-                         $data['month'] = intval(date('m'));
-                     } else {
-                         $time = intval(strtotime($data['year'] . '-' . $data['month']));
-                         if (!$time || $time > strtotime('201712')) {
-                             $this->error('历史数据时间必须小于201712');
-                         }
-                     }
-                     if ($id) {
-                         $ret = $this->local_service->update_by_id($id, $data);
-                         if ($ret->success) {
-                             action_user_log('修改股权投资管理机构单位月报表');
-                             $this->success('修改成功！');
-                         } else {
-                             $this->error($ret->message);
-                         }
-                     } else {
-                        $check_ret = $this->check_by_month_year($data['year'], $data['month'], $data['all_name']);
-                         if ($check_ret === true){
-                            //新增 不做处理
-                         } elseif($check_ret) {
-                             if ($data['force_modify']) {//强制修改
-                                $id = $check_ret['id'];
-                                 $ret = $this->local_service->update_by_id($id, $data);
-                                 if ($ret->success) {
-                                     action_user_log('修改股权投资管理机构单位月报表');
-                                     $this->success('修改成功！');
-                                 } else {
-                                     $this->error($ret->message);
-                                 }
-                             } else {
-                                 $this->error('该月已提交报表,请不要重复提交');
-                             }
-                         } else {
-                             $this->error('参数错误');
-                         }
-                         $ret = $this->local_service->add_one($data);
-                         if ($ret->success) {
-                             action_user_log('新增股权投资管理机构单位月报表');
-                             $this->success('添加成功！');
-                         } else {
-                             $this->error($ret->message);
-                         }
-                     }
-                 } else {
-                     $this->title = '股权投资管理机构单位月填报('. date('Y-m') .'月)';
-                     if ($this->is_history) {
-                         $this->title = '股权投资管理机构单位月填报[正在编辑历史数据]';
-                     }
+         $this->title = '股权投资管理机构单位月填报';
 
-                     parent::submit_monthly();
+         parent::submit_monthly();
 
-                     $this->display();
-                 }
      }
 
      protected function convert_data_submit_monthly(&$info) {
@@ -168,102 +106,52 @@
 
     public function detail_submit_monthly() {
         $this->local_service = \Common\Service\InvestmentDetailsService::get_instance();
+        $this->detail_type = \Common\Model\FinancialInvestmentDetailsModel::TYPE_B;
         if (IS_POST) {
-            $id = I('get.id');
-            $data = I('post.');
-            $data['uid'] = UID;
-            $data['Types'] = \Common\Model\FinancialInvestmentDetailsModel::TYPE_B;
-            if (!$data['logs1']) {
-                $this->error('请填写完整的信息~');
-            }
-            if (!$this->is_history) {
-                $data['year'] = intval(date('Y'));
-                $data['month'] = intval(date('m'));
-            } else {
-                $time = intval(strtotime($data['year'] . '-' . $data['month']));
-                if (!$time || $time > strtotime('201712')) {
-                    $this->error('历史数据时间必须小于201712');
-                }
-            }
 
-            $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name'], \Common\Model\FinancialInvestmentDetailsModel::TYPE_B);
-            if ($ret){
-                //删除
-                if ($this->is_history && !$data['force_modify']) {
-                    $this->error('该月报表已经提交,如需修改,请勾选强制修改');
-                }
-                $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name'], \Common\Model\FinancialInvestmentDetailsModel::TYPE_B);
-            }
-            $batch_data = [];
-            foreach ($data['logs1'] as $k => $v) {
-                if ($v) {
-                    $temp = [];
-                    $temp['all_name'] = $data['all_name'];
-                    $temp['year'] = $data['year'];
-                    $temp['month'] = $data['month'];
-                    $temp['Types'] = $data['Types'];
-                    $temp['uid'] = $data['uid'];
-                    $temp['filler_man'] = $data['filler_man'];
-                    $temp['gmt_create'] = time();
-                    $temp['Name'] = $v;
-                    $temp['Area'] = isset($data['logs2'][$k]) ? $data['logs2'][$k] : 0;
-                    $temp['Amount'] = isset($data['logs3'][$k]) ? $data['logs3'][$k] : 0;
-                    $temp['Remarks'] = isset($data['logs4'][$k]) ? $data['logs4'][$k] : '';
-                    $temp['ip'] = $_SERVER["REMOTE_ADDR"];
-                    $batch_data[] = $temp;
-                }
-
-            }
-            $ret = $this->local_service->add_batch($batch_data);
-            if ($ret->success) {
-                action_user_log('新增股权投资管理机构明细月报表');
-                $this->success('添加成功！');
-            } else {
-                $this->error($ret->message);
-            }
         } else {
-            $this->title = '股权投资管理机构所管理公司明细月填报('. date('Y-m') .'月)';
-            if ($this->is_history) {
-                $this->title = '股权投资管理机构所管理公司明细月填报[正在编辑历史数据]';
-            }
-
-            $this->assign('title', $this->title);
-
-            //获取所有相关的公司
-            $DepartmentService = \Common\Service\DepartmentService::get_instance();
-
-            $departments = $DepartmentService->get_my_list(UID, $this->type);
-
-
-            if (!$departments) {
-                $departments = $DepartmentService->get_all_list($this->type);
-            } else {
-                $data = $departments[0];
-            }
-            $departments = result_to_array($departments, 'all_name');
-            $this->assign('departments', $departments);
-
-            //获取当期的数据
-            $infos = [];
-            if (!$this->is_history) {
-                if (isset($data['all_name']) && $data['all_name']) {
-                    $infos = $this->local_service->get_by_month_year(intval(date('Y')), intval(date('m')), $data['all_name'], \Common\Model\FinancialInvestmentDetailsModel::TYPE_B);
-                    //$this->convert_data_detail_submit_monthly($infos);
-                }
-            }
-
+            $this->title = '股权投资管理机构所管理公司明细月填报';
             //获取区域
             $AreaService = \Common\Service\AreaService::get_instance();
-            if ($infos) {
-                $infos = $AreaService->set_area_options($infos);
-            }
-            $this->assign('infos', $infos);
+
             $this->assign('area_options', $AreaService->set_area_options());
 
-            $this->display();
         }
+        parent::detail_submit_monthly();
     }
 
+    protected function get_add_data_detail_submit_monthly($data) {
+        $batch_data = [];
+        foreach ($data['logs1'] as $k => $v) {
+            if ($v) {
+                $temp = [];
+                $temp['all_name'] = $data['all_name'];
+                $temp['year'] = $data['year'];
+                $temp['month'] = $data['month'];
+                $temp['Types'] = $data['Types'];
+                $temp['uid'] = $data['uid'];
+                $temp['filler_man'] = $data['filler_man'];
+                $temp['gmt_create'] = time();
+                $temp['Name'] = $v;
+                $temp['Area'] = isset($data['logs2'][$k]) ? $data['logs2'][$k] : 0;
+                $temp['Amount'] = isset($data['logs3'][$k]) ? $data['logs3'][$k] : 0;
+                $temp['Remarks'] = isset($data['logs4'][$k]) ? $data['logs4'][$k] : '';
+                $temp['ip'] = $_SERVER["REMOTE_ADDR"];
+                $batch_data[] = $temp;
+            }
+
+        }
+        return $batch_data;
+    }
+
+    protected function convert_data_detail_submit_monthly(&$infos) {
+        //获取区域
+        $AreaService = \Common\Service\AreaService::get_instance();
+        if ($infos) {
+            $infos = $AreaService->set_area_options($infos);
+        }
+
+    }
     public function del() {
         $this->local_service = \Common\Service\DepartmentService::get_instance();
         $this->local_service_name = 'DepartmentService';

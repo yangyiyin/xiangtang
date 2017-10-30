@@ -90,7 +90,7 @@
 
 					<th >日期</th>
 					<if condition="$is_all"><th >单位名称</th></if>
-					<th >填报人</th>
+					<th >相关报表</th>
 					<th >状态</th>
 					<th>操作</th>
 				</tr>
@@ -105,130 +105,149 @@
 						{$vo.year}-{$vo.month}
 					</td>
 					<if condition="$is_all"><td>{$vo.all_name}</td></if>
-					<td>{$vo.data.filler_man}</td>
+					<td>
+						<table>
+							<tr style="border-bottom: 1px solid #ddd">
+								<td>{$vo.year}-{$vo.month}月报</td>
+								<td>
+									<if condition="$vo['data'][0]">
+
+										<a href="javascript:;" tmp_id="look" class="u-btn show_box">查看
+
+											<div class="look-content" style="display: none">
+												<table class="biaoge" style="margin: 0 auto;">
+													<tbody>
+
+													<tr>
+														<td colspan="3">管理资金规模:</td>
+														<td>
+															<input type="text" class="input input-medium" name="Amount" value="{$vo['data'][0]['Amount']}">
+														</td>
+													</tr>
+
+													<tr>
+														<td colspan="3">管理的机构数:</td>
+														<td>
+															<input type="text" class="input input-medium" name="Projects" value="{$vo['data'][0]['Projects']}">
+														</td>
+													</tr>
+
+													<tr>
+														<td rowspan="3">各类税费:</td>
+														<td colspan="2">营业税:</td>
+														<td>
+															<input type="text" class="input input-medium" name="Tax_B" value="{$vo['data'][0]['Tax_B']}">
+														</td>
+													</tr>
+													<tr>
+														<td colspan="2">所得税:</td>
+														<td>
+															<input type="text" class="input input-medium" name="Tax_I" value="{$vo['data'][0]['Tax_I']}">
+														</td>
+													</tr>
+													<tr>
+														<td colspan="2">其他税费:</td>
+														<td>
+															<input type="text" class="input input-medium" name="Tax_O" value="{$vo['data'][0]['Tax_O']}">
+														</td>
+													</tr>
+
+													<tr>
+														<td rowspan="10">从业人员数量:</td>
+														<td rowspan="2">按性别:</td>
+														<td>男性:</td>
+														<td>
+															<input type="text" class="input input-medium" name="Staff_Sub[]" value="{$vo['data'][0]['Staff_Sub'][0]}">
+														</td>
+													</tr>
+
+
+													<tr>
+														<td>女性:</td>
+														<td>
+															<input type="text" class="input input-medium" name="Staff_Sub[]" value="{$vo['data'][0]['Staff_Sub'][1]}">
+														</td>
+													</tr>
+
+
+													<tr>
+														<td rowspan="4">按学历:</td>
+														<td>大专及大专以下:</td>
+														<td>
+															<input type="text" class="input input-medium" name="Staff_Sub[]" value="{$vo['data'][0]['Staff_Sub'][2]}">
+														</td>
+													</tr>
+
+													<tr>
+														<td>本科:</td>
+														<td>
+															<input type="text" class="input input-medium" name="Staff_Sub[]" value="{$vo['data'][0]['Staff_Sub'][3]}">
+														</td>
+													</tr>
+													<tr>
+														<td>硕士研究生:</td>
+														<td>
+															<input type="text" class="input input-medium" name="Staff_Sub[]" value="{$vo['data'][0]['Staff_Sub'][4]}">
+														</td>
+													</tr>
+													<tr>
+														<td>博士及博士以上:</td>
+														<td>
+															<input type="text" class="input input-medium" name="Staff_Sub[]" value="{$vo['data'][0]['Staff_Sub'][5]}">
+														</td>
+													</tr>
+													<tr>
+														<td colspan="2">管理人员:</td>
+														<td>
+															<input type="text" class="input input-medium" name="Staff_Sub[]" value="{$vo['data'][0]['Staff_Sub'][6]}">
+														</td>
+													</tr>
+													<tr>
+														<td colspan="2">劳务派遣制员工:</td>
+														<td>
+															<input type="text" class="input input-medium" name="Staff_Sub[]" value="{$vo['data'][0]['Staff_Sub'][7]}">
+														</td>
+													</tr>
+													<tr>
+														<td colspan="2">持有国内高端从业资格证书的人员:</td>
+														<td>
+															<input type="text" class="input input-medium" name="Staff_Sub[]" value="{$vo['data'][0]['Staff_Sub'][8]}">
+														</td>
+													</tr>
+
+													<tr>
+														<td colspan="2">持有国外高端从业资格证书的人员:</td>
+														<td>
+															<input type="text" class="input input-medium" name="Staff_Sub[]" value="{$vo['data'][0]['Staff_Sub'][9]}">
+														</td>
+													</tr>
+													</tbody>
+												</table>
+											</div>
+										</a>
+										<if condition="$vo['status'] == 0 && $can_edit">
+											|<a class="u-btn" href="{:U('submit_monthly')}/year/{$vo.year}/month/{$vo.month}/all_name/{$vo.all_name}" >编辑</a>
+										</if>
+										<else/>
+										<span class="lable_error">未提交</span>
+								</if>
+
+									<a class="u-btn" href="{:U('submit_monthly')}" >新增月报</a>
+								</td>
+							</tr>
+							<tr>
+								<td>{$vo.year}-{$vo.month}明细报</td>
+								<td>查看</td>
+							</tr>
+						</table>
+					</td>
 
 					<td><span class="lable_success">{$vo['status_desc']}</span></td>
 					<td>
 
-						<a  href="javascript:;" tmp_id="look" class="u-btn show_box">查看
 
-						<div class="look-content" style="display: none">
-							<table class="biaoge" style="margin: 0 auto">
-								<tbody>
-
-
-								<tr>
-									<td rowspan="4">保费</td>
-									<td colspan="2">
-										保费收入:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="income" value="{$vo.data.income}">
-									</td>
-								</tr>
-
-								<tr>
-									<td rowspan="3">
-										其中
-									</td>
-									<td>
-										企业财产险:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="income_a" value="{$vo.data.income_a}">
-									</td>
-								</tr>
-								<tr>
-									<td>
-										机动车辆险:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="income_b" value="{$vo.data.income_b}">
-									</td>
-								</tr>
-								<tr>
-									<td>
-										其他险:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="income_c" value="{$vo.data.income_c}">
-									</td>
-								</tr>
-
-								<tr>
-									<td colspan="3">储金金额:</td>
-									<td>
-										<input type="text" class="input input-medium" name="reserves" value="{$vo.data.reserves}">
-									</td>
-								</tr>
-
-
-								<tr>
-									<td rowspan="4">赔付</td>
-									<td colspan="2">
-										赔款支出:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="payoff" value="{$vo.data.payoff}">
-									</td>
-								</tr>
-
-								<tr>
-									<td rowspan="3">
-										其中
-									</td>
-									<td>
-										企业财产险:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="payoff_a" value="{$vo.data.payoff_a}">
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										机动车辆险:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="payoff_b" value="{$vo.data.payoff_b}">
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										其他险:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="payoff_c" value="{$vo.data.payoff_c}">
-									</td>
-								</tr>
-
-
-
-								<tr>
-									<td rowspan="2">营销员人数</td>
-									<td colspan="2">
-										期末在岗人数:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="staff" value="{$vo.data.staff}">
-									</td>
-								</tr>
-
-								<tr>
-									<td colspan="2">
-										期末持证人数:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="authorized" value="{$vo.data.authorized}">
-									</td>
-								</tr>
-								</tbody>
-							</table>
-						</div>
-						</a>
 						<if condition="$vo['status'] == 0 && $can_edit">
-							|<a class="u-btn" href="{:U('submit_monthly')}/year/{$vo.year}/month/{$vo.month}/all_name/{$vo.all_name}" >编辑</a>
+
 							|<a class="u-btn confirm J_ajax_get" href="{:U('submit_monthly_verify_new')}/id/{$vo.id}" >提交审核</a>
 						</if>
 
@@ -259,7 +278,7 @@
 	</div>
 </div>
 
-	<div id="look" class="show_box_temp" style="display:none;position: fixed;width: 600px;margin-left:-300px;overflow:auto;left: 50%;top:30%;z-index: 1000;background: #ddd;border: 1px solid #000000;padding: 10px">
+	<div id="look" class="show_box_temp" style="max-height:500px;overflow-y:auto;display:none;position: fixed;width: 600px;margin-left:-300px;overflow:auto;left: 50%;top:30%;z-index: 1000;background: #ddd;border: 1px solid #000000;padding: 10px">
 		<p style="padding: 10px">
 
 		<div class="box-content">

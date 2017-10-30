@@ -93,4 +93,11 @@ class InvestmentService extends BaseService{
         return $FinancialModel->where($where)->find();
     }
 
+    public function get_by_where_all($where) {
+        $FinancialModel = D('Financial' . static::$name);
+        $data = [];
+        $where['Types'] = ['EQ', static::$type];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->select();
+    }
 }

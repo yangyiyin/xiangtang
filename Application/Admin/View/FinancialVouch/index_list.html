@@ -113,116 +113,64 @@
 						<a  href="javascript:;" tmp_id="look" class="u-btn show_box">查看
 
 						<div class="look-content" style="display: none">
-							<table class="biaoge" style="margin: 0 auto">
+							<table class="biaoge" style="margin: 0 auto;">
 								<tbody>
 
-
 								<tr>
-									<td rowspan="4">保费</td>
-									<td colspan="2">
-										保费收入:
-									</td>
+									<td colspan="3">本期余额</td>
 									<td>
-										<input type="text" class="input input-medium" name="income" value="{$vo.data.income}">
-									</td>
-								</tr>
-
-								<tr>
-									<td rowspan="3">
-										其中
-									</td>
-									<td>
-										企业财产险:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="income_a" value="{$vo.data.income_a}">
+										<input type="text" class="input input-medium" name="C_Balance" value="{$vo.data.C_Balance}">
 									</td>
 								</tr>
 								<tr>
+									<td colspan="3">本期笔数</td>
 									<td>
-										机动车辆险:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="income_b" value="{$vo.data.income_b}">
+										<input type="text" class="input input-medium" name="C_Quantity" value="{$vo.data.C_Quantity}">
 									</td>
 								</tr>
 								<tr>
+									<td colspan="3">本年余额</td>
 									<td>
-										其他险:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="income_c" value="{$vo.data.income_c}">
+										<input type="text" class="input input-medium" name="G_Balance" value="{$vo.data.G_Balance}">
 									</td>
 								</tr>
-
 								<tr>
-									<td colspan="3">储金金额:</td>
+									<td colspan="3">本年笔数</td>
 									<td>
-										<input type="text" class="input input-medium" name="reserves" value="{$vo.data.reserves}">
+										<input type="text" class="input input-medium" name="G_Quantity" value="{$vo.data.G_Quantity}">
 									</td>
 								</tr>
-
-
 								<tr>
-									<td rowspan="4">赔付</td>
-									<td colspan="2">
-										赔款支出:
-									</td>
+									<td colspan="3">本月收回</td>
 									<td>
-										<input type="text" class="input input-medium" name="payoff" value="{$vo.data.payoff}">
+										<input type="text" class="input input-medium" name="C_Recover" value="{$vo.data.C_Recover}">
 									</td>
 								</tr>
-
 								<tr>
-									<td rowspan="3">
-										其中
-									</td>
+									<td colspan="3">担保费本月收入</td>
 									<td>
-										企业财产险:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="payoff_a" value="{$vo.data.payoff_a}">
+										<input type="text" class="input input-medium" name="C_Income" value="{$vo.data.C_Income}">
 									</td>
 								</tr>
-
 								<tr>
+									<td colspan="3">本期利润</td>
 									<td>
-										机动车辆险:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="payoff_b" value="{$vo.data.payoff_b}">
+										<input type="text" class="input input-medium" name="C_Profit" value="{$vo.data.C_Profit}">
 									</td>
 								</tr>
-
 								<tr>
+									<td colspan="3">纳税总额</td>
 									<td>
-										其他险:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="payoff_c" value="{$vo.data.payoff_c}">
+										<input type="text" class="input input-medium" name="C_Taxable" value="{$vo.data.C_Taxable}">
 									</td>
 								</tr>
-
-
-
 								<tr>
-									<td rowspan="2">营销员人数</td>
-									<td colspan="2">
-										期末在岗人数:
-									</td>
+									<td colspan="3">本期担保额</td>
 									<td>
-										<input type="text" class="input input-medium" name="staff" value="{$vo.data.staff}">
+										<input type="text" class="input input-medium" name="C_Vouch" value="{$vo.data.C_Vouch}">
 									</td>
 								</tr>
 
-								<tr>
-									<td colspan="2">
-										期末持证人数:
-									</td>
-									<td>
-										<input type="text" class="input input-medium" name="authorized" value="{$vo.data.authorized}">
-									</td>
-								</tr>
 								</tbody>
 							</table>
 						</div>
@@ -259,7 +207,7 @@
 	</div>
 </div>
 
-	<div id="look" class="show_box_temp" style="display:none;position: fixed;width: 600px;margin-left:-300px;overflow:auto;left: 50%;top:30%;z-index: 1000;background: #ddd;border: 1px solid #000000;padding: 10px">
+	<div id="look" class="show_box_temp" style="max-height:500px;overflow-y:auto;display:none;position: fixed;width: 600px;margin-left:-300px;overflow:auto;left: 50%;top:30%;z-index: 1000;background: #ddd;border: 1px solid #000000;padding: 10px">
 		<p style="padding: 10px">
 
 		<div class="box-content">
