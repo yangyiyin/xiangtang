@@ -32,7 +32,7 @@ class AntArticleController extends AdminController {
         if (I('get.platform')) {
             $where['platform'] = ['eq', I('get.platform')];
         }
-        $where['type'] = ['in', [\Common\Model\NfArticleModel::TYPE_NEWS,\Common\Model\NfArticleModel::TYPE_RULES,\Common\Model\NfArticleModel::TYPE_WORKINFO]];
+        $where['type'] = ['in', [\Common\Model\NfArticleModel::TYPE_NEWS,\Common\Model\NfArticleModel::TYPE_RULES,\Common\Model\NfArticleModel::TYPE_WORKINFO,\Common\Model\NfArticleModel::TYPE_WORKAPPLY]];
         $type = I('type');
         if ($type) {
             $where['type'] = ['eq', $type];

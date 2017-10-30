@@ -16,6 +16,7 @@ class DisabledWorkInfoApply extends BaseApi{
 
     public function excute() {
         $data = [];
+        $data['type'] = \Common\Model\NfArticleModel::TYPE_WORKAPPLY;
         $data['title'] = $this->post_data['title'];
         $data['content'] = $this->post_data['content'];
 
