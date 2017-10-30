@@ -7,7 +7,7 @@
  */
 namespace Api\Lib;
 use Common\Service;
-class DisabledHelpApply extends BaseSapi{
+class DisabledHelpApply extends BaseApi{
     protected $method = parent::API_METHOD_POST;
     private $DisabledHelpService;
     public function init() {

@@ -7,7 +7,7 @@
  */
 namespace Api\Lib;
 use Common\Service;
-class ActivitySign extends BaseSapi{
+class ActivitySign extends BaseApi{
     protected $method = parent::API_METHOD_POST;
     private $ActivityApplyService;
     public function init() {

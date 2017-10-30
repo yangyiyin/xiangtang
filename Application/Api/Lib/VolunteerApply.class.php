@@ -7,7 +7,7 @@
  */
 namespace Api\Lib;
 use Common\Service;
-class VolunteerApply extends BaseSapi{
+class VolunteerApply extends BaseApi{
     protected $method = parent::API_METHOD_POST;
     private $VolunteerService;
     public function init() {

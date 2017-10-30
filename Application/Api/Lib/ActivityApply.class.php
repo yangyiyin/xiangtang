@@ -7,7 +7,7 @@
  */
 namespace Api\Lib;
 use Common\Service;
-class ActivityApply extends BaseSapi{
+class ActivityApply extends BaseApi{
     protected $method = parent::API_METHOD_POST;
     private $ActivityApplyService;
     public function init() {

@@ -7,7 +7,7 @@
  */
 namespace Api\Lib;
 use Common\Service;
-class DisabledInfo extends BaseSapi{
+class DisabledInfo extends BaseApi{
     protected $method = parent::API_METHOD_GET;
     private $DisabledManService;
     public function init() {

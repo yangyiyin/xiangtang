@@ -7,7 +7,7 @@
  */
 namespace Api\Lib;
 use Common\Service;
-class DisabledWorkInfoApply extends BaseSapi{
+class DisabledWorkInfoApply extends BaseApi{
     protected $method = parent::API_METHOD_POST;
     private $ArticleService;
     public function init() {

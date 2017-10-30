@@ -7,7 +7,7 @@
  */
 namespace Api\Lib;
 use Common\Service;
-class ActivityInfo extends BaseSapi{
+class ActivityInfo extends BaseApi{
     protected $method = parent::API_METHOD_GET;
     private $ActivityService;
     public function init() {
