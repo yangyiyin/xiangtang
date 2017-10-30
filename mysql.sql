@@ -190,3 +190,30 @@ alter table shopy_member add `extra` VARCHAR (1000) DEFAULT '';
 alter table shopy_nf_volunteer add `tel` varchar(15)  DEFAULT '';
 alter table shopy_nf_volunteer add `pay_type` tinyint(3)  DEFAULT '1';
 
+
+CREATE TABLE `shopy_nf_activity` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+`title` varchar(30)  NOT NULL,
+`time_start` datetime DEFAULT NULL,
+`time_end` datetime DEFAULT NULL,
+`content` text,
+`extra` VARCHAR (200) DEFAULT '',
+`status` tinyint(3) DEFAULT 1,
+`type` tinyint(3) DEFAULT 1,
+`create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+
+CREATE TABLE `shopy_nf_activity_apply` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+`activity_id` int(11)  NOT NULL,
+
+`uid` int(11)  NOT NULL,
+`status` tinyint(3) DEFAULT 1,
+`create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

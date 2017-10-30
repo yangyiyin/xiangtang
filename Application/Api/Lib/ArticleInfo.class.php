@@ -12,6 +12,7 @@ class ArticleInfo extends BaseSapi{
     const block_type_about = 'about';
     const block_type_contact = 'contact';
     const block_type_public = 'public';
+    const block_type_help = 'help';
     const block_type_volunteer_agree = 'volunteer_agree';
     const block_type_disabled_help_agree = 'disabled_help_agree';
     const block_type_volunteer_pay_info = 'volunteer_pay_info';
@@ -43,16 +44,22 @@ class ArticleInfo extends BaseSapi{
             $info = $this->ArticleService->get_contact();
         } elseif ($block == self::block_type_public) {
             $info = $this->ArticleService->get_public($this->from);
+        } elseif ($block == self::block_type_help) {
+            $info = $this->ArticleService->get_help($this->from);
         } elseif ($block == self::block_type_volunteer_agree) {
             $info = $this->ArticleService->get_volunteer_agree();
         } elseif ($block == self::block_type_disabled_help_agree) {
             $info = $this->ArticleService->get_disabled_help_agree();
         } elseif ($block == self::block_type_volunteer_pay_info) {
+            $ConfService = \Common\Service\ConfService::get_instance();
+            $conf = $ConfService->get_by_key_name('volunteer_pay_sum');
+            $pay_sum = isset($conf['content']) ? $conf['content'] : 10000;
             $info = [
                 'id'=>1,
                 'title' => '您已提交申请志愿者表,马上支付志愿费',
                 'content' => '您已提交申请志愿者表,马上支付志愿费',
-                'create_time' => '2017-10-26'
+                'create_time' => '2017-10-26',
+                'pay_sum' => $pay_sum
             ];
         }
 
@@ -61,6 +68,10 @@ class ArticleInfo extends BaseSapi{
             $result->title = $info['title'];
             $result->content = $info['content'];
             $result->create_time = $info['create_time'];
+            if (isset($info['pay_sum'])) {
+                $result->pay_sum = $info['pay_sum'];
+            }
+
         }
 
         return result_json(TRUE, '', $result);

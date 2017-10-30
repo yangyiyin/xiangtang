@@ -12,6 +12,9 @@ class VolunteerController extends BaseController {
 
     }
 
+    public function apply_info() {
+        $this->excute_api('Api\Lib\VolunteerApplyInfo');
 
+    }
 
 }

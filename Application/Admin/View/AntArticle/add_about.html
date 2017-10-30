@@ -7,19 +7,29 @@
 	<div class="g-wrap">
 		<!-- 按钮工具栏 -->
 		<div class="u-tab">
-		    <ul class="cc tab-nav">
-				<li class="current"><a href="javascript:;">关于我们</a></li>
-		    </ul>
+			<ul class="cc tab-nav">
+
+				<if condition="I('platform',1) == 1">
+					<li class="current"><a href="javascript:;">服务版关于我们</a></li>
+					<li><a href="{:U('add_about')}/platform/2">零售版关于我们</a></li>
+				</if>
+				<if condition="I('platform',1) == 2">
+					<li><a href="{:U('add_about')}/platform/1">服务版关于我们</a></li>
+					<li class="current"><a href="javascript:;">零售版关于我们</a></li>
+				</if>
+			</ul>
 		</div>
 		<!-- 数据表格 -->
 		<div class="tab-content table_list">
 		<!-- 表单 -->
-		<form id="form" action="{:U('update')}/id/{$info.id}/current/1" method="post" class="form-horizontal">
+		<form id="form" action="{:U('update')}/current/1/id/{$info.id}" method="post" class="form-horizontal">
 				<div id="tab">
 					<table class="" width="100%">
 				    <tbody>
 					<input type="hidden" name="type" value="about"/>
-							<tr>
+					<input type="hidden" name="platform[]" value="{:I('get.platform',1)}"/>
+
+					<tr>
 					            <td width="20%"><label class="item-label">标题</label></td>
 					            <td width="80%">
 									<input type="text" class="input input-medium" name="title" value="{$info.title}">

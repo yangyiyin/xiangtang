@@ -18,6 +18,7 @@ class DisabledWorkInfoApply extends BaseSapi{
         $data = [];
         $data['title'] = $this->post_data['title'];
         $data['content'] = $this->post_data['content'];
+
         $data['from_uid'] = $this->uid;
         $data['status'] = \Common\Model\NfArticleModel::STATUS_SUBMIT;
         if (!$data['title'] || !$data['content']) {

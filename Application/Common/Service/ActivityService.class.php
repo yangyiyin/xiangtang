@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-10-25 16:04:06
+ * Time: 2017-10-30 13:28:31
  */
 namespace Common\Service;
-class VolunteerService extends BaseService{
-    public static $name = 'Volunteer';
+class ActivityService extends BaseService{
+    public static $name = 'Activity';
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
@@ -29,25 +29,17 @@ class VolunteerService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
-    public function get_info_by_uid($uid) {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['uid'] = ['EQ', $uid];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->find();
-    }
 
-    public function get_by_uids($uids) {
-        if (!check_num_ids($uids)) {
-            return result(FALSE, 'uids不能为空');
+    public function get_by_ids($ids) {
+        if (!check_num_ids($ids)) {
+            return [];
         }
         $NfModel = D('Nf' . static::$name);
         $where = [];
-        $where['uid'] = ['in', $uids];
+        $where['id'] = ['in', $ids];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->select();
     }
-
 
     public function update_by_id($id, $data) {
 
@@ -113,45 +105,5 @@ class VolunteerService extends BaseService{
         return [$data, $count];
     }
 
-    public function is_available_paying($id,$uid) {
-        $info = $this->get_info_by_id($id);
-        if (!$info) {
-            return result(FALSE, '申请记录不存在');
-        }
-
-        if ($info['uid'] != $uid) {
-            return result(FALSE, '申请记录不存在');
-        }
-
-        if ($info['status'] != \Common\Model\NfVolunteerModel::STATUS_SUBMIT) {
-            $status_desc = isset(\Common\Model\NfVolunteerModel::$status_map[$info['status']]) ? \Common\Model\NfOrderModel::$status_map[$info['status']] : '未知';
-            return result(FALSE, '记录状态为:' . $status_desc . ',不可支付!');
-        }
-
-        return result(TRUE, '', $info);
-    }
-
-    public function is_available_complete($id) {
-        $info = $this->get_info_by_id($id);
-        if (!$info) {
-            return false;
-        }
-        return true;
-    }
-
-    public function complete($id) {
-
-    }
-
-    public function is_volunteer($uid) {
-        $info =  $this->get_info_by_id($uid);
-        if ($info && $info['status'] == \Common\Model\NfVolunteerModel::STATUS_OK) {
-            return true;
-        } else {
-            return false;
-        }
-
-
-    }
 
 }

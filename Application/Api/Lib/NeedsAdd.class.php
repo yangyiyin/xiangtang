@@ -32,6 +32,7 @@ class NeedsAdd extends BaseApi{
         if ($extra) {
             $data['extra'] = $extra;
         }
+
         $data['status'] = \Common\Model\NfNeedsModel::STATUS_READY;
         $data['uid'] = $this->uid;
         $ret = $this->NeedsService->add_one($data);

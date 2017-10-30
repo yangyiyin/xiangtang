@@ -98,19 +98,25 @@ class AntArticleController extends AdminController {
     }
 
     public function add_about() {
-        $info = $this->ArticleService->get_about();
+        $info = $this->ArticleService->get_about(I('get.platform',1));
         $this->assign('info',$info);
         $this->display();
     }
 
     public function add_contact() {
-        $info = $this->ArticleService->get_contact();
+        $info = $this->ArticleService->get_contact(I('get.platform',1));
         $this->assign('info',$info);
         $this->display();
     }
 
     public function add_public() {
         $info = $this->ArticleService->get_public(I('get.platform',1));
+        $this->assign('info',$info);
+        $this->display();
+    }
+
+    public function add_help() {
+        $info = $this->ArticleService->get_help(I('get.platform',1));
         $this->assign('info',$info);
         $this->display();
     }

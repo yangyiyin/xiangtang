@@ -13,6 +13,7 @@ class NfArticleModel extends NfBaseModel {
     const TYPE_ABOUT = 'about';
     const TYPE_CONTACT = 'contact';
     const TYPE_PUBLIC = 'public';
+    const TYPE_HELP = 'help';
     const TYPE_VOLUNTEER_AGREE = 'volunteer_agree';
     const TYPE_DISABLED_HELP_AGREE = 'disabled_help_agree';
     public static $type_map = ['news'=>'新闻','rules'=>'政策法规','workinfo'=>'招聘信息','workapply'=>'求职信息'];

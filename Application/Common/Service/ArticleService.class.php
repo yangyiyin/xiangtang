@@ -14,6 +14,7 @@ class ArticleService extends BaseService{
             return result(FALSE, $NfModel->getError());
          }
         if ($NfModel->add()) {
+
             return result(TRUE, '', $NfModel->getLastInsID());
         } else {
 
@@ -105,18 +106,20 @@ class ArticleService extends BaseService{
         return [$pre, $next];
     }
 
-    public function get_about() {
+    public function get_about($platform=1) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
         $where['type'] = ['EQ', $NfModel::TYPE_ABOUT];
+        $where['platform'] = ['EQ', $platform];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->find();
     }
 
-    public function get_contact() {
+    public function get_contact($platform=1) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
         $where['type'] = ['EQ', $NfModel::TYPE_CONTACT];
+        $where['platform'] = ['EQ', $platform];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->find();
     }
@@ -130,6 +133,14 @@ class ArticleService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
+    public function get_help($platform=1) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['type'] = ['EQ', $NfModel::TYPE_HELP];
+        $where['platform'] = ['EQ', $platform];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->find();
+    }
 
     public function get_volunteer_agree() {
         $NfModel = D('Nf' . static::$name);
