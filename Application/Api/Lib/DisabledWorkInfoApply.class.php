@@ -19,6 +19,7 @@ class DisabledWorkInfoApply extends BaseApi{
         $data['type'] = \Common\Model\NfArticleModel::TYPE_WORKAPPLY;
         $data['title'] = $this->post_data['title'];
         $data['content'] = $this->post_data['content'];
+        $data['from'] = self::FROM_RETAIL;
 
         $data['from_uid'] = $this->uid;
         $data['status'] = \Common\Model\NfArticleModel::STATUS_SUBMIT;
