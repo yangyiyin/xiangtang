@@ -33,11 +33,11 @@ class ActivityList extends BaseSapi{
         if ($data) {
             $activity_ids = result_to_array($data);
             $ActivityApplyService = \Common\Service\ActivityApplyService::get_instance();
-            $applies = $ActivityApplyService->get_by_ids($activity_ids);
+            $applies = $ActivityApplyService->get_by_activity_ids($activity_ids,$this->uid);
             $applies_map = result_to_map($applies, 'activity_id');
             $status_map = \Common\Model\NfActivityApplyModel::$status_map;
             foreach ($data as $key => $value) {
-                $data[$key]['apply_status'] = isset($applies_map[$value['activity_id']]) ? $applies_map[$value['activity_id']]['status'] : 0;
+                $data[$key]['apply_status'] = isset($applies_map[$value['id']]) ? $applies_map[$value['id']]['status'] : 0;
                 $data[$key]['apply_status_desc'] = isset($status_map[$data[$key]['apply_status']]) ? $status_map[$data[$key]['apply_status']] : '未报名';
             }
         }

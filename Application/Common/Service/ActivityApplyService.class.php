@@ -38,13 +38,14 @@ class ActivityApplyService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
-    public function get_by_ids($ids) {
+    public function get_by_activity_ids($ids,$uid) {
         if (!check_num_ids($ids)) {
             return result(FALSE, 'ids不能为空');
         }
         $NfModel = D('Nf' . static::$name);
         $where = [];
-        $where['id'] = ['in', $ids];
+        $where['activiy_id'] = ['in', $ids];
+        $where['uid'] = $uid;
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->select();
     }

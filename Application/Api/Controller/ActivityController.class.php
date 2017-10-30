@@ -17,6 +17,11 @@ class ActivityController extends BaseController {
 
     }
 
+    public function info() {
+        $this->excute_api('Api\Lib\ActivityInfo');
+
+    }
+
     public function _empty() {
         $this->excute_api('Api\Lib\ActivityList');
     }
