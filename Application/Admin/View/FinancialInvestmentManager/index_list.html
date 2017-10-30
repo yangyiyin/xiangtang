@@ -10,9 +10,7 @@
 					<else/>
 					<li class="current"><a href="javascript:;">本单位数据</a></li>
 				</if>
-				<if condition="$can_edit">
-					<li ><a href="{:U('submit_monthly')}">新增月报填报</a></li>
-				</if>
+
 
 		    </ul>
 		</div>
@@ -98,8 +96,6 @@
 		    <tbody>
 				<volist name="list" id="vo">
 				<tr>
-
-
 
 					<td>
 						{$vo.year}-{$vo.month}
@@ -231,8 +227,9 @@
 										<else/>
 										<span class="lable_error">未提交</span>
 								</if>
-
-									<a class="u-btn" href="{:U('submit_monthly')}" >新增月报</a>
+									<if condition="$can_edit">
+										<a class="u-btn" href="{:U('submit_monthly')}" >新增月报</a>
+									</if>
 								</td>
 							</tr>
 							<tr>
