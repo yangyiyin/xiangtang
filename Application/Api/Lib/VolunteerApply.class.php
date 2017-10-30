@@ -43,7 +43,7 @@ class VolunteerApply extends BaseSapi{
             $id = $ret->data;
         }
 
-        return result_json(TRUE, '提交成功!', $id);
+        return result_json(TRUE, '提交成功!', ['id'=>$id]);
         
     }
 
