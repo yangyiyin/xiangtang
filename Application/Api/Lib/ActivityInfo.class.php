@@ -29,7 +29,7 @@ class ActivityInfo extends BaseApi{
         $applies = $ActivityApplyService->get_info_by_uid_activity_id($this->uid, $activity_id);
         $applies_map[$applies['activity_id']] = $applies;
         $status_map = \Common\Model\NfActivityApplyModel::$status_map;
-        $data['apply_status'] = isset($applies_map[$data['id']]) ? $applies_map[$value['id']]['status'] : 0;
+        $data['apply_status'] = isset($applies['status']) ? $applies['status'] : 0;
         $data['apply_status_desc'] = isset($status_map[$data['apply_status']]) ? $status_map[$data['apply_status']] : '未报名';
 
         $data = convert_obj($data,'id,title,time_start,time_end,apply_status,apply_status_desc');
