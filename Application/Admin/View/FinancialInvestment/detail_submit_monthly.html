@@ -1,6 +1,8 @@
 <extend name="Public/base"/>
 
 <block name="body">
+	<link rel="stylesheet" type="text/css" href="__STATIC__/webuploader/webuploader.css">
+	<script type="text/javascript" src="__STATIC__/webuploader/webuploader.min.js"></script>
 	<div class="g-wrap">
 		<!-- 按钮工具栏 -->
 		<div class="u-tab">
@@ -23,26 +25,51 @@
 
 							<td colspan="4">
 
-								{:date('Y')}年{:date('m')}月
-							</td>
-						</tr>
-						<tr>
-							<td colspan="4">公司全称:</td>
+								<if condition="$can_all_edit && !I('editing')">
+									填报机构:
+									<select name="all_name" class="all_name">
+										<php>
+											$list = $departments;
+											$cur = I('all_name') ? I('all_name') : '';
+											foreach($list as $li){
+											$selected = ($li == $cur) ? 'selected' : '';
+											echo '<option value="'.$li.'" '.$selected.'>'.$li.'</option>';
+											}
+										</php>
+									</select>
+									<else/>
+									<input type="hidden" value="{$all_name}" name="all_name"/>
+									{$all_name}
+								</if>
+								<input type="hidden" class="input input-medium" name="filler_man" value="{:session('user_auth.username')}">
+								<if condition="$info['year']">
+									&nbsp;时间:{$info.year}年{$info.month}月
+									<input type="hidden" value="{$info.year}" name="year"/>
+									<input type="hidden" value="{$info.month}" name="month"/>
+									<else/>
+									&nbsp;时间:
+									<select name="year" class="year change_time" >
+										<php>
+											$years = [2016,2017];
+											$cur_year = I('year') ? I('year') : intval(date('Y'));
+											foreach($years as $year){
+											$selected = ($year == $cur_year) ? 'selected' : '';
+											echo '<option value="'.$year.'" '.$selected.'>'.$year.'</option>';
+											}
+										</php>
+									</select>年
+									<select name="month" class="month change_time">
+										<php>
+											$months = [1,2,3,4,5,6,7,8,9,10,11,12];
+											$cur_month = I('month') ? I('month') : intval(date('m'));
+											foreach($months as $month){
+											$selected = ($month == $cur_month) ? 'selected' : '';
+											echo '<option value="'.$month.'" '.$selected.'>'.$month.'</option>';
+											}
+										</php>
+									</select>月
 
-						</tr>
-
-						<tr>
-							<td colspan="2">
-								<select name="all_name">
-									<php>
-										$list = $departments;
-										$cur = $infos[0]['all_name'];
-										foreach($list as $li){
-										$selected = ($li == $cur) ? 'selected' : '';
-										echo '<option value="'.$li.'" '.$selected.'>'.$li.'</option>';
-										}
-									</php>
-								</select>
+								</if>
 
 							</td>
 							<td colspan="5" style="display: none">
@@ -62,10 +89,10 @@
 						<volist name="infos" id="vo">
 							<tr>
 								<td>
-									<input type="text" class="input input-medium" name="logs1[]" value="{$vo.Name}">
+									<input disabled="disabled"  type="text" class="disbled input input-medium" name="logs1[]" value="{$vo.Name}">
 								</td>
 								<td>
-									<select name="logs2[]">
+									<select disabled="disabled" class="disabled" name="logs2[]">
 										<if condition="$vo['area_options']">
 											{$vo['area_options']}
 											<else/>
@@ -74,27 +101,31 @@
 									</select>
 								</td>
 								<td>
-									<input type="text" class="input input-medium" name="logs3[]" value="{$vo.Amount}">
+									<input disabled="disabled" type="text" class="disabled input input-medium" name="logs3[]" value="{$vo.Amount}">
 								</td>
 								<td>
-									<input type="text" class="input input-medium" name="logs4[]" value="{$vo.Remarks}">
+									<input disabled="disabled" type="text" class="disabled input input-medium" name="logs4[]" value="{$vo.Remarks}">
 								</td>
-								<td><a class="btn del_log">删除</a></td>
+
 							</tr>
 						</volist>
-						<tr class="add_line"><td colspan="4"><a class="btn add_log">添加</a></td></tr>
+						<!--<tr class="add_line"><td colspan="4"><a class="btn add_log">添加</a></td></tr>-->
+						<tr >
+							<td colspan="22"><div id="filePicker">导入excel</div></td>
+							<input type="hidden" name="good_key" value="{:I('good_key')}" id="good_key"/>
+						</tr>
 						</tbody>
 					</table>
 				</div>
 
-
-
-
-
+				<div class="page">
+					{$page_html}
+				</div>
 
 				<div class="btn_wrap">
 					<div class="btn_wrap_pd">
-						<if condition="$info['id']">已提交</if><button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal"><if condition="$info['id']">修 改<else/>提 交</if></button>
+						<button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">保存</button>
+						<input name="submit_verify" type="checkbox" value="2"/>提交
 					</div>
 				</div>
 			</form>
@@ -134,4 +165,59 @@
 
 		});
 	</script>
+
+	<script type="text/javascript">
+		//上传图片
+		var uploader = WebUploader.create({
+
+			// 选完文件后，是否自动上传。
+			auto: true,
+
+			// swf文件路径
+			swf: '__STATIC__/webuploader/Uploader.swf',
+
+			// 文件接收服务端。
+			server: "{:U('FinancialInvestment/upload_excel',array('session_id'=>session_id(), 'type'=>'baddebt_dispose_new'))}",
+			fileNumLimit: 1,
+			// 选择文件的按钮。可选。
+			// 内部根据当前运行是创建，可能是input元素，也可能是flash.
+			pick: '#filePicker',
+			resize : false,
+			duplicate: true,
+			// 只允许选择图片文件。
+			accept: {
+				title : 'Applications',
+				extensions : 'xls',
+				mimeTypes : 'application/xls'
+			}
+		});
+		//		uploader.on( 'uploadSuccess', function(file, response) {
+		//			upload(file, response);
+		//		});
+		uploader.on( 'uploadSuccess', function(file, response) {
+			if(response.status){
+				updateAlert('导入成功','alert-success');
+				$('.result').html('已导入数据');
+				if (response.key) {
+					alert('部分数据不符合要求,我们将以excel的形式退回给您');
+					window.open("{:U('get_excel')}/key/"+response.key);
+				}
+				if (response.good_key) {
+					alert('数据已导入成功,如10分钟内未提交,则导入数据将自动清空');
+					$('#good_key').val(response.good_key);
+					//upload(0,response.data);
+
+					location.href = '{:U('')}/good_key/'+response.good_key+'/editing/{:I("editing",0)}/all_name/{:I("all_name",0)}/year/{:I("year",0)}/month/{:I("month",0)}';
+				}
+
+
+			} else {
+				updateAlert(response.info);
+			}
+		});
+		uploader.on( 'startUpload', function() {
+			updateAlert('上传中。。。');
+		});
+	</script>
+
 </block>

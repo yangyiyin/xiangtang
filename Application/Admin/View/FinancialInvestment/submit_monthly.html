@@ -21,19 +21,29 @@
 
 						</tr>
 						<tr>
+
 							<td colspan="3">公司全称:</td>
 							<td>
-								<select name="all_name">
-									<php>
-										$list = $departments;
-										$cur = $info['all_name'];
-										foreach($list as $li){
-										$selected = ($li == $cur) ? 'selected' : '';
-										echo '<option value="'.$li.'" '.$selected.'>'.$li.'</option>';
-										}
-									</php>
-								</select>
+								<if condition="$can_all_edit && !I('editing')">
+									<select name="all_name" class="all_name">
+										<php>
+											$list = $departments;
+											$cur = I('all_name') ? I('all_name') : '';
+											foreach($list as $li){
+											$selected = ($li == $cur) ? 'selected' : '';
+											echo '<option value="'.$li.'" '.$selected.'>'.$li.'</option>';
+											}
+										</php>
+									</select>
+									<else/>
+									<input type="hidden" value="{$all_name}" name="all_name"/>
+									{$all_name}
+								</if>
 
+							</td>
+							<td colspan="5" style="display: none">
+								<input type="text" class="input input-medium" name="filler_man" value="{:session('user_auth.username')}">
+							</td>
 							</td>
 							<td colspan="5" style="display: none">
 								<input type="text" class="input input-medium" name="filler_man" value="{:session('user_auth.username')}">
@@ -44,7 +54,34 @@
 							<td colspan="3">项目</td>
 							<td>
 
-								{:date('Y')}年{:date('m')}月
+								<if condition="$info['year']">
+									&nbsp;{$info.year}年{$info.month}月
+									<input type="hidden" value="{$info.year}" name="year"/>
+									<input type="hidden" value="{$info.month}" name="month"/>
+									<else/>
+									<select name="year" class="year change_time" >
+										<php>
+											$years = [2016,2017];
+											$cur_year = I('year') ? I('year') : intval(date('Y'));
+											foreach($years as $year){
+											$selected = ($year == $cur_year) ? 'selected' : '';
+											echo '<option value="'.$year.'" '.$selected.'>'.$year.'</option>';
+											}
+										</php>
+									</select>年
+									<select name="month" class="month change_time">
+										<php>
+											$months = [1,2,3,4,5,6,7,8,9,10,11,12];
+											$cur_month = I('month') ? I('month') : intval(date('m'));
+											foreach($months as $month){
+											$selected = ($month == $cur_month) ? 'selected' : '';
+											echo '<option value="'.$month.'" '.$selected.'>'.$month.'</option>';
+											}
+										</php>
+									</select>月
+
+								</if>
+
 							</td>
 						</tr>
 
@@ -176,7 +213,8 @@
 
 				<div class="btn_wrap">
 					<div class="btn_wrap_pd">
-						<if condition="$info['id']">已提交</if><button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal"><if condition="$info['id']">修 改<else/>提 交</if></button>
+						<button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">保存</button>
+						<input name="submit_verify" type="checkbox" value="2"/>提交
 					</div>
 				</div>
 			</form>

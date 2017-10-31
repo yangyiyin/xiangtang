@@ -326,7 +326,7 @@ class FinancialBaseController extends AdminController {
             $this->assign('all_name', $all_name);
 
             $count = count($infos);
-            $page_size = 2;
+            $page_size = \Common\Service\BaseService::$page_size;
             $PageInstance = new \Think\Page($count, $page_size);
             if($count>$page_size){
                 $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
@@ -973,6 +973,40 @@ class FinancialBaseController extends AdminController {
         $key = '';
         $page_html = '';
         if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager) {
+
+            if (count($sheetData[2]) != 5) {
+                $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
+            }
+            $AreaService = \Common\Service\AreaService::get_instance();
+
+            for($i=3;$i<count($sheetData) + 1;$i++) {
+                $temp = [];
+                $is_bad_row = false;
+                $sheetData[$i] = array_values($sheetData[$i]);
+                if (!$sheetData[$i][1]) {
+                    break;
+                }
+
+                $temp['Name'] = (string) $sheetData[$i][1];
+
+                $area = $AreaService->get_like_name($sheetData[$i][2]);
+                $temp['Area'] = isset($area['id']) ? $area['id'] : 0;
+
+                $temp['Amount'] =  (string) $sheetData[$i][3];
+                $temp['Remarks'] =  (string)  $sheetData[$i][4];
+
+                $data[] = $temp;
+
+            }
+
+//             if ($bad_data) {
+//                 $key = uniqid();
+//                 array_unshift($bad_data,['企业名称','法人代表或实际控制人','企业所属乡镇（街道）','逾期贷款金额','化解金额','备注']);
+//                 S($key, $bad_data, 120);
+//             }
+
+
+        } elseif ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestment) {
 
             if (count($sheetData[2]) != 5) {
                 $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);

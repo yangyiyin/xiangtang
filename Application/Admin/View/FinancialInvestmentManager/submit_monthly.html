@@ -22,7 +22,7 @@
 						<tr>
 							<td colspan="3">公司全称:</td>
 							<td>
-								<if condition="$can_all_edit">
+								<if condition="$can_all_edit && !I('editing')">
 									<select name="all_name" class="all_name">
 										<php>
 											$list = $departments;

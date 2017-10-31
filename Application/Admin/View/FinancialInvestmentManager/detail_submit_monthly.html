@@ -25,7 +25,7 @@
 
 							<td colspan="4">
 
-								<if condition="$can_all_edit">
+								<if condition="$can_all_edit && !I('editing')">
 									填报机构:
 									<select name="all_name" class="all_name">
 										<php>
@@ -39,7 +39,7 @@
 									</select>
 									<else/>
 									<input type="hidden" value="{$all_name}" name="all_name"/>
-
+									{$all_name}
 								</if>
 								<input type="hidden" class="input input-medium" name="filler_man" value="{:session('user_auth.username')}">
 								<if condition="$info['year']">
@@ -110,7 +110,7 @@
 							</tr>
 						</volist>
 						<!--<tr class="add_line"><td colspan="4"><a class="btn add_log">添加</a></td></tr>-->
-						<tr class="add_line">
+						<tr >
 							<td colspan="22"><div id="filePicker">导入excel</div></td>
 							<input type="hidden" name="good_key" value="{:I('good_key')}" id="good_key"/>
 						</tr>

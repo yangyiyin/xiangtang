@@ -22,7 +22,7 @@
 						</tr>
 						<tr>
 							<td colspan="4">
-							<if condition="$can_all_edit">
+							<if condition="$can_all_edit && !I('editing')">
 								填报机构:
 								<select name="all_name" class="all_name">
 									<php>
@@ -35,6 +35,7 @@
 									</php>
 								</select>
 								<else/>
+								{$all_name}
 								<input type="hidden" value="{$all_name}" name="all_name"/>
 
 							</if>

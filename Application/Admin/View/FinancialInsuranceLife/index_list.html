@@ -244,7 +244,7 @@
 						</div>
 						</a>
 						<if condition="$vo['status'] == 0 && $can_edit">
-							|<a class="u-btn" href="{:U('submit_monthly')}/year/{$vo.year}/month/{$vo.month}/all_name/{$vo.all_name}" >编辑</a>
+							|<a class="u-btn" href="{:U('submit_monthly')}/year/{$vo.year}/month/{$vo.month}/all_name/{$vo.all_name}/editing/1" >编辑</a>
 							|<a class="u-btn confirm J_ajax_get" href="{:U('submit_monthly_verify_new')}/id/{$vo.id}" >提交审核</a>
 						</if>
 
