@@ -16,8 +16,8 @@ class MenuController extends AdminController {
     public function add_menu_direct() {
 
         $arr = [
-            ['title' => '股权投资机构填报本单位数据','url'=>'FinancialInvestment/submit_monthly','urls'=>'FinancialInvestment/submit_monthly,FinancialInvestment/submit_monthly_verify_new','pid'=>195,'module'=>'Admin','sort'=>0,'hide'=>1],
-            ['title' => '股权投资机构填报所有单位数据', 'url'=>'FinancialInvestment/submit_monthly_all','urls'=>'FinancialInvestment/submit_monthly_all,FinancialInvestment/submit_monthly,FinancialInvestment/submit_monthly_verify_new','pid'=>195,'module'=>'Admin','sort'=>0,'hide'=>1],
+            ['title' => '股权投资机构填报本单位数据','url'=>'FinancialInvestment/submit_monthly','urls'=>'FinancialInvestment/submit_monthly,FinancialInvestment/submit_monthly_verify_new,FinancialInvestmentManager/detail_submit_monthly,FinancialInvestmentManager/exit_detail_submit_monthly,FinancialInvestmentManager/upload_excel','pid'=>195,'module'=>'Admin','sort'=>0,'hide'=>1],
+            ['title' => '股权投资机构填报所有单位数据', 'url'=>'FinancialInvestment/submit_monthly_all','urls'=>'FinancialInvestment/submit_monthly_all,FinancialInvestment/submit_monthly,FinancialInvestment/submit_monthly_verify_new,FinancialInvestmentManager/detail_submit_monthly,FinancialInvestmentManager/exit_detail_submit_monthly,FinancialInvestmentManager/upload_excel','pid'=>195,'module'=>'Admin','sort'=>0,'hide'=>1],
             ['title' => '股权投资机构查看本单位数据', 'url'=>'FinancialInvestment/index_list','urls'=>'FinancialInvestment/index_list','pid'=>195,'module'=>'Admin','sort'=>0,'hide'=>0],
             ['title' => '股权投资机构查看所有单位数据', 'url'=>'FinancialInvestment/index_all_list','urls'=>'FinancialInvestment/index_all_list','pid'=>195,'module'=>'Admin','sort'=>0,'hide'=>0],
             ['title' => '股权投资机构审核所有单位数据', 'url'=>'FinancialInvestment/verify_change_status','urls'=>'FinancialInvestment/verify_change_status','pid'=>195,'module'=>'Admin','sort'=>0,'hide'=>1],

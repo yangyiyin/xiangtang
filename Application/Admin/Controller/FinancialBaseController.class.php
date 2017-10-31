@@ -848,7 +848,7 @@ class FinancialBaseController extends AdminController {
                     $list[$k]['data'] = $data_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
                 }
 
-                if (isset($data_1_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
+                if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager && isset($data_1_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
                     $list[$k]['data_1'] = $data_1_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
 
                     $count = count($list[$k]['data_1']);
