@@ -64,7 +64,7 @@ class ItemListDefault extends BaseSapi{
                 $_item['price'] = (int) $_item['price'];
                 $_item['show_price'] = (int) $_item['price'];
                 $_item['sold_num'] = (int) $_item['sold_num'];
-                $list[] = convert_obj($_item, 'id=item_id,pid,title,img,desc,unit_desc,price,sold_num');
+                $list[] = convert_obj($_item, 'id=item_id,pid,title,img,desc,unit_desc,price,sold_num,show_price');
             }
 
         }

@@ -47,7 +47,7 @@ class ItemDetailDefault extends BaseSapi{
                 $_item['content'] = $_item['content'];
                 $_item['tips'] = $_item['tips'];
                 $_item['labels'] = $_item['lables'] ? explode(',', $_item['lables']) : [];
-                $list[] = convert_obj($_item, 'id=item_id,pid,title,img,desc,unit_desc,price,content,tips,labels');
+                $list[] = convert_obj($_item, 'id=item_id,pid,title,img,desc,unit_desc,price,content,tips,labels,show_price');
             }
 
         }
