@@ -85,9 +85,9 @@ class FinancialBaseController extends AdminController {
 
         //获取编辑数据
         $info = [];
-        if ($year && $month && !IS_POST) {
+        if ($year && $month && !IS_POST && I('editing')) {
             $info = $this->local_service->get_by_month_year($year,$month,$all_name);
-            if (!$info || $info['all_name'] != $all_name) {
+            if (!$can_all_edit && (!$info || $info['all_name'] != $all_name)) {
                 $this->error('您没有权限查看该部门的信息');
             }
             $this->convert_data_submit_monthly($info);
@@ -114,6 +114,26 @@ class FinancialBaseController extends AdminController {
                 $this->error('该月份还不能填报!');
             }
 
+            if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager) {
+                foreach ($data['Staff_Sub'] as $sub) {
+                    if ($sub == '' || !is_numeric($sub)) {
+                        $this->error('请检查从业人员相关数据是否正确');
+                    }
+                }
+                $data['Staff_Sub'] = join(',', $data['Staff_Sub']);
+                $data['Types'] = \Common\Model\FinancialInvestmentModel::TYPE_B;
+            }
+
+            if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestment) {
+                foreach ($data['Staff_Sub'] as $sub) {
+                    if ($sub == '' || !is_numeric($sub)) {
+                        $this->error('请检查从业人员相关数据是否正确');
+                    }
+                }
+                $data['Staff_Sub'] = join(',', $data['Staff_Sub']);
+                $data['Types'] = \Common\Model\FinancialInvestmentModel::TYPE_A;
+            }
+
             if ($id) {
                 $ret = $this->local_service->update_by_id($id, $data);
                 if ($ret->success) {
@@ -123,7 +143,9 @@ class FinancialBaseController extends AdminController {
                     $this->error($ret->message);
                 }
             } else {
+
                 $check_ret = $this->check_by_month_year($data['year'], $data['month'], $data['all_name']);
+
                 if ($check_ret === true){
                     //新增 不做处理
                 } elseif($check_ret) {
@@ -131,6 +153,7 @@ class FinancialBaseController extends AdminController {
                 } else {
                     $this->error('参数错误');
                 }
+
                 $ret = $this->local_service->add_one($data);
                 if ($ret->success) {
 
@@ -197,18 +220,34 @@ class FinancialBaseController extends AdminController {
         $year = I('year');
         $month = I('month');
 
+        $good_key = I('good_key');
+        $cache_data = S($good_key);
+
         //获取编辑数据
-        $info = [];
-        if ($year && $month && !IS_POST) {
-            $infos = $this->local_service->get_by_month_year($year,$month,$all_name,$this->detail_type);
-            if (!$infos || $infos[0]['all_name'] != $all_name) {
+        $infos = [];
+
+
+        //如果是编辑状态并且是get
+        if (!IS_POST && I('editing')) {
+
+            if ($this->detail_type) {
+                $infos = $this->local_service->get_by_month_year($year,$month,$all_name,$this->detail_type);
+            } else {
+                $infos = $this->local_service->get_by_month_year($year,$month,$all_name);
+            }
+            if (!$can_all_edit && (!$infos || $infos[0]['all_name'] != $all_name)) {
                 $this->error('您没有权限查看该部门的信息');
             }
+
             $function_name = 'convert_data_'. ACTION_NAME;
             $this->$function_name($infos);
         }
 
-
+        if ($cache_data) {
+            $infos = $cache_data;
+            $function_name = 'convert_data_'. ACTION_NAME;
+            $this->$function_name($infos);
+        }
 
         $VerifyService = \Common\Service\VerifyService::get_instance();
         $type = $VerifyService->get_type($this->type);
@@ -217,6 +256,8 @@ class FinancialBaseController extends AdminController {
         if (isset($this->verify_info['status']) && $this->verify_info['status'] != \Common\Model\FinancialVerifyModel::STATUS_INIT) {
             $this->error('当前信息已存在或不可编辑');
         }
+
+
         $jump_url = '';
         if (IS_POST) {
 
@@ -231,14 +272,19 @@ class FinancialBaseController extends AdminController {
             if (strtotime($data['year'].'-'.$data['month']) > strtotime(date('Y-m',time()))){
                 $this->error('该月份还不能填报!');
             }
-            if (!$data['logs1']) {
-                $this->error('请填写完整的信息~');
+            if (!$cache_data) {
+                $this->error('请导入excel数据~');
             }
 
             $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name'], $this->detail_type);
 
             if ($ret) {
-                $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name'], $this->detail_type);
+                if (I('get.editing')) {
+                    $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name'], $this->detail_type);
+
+                } else {
+                    $this->error('该月份数据已经保存');
+                }
             } else {
                 $jump_url = U('index_list');
                 if ($can_all_edit) {
@@ -246,8 +292,8 @@ class FinancialBaseController extends AdminController {
                 }
             }
             $function_name = 'get_add_data_'. ACTION_NAME;
-            $this->$function_name($info);
-            $batch_data = $this->$function_name($data);
+
+            $batch_data = $this->$function_name($data, $cache_data);
             $ret = $this->local_service->add_batch($batch_data);
 
             if ($ret->success) {
@@ -278,6 +324,19 @@ class FinancialBaseController extends AdminController {
         } else {
             $this->assign('title', $this->title);
             $this->assign('all_name', $all_name);
+
+            $count = count($infos);
+            $page_size = 2;
+            $PageInstance = new \Think\Page($count, $page_size);
+            if($count>$page_size){
+                $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+            }
+            $page_html = $PageInstance->show();
+
+            $this->assign('page_html', $page_html);
+            $page = I('p') ? I('p') : 1;
+            $infos = array_slice($infos, $page_size * ($page-1), $page_size);
+
             $this->assign('infos', $infos);
             $this->display();
         }
@@ -313,12 +372,8 @@ class FinancialBaseController extends AdminController {
         $where_all['year'] = $get['year'];
         $where_all['month'] = $get['month'];
 
-
-        if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty) {
-            $type = \Common\Model\FinancialVerifyModel::TYPE_Insurance_PROP;
-        } elseif ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceLife) {
-            $type = \Common\Model\FinancialVerifyModel::TYPE_Insurance_LIFE;
-        }
+        $VerifyService = \Common\Service\VerifyService::get_instance();
+        $type = $VerifyService->get_type($this->type);
         if (isset($type)) {
             //排除非审核通过的单位
             $VerifyService = \Common\Service\VerifyService::get_instance();
@@ -633,30 +688,8 @@ class FinancialBaseController extends AdminController {
         $VerifyService = \Common\Service\VerifyService::get_instance();
         $type = $VerifyService->get_type($this->type);
         $where['type'] = $type;
-        $data_map = [];
-        switch ($this->type) {
-            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty:
-                $InsurancePropertyService = \Common\Service\InsurancePropertyService::get_instance();
-                $_where = $where;
-                unset($_where['status']);
-                $data = $InsurancePropertyService->get_by_where_all($_where);
-                foreach ($data as $da) {
-                    $data_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']] = $da;
-                }
-                break;
-        }
 
-      //  var_dump($where);die();
-        list($list, $count) = $VerifyService->get_by_where($where, 'id desc', $p);
-        if ($list){
-            foreach ($list as $k => $info) {
-                $list[$k]['status_desc'] = \Common\Model\FinancialVerifyModel::$status_map[$info['status']];
-                if (isset($data_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
-                    $list[$k]['data'] = $data_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
-                }
-            }
-        }
-
+        list ($list,$count) = $this->get_list_data($where,$p);
 
         $PageInstance = new \Think\Page($count, \Common\Service\BaseService::$page_size);
         if($count>\Common\Service\BaseService::$page_size){
@@ -704,6 +737,28 @@ class FinancialBaseController extends AdminController {
         if ($status || $status==='0') {
             $where['status'] = $status;
         }
+        list ($list,$count) = $this->get_list_data($where,$p);
+
+        $PageInstance = new \Think\Page($count, \Common\Service\BaseService::$page_size);
+        if($count>\Common\Service\BaseService::$page_size){
+            $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+        }
+        $page_html = $PageInstance->show();
+
+        $this->assign('list', $list);
+        $this->assign('page_html', $page_html);
+
+        $this->assign('is_all',1);
+
+        $this->assign('can_edit', $this->check_rule('Admin/'.$this->type_name.'/submit_monthly_all'));
+        $this->assign('can_change_status',$this->check_rule('Admin/'.$this->type_name.'/verify_change_status'));
+
+        $this->display('index_list');
+
+    }
+
+
+    private function get_list_data($where, $p) {
         $data_map = [];
         switch ($this->type) {
             case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty:
@@ -746,10 +801,38 @@ class FinancialBaseController extends AdminController {
             unset($_where['status']);
             $data = $Service->get_by_where_all($_where);
             foreach ($data as $da) {
+                if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager) {
+                    $da['Staff_Sub'] = explode(',',$da['Staff_Sub']);
+                }
+
+                if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestment) {
+                    $da['Staff_Sub'] = explode(',',$da['Staff_Sub']);
+                }
+
                 $data_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']] = $da;
             }
 
         }
+
+        if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager) {
+            //获取明细
+            $InvestmentDetailsService = \Common\Service\InvestmentDetailsService::get_instance();
+            $_where['Types'] = \Common\Model\FinancialInvestmentModel::TYPE_B;
+            $infos = $InvestmentDetailsService->get_by_where_all($_where);
+            if ($infos) {
+                $data_1_map = [];
+                $this->convert_data_detail_submit_monthly($infos);
+                foreach ($infos as $da) {
+                    $data_1_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']][] = $da;
+                }
+            }
+            //获取区域
+            $AreaService = \Common\Service\AreaService::get_instance();
+            $this->assign('area_options', $AreaService->set_area_options());
+
+
+        }
+
         //echo_json_die($data_map);
 
         //审核信息
@@ -757,34 +840,42 @@ class FinancialBaseController extends AdminController {
         $type = $VerifyService->get_type($this->type);
         $where['type'] = $type;
         list($list, $count) = $VerifyService->get_by_where($where, 'id desc', $p);
+
         if ($list){
             foreach ($list as $k => $info) {
                 $list[$k]['status_desc'] = \Common\Model\FinancialVerifyModel::$status_map[$info['status']];
                 if (isset($data_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
                     $list[$k]['data'] = $data_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
                 }
+
+                if (isset($data_1_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
+                    $list[$k]['data_1'] = $data_1_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
+
+                    $count = count($list[$k]['data_1']);
+                    $page_size = \Common\Service\InvestmentManagerService::$page_size;
+
+
+                    $PageInstance = new \Think\Page($count, $page_size);
+                    if($count>$page_size){
+                        $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+                    }
+                    $PageInstance->parameter['all_name'] = $info['all_name'];
+                    $PageInstance->parameter['year'] = $info['year'];
+                    $PageInstance->parameter['month'] = $info['month'];
+                    $PageInstance->action_name = 'get_detail_page_html';
+                    $page_html = $PageInstance->show();
+                    $list[$k]['page_html'] = $page_html;
+                    $page = 1;
+                    $list[$k]['data_1'] = array_slice($list[$k]['data_1'], $page_size * ($page-1), $page_size);
+
+                }
+
+
             }
         }
-
-
-        $PageInstance = new \Think\Page($count, \Common\Service\BaseService::$page_size);
-        if($count>\Common\Service\BaseService::$page_size){
-            $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
-        }
-        $page_html = $PageInstance->show();
-
-        $this->assign('list', $list);
-        $this->assign('page_html', $page_html);
-
-        $this->assign('is_all',1);
-
-        $this->assign('can_edit', $this->check_rule('Admin/'.$this->type_name.'/submit_monthly_all'));
-        $this->assign('can_change_status',$this->check_rule('Admin/'.$this->type_name.'/verify_change_status'));
-
-        $this->display('index_list');
+        return [$list,$count];
 
     }
-
 
     protected function _submit_verify($verify_info=[],$year=0,$month=0,$all_name='',$type=0,$status=0) {
         $VerifyService = \Common\Service\VerifyService::get_instance();
@@ -861,4 +952,253 @@ class FinancialBaseController extends AdminController {
 
         $this->success('操作成功!');
     }
+
+
+    public function upload_excel() {
+        set_time_limit(0);
+        /** Include path **/
+        set_include_path(APP_PATH . '/Common/Lib/PHPExcel/Classes/');
+
+        /** PHPExcel_IOFactory */
+        include 'PHPExcel/IOFactory.php';
+        $objPHP = new \PHPExcel_Reader_Excel5();
+        $objPHPExcel = $objPHP->load($_FILES['file']['tmp_name']);
+
+        $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+//         var_dump($sheetData);die();
+
+        $data = $bad_data = [];
+
+        $AreaService = \Common\Service\AreaService::get_instance();
+        $key = '';
+        $page_html = '';
+        if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager) {
+
+            if (count($sheetData[2]) != 5) {
+                $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
+            }
+            $AreaService = \Common\Service\AreaService::get_instance();
+
+            for($i=3;$i<count($sheetData) + 1;$i++) {
+                $temp = [];
+                $is_bad_row = false;
+                $sheetData[$i] = array_values($sheetData[$i]);
+                if (!$sheetData[$i][1]) {
+                    break;
+                }
+
+                $temp['Name'] = (string) $sheetData[$i][1];
+
+                $area = $AreaService->get_like_name($sheetData[$i][2]);
+                $temp['Area'] = isset($area['id']) ? $area['id'] : 0;
+
+                $temp['Amount'] =  (string) $sheetData[$i][3];
+                $temp['Remarks'] =  (string)  $sheetData[$i][4];
+
+                $data[] = $temp;
+
+            }
+
+//             if ($bad_data) {
+//                 $key = uniqid();
+//                 array_unshift($bad_data,['企业名称','法人代表或实际控制人','企业所属乡镇（街道）','逾期贷款金额','化解金额','备注']);
+//                 S($key, $bad_data, 120);
+//             }
+
+
+        }
+
+
+        unlink($_FILES['file']['tmp_name']);
+
+        if ($data) {
+            $good_key = uniqid();
+            S($good_key, $data, 600);//缓存好的数据
+            $this->ajaxReturn(['status'=>true, 'key'=>$key, 'good_key' => $good_key, 'data' => $data]);
+        } else {
+            $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
+        }
+
+    }
+
+    public function get_excel(){
+        $key = I('key');
+        $bad_data = S($key);
+        exportexcel($bad_data,'退回数据', '退回数据');
+    }
+
+
+    public function export_excel() {
+        set_time_limit(0);
+        /** Include path **/
+        set_include_path(APP_PATH . '/Common/Lib/PHPExcel/Classes/');
+
+        /** PHPExcel_IOFactory */
+        include 'PHPExcel.php';
+        include 'PHPExcel/IOFactory.php';
+        include 'PHPExcel/Style/Alignment.php';
+        $PHPExcel = new \PHPExcel();
+        $PHPExcel->getProperties()->setCreator("cixijinrongban")
+            ->setLastModifiedBy("cixijinrongban")
+            ->setTitle("慈溪金融办")
+            ->setSubject("慈溪金融办")
+            ->setDescription("慈溪金融办报表")
+            ->setKeywords("金融办报表")
+            ->setCategory("金融办报表");
+        $title = '报表';
+        $year = I('year') ? I('year') : intval(date('Y'));
+        $month = I('month') ? I('month') : intval(date('m'));
+        $statistics = [
+            ['data'=>null,'name'=>'慈溪市金融机构本外币信贷收支情况表(表1)'],
+            ['data'=>null,'name'=>'慈溪市金融机构本外币存贷情况表(表2)'],
+            ['data'=>null,'name'=>'慈溪市金融机构不良贷款情况表(表3)'],
+            ['data'=>null,'name'=>'慈溪市金融机构不良贷款50万(含以上)明细表(表4)'],
+            ['data'=>null,'name'=>'慈溪市金融机构不良资产清收情况表(表5)'],
+            ['data'=>null,'name'=>'慈溪市金融机构关注类贷款明细表(表6)'],
+            ['data'=>null,'name'=>'慈溪市银行贷款利率执行水平监测表(表7)'],
+            ['data'=>null,'name'=>'企业贷款利率执行水平监测表(表8)'],
+            ['data'=>null,'name'=>'资产质量相关情况调查表(表9)']
+
+        ];
+        switch (I('type')) {
+
+            case 2:
+                $title = $statistics[1]['name'];
+                $Service = \Common\Service\BankCreditBStNewService::get_instance();
+                $statistics[1]['data'] = $Service->get_by_month_year($year, $month);
+                $statistics = $this->convert_statistics_datas($statistics);
+                $PHPExcel->setActiveSheetIndex(0)
+                    ->setCellValue('A1', $title);
+                $PHPExcel->setActiveSheetIndex(0)
+                    ->setCellValue('A2', '类型')
+                    ->setCellValue('B2', '金融机构名称!')
+                    ->setCellValue('C2', '各项存款')
+                    ->setCellValue('I2', '各项贷款')
+                    ->setCellValue('O2', '本月存贷比')
+                    ->setCellValue('C3', '年初余额')
+                    ->setCellValue('D3', '上月余额')
+                    ->setCellValue('E3', '月末余额')
+                    ->setCellValue('F3', '比上月')
+                    ->setCellValue('G3', '比年初')
+                    ->setCellValue('H3', '同比')
+                    ->setCellValue('I3', '年初余额')
+                    ->setCellValue('J3', '上月余额')
+                    ->setCellValue('K3', '月末余额')
+                    ->setCellValue('L3', '比上月')
+                    ->setCellValue('M3', '比年初')
+                    ->setCellValue('N3', '同比')
+                    ->setCellValue('O3', '余额比%')
+                    ->setCellValue('P3', '增量比%');
+
+                // echo json_encode($statistics);die();
+                if ($statistics[1]['data']) {
+                    $start = 4;
+                    foreach ($statistics[1]['data'] as $key => $value) {
+                        if ($key != '合计') {
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$start, $key);
+                            $num = $value ? count($value) : 0;
+                            $end = $start + $num  - 1;
+                            if ($end > $start) {
+                                $PHPExcel->setActiveSheetIndex(0)->mergeCells('A'.$start.':A'.$end);
+                                $PHPExcel->getActiveSheet(0)->getStyle('A'.$start)->applyFromArray(
+                                    [
+                                        'alignment' => [
+                                            'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER
+                                        ]
+                                    ]
+                                );
+                            }
+                            if ($value) {
+                                $unit_start = $start;
+                                foreach ($value as $unit) {
+                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$unit_start, $unit['all_name']);
+
+                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$unit_start, $unit['content']['Deposits'][0]);
+                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$unit_start, $unit['content']['Deposits'][1]);
+                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$unit_start, $unit['content']['Deposits'][2]);
+                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$unit_start, $unit['content']['Deposits'][3]);
+                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$unit_start, $unit['content']['Deposits'][4]);
+                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$unit_start, $unit['content']['Deposits'][5]);
+                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$unit_start, $unit['content']['Loans'][0]);
+                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$unit_start, $unit['content']['Loans'][1]);
+                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.$unit_start, $unit['content']['Loans'][2]);
+                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.$unit_start, $unit['content']['Loans'][3]);
+                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.$unit_start, $unit['content']['Loans'][4]);
+                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.$unit_start, $unit['content']['Loans'][5]);
+                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.$unit_start, $unit['content']['Deposits_Loans'][0]);
+                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.$unit_start, $unit['content']['Deposits_Loans'][1]);
+                                    $unit_start++;
+                                }
+                            }
+
+                            $start = $start + $num ;
+                        } else {
+                            // echo json_encode($statistics[0]['data'][$key]);die();
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$start, $key);
+
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$start, '');
+
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$start,  $statistics[1]['data'][$key]['Deposits'][0]);
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$start,  $statistics[1]['data'][$key]['Deposits'][1]);
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$start,  $statistics[1]['data'][$key]['Deposits'][2]);
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$start,  $statistics[1]['data'][$key]['Deposits'][3]);
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$start,  $statistics[1]['data'][$key]['Deposits'][4]);
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$start,  $statistics[1]['data'][$key]['Deposits'][5]);
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$start,  $statistics[1]['data'][$key]['Loans'][0]);
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$start,  $statistics[1]['data'][$key]['Loans'][1]);
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.$start,  $statistics[1]['data'][$key]['Loans'][2]);
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.$start,  $statistics[1]['data'][$key]['Loans'][3]);
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.$start,  $statistics[1]['data'][$key]['Loans'][4]);
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.$start,  $statistics[1]['data'][$key]['Loans'][5]);
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.$start,  $statistics[1]['data'][$key]['Deposits_Loans'][0]);
+                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.$start,  $statistics[1]['data'][$key]['Deposits_Loans'][1]);
+
+                        }
+
+
+                    }
+
+
+                }
+
+
+                $PHPExcel->getActiveSheet(0)->mergeCells('A1:P1');
+                $PHPExcel->getActiveSheet(0)->mergeCells('A2:A3');
+                $PHPExcel->getActiveSheet(0)->mergeCells('B2:B3');
+                $PHPExcel->getActiveSheet(0)->mergeCells('C2:H2');
+                $PHPExcel->getActiveSheet(0)->mergeCells('I2:N2');
+                $PHPExcel->getActiveSheet(0)->mergeCells('O2:P2');
+
+                $PHPExcel->getActiveSheet(0)->getStyle('A1')->applyFromArray(
+                    [
+                        'alignment' => [
+                            'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                        ]
+                    ]
+                );
+
+
+
+                break;
+
+        }
+
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'.$title.'.xls"');
+        header('Cache-Control: max-age=0');
+// If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+// If you're serving to IE over SSL, then the following may be needed
+        header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+        header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header ('Pragma: public'); // HTTP/1.0
+
+        $objWriter = \PHPExcel_IOFactory::createWriter($PHPExcel, 'Excel5');
+        $objWriter->save('php://output');
+
+    }
+
 }

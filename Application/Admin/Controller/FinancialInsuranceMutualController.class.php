@@ -43,7 +43,7 @@
          //排除非审核通过的单位
          $VerifyService = \Common\Service\VerifyService::get_instance();
          $where_verify = [];
-         $where_verify['type'] = \Common\Model\FinancialVerifyModel::TYPE_Insurance_Mutual;
+         $where_verify['type'] = $VerifyService->get_type($this->type);
          $where_verify['year'] = $where['year'];
          $where_verify['month'] = $where['month'];
          $where_verify['status'] = ['neq', 2];

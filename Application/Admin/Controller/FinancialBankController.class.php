@@ -3453,7 +3453,7 @@
              }
 
          } elseif ($type == 'baddebt_detail_new') {
-             var_dump($sheetData);die();
+             //var_dump($sheetData);die();
              if (count($sheetData[4]) != 14) {
                  $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
              }
@@ -3574,7 +3574,7 @@
          $bad_data = S($key);
          exportexcel($bad_data,'退回数据', '退回数据');
      }
-
+        //废弃
      public function log_export_excel(){
          $type = I('type');
          $all_name = I('get.all_name');

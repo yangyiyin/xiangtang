@@ -120,4 +120,12 @@ class InvestmentDetailsService extends BaseService{
         return $FinancialModel->where($where)->delete();
     }
 
+    public function get_by_where_all($where) {
+        $FinancialModel = D('Financial' . static::$name);
+        $data = [];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->select();
+    }
+
+
 }

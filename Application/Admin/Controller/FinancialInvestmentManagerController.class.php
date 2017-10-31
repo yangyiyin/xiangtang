@@ -120,27 +120,32 @@
         parent::detail_submit_monthly();
     }
 
-    protected function get_add_data_detail_submit_monthly($data) {
+    protected function get_add_data_detail_submit_monthly($data, $cache_data='') {
         $batch_data = [];
-        foreach ($data['logs1'] as $k => $v) {
-            if ($v) {
-                $temp = [];
-                $temp['all_name'] = $data['all_name'];
-                $temp['year'] = $data['year'];
-                $temp['month'] = $data['month'];
-                $temp['Types'] = $data['Types'];
-                $temp['uid'] = $data['uid'];
-                $temp['filler_man'] = $data['filler_man'];
-                $temp['gmt_create'] = time();
-                $temp['Name'] = $v;
-                $temp['Area'] = isset($data['logs2'][$k]) ? $data['logs2'][$k] : 0;
-                $temp['Amount'] = isset($data['logs3'][$k]) ? $data['logs3'][$k] : 0;
-                $temp['Remarks'] = isset($data['logs4'][$k]) ? $data['logs4'][$k] : '';
-                $temp['ip'] = $_SERVER["REMOTE_ADDR"];
-                $batch_data[] = $temp;
+
+        if ($cache_data) {
+            foreach ($cache_data as $k => $v) {
+                if ($v) {
+                    $temp = [];
+                    $temp['all_name'] = $data['all_name'];
+                    $temp['year'] = $data['year'];
+                    $temp['month'] = $data['month'];
+                    $temp['Types'] = $data['Types'];
+                    $temp['uid'] = $data['uid'];
+                    $temp['filler_man'] = $data['filler_man'];
+                    $temp['gmt_create'] = time();
+                    $temp['Name'] = $v['Name'];
+                    $temp['Area'] = $v['Area'];
+                    $temp['Amount'] = $v['Amount'];
+                    $temp['Remarks'] = $v['Remarks'];
+                    $temp['ip'] = $_SERVER["REMOTE_ADDR"];
+                    $batch_data[] = $temp;
+                }
+
             }
 
         }
+
         return $batch_data;
     }
 
@@ -150,6 +155,55 @@
         if ($infos) {
             $infos = $AreaService->set_area_options($infos);
         }
+     //   var_dump($infos);die();
+
+    }
+
+    public function get_detail_page_html() {
+
+        $p = I('p');
+        $all_name = I('all_name');
+        $year= I('year');
+        $month = I('month');
+        //获取明细
+        $InvestmentDetailsService = \Common\Service\InvestmentDetailsService::get_instance();
+        $_where['Types'] = \Common\Model\FinancialInvestmentModel::TYPE_B;
+        $infos = $InvestmentDetailsService->get_by_where_all($_where);
+        if ($infos) {
+            $data_1_map = [];
+            $this->convert_data_detail_submit_monthly($infos);
+            foreach ($infos as $da) {
+                $data_1_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']][] = $da;
+            }
+        }
+
+        if (isset($data_1_map[$year.'_'.$month.'_'.$all_name])) {
+            $data = $data_1_map[$year.'_'.$month.'_'.$all_name];
+
+            $count = count($data);
+             $page_size = \Common\Service\InvestmentManagerService::$page_size;
+
+            $PageInstance = new \Think\Page($count, $page_size);
+            if($count>$page_size){
+                $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+            }
+            $page_html = $PageInstance->show();
+            $this->assign('page_html', $page_html);
+            $page = $p;
+            $data = array_slice($data, $page_size * ($page-1), $page_size);
+            $this->assign('data', $data);
+
+        }
+
+
+
+        //获取区域
+        $AreaService = \Common\Service\AreaService::get_instance();
+        $this->assign('area_options', $AreaService->set_area_options());
+
+
+        $this->display();
+
 
     }
     public function del() {

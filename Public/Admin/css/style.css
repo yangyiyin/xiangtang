@@ -3189,3 +3189,6 @@ overflow: hidden;
 	padding: 3px;
 	border-radius: 5px;
 }
+.disbled{
+	background: #ddd;
+}

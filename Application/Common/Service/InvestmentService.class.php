@@ -21,7 +21,7 @@ class InvestmentService extends BaseService{
         if ($FinancialModel->add()) {
             return result(TRUE, '', $FinancialModel->getLastInsID());
         } else {
-
+            //echo $FinancialModel->getLastSql();die();
             return result(FALSE, '网络繁忙~');
         }
     }

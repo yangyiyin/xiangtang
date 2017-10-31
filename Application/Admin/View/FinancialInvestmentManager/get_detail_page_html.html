@@ -1,0 +1,37 @@
+<table class="biaoge" style="margin: 0 auto;">
+    <tbody>
+
+    <tr>
+        <td>所管理公司名称:</td>
+        <td>管理公司注册地区域:</td>
+        <td>管理金额:</td>
+        <td>备注:</td>
+    </tr>
+    <volist name="data" id="vo1">
+        <tr>
+            <td>
+                <input type="text" class="input input-medium" name="logs1[]" value="{$vo1.Name}">
+            </td>
+            <td>
+                <select name="logs2[]">
+                    <if condition="$vo1['area_options']">
+                        {$vo1['area_options']}
+                        <else/>
+                        {$area_options}
+                    </if>
+                </select>
+            </td>
+            <td>
+                <input type="text" class="input input-medium" name="logs3[]" value="{$vo1.Amount}">
+            </td>
+            <td>
+                <input type="text" class="input input-medium" name="logs4[]" value="{$vo1.Remarks}">
+            </td>
+        </tr>
+    </volist>
+    </tbody>
+</table>
+
+<div class="page">
+    {$page_html}
+</div>
