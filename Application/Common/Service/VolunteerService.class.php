@@ -144,7 +144,7 @@ class VolunteerService extends BaseService{
     }
 
     public function is_volunteer($uid) {
-        $info =  $this->get_info_by_id($uid);
+        $info =  $this->get_info_by_uid($uid);
         if ($info && $info['status'] == \Common\Model\NfVolunteerModel::STATUS_OK) {
             return true;
         } else {
