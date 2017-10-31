@@ -43,6 +43,7 @@ class ItemDetailDefault extends BaseSapi{
                 $_item['id'] = (int) $_item['id'];
                 $_item['pid'] = (int) $_item['pid'];
                 $_item['price'] = (int) $_item['price'];
+                $_item['show_price'] = (int) $_item['show_price'];
                 $_item['content'] = $_item['content'];
                 $_item['tips'] = $_item['tips'];
                 $_item['labels'] = $_item['lables'] ? explode(',', $_item['lables']) : [];
