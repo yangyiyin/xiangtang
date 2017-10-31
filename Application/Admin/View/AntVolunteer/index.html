@@ -59,7 +59,7 @@
 
 					</td>
 					<td>
-						<if condition="$vo['status'] != 0">
+						<if condition="$vo['status'] != 4">
 							<a  href="{:U('change_status')}/id/{$vo.id}/status/approve" class="u-btn confirm J_ajax_get">通过</a>
 						<else/>
 							<a  href="{:U('change_status')}/id/{$vo.id}/status/reject" class="u-btn confirm J_ajax_get">退回</a>
