@@ -27,4 +27,8 @@ class DisabledController extends BaseController {
         $this->excute_api('Api\Lib\DisabledWorkInfoApply');
     }
 
+    public function cat_list() {
+        $this->excute_api('Api\Lib\DisabledHelpCatList');
+    }
+
 }
