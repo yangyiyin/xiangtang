@@ -28,6 +28,7 @@
 
 					<th>名称</th>
 					<th>活动时间</th>
+					<th>签到码</th>
 					<th >操作</th>
 				</tr>
 		    </thead>
@@ -42,6 +43,9 @@
 					</td>
 					<td>
 						{$vo.time_start} - {$vo.time_end}
+					</td>
+					<td>
+						{$vo.extra}
 					</td>
 					<td>
 						<a  href="{:U('add')}/id/{$vo.id}" class="u-btn">编辑</a>|

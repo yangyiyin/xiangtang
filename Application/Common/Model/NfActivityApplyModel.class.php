@@ -11,7 +11,7 @@ class NfActivityApplyModel extends NfBaseModel {
     const STATUS_REJECT = 3;
     const STATUS_SIGN = 4;
 
-    public static $status_map = [1=>'已提交',2=>'审核通过',3=>'已拒绝'];
+    public static $status_map = [1=>'已提交',2=>'审核通过',3=>'已拒绝',4=>'已签到'];
   protected $_validate = array(
         /**
         array('title', 'require', '名称不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT),
