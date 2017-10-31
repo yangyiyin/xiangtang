@@ -122,38 +122,68 @@
 
      }
 
-     /**
-      * 退出明细
-      */
+     public function get_exit_detail_page_html() {
+
+         $p = I('p');
+         $all_name = I('all_name');
+         $year= I('year');
+         $month = I('month');
+         //获取明细
+         $InvestmentExitService = \Common\Service\InvestmentExitService::get_instance();
+         $infos = $InvestmentExitService->get_by_where_all([]);
+         if ($infos) {
+             $data_1_map = [];
+             $this->convert_data_exit_detail_submit_monthly($infos);
+             foreach ($infos as $da) {
+                 $data_1_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']][] = $da;
+             }
+         }
+
+         if (isset($data_1_map[$year.'_'.$month.'_'.$all_name])) {
+             $data = $data_1_map[$year.'_'.$month.'_'.$all_name];
+
+             $count = count($data);
+             $page_size = \Common\Service\InvestmentService::$page_size;
+
+             $PageInstance = new \Think\Page($count, $page_size);
+             if($count>$page_size){
+                 $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+             }
+             $page_html = $PageInstance->show();
+             $this->assign('page_html', $page_html);
+             $page = $p;
+             $data = array_slice($data, $page_size * ($page-1), $page_size);
+             $this->assign('data', $data);
+
+         }
+
+
+
+         //获取区域
+         $AreaService = \Common\Service\AreaService::get_instance();
+         $this->assign('area_options', $AreaService->set_area_options());
+         $this->display();
+
+
+     }
+
      public function exit_detail_submit_monthly() {
          $this->local_service = \Common\Service\InvestmentExitService::get_instance();
          if (IS_POST) {
-             $id = I('get.id');
-             $data = I('post.');
-             $data['uid'] = UID;
-             if (!$data['logs1']) {
-                 $this->error('请填写完整的信息~');
-             }
-             if (!$this->is_history) {
-                 $data['year'] = intval(date('Y'));
-                 $data['month'] = intval(date('m'));
-             } else {
-                 $time = intval(strtotime($data['year'] . '-' . $data['month']));
-                 if (!$time || $time > strtotime('201712')) {
-                     $this->error('历史数据时间必须小于201712');
-                 }
-             }
 
-             $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name']);
-             if ($ret){
-                 //删除
-                 if ($this->is_history && !$data['force_modify']) {
-                     $this->error('该月报表已经提交,如需修改,请勾选强制修改');
-                 }
-                 $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name']);
-             }
-             $batch_data = [];
-             foreach ($data['logs1'] as $k => $v) {
+         } else {
+             $this->title = '新增股权投资机构退出明细月报表';
+             $exit_method_options = $this->local_service->get_exit_method_options();
+             $this->assign('exit_method_options', $exit_method_options);
+         }
+         parent::detail_submit_monthly();
+     }
+
+     protected function get_add_data_exit_detail_submit_monthly($data, $cache_data='') {
+         $batch_data = [];
+
+         if ($cache_data) {
+             foreach ($cache_data as $k => $v) {
                  if ($v) {
                      $temp = [];
                      $temp['all_name'] = $data['all_name'];
@@ -163,67 +193,140 @@
                      $temp['uid'] = $data['uid'];
                      $temp['filler_man'] = $data['filler_man'];
                      $temp['gmt_create'] = time();
-                     $temp['Name'] = $v;
-                     $temp['Startdate'] = isset($data['logs2'][$k]) ? strtotime($data['logs2'][$k]) : 0;
-                     $temp['Exitdate'] = isset($data['logs3'][$k]) ? strtotime($data['logs3'][$k]) : 0;
-                     $temp['Investment'] = isset($data['logs4'][$k]) ? $data['logs4'][$k] : 0;
-                     $temp['Recycling'] = isset($data['logs5'][$k]) ? $data['logs5'][$k] : 0;
-                     $temp['ExitMethod'] = isset($data['logs6'][$k]) ? $data['logs6'][$k] : 0;
-
+                     $temp['Name'] = $v['Name'];
 
                      $temp['ip'] = $_SERVER["REMOTE_ADDR"];
+
+                     $temp['Name'] = $v['Name'];
+                     $temp['Startdate'] = $v['Startdate'];
+                     $temp['Exitdate'] = $v['Exitdate'];
+                     $temp['Investment'] = $v['Investment'];
+                     $temp['Recycling'] = $v['Recycling'];
+                     $temp['ExitMethod'] = $v['ExitMethod'];
+
                      $batch_data[] = $temp;
+
                  }
 
              }
-             $ret = $this->local_service->add_batch($batch_data);
-             if ($ret->success) {
-                 action_user_log('新增股权投资机构退出明细月报表');
-                 $this->success('添加成功！');
-             } else {
-                 $this->error($ret->message);
-             }
-         } else {
-             $this->title = '股权投资机构退出明细月填报('. date('Y-m') .'月)';
-             if ($this->is_history) {
-                 $this->title = '股权投资机构退出明细月填报[正在编辑历史数据]';
-             }
 
-             $this->assign('title', $this->title);
-
-             //获取所有相关的公司
-             $DepartmentService = \Common\Service\DepartmentService::get_instance();
-
-             $departments = $DepartmentService->get_my_list(UID, $this->type);
-
-
-             if (!$departments) {
-                 $departments = $DepartmentService->get_all_list($this->type);
-             } else {
-                 $data = $departments[0];
-             }
-             $departments = result_to_array($departments, 'all_name');
-             $this->assign('departments', $departments);
-
-             //获取当期的数据
-             $infos = [];
-             if (!$this->is_history) {
-                 if (isset($data['all_name']) && $data['all_name']) {
-                     $infos = $this->local_service->get_by_month_year(intval(date('Y')), intval(date('m')), $data['all_name']);
-                     //$this->convert_data_detail_submit_monthly($infos);
-                 }
-             }
-
-             $exit_method_options = $this->local_service->get_exit_method_options();
-             $this->assign('exit_method_options', $exit_method_options);
-             if ($infos) {
-                 $infos = $this->local_service->get_exit_method_options($infos);
-             }
-
-             //获取区域
-             $this->assign('infos', $infos);
-             $this->display();
          }
+
+         return $batch_data;
+     }
+
+//
+//     /**
+//      * 退出明细
+//      */
+//     public function exit_detail_submit_monthly() {
+//         $this->local_service = \Common\Service\InvestmentExitService::get_instance();
+//         if (IS_POST) {
+//             $id = I('get.id');
+//             $data = I('post.');
+//             $data['uid'] = UID;
+//             if (!$data['logs1']) {
+//                 $this->error('请填写完整的信息~');
+//             }
+//             if (!$this->is_history) {
+//                 $data['year'] = intval(date('Y'));
+//                 $data['month'] = intval(date('m'));
+//             } else {
+//                 $time = intval(strtotime($data['year'] . '-' . $data['month']));
+//                 if (!$time || $time > strtotime('201712')) {
+//                     $this->error('历史数据时间必须小于201712');
+//                 }
+//             }
+//
+//             $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name']);
+//             if ($ret){
+//                 //删除
+//                 if ($this->is_history && !$data['force_modify']) {
+//                     $this->error('该月报表已经提交,如需修改,请勾选强制修改');
+//                 }
+//                 $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name']);
+//             }
+//             $batch_data = [];
+//             foreach ($data['logs1'] as $k => $v) {
+//                 if ($v) {
+//                     $temp = [];
+//                     $temp['all_name'] = $data['all_name'];
+//                     $temp['year'] = $data['year'];
+//                     $temp['month'] = $data['month'];
+//                     $temp['Types'] = $data['Types'];
+//                     $temp['uid'] = $data['uid'];
+//                     $temp['filler_man'] = $data['filler_man'];
+//                     $temp['gmt_create'] = time();
+//                     $temp['Name'] = $v;
+//                     $temp['Startdate'] = isset($data['logs2'][$k]) ? strtotime($data['logs2'][$k]) : 0;
+//                     $temp['Exitdate'] = isset($data['logs3'][$k]) ? strtotime($data['logs3'][$k]) : 0;
+//                     $temp['Investment'] = isset($data['logs4'][$k]) ? $data['logs4'][$k] : 0;
+//                     $temp['Recycling'] = isset($data['logs5'][$k]) ? $data['logs5'][$k] : 0;
+//                     $temp['ExitMethod'] = isset($data['logs6'][$k]) ? $data['logs6'][$k] : 0;
+//
+//
+//                     $temp['ip'] = $_SERVER["REMOTE_ADDR"];
+//                     $batch_data[] = $temp;
+//                 }
+//
+//             }
+//             $ret = $this->local_service->add_batch($batch_data);
+//             if ($ret->success) {
+//                 action_user_log('新增股权投资机构退出明细月报表');
+//                 $this->success('添加成功！');
+//             } else {
+//                 $this->error($ret->message);
+//             }
+//         } else {
+//             $this->title = '股权投资机构退出明细月填报('. date('Y-m') .'月)';
+//             if ($this->is_history) {
+//                 $this->title = '股权投资机构退出明细月填报[正在编辑历史数据]';
+//             }
+//
+//             $this->assign('title', $this->title);
+//
+//             //获取所有相关的公司
+//             $DepartmentService = \Common\Service\DepartmentService::get_instance();
+//
+//             $departments = $DepartmentService->get_my_list(UID, $this->type);
+//
+//
+//             if (!$departments) {
+//                 $departments = $DepartmentService->get_all_list($this->type);
+//             } else {
+//                 $data = $departments[0];
+//             }
+//             $departments = result_to_array($departments, 'all_name');
+//             $this->assign('departments', $departments);
+//
+//             //获取当期的数据
+//             $infos = [];
+//             if (!$this->is_history) {
+//                 if (isset($data['all_name']) && $data['all_name']) {
+//                     $infos = $this->local_service->get_by_month_year(intval(date('Y')), intval(date('m')), $data['all_name']);
+//                     //$this->convert_data_detail_submit_monthly($infos);
+//                 }
+//             }
+//
+//             $exit_method_options = $this->local_service->get_exit_method_options();
+//             $this->assign('exit_method_options', $exit_method_options);
+//             if ($infos) {
+//                 $infos = $this->local_service->get_exit_method_options($infos);
+//             }
+//
+//             //获取区域
+//             $this->assign('infos', $infos);
+//             $this->display();
+//         }
+//     }
+
+     protected function convert_data_exit_detail_submit_monthly(&$infos) {
+
+         if ($infos) {
+             $this->local_service = \Common\Service\InvestmentExitService::get_instance();
+             $infos = $this->local_service->get_exit_method_options($infos);
+         }
+
      }
 
      public function statistics()

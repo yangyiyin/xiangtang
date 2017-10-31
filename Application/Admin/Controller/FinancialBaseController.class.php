@@ -833,6 +833,35 @@ class FinancialBaseController extends AdminController {
 
         }
 
+        if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestment) {
+            //获取明细
+            $InvestmentDetailsService = \Common\Service\InvestmentDetailsService::get_instance();
+            $_where['Types'] = \Common\Model\FinancialInvestmentModel::TYPE_A;
+            $infos = $InvestmentDetailsService->get_by_where_all($_where);
+            if ($infos) {
+                $data_1_map = [];
+                $this->convert_data_detail_submit_monthly($infos);
+                foreach ($infos as $da) {
+                    $data_1_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']][] = $da;
+                }
+            }
+
+            //获取明细
+            $InvestmentExitService = \Common\Service\InvestmentExitService::get_instance();
+
+            $infos = $InvestmentExitService->get_by_where_all([]);
+            if ($infos) {
+                $data_2_map = [];
+                $this->convert_data_exit_detail_submit_monthly($infos);
+                foreach ($infos as $da) {
+                    $data_2_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']][] = $da;
+                }
+            }
+
+
+
+        }
+
         //echo_json_die($data_map);
 
         //审核信息
@@ -848,8 +877,9 @@ class FinancialBaseController extends AdminController {
                     $list[$k]['data'] = $data_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
                 }
 
-                if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager && isset($data_1_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
+                if (isset($data_1_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
                     $list[$k]['data_1'] = $data_1_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
+
 
                     $count = count($list[$k]['data_1']);
                     $page_size = \Common\Service\InvestmentManagerService::$page_size;
@@ -863,10 +893,36 @@ class FinancialBaseController extends AdminController {
                     $PageInstance->parameter['year'] = $info['year'];
                     $PageInstance->parameter['month'] = $info['month'];
                     $PageInstance->action_name = 'get_detail_page_html';
+
                     $page_html = $PageInstance->show();
                     $list[$k]['page_html'] = $page_html;
                     $page = 1;
                     $list[$k]['data_1'] = array_slice($list[$k]['data_1'], $page_size * ($page-1), $page_size);
+
+                }
+
+
+                if (isset($data_2_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
+                    $list[$k]['data_2'] = $data_2_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
+
+                    $count = count($list[$k]['data_2']);
+                    $page_size = \Common\Service\InvestmentManagerService::$page_size;
+
+
+                    $PageInstance = new \Think\Page($count, $page_size);
+                    if($count>$page_size){
+                        $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+                    }
+                    $PageInstance->parameter['all_name'] = $info['all_name'];
+                    $PageInstance->parameter['year'] = $info['year'];
+                    $PageInstance->parameter['month'] = $info['month'];
+                    if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestment) {
+                        $PageInstance->action_name = 'get_exit_detail_page_html';
+                    }
+                    $page_html = $PageInstance->show();
+                    $list[$k]['page_html_2'] = $page_html;
+                    $page = 1;
+                    $list[$k]['data_2'] = array_slice($list[$k]['data_2'], $page_size * ($page-1), $page_size);
 
                 }
 
@@ -1008,29 +1064,74 @@ class FinancialBaseController extends AdminController {
 
         } elseif ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestment) {
 
-            if (count($sheetData[2]) != 5) {
-                $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
-            }
-            $AreaService = \Common\Service\AreaService::get_instance();
+            if (I('get.type') != 'exit') {
+                if (count($sheetData[2]) != 5) {
+                    $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
+                }
+                $AreaService = \Common\Service\AreaService::get_instance();
 
-            for($i=3;$i<count($sheetData) + 1;$i++) {
-                $temp = [];
-                $is_bad_row = false;
-                $sheetData[$i] = array_values($sheetData[$i]);
-                if (!$sheetData[$i][1]) {
-                    break;
+                for($i=3;$i<count($sheetData) + 1;$i++) {
+                    $temp = [];
+                    $is_bad_row = false;
+                    $sheetData[$i] = array_values($sheetData[$i]);
+                    if (!$sheetData[$i][1]) {
+                        break;
+                    }
+
+                    $temp['Name'] = (string) $sheetData[$i][1];
+
+                    $area = $AreaService->get_like_name($sheetData[$i][2]);
+                    $temp['Area'] = isset($area['id']) ? $area['id'] : 0;
+
+                    $temp['Amount'] =  (string) $sheetData[$i][3];
+                    $temp['Remarks'] =  (string)  $sheetData[$i][4];
+
+                    $data[] = $temp;
+
+                }
+            } else {
+
+                if (count($sheetData[2]) != 11) {
+
+                    $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
                 }
 
-                $temp['Name'] = (string) $sheetData[$i][1];
+                for($i=4;$i<count($sheetData) + 1;$i++) {
+                    $temp = [];
+                    $is_bad_row = false;
+                    $sheetData[$i] = array_values($sheetData[$i]);
+                    //echo_json_die($sheetData[$i]);
+                    if (!$sheetData[$i][1]) {
+                        break;
+                    }
 
-                $area = $AreaService->get_like_name($sheetData[$i][2]);
-                $temp['Area'] = isset($area['id']) ? $area['id'] : 0;
+//                    $temp['Name'] = (string) $sheetData[$i][1];
+//                    $area = $AreaService->get_like_name($sheetData[$i][2]);
+//                    $temp['Area'] = isset($area['id']) ? $area['id'] : 0;
+//
+//                    $temp['Amount'] =  (string) $sheetData[$i][3];
+//                    $temp['Remarks'] =  (string)  $sheetData[$i][4];
 
-                $temp['Amount'] =  (string) $sheetData[$i][3];
-                $temp['Remarks'] =  (string)  $sheetData[$i][4];
+                    $temp['Name'] = (string) $sheetData[$i][1];
+                    $temp['Startdate'] =strtotime($sheetData[$i][2]);
+                    $temp['Exitdate'] = strtotime($sheetData[$i][3]);
+                    $temp['Investment'] = (string) $sheetData[$i][4];
+                    $temp['Recycling'] = (string) $sheetData[$i][5];
+                    if ($sheetData[$i][6]) {
+                        $temp['ExitMethod'] = 1;
+                    } elseif ($sheetData[$i][7]) {
+                        $temp['ExitMethod'] = 2;
+                    } elseif ($sheetData[$i][8]) {
+                        $temp['ExitMethod'] = 3;
+                    } elseif ($sheetData[$i][9]) {
+                        $temp['ExitMethod'] = 4;
+                    } elseif ($sheetData[$i][10]) {
+                        $temp['ExitMethod'] = 5;
+                    }
 
-                $data[] = $temp;
+                    $data[] = $temp;
 
+                }
             }
 
 //             if ($bad_data) {

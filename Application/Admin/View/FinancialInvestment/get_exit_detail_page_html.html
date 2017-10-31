@@ -1,0 +1,46 @@
+<table class="biaoge" style="margin: 0 auto;">
+    <tbody>
+
+    <tr>
+        <td>退出项目名称:</td>
+        <td>退出项目的投资起始日期:</td>
+        <td>投资项目退出日期:</td>
+        <td>原始投资额:</td>
+        <td>退出后回收额:</td>
+        <td>投资项目退出方式:</td>
+    </tr>
+    <volist name="data" id="vo">
+        <tr>
+            <td>
+                <input type="text" class="input input-xmedium" name="logs1[]" value="{$vo.Name}">
+            </td>
+
+            <td>
+                <input type="text" class="input input-xmedium time-start" name="logs2[]" id="time-start" value="{$vo.Startdate|time_to_date}">
+            </td>
+            <td>
+                <input type="text" class="input input-xmedium time-end" name="logs3[]" id="time-end" value="{$vo.Exitdate|time_to_date}">
+            </td>
+            <td>
+                <input type="text" class="input input-xmedium" name="logs4[]" value="{$vo.Investment}">
+            </td>
+            <td>
+                <input type="text" class="input input-xmedium" name="logs5[]" value="{$vo.Recycling}">
+            </td>
+            <td>
+                <select name="logs6[]">
+                    <if condition="$vo['exit_method_options']">
+                        {$vo['exit_method_options']}
+                        <else/>
+                        {$exit_method_options}
+                    </if>
+                </select>
+            </td>
+        </tr>
+    </volist>
+    </tbody>
+</table>
+
+<div class="page">
+    {$page_html}
+</div>

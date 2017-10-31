@@ -13,19 +13,19 @@
 		<!-- 数据表格 -->
 		<div class="tab-content table_list">
 			<!-- 表单 -->
-			<form id="form" action="{:U('')}" method="post" class="form-horizontal">
+			<form id="form" action="{:U('')}/editing/{:I('get.editing')}" method="post" class="form-horizontal">
 				<div id="tab">
 					<table class="biaoge">
 						<tbody>
 						<tr>
-							<td colspan="4"><span class="title">股权投资管理机构所管理公司明细</span><span> (金额单位 万元)</span></td>
+							<td colspan="4"><span class="title">股权投资机构所投资公司明细</span><span> (金额单位 万元)</span></td>
 
 						</tr>
 						<tr>
 
 							<td colspan="4">
 
-								<if condition="$can_all_edit && !I('editing')">
+								<if condition="$can_all_edit && !I('all_name')">
 									填报机构:
 									<select name="all_name" class="all_name">
 										<php>
@@ -42,10 +42,10 @@
 									{$all_name}
 								</if>
 								<input type="hidden" class="input input-medium" name="filler_man" value="{:session('user_auth.username')}">
-								<if condition="$info['year']">
-									&nbsp;时间:{$info.year}年{$info.month}月
-									<input type="hidden" value="{$info.year}" name="year"/>
-									<input type="hidden" value="{$info.month}" name="month"/>
+								<if condition="I('year')">
+									&nbsp;时间:{:I('year')}年{:I('month')}月
+									<input type="hidden" value="{:I('year')}" name="year"/>
+									<input type="hidden" value="{:I('month')}" name="month"/>
 									<else/>
 									&nbsp;时间:
 									<select name="year" class="year change_time" >
@@ -82,7 +82,7 @@
 						</tr>
 						<tr>
 							<td>所投资公司名称:</td>
-							<td>管理公司注册地区域:</td>
+							<td>投资公司注册地区域:</td>
 							<td>投资金额:</td>
 							<td>备注:</td>
 						</tr>
@@ -125,7 +125,7 @@
 				<div class="btn_wrap">
 					<div class="btn_wrap_pd">
 						<button class="btn submit-btn J_ajax_post" id="submit" type="submit" target-form="form-horizontal">保存</button>
-						<input name="submit_verify" type="checkbox" value="2"/>提交
+						<!--<input name="submit_verify" type="checkbox" value="2"/>提交-->
 					</div>
 				</div>
 			</form>

@@ -264,26 +264,26 @@
 
 												<tr>
 													<td>所投资公司名称:</td>
-													<td>管理公司注册地区域:</td>
+													<td>投资公司注册地区域:</td>
 													<td>投资金额:</td>
 													<td>备注:</td>
 												</tr>
-												<volist name="vo['data_1']" id="vo">
+												<volist name="vo['data_1']" id="vo1">
 													<tr>
 														<td>
-															<input type="text" class="input input-medium" name="logs1[]" value="{$vo.Name}">
+															<input type="text" class="input input-medium" name="logs1[]" value="{$vo1.Name}">
 														</td>
 														<td>
 															<select name="logs2[]">
-																<if condition="$vo['area_options']">
-																	{$vo['area_options']}
+																<if condition="$vo1['area_options']">
+																	{$vo1['area_options']}
 																	<else/>
 																	{$area_options}
 																</if>
 															</select>
 														</td>
 														<td>
-															<input type="text" class="input input-medium" name="logs3[]" value="{$vo.Amount}">
+															<input type="text" class="input input-medium" name="logs3[]" value="{$vo1.Amount}">
 														</td>
 														<td>
 															<input type="text" class="input input-medium" name="logs4[]" value="{$vo.Remarks}">
@@ -326,47 +326,46 @@
 
 												<tr>
 													<td>退出项目名称:</td>
-													<td>退出项目的投资:</td>
+													<td>退出项目的投资起始日期:</td>
 													<td>投资项目退出日期:</td>
 													<td>原始投资额:</td>
 													<td>退出后回收额:</td>
 													<td>投资项目退出方式:</td>
 												</tr>
-												<volist name="$vo['data_2']" id="vo">
+												<volist name="vo['data_2']" id="vo2">
 													<tr>
 														<td>
-															<input type="text" class="input input-xmedium" name="logs1[]" value="{$vo.Name}">
+															<input type="text" class="input input-xmedium" name="logs1[]" value="{$vo2.Name}">
 														</td>
 
 														<td>
-															<input type="text" class="input input-xmedium time-start" name="logs2[]" id="time-start" value="{$vo.Startdate|time_to_date}">
+															<input type="text" class="input input-xmedium time-start" name="logs2[]" id="time-start" value="{$vo2.Startdate|time_to_date}">
 														</td>
 														<td>
-															<input type="text" class="input input-xmedium time-end" name="logs3[]" id="time-end" value="{$vo.Exitdate|time_to_date}">
+															<input type="text" class="input input-xmedium time-end" name="logs3[]" id="time-end" value="{$vo2.Exitdate|time_to_date}">
 														</td>
 														<td>
-															<input type="text" class="input input-xmedium" name="logs4[]" value="{$vo.Investment}">
+															<input type="text" class="input input-xmedium" name="logs4[]" value="{$vo2.Investment}">
 														</td>
 														<td>
-															<input type="text" class="input input-xmedium" name="logs5[]" value="{$vo.Recycling}">
+															<input type="text" class="input input-xmedium" name="logs5[]" value="{$vo2.Recycling}">
 														</td>
 														<td>
 															<select name="logs6[]">
-																<if condition="$vo['exit_method_options']">
-																	{$vo['exit_method_options']}
+																<if condition="$vo2['exit_method_options']">
+																	{$vo2['exit_method_options']}
 																	<else/>
 																	{$exit_method_options}
 																</if>
 															</select>
 														</td>
-														<td><a class="btn del_log">删除</a></td>
 													</tr>
 												</volist>
 												</tbody>
 											</table>
 
 											<div class="page">
-												{$vo['page_html']}
+												{$vo['page_html_2']}
 											</div>
 
 										</div>
