@@ -18,9 +18,9 @@ class IndexSections extends BaseSapi{
         $list = [
             ['type' => 'mall', 'name'=>'商城', 'img'=>item_img('/Uploads/Picture/12.png')],
             ['type' => 'volunteer_apply', 'name'=>'志愿者申请', 'img'=>item_img('/Uploads/Picture/13.png')],
-            ['type' => 'aid_apply', 'name'=>'残疾人救助申请', 'img'=>item_img('/Uploads/Picture/14.png')],
+            ['type' => 'aid_apply', 'name'=>'残疾人救助', 'img'=>item_img('/Uploads/Picture/14.png')],
             ['type' => 'activities', 'name'=>'公益活动', 'img'=>item_img('/Uploads/Picture/15.png')],
-            ['type' => 'disable_family_info', 'name'=>'残疾人家庭状况', 'img'=>item_img('/Uploads/Picture/16.png')],
+            ['type' => 'disable_family_info', 'name'=>'残疾人状况', 'img'=>item_img('/Uploads/Picture/16.png')],
             ['type' => 'infomation_center', 'name'=>'信息中心', 'img'=>item_img('/Uploads/Picture/17.png')],
         ];
         return result_json(TRUE, '', $list);
