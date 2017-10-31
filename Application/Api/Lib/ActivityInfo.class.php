@@ -27,7 +27,7 @@ class ActivityInfo extends BaseApi{
         }
         $ActivityApplyService = \Common\Service\ActivityApplyService::get_instance();
         $applies = $ActivityApplyService->get_info_by_uid_activity_id($this->uid, $activity_id);
-        $applies_map = result_to_map($applies, 'activity_id');
+        $applies_map[$applies['activity_id']] = $applies;
         $status_map = \Common\Model\NfActivityApplyModel::$status_map;
         $data['apply_status'] = isset($applies_map[$data['id']]) ? $applies_map[$value['id']]['status'] : 0;
         $data['apply_status_desc'] = isset($status_map[$data['apply_status']]) ? $status_map[$data['apply_status']] : '未报名';
