@@ -85,6 +85,18 @@ class PayService extends BaseService{
         }
     }
 
+    public function del_by_id_real($id) {
+        if (!check_num_ids([$id])) {
+            return result(FALSE, 'id不合法~');
+        }
+        $NfPay = D('NfPay');
+        $ret = $NfPay->where('id=' . $id)->delete();
+        if ($ret) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, '网络繁忙~');
+        }
+    }
 
     public function add_batch($data) {
         $NfPay = D('NfPay');
@@ -144,7 +156,9 @@ class PayService extends BaseService{
             if ($pay['status'] != \Common\Model\NfPayModel::STATUS_SUBMIT) {
                 return result(FALSE, '该订单无法支付~');
             }
-            return result(TRUE, '订单已创建支付', $pay);
+            //删除这个记录
+            $this->del_by_id_real($pay['id']);//重新创建一个支付记录的原因是因为,有可能修改了订单总价
+            //return result(TRUE, '订单已创建支付', $pay);
         }
 
         $sum = 0;
