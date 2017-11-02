@@ -314,6 +314,7 @@ class AntItemController extends AdminController {
         if (IS_POST) {
             $id = I('get.id');
             $data = I('post.');
+            $data['platform'] = array_sum($data['platform']);
             if ($id) {
                 $ret = $this->ItemService->update_by_id($id, $data);
                 if ($ret->success) {
