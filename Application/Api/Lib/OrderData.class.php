@@ -38,6 +38,15 @@ class OrderData extends BaseApi{
         $where['status'] = ['eq', \Common\Model\NfOrderModel::STATUS_DONE];
         $result->confirmed = (int) $this->OrderService->get_count_by_where($where);
 
+        //获取购物车的数量
+        $CartService = \Common\Service\CartService::get_instance();
+        $carts = $CartService->get_by_uid($this->uid, $this->from);
+        $result->cart_num = 0;
+        if ($carts) {
+            foreach ($carts as $key => $_item) {
+                $result->cart_num += $_item['num'];
+            }
+        }
         return result_json(TRUE, '', $result);
     }
 
