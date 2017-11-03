@@ -337,7 +337,7 @@ class AntProductController extends AdminController {
         for($i=0; $i<count($data['stocks']); $i++) {
             if ($sku_ids && in_array($data['ids'][$i], $sku_ids)) {
                 //更新
-                $data_sku = ['price' => ceil($data['normal_prices'][$i] * 100), 'dealer_price' => ceil($data['dealer_prices'][$i] * 100), 'num'=>$data['stocks'][$i],'code'=>$data['codes'][$i]];
+                $data_sku = ['price' => intval(strval($data['normal_prices'][$i] * 100)), 'dealer_price' => intval(strval($data['dealer_prices'][$i] * 100)), 'num'=>$data['stocks'][$i],'code'=>$data['codes'][$i]];
                 $ret_sku = $productSkuService->update_by_id($data['ids'][$i], $data_sku);
 //                if (!$ret_sku->success) {
 //                    $this->error($ret_sku->message);
@@ -345,7 +345,7 @@ class AntProductController extends AdminController {
                 $sku_id = $data['ids'][$i];
             } else {
                 //新增
-                $data_sku = ['pid'=>$producy_id, 'price' => ceil($data['normal_prices'][$i] * 100), 'dealer_price' => ceil($data['dealer_prices'][$i] * 100), 'num'=>$data['stocks'][$i],'code'=>$data['codes'][$i]];
+                $data_sku = ['pid'=>$producy_id, 'price' => intval(strval($data['normal_prices'][$i] * 100)), 'dealer_price' => intval(strval($data['dealer_prices'][$i] * 100)), 'num'=>$data['stocks'][$i],'code'=>$data['codes'][$i]];
                 $ret_sku = $productSkuService->add_one($data_sku);
                 if (!$ret_sku->success) {
                     $this->error($ret_sku->message);
