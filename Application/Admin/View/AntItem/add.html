@@ -28,6 +28,13 @@
 				<div id="tab">
 					<table class="" width="100%">
 				    <tbody>
+					<tr>
+						<td width="20%"><label class="item-label">平台</label></td>
+						<td width="80%">
+							<input name="platform[]" <if condition="$item.platform == 1 || $item.platform == 3">checked="checked"</if> type="checkbox" value="1"/>服务版
+							<input name="platform[]"  <if condition="$item.platform == 2 || $item.platform == 3">checked="checked"</if> type="checkbox" value="2"/>零售版
+						</td>
+					</tr>
 							<tr>
 					            <td width="20%"><label class="item-label">标题</label></td>
 					            <td width="80%">
@@ -180,13 +187,7 @@
 
 							</tr>
 
-							<tr>
-								<td width="20%"><label class="item-label">平台</label></td>
-								<td width="80%">
-									<input name="platform[]" <if condition="$item.platform == 1 || $item.platform == 3">checked="checked"</if> type="checkbox" value="1"/>服务版
-									<input name="platform[]"  <if condition="$item.platform == 2 || $item.platform == 3">checked="checked"</if> type="checkbox" value="2"/>零售版
-								</td>
-							</tr>
+
 
 					</tbody>
 				    </table> 
