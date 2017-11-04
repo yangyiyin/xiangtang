@@ -50,7 +50,6 @@ class LeaseService extends BaseService{
         if ($FinancialModel->where($where)->save()) {
             return result(TRUE);
         } else {
-            echo $FinancialModel->getLastSql();die();
             return result(FALSE, '网络繁忙~');
         }
     }

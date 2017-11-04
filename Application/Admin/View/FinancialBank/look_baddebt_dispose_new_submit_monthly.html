@@ -1,0 +1,39 @@
+<tr >
+	<td rowspan="2">企业或个人名称:</td>
+	<td rowspan="2">不良贷款余额:</td>
+	<td rowspan="2">清收金额合计(一月至累计):</td>
+	<td colspan="9">其中清收方式及金额:</td>
+
+</tr>
+
+<tr >
+	<td >以资抵债金额:</td>
+	<td >法院清收金额:</td>
+	<td >核销金额:</td>
+	<td >划转上级行金额:</td>
+	<td >政策性剥离金额:</td>
+	<td >打包出售(注明出售对象):</td>
+	<td >金额:</td>
+	<td >其他(注明清收方式):</td>
+	<td >金额:</td>
+</tr>
+
+<volist name="vo['data_bank_4']" id="vo4">
+	<tr>
+
+		<td>{$vo4['Enterprise']}</td>
+		<td>{$vo4['Loans']}</td>
+		<td>{$vo4['Recover']}</td>
+		<td>{$vo4['Recover_Ot_1']}</td>
+		<td>{$vo4['Recover_Ot_2']}</td>
+		<td>{$vo4['Recover_Ot_3']}</td>
+		<td>{$vo4['Recover_Ot_4']}</td>
+		<td>{$vo4['Recover_Ot_5']}</td>
+		<td>{$vo4['Recover_Ot_6']}</td>
+		<td>{$vo4['Recover_Ot']}</td>
+		<td>{$vo4['Recover_Ot_other_name']}</td>
+		<td>{$vo4['Recover_Ot_other']}</td>
+
+
+	</tr>
+</volist>

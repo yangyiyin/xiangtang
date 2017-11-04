@@ -44,8 +44,8 @@
 								<input type="hidden" class="input input-medium" name="filler_man" value="{:session('user_auth.username')}">
 								<if condition="I('year')">
 									&nbsp;时间:{:I('year')}年{:I('month')}月
-									<input type="hidden" value="{$info.year}" name="year"/>
-									<input type="hidden" value="{$info.month}" name="month"/>
+									<input type="hidden" value="{:I('year')}" name="year"/>
+									<input type="hidden" value="{:I('month')}" name="month"/>
 									<else/>
 									&nbsp;时间:
 									<select name="year" class="year change_time" >
@@ -206,7 +206,20 @@
 					$('#good_key').val(response.good_key);
 					//upload(0,response.data);
 
-					location.href = '{:U('')}/good_key/'+response.good_key+'/editing/{:I("editing",0)}/all_name/{:I("all_name",0)}/year/{:I("year",0)}/month/{:I("month",0)}';
+					var all_name = '{:I("all_name",0)}';
+					var year = '{:I("year",0)}';
+					var month = '{:I("month",0)}';
+
+					if ($('.all_name') && $('.all_name').val()) {
+						all_name = $('.all_name').val();
+					}
+					if ($('.year') && $('.year').val()) {
+						year = $('.year').val();
+					}
+					if ($('.month') && $('.month').val()) {
+						month = $('.month').val();
+					}
+					location.href = '{:U('')}/good_key/'+response.good_key+'/editing/{:I("editing",0)}/all_name/'+all_name+'/year/'+year+'/month/'+ month;
 				}
 
 

@@ -13,70 +13,75 @@
          parent::_initialize();
      }
 
-     public function submit_monthly()
+//     public function submit_monthly()
+//     {
+//                if (IS_POST) {
+//                     $id = I('get.id');
+//                     $data = I('post.');
+//                     $data['uid'] = UID;
+//
+//                     if (!$this->is_history) {
+//                         $data['year'] = intval(date('Y'));
+//                         $data['month'] = intval(date('m'));
+//                     } else {
+//                         $time = intval(strtotime($data['year'] . '-' . $data['month']));
+//                         if (!$time || $time > strtotime('201712')) {
+//                             $this->error('历史数据时间必须小于201712');
+//                         }
+//                     }
+//                     if ($id) {
+//                         $ret = $this->local_service->update_by_id($id, $data);
+//                         if ($ret->success) {
+//                             action_user_log('修改小额贷款公司单位月报表');
+//                             $this->success('修改成功！');
+//                         } else {
+//                             $this->error($ret->message);
+//                         }
+//                     } else {
+//                        $check_ret = $this->check_by_month_year($data['year'], $data['month'], $data['all_name']);
+//                         if ($check_ret === true){
+//                            //新增 不做处理
+//                         } elseif($check_ret) {
+//                             if ($data['force_modify']) {//强制修改
+//                                $id = $check_ret['id'];
+//                                 $ret = $this->local_service->update_by_id($id, $data);
+//                                 if ($ret->success) {
+//                                     action_user_log('修改小额贷款公司单位月报表');
+//                                     $this->success('修改成功！');
+//                                 } else {
+//                                     $this->error($ret->message);
+//                                 }
+//                             } else {
+//                                 $this->error('该月已提交报表,请不要重复提交');
+//                             }
+//                         } else {
+//                             $this->error('参数错误');
+//                         }
+//                         $ret = $this->local_service->add_one($data);
+//                         if ($ret->success) {
+//                             action_user_log('新增小额贷款公司单位月报表');
+//                             $this->success('添加成功！');
+//                         } else {
+//                             $this->error($ret->message);
+//                         }
+//                     }
+//                 } else {
+//                     $this->title = '小额贷款公司单位月填报('. date('Y-m') .'月)';
+//                     if ($this->is_history) {
+//                         $this->title = '小额贷款公司单位月填报[正在编辑历史数据]';
+//                     }
+//
+//                     parent::submit_monthly();
+//
+//                     $this->display();
+//                 }
+//     }
+     final function submit_monthly()
      {
-                if (IS_POST) {
-                     $id = I('get.id');
-                     $data = I('post.');
-                     $data['uid'] = UID;
+         $this->title = '小额贷款月填报';
+         parent::submit_monthly();
 
-                     if (!$this->is_history) {
-                         $data['year'] = intval(date('Y'));
-                         $data['month'] = intval(date('m'));
-                     } else {
-                         $time = intval(strtotime($data['year'] . '-' . $data['month']));
-                         if (!$time || $time > strtotime('201712')) {
-                             $this->error('历史数据时间必须小于201712');
-                         }
-                     }
-                     if ($id) {
-                         $ret = $this->local_service->update_by_id($id, $data);
-                         if ($ret->success) {
-                             action_user_log('修改小额贷款公司单位月报表');
-                             $this->success('修改成功！');
-                         } else {
-                             $this->error($ret->message);
-                         }
-                     } else {
-                        $check_ret = $this->check_by_month_year($data['year'], $data['month'], $data['all_name']);
-                         if ($check_ret === true){
-                            //新增 不做处理
-                         } elseif($check_ret) {
-                             if ($data['force_modify']) {//强制修改
-                                $id = $check_ret['id'];
-                                 $ret = $this->local_service->update_by_id($id, $data);
-                                 if ($ret->success) {
-                                     action_user_log('修改小额贷款公司单位月报表');
-                                     $this->success('修改成功！');
-                                 } else {
-                                     $this->error($ret->message);
-                                 }
-                             } else {
-                                 $this->error('该月已提交报表,请不要重复提交');
-                             }
-                         } else {
-                             $this->error('参数错误');
-                         }
-                         $ret = $this->local_service->add_one($data);
-                         if ($ret->success) {
-                             action_user_log('新增小额贷款公司单位月报表');
-                             $this->success('添加成功！');
-                         } else {
-                             $this->error($ret->message);
-                         }
-                     }
-                 } else {
-                     $this->title = '小额贷款公司单位月填报('. date('Y-m') .'月)';
-                     if ($this->is_history) {
-                         $this->title = '小额贷款公司单位月填报[正在编辑历史数据]';
-                     }
-
-                     parent::submit_monthly();
-
-                     $this->display();
-                 }
      }
-
      public function statistics()
      {
          $this->assign('title', $this->title);

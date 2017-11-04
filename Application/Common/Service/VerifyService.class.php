@@ -165,5 +165,45 @@ class VerifyService extends BaseService{
         return $verify_type;
     }
 
+    public function is_ok_direct($type) {
+        switch ($type) {
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty:
+                return false;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceLife:
+                return false;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceMutual:
+                return true;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialVouch:
+                return true;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestment:
+                return true;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager:
+                return true;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialFutures:
+                return true;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialLease:
+                return true;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialLoan:
+                return true;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialSecurities:
+                return true;
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialTransferFunds:
+                return true;
+                break;
+
+        }
+        return false;
+    }
+
 
 }

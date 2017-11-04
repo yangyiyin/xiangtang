@@ -1,0 +1,43 @@
+<table class="biaoge" style="margin: 0 auto;">
+    <tbody>
+
+    <tr >
+        <td >企业名称/个人姓名:</td>
+        <td >贷款余额:</td>
+        <td >逾期贷款余额(万元):</td>
+        <td >发放日期:</td>
+        <td >到期日期:</td>
+        <td >行业分类:</td>
+        <td >企业规模(工信部标准):</td>
+        <td >法定代表人*:</td>
+        <td >联系电话*:</td>
+        <td >注册地址*:</td>
+        <td >所属镇(街道)*:</td>
+        <td >备注*:</td>
+    </tr>
+
+    <volist name="data" id="vo5">
+        <tr>
+
+            <td>{$vo5['Enterprise']}</td>
+            <td>{$vo5['Loans']}</td>
+            <td>{$vo5['Overdue_Loans']}</td>
+            <td>{$vo5['Startdate']|time_to_date}</td>
+            <td>{$vo5['Enddate']|time_to_date}</td>
+            <td>{$vo5['Industry']}</td>
+            <td>{$vo5['Scale']}</td>
+            <td>{$vo5['Principal']}</td>
+            <td>{$vo5['Address']}</td>
+            <td>{$vo5['Phone']}</td>
+            <td>{$vo5['Area']}</td>
+            <td>{$vo5['Remark']}</td>
+
+
+        </tr>
+    </volist>
+    </tbody>
+</table>
+
+<div class="page">
+    {$page_html}
+</div>

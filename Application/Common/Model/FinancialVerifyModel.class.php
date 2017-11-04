@@ -17,6 +17,7 @@ class FinancialVerifyModel extends NfBaseModel {
     const TYPE_BANK_A = 2;
     const TYPE_BANK_B = 3;
     const TYPE_BANK_C = 4;
+    const TYPE_BANK_quarter= 20;
 
     const TYPE_FinancialInsuranceProperty = 13;
     const TYPE_FinancialInsuranceLife = 14;

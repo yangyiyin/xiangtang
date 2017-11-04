@@ -17,6 +17,7 @@ class FinancialBaseController extends AdminController {
     protected $is_history = false;
     protected $verify_info = [];
     protected $detail_type = '';
+    protected $verify_type = '';
     protected function _initialize() {
         parent::_initialize();
         //FinancialInsuranceMutual
@@ -94,7 +95,11 @@ class FinancialBaseController extends AdminController {
         }
 
         $VerifyService = \Common\Service\VerifyService::get_instance();
-        $type = $VerifyService->get_type($this->type);
+        if ($this->verify_type) {
+            $type = $this->verify_type;
+        } else {
+            $type = $VerifyService->get_type($this->type);
+        }
         $this->verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
 
         if (isset($this->verify_info['status']) && $this->verify_info['status'] != \Common\Model\FinancialVerifyModel::STATUS_INIT) {
@@ -134,13 +139,37 @@ class FinancialBaseController extends AdminController {
                 $data['Types'] = \Common\Model\FinancialInvestmentModel::TYPE_A;
             }
 
+            if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialBank) {
+
+                foreach ($data as $field => $value) {
+                    if (is_array($value)) {
+                        if (count($value) == 3 && is_numeric($value[0]) && is_numeric($value[1]) && is_numeric($value[2])) {
+                            $data[$field] = join('|', $value);
+                        }
+                        elseif (count($value) == 4 && is_numeric($value[0]) && is_numeric($value[1]) && is_numeric($value[2])&& is_numeric($value[3])){
+                            $data[$field] = join('|', $value);
+                        }
+                        elseif (count($value) == 5 && is_numeric($value[0]) && is_numeric($value[1]) && is_numeric($value[2]) && is_numeric($value[3]) && is_numeric($value[4])){
+                            $data[$field] = join('|', $value);
+                        }
+                        else {
+                            $data[$field] = '';
+                        }
+                    }
+
+                }
+            }
+
+
+
             if ($id) {
                 $ret = $this->local_service->update_by_id($id, $data);
                 if ($ret->success) {
                     action_user_log('修改月报表type:'.$this->type.'--id:'.$id);
 
                 } else {
-                    $this->error($ret->message);
+                    action_user_log('修改月报表type:'.$this->type.'--id:'.$id);
+                    //$this->error($ret->message);
                 }
             } else {
 
@@ -173,10 +202,10 @@ class FinancialBaseController extends AdminController {
                 if (!$ret->success) {
                     $this->error($ret->message);
                 } else {
-                    $jump_url = U('index_list');
-                    if ($can_all_edit) {
-                        $jump_url = U('index_all_list');
-                    }
+//                    $jump_url = U('index_list');
+//                    if ($can_all_edit) {
+//                        $jump_url = U('index_all_list');
+//                    }
                     $this->success('提交成功！',$jump_url);
                 }
             } else {
@@ -240,17 +269,29 @@ class FinancialBaseController extends AdminController {
             }
 
             $function_name = 'convert_data_'. ACTION_NAME;
-            $this->$function_name($infos);
+            if (method_exists($this,$function_name)) {
+                $this->$function_name($infos);
+            }
+
         }
 
         if ($cache_data) {
             $infos = $cache_data;
+
             $function_name = 'convert_data_'. ACTION_NAME;
-            $this->$function_name($infos);
+            if (method_exists($this,$function_name)) {
+                $this->$function_name($infos);
+            }
+
         }
 
+        //var_dump($infos);die();
         $VerifyService = \Common\Service\VerifyService::get_instance();
-        $type = $VerifyService->get_type($this->type);
+        if ($this->verify_type) {
+            $type = $this->verify_type;
+        } else {
+            $type = $VerifyService->get_type($this->type);
+        }
         $this->verify_info = $VerifyService->get_info($year,$month,$all_name,$type);
 
         if (isset($this->verify_info['status']) && $this->verify_info['status'] != \Common\Model\FinancialVerifyModel::STATUS_INIT) {
@@ -275,21 +316,32 @@ class FinancialBaseController extends AdminController {
             if (!$cache_data) {
                 $this->error('请导入excel数据~');
             }
+            if ($this->detail_type) {
+                $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name'], $this->detail_type);
 
-            $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name'], $this->detail_type);
+            } else {
+                $ret = $this->local_service->get_by_month_year($data['year'], $data['month'], $data['all_name']);
+
+            }
 
             if ($ret) {
                 if (I('get.editing')) {
-                    $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name'], $this->detail_type);
+                    if ($this->detail_type) {
+                        $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name'], $this->detail_type);
+                    } else {
+                        $this->local_service->del_by_month_year($data['year'], $data['month'], $data['all_name']);
+
+                    }
 
                 } else {
                     $this->error('该月份数据已经保存');
                 }
             } else {
-                $jump_url = U('index_list');
-                if ($can_all_edit) {
-                    $jump_url = U('index_all_list');
-                }
+//                $jump_url = U('index_list');
+//                if ($can_all_edit) {
+//                    $jump_url = U('index_all_list');
+//                }
+//                echo '<script'
             }
             $function_name = 'get_add_data_'. ACTION_NAME;
 
@@ -310,10 +362,10 @@ class FinancialBaseController extends AdminController {
                 if (!$ret->success) {
                     $this->error($ret->message);
                 } else {
-                    $jump_url = U('index_list');
-                    if ($can_all_edit) {
-                        $jump_url = U('index_all_list');
-                    }
+//                    $jump_url = U('index_list');
+//                    if ($can_all_edit) {
+//                        $jump_url = U('index_all_list');
+//                    }
                     $this->success('提交成功！',$jump_url);
                 }
             } else {
@@ -373,7 +425,11 @@ class FinancialBaseController extends AdminController {
         $where_all['month'] = $get['month'];
 
         $VerifyService = \Common\Service\VerifyService::get_instance();
-        $type = $VerifyService->get_type($this->type);
+        if ($this->verify_type) {
+            $type = $this->verify_type;
+        } else {
+            $type = $VerifyService->get_type($this->type);
+        }
         if (isset($type)) {
             //排除非审核通过的单位
             $VerifyService = \Common\Service\VerifyService::get_instance();
@@ -685,9 +741,17 @@ class FinancialBaseController extends AdminController {
         $where['all_name'] = $my_department['all_name'];
 
         //审核信息
-        $VerifyService = \Common\Service\VerifyService::get_instance();
-        $type = $VerifyService->get_type($this->type);
-        $where['type'] = $type;
+//        $VerifyService = \Common\Service\VerifyService::get_instance();
+//        $type = $VerifyService->get_type($this->type);
+//
+//        if (!$type) {
+//            if (I('form_type',1) == 1) {
+//                $type = \Common\Model\FinancialVerifyModel::TYPE_BANK_MONTH;
+//            } else {
+//                $type = \Common\Model\FinancialVerifyModel::TYPE_BANK_quarter;
+//            }
+//        }
+//        $where['type'] = $type;
 
         list ($list,$count) = $this->get_list_data($where,$p);
 
@@ -811,7 +875,6 @@ class FinancialBaseController extends AdminController {
 
                 $data_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']] = $da;
             }
-
         }
 
         if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager) {
@@ -829,7 +892,6 @@ class FinancialBaseController extends AdminController {
             //获取区域
             $AreaService = \Common\Service\AreaService::get_instance();
             $this->assign('area_options', $AreaService->set_area_options());
-
 
         }
 
@@ -858,15 +920,135 @@ class FinancialBaseController extends AdminController {
                 }
             }
 
+        }
 
+        if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialTransferFunds) {
+            //获取明细
+            if ($data) {
+                $data_1_map = [];
+                foreach ($data as $da) {
+                    $data_1_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']][] = $da;
+                }
+            }
+        }
+
+        if ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialBank) {
+            //获取1
+            $BankCreditNewService = \Common\Service\BankCreditNewService::get_instance();
+            $infos = $BankCreditNewService->get_by_where_all($_where);
+            if ($infos) {
+                $data_bank_1_map = [];
+                //$this->convert_data_submit_monthly($infos);
+
+                foreach ($infos as $da) {
+                    $this->convert_data_submit_monthly($da);
+                    $data_bank_1_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']] = $da;
+                }
+            }
+
+
+            //获取2
+            $BankBaddebtNewService = \Common\Service\BankBaddebtNewService::get_instance();
+            $infos = $BankBaddebtNewService->get_by_where_all($_where);
+            if ($infos) {
+                $data_bank_2_map = [];
+                foreach ($infos as $da) {
+                    $data_bank_2_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']] = $da;
+                }
+            }
+
+
+            //获取3
+            $BankBaddebtDetailNewService = \Common\Service\BankBaddebtDetailNewService::get_instance();
+            $infos = $BankBaddebtDetailNewService->get_by_where_all($_where);
+            if ($infos) {
+                $data_bank_3_map = [];
+
+                foreach ($infos as $da) {
+                    $data_bank_3_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']][] = $da;
+                }
+            }
+
+            //获取4
+            $BankBaddebtDisposeNewService = \Common\Service\BankBaddebtDisposeNewService::get_instance();
+            $infos = $BankBaddebtDisposeNewService->get_by_where_all($_where);
+            if ($infos) {
+                $data_bank_4_map = [];
+
+                foreach ($infos as $da) {
+                    $data_bank_4_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']][] = $da;
+                }
+            }
+
+            //获取5
+            $BankFocusDetailNewService = \Common\Service\BankFocusDetailNewService::get_instance();
+            $infos = $BankFocusDetailNewService->get_by_where_all($_where);
+            if ($infos) {
+                $data_bank_5_map = [];
+
+                foreach ($infos as $da) {
+                    $data_bank_5_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']][] = $da;
+                }
+            }
+
+            //获取6
+            $BankQuaterlyQuantityANewService = \Common\Service\BankQuaterlyQuantityANewService::get_instance();
+            $infos = $BankQuaterlyQuantityANewService->get_by_where_all($_where);
+            if ($infos) {
+                $data_bank_6_map = [];
+                //$this->convert_data_submit_monthly($infos);
+
+                foreach ($infos as $da) {
+                    $this->convert_data_submit_monthly($da);
+                    $data_bank_6_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']] = $da;
+                }
+            }
+
+            //获取7
+            $BankQuaterlyQuantityBNewService = \Common\Service\BankQuaterlyQuantityBNewService::get_instance();
+            $infos = $BankQuaterlyQuantityBNewService->get_by_where_all($_where);
+            if ($infos) {
+                $data_bank_7_map = [];
+                //$this->convert_data_submit_monthly($infos);
+
+                foreach ($infos as $da) {
+                    $this->convert_data_submit_monthly($da);
+                    $data_bank_7_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']] = $da;
+                }
+            }
+
+            //获取8
+            $BankQuaterlyQuantityCNewService = \Common\Service\BankQuaterlyQuantityCNewService::get_instance();
+            $infos = $BankQuaterlyQuantityCNewService->get_by_where_all($_where);
+            if ($infos) {
+                $data_bank_8_map = [];
+                //$this->convert_data_submit_monthly($infos);
+
+                foreach ($infos as $da) {
+                    $this->convert_data_submit_monthly($da);
+                    $data_bank_8_map[$da['year'].'_'.$da['month'].'_'.$da['all_name']] = $da;
+                }
+            }
 
         }
 
-        //echo_json_die($data_map);
+
+//
+       // echo_json_die($data_bank_1_map);
 
         //审核信息
         $VerifyService = \Common\Service\VerifyService::get_instance();
         $type = $VerifyService->get_type($this->type);
+
+        //银行type
+        if (!$type) {
+            if (I('form_type',1) == 1) {
+                $type = \Common\Model\FinancialVerifyModel::TYPE_BANK_MONTH;
+            } else {
+                $type = \Common\Model\FinancialVerifyModel::TYPE_BANK_quarter;
+            }
+        }
+
         $where['type'] = $type;
         list($list, $count) = $VerifyService->get_by_where($where, 'id desc', $p);
 
@@ -882,7 +1064,7 @@ class FinancialBaseController extends AdminController {
 
 
                     $count = count($list[$k]['data_1']);
-                    $page_size = \Common\Service\InvestmentManagerService::$page_size;
+                    $page_size = \Common\Service\BaseService::$page_size;
 
 
                     $PageInstance = new \Think\Page($count, $page_size);
@@ -906,7 +1088,7 @@ class FinancialBaseController extends AdminController {
                     $list[$k]['data_2'] = $data_2_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
 
                     $count = count($list[$k]['data_2']);
-                    $page_size = \Common\Service\InvestmentManagerService::$page_size;
+                    $page_size = \Common\Service\BaseService::$page_size;
 
 
                     $PageInstance = new \Think\Page($count, $page_size);
@@ -926,9 +1108,105 @@ class FinancialBaseController extends AdminController {
 
                 }
 
+                if (isset($data_bank_1_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
+                    //echo 1;die();
+                    $list[$k]['data_bank_1'] = $data_bank_1_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
+
+                }
+
+                if (isset($data_bank_2_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
+                    //echo 1;die();
+                    $list[$k]['data_bank_2'] = $data_bank_2_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
+
+                }
+
+                if (isset($data_bank_3_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
+                    $list[$k]['data_bank_3'] = $data_bank_3_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
+
+                    $count = count($list[$k]['data_bank_3']);
+                    $page_size = \Common\Service\BaseService::$page_size;
+
+
+                    $PageInstance = new \Think\Page($count, $page_size);
+                    if($count>$page_size){
+                        $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+                    }
+                    $PageInstance->parameter['all_name'] = $info['all_name'];
+                    $PageInstance->parameter['year'] = $info['year'];
+                    $PageInstance->parameter['month'] = $info['month'];
+                    $PageInstance->parameter['bank_type'] = 3;
+                    $PageInstance->action_name = 'get_detail_page_html';
+                    $page_html = $PageInstance->show();
+                    $list[$k]['page_html_bank_3'] = $page_html;
+                    $page = 1;
+                    $list[$k]['data_bank_3'] = array_slice($list[$k]['data_bank_3'], $page_size * ($page-1), $page_size);
+
+                }
+
+                if (isset($data_bank_4_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
+                    $list[$k]['data_bank_4'] = $data_bank_4_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
+
+                    $count = count($list[$k]['data_bank_4']);
+                    $page_size = \Common\Service\BaseService::$page_size;
+
+
+                    $PageInstance = new \Think\Page($count, $page_size);
+                    if($count>$page_size){
+                        $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+                    }
+                    $PageInstance->parameter['all_name'] = $info['all_name'];
+                    $PageInstance->parameter['year'] = $info['year'];
+                    $PageInstance->parameter['month'] = $info['month'];
+                    $PageInstance->parameter['bank_type'] = 4;
+                    $PageInstance->action_name = 'get_detail_page_html';
+                    $page_html = $PageInstance->show();
+                    $list[$k]['page_html_bank_4'] = $page_html;
+                    $page = 1;
+                    $list[$k]['data_bank_4'] = array_slice($list[$k]['data_bank_4'], $page_size * ($page-1), $page_size);
+
+                }
+
+                if (isset($data_bank_5_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
+                    $list[$k]['data_bank_5'] = $data_bank_5_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
+
+                    $count = count($list[$k]['data_bank_5']);
+                    $page_size = \Common\Service\BaseService::$page_size;
+
+
+                    $PageInstance = new \Think\Page($count, $page_size);
+                    if($count>$page_size){
+                        $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+                    }
+                    $PageInstance->parameter['all_name'] = $info['all_name'];
+                    $PageInstance->parameter['year'] = $info['year'];
+                    $PageInstance->parameter['month'] = $info['month'];
+                    $PageInstance->parameter['bank_type'] = 5;
+                    $PageInstance->action_name = 'get_detail_page_html';
+                    $page_html = $PageInstance->show();
+                    $list[$k]['page_html_bank_5'] = $page_html;
+                    $page = 1;
+                    $list[$k]['data_bank_5'] = array_slice($list[$k]['data_bank_5'], $page_size * ($page-1), $page_size);
+
+                }
+                if (isset($data_bank_6_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
+                    //echo 1;die();
+                    $list[$k]['data_bank_6'] = $data_bank_6_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
+
+                }
+                if (isset($data_bank_7_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
+                    //echo 1;die();
+                    $list[$k]['data_bank_7'] = $data_bank_7_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
+
+                }
+                if (isset($data_bank_8_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']])) {
+                    //echo 1;die();
+                    $list[$k]['data_bank_8'] = $data_bank_8_map[$info['year'].'_'.$info['month'].'_'.$info['all_name']];
+
+                }
 
             }
         }
+        //var_dump($list);die();
         return [$list,$count];
 
     }
@@ -977,12 +1255,21 @@ class FinancialBaseController extends AdminController {
         }
 
         $VerifyService = \Common\Service\VerifyService::get_instance();
-        $type = $VerifyService->get_type($this->type);
+        if ($this->verify_type) {
+            $type = $this->verify_type;
+        } else {
+            $type = $VerifyService->get_type($this->type);
+        }
         $this->verify_info = $VerifyService->get_info_by_id($id);
         if (!$this->verify_info) {
             $this->error('找不到数据');
         }
-        $ret = $this->_submit_verify($this->verify_info,$this->verify_info['year'],$this->verify_info['month'],$this->verify_info['all_name'],$type,\Common\Model\FinancialVerifyModel::STATUS_SUBMIT);
+
+        $status = \Common\Model\FinancialVerifyModel::STATUS_SUBMIT;
+        if ($VerifyService->is_ok_direct($this->type)) {
+            $status = \Common\Model\FinancialVerifyModel::STATUS_OK;
+        }
+        $ret = $this->_submit_verify($this->verify_info,$this->verify_info['year'],$this->verify_info['month'],$this->verify_info['all_name'],$type,$status);
         if (!$ret->success) {
             $this->error($ret->message);
         }
@@ -1132,6 +1419,42 @@ class FinancialBaseController extends AdminController {
                     $data[] = $temp;
 
                 }
+            }
+
+//             if ($bad_data) {
+//                 $key = uniqid();
+//                 array_unshift($bad_data,['企业名称','法人代表或实际控制人','企业所属乡镇（街道）','逾期贷款金额','化解金额','备注']);
+//                 S($key, $bad_data, 120);
+//             }
+
+
+        } elseif ($this->type == \Common\Model\FinancialDepartmentModel::TYPE_FinancialTransferFunds) {
+
+            if (count($sheetData[4]) != 12) {
+                $this->ajaxReturn(['status'=>false, 'info' => '没有解析成功,请确认导入的数据是否按照要求正确导入~']);
+            }
+            $AreaService = \Common\Service\AreaService::get_instance();
+
+            for($i=6;$i<count($sheetData) + 1;$i++) {
+                $temp = [];
+                $is_bad_row = false;
+                $sheetData[$i] = array_values($sheetData[$i]);
+                if (!$sheetData[$i][1] || $sheetData[$i][1] == '合计') {
+                    break;
+                }
+
+                $temp['Bank'] = (string)$sheetData[$i][1];
+                $temp['Account'] = (string)$sheetData[$i][2];
+                $temp['Unit'] = (string)$sheetData[$i][3];
+                $temp['Legal_Person'] = (string)$sheetData[$i][4];
+                $temp['Amount'] = (string)$sheetData[$i][5];
+                $temp['S_Date'] = strtotime($sheetData[$i][6]);
+                $temp['E_Date'] = strtotime($sheetData[$i][7]);
+                $temp['Days'] = (string)$sheetData[$i][8];
+                $temp['Remarks'] = (string)$sheetData[$i][9];
+
+                $data[] = $temp;
+
             }
 
 //             if ($bad_data) {

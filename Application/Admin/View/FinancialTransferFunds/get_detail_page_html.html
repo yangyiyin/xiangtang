@@ -1,0 +1,51 @@
+<table class="biaoge" style="margin: 0 auto;">
+    <tbody>
+
+    <tr>
+        <td>转贷银行:</td>
+        <td>账号:</td>
+        <td>转贷单位:</td>
+        <td>法人代表:</td>
+        <td>转贷金额:</td>
+        <td>起始日:</td>
+        <td>到期日:</td>
+        <td>天数:</td>
+        <td>备注:</td>
+    </tr>
+    <volist name="data" id="vo1">
+        <tr>
+            <td>
+                <input type="text" disabled="disabled" class=" input input-xmedium" name="logs1[]" value="{$vo1.Bank}">
+            </td>
+            <td>
+                <input type="text" disabled="disabled" class=" input input-xmedium" name="logs2[]" value="{$vo1.Account}">
+            </td>
+            <td>
+                <input type="text" disabled="disabled" class=" input input-xmedium" name="logs3[]" value="{$vo1.Unit}">
+            </td>
+            <td>
+                <input type="text" disabled="disabled" class=" input input-xmedium" name="logs4[]" value="{$vo1.Legal_Person}">
+            </td>
+            <td>
+                <input type="text" disabled="disabled" class=" input input-xmedium" name="logs5[]" value="{$vo1.Amount}">
+            </td>
+            <td>
+                <input type="text" disabled="disabled" class=" input input-xmedium time-start" name="logs6[]" value="{$vo1.S_Date|time_to_date}">
+            </td>
+            <td>
+                <input type="text" disabled="disabled" class=" input input-xmedium time-end" name="logs7[]" value="{$vo1.E_Date|time_to_date}">
+            </td>
+            <td>
+                <input type="text" disabled="disabled" class=" input input-xmedium" name="logs8[]" value="{$vo1.Days}">
+            </td>
+            <td>
+                <input type="text" disabled="disabled" class=" input input-xmedium" name="logs9[]" value="{$vo1.Remarks}">
+            </td>
+        </tr>
+    </volist>
+    </tbody>
+</table>
+
+<div class="page">
+    {$page_html}
+</div>

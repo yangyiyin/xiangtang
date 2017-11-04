@@ -1,0 +1,35 @@
+<tr >
+	<td>企业名称:</td>
+	<td>法定代表人:</td>
+	<td>地址:</td>
+	<td>不良贷款余额:</td>
+	<td>不良贷款分类:</td>
+	<td>行业分类:</td>
+	<td>列入不良时间:</td>
+	<td>收回不良时间:</td>
+	<td>不良产生原因:</td>
+	<td>清收措施:</td>
+	<td>企业基本情况:</td>
+	<td>下步处置计划:</td>
+	<td>要求/建议:</td>
+
+</tr>
+
+<volist name="vo['data_bank_3']" id="vo3">
+	<tr>
+		<td>{$vo3['Enterprise']}</td>
+		<td>{$vo3['Principal']}</td>
+		<td>{$vo3['Address']}</td>
+		<td>{$vo3['Loans']}</td>
+		<td>{$vo3['Loans_Type']}</td>
+		<td>{$vo3['Industry']}</td>
+		<td>{$vo3['Startdate']|time_to_date}</td>
+		<td>{$vo3['Enddate']|time_to_date}</td>
+		<td>{$vo3['Reason']}</td>
+		<td>{$vo3['Handle']}</td>
+		<td>{$vo3['Info']}</td>
+		<td>{$vo3['Plan']}</td>
+		<td>{$vo3['Recommend']}</td>
+
+	</tr>
+</volist>

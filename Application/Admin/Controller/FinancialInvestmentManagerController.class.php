@@ -167,7 +167,11 @@
         $month = I('month');
         //获取明细
         $InvestmentDetailsService = \Common\Service\InvestmentDetailsService::get_instance();
+        $_where = [];
         $_where['Types'] = \Common\Model\FinancialInvestmentModel::TYPE_B;
+        $_where['all_name'] = $all_name;
+        $_where['year'] = $year;
+        $_where['month'] = $month;
         $infos = $InvestmentDetailsService->get_by_where_all($_where);
         if ($infos) {
             $data_1_map = [];
