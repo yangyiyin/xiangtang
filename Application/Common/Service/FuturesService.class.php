@@ -75,8 +75,10 @@ class FuturesService extends BaseService{
         $data = [];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         $count = $FinancialModel->where($where)->order($order)->count();
+
         if ($count > 0) {
             $data = $FinancialModel->where($where)->order($order)->page($page . ',' . static::$page_size)->select();
+
         }
         return [$data, $count];
     }

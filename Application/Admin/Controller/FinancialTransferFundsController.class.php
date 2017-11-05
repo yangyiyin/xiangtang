@@ -215,8 +215,9 @@
          }
 
          //获取年和历史的
-         $data_a = $this->local_service->get_type_a_data($batch_data[0]['year'], $batch_data[0]['month'], $batch_data[0]['all_name']);
-         $data_b = $this->local_service->get_type_b_data($batch_data[0]['year'], $batch_data[0]['month'], $batch_data[0]['all_name']);
+         $TransferFundsService = \Common\Service\TransferFundsService::get_instance();
+         $data_a = $TransferFundsService->get_type_a_data($batch_data[0]['year'], $batch_data[0]['month'], $batch_data[0]['all_name']);
+         $data_b = $TransferFundsService->get_type_b_data($batch_data[0]['year'], $batch_data[0]['month'], $batch_data[0]['all_name']);
 
          foreach ($data_a as $d) {
              $data['Y_Amount'] += $d['Amount'];
@@ -239,7 +240,7 @@
          if ($st) {
              $ret = $TransferFundsStService->update_by_id($st['id'], $data);
              if (!$ret->success) {
-                 $this->error('更新转贷资金统计表失败~');
+                 //$this->error('更新转贷资金统计表失败~');
              }
              action_user_log('修改转贷资金统计表');
          } else {
@@ -259,7 +260,7 @@
          $get = I('get.');
          $where = [];
          if ($get['all_name']) {
-             $where['all_name'] = ['LIKE', '%' . $get['all_name'] . '%'];
+             $where['all_name'][] = ['LIKE', '%' . $get['all_name'] . '%'];
          }
 
          if (!$get['year']) {
@@ -270,6 +271,7 @@
          }
          $where['year'] = $get['year'];
          $where['month'] = $get['month'];
+
          $service = '\Common\Service\TransferFundsStService';
          $this->local_service = \Common\Service\TransferFundsStService::get_instance();
 
@@ -277,9 +279,37 @@
          $where_all = [];
          $where_all['year'] = $get['year'];
          $where_all['month'] = $get['month'];
+
+
+         $where_extra = [];
+         if (isset($type)) {
+             //排除非审核通过的单位
+             $VerifyService = \Common\Service\VerifyService::get_instance();
+             $where_verify = [];
+             $where_verify['type'] = $type;
+             $where_verify['year'] = $where['year'];
+             $where_verify['month'] = $where['month'];
+             $where_verify['status'] = ['neq', 2];
+             $verifies = $VerifyService->get_by_where_all($where_verify);
+             if ($verifies) {
+                 $all_nams = result_to_array($verifies, 'all_name');
+                 $where['all_name'][] = ['not in', $all_nams];
+                 $where_all['all_name'][] = ['not in', $all_nams];
+                 $where_extra['all_name'] = ['not in', $all_nams];
+             }
+
+         }
+
+         if (method_exists($this, 'gain_statistics')) {
+             $this->gain_statistics($get['year'], $get['month'], $this->type, $where_extra);//自动生成统计
+         }
+
+
+
          $data_all = $this->local_service->get_by_where_all($where_all);
          list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
          $data = $this->convert_data_statistics($data, $data_all);
+
          $PageInstance = new \Think\Page($count, $service::$page_size);
          if($total>$service::$page_size){
              $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
@@ -290,18 +320,81 @@
          $this->assign('page_html', $page_html);
 
          $total = [];
-         foreach ($data_all as $data) {
-             $total['M_Amount'] += $data['M_Amount'];
-             $total['M_Quantity'] += $data['M_Quantity'];
-             $total['Y_Amount'] += $data['Y_Amount'];
-             $total['Y_Quantity'] += $data['Y_Quantity'];
-             $total['T_Amount'] += $data['T_Amount'];
-             $total['T_Quantity'] += $data['T_Quantity'];
+
+         foreach ($data_all as $_data) {
+             $total['M_Amount'] += $_data['M_Amount'];
+             $total['M_Quantity'] += $_data['M_Quantity'];
+             $total['Y_Amount'] += $_data['Y_Amount'];
+             $total['Y_Quantity'] += $_data['Y_Quantity'];
+             $total['T_Amount'] += $_data['T_Amount'];
+             $total['T_Quantity'] += $_data['T_Quantity'];
 
          }
+
+//         foreach ($data as $_da) {
+//             $total['M_Amount'] += $_da['M_Amount'];
+//             $total['M_Quantity'] += $_da['M_Quantity'];
+//         }
+         //var_dump($total);die();
          $this->assign('total', $total);
          $this->display();
      }
+
+     protected function get_statistics_datas($year, $month) {
+
+         $where_all = [];
+         $where_all['year'] = $year;
+         $where_all['month'] = $month;
+         $this->local_service = \Common\Service\TransferFundsStService::get_instance();
+         $VerifyService = \Common\Service\VerifyService::get_instance();
+         if ($this->verify_type) {
+             $type = $this->verify_type;
+         } else {
+             $type = $VerifyService->get_type($this->type);
+         }
+
+
+         if (isset($type)) {
+             //排除非审核通过的单位
+             $VerifyService = \Common\Service\VerifyService::get_instance();
+             $where_verify = [];
+             $where_verify['type'] = $type;
+             $where_verify['year'] = $where_all['year'];
+             $where_verify['month'] = $where_all['month'];
+             $where_verify['status'] = ['neq', 2];
+             $verifies = $VerifyService->get_by_where_all($where_verify);
+             if ($verifies) {
+                 $all_nams = result_to_array($verifies, 'all_name');
+                 $where_all['all_name'] = ['not in', $all_nams];
+             }
+
+         }
+
+         $data_all = $this->local_service->get_by_where_all($where_all);
+         $where_all_all = $where_all;
+
+         $data_all_all = $this->local_service->get_by_where_all($where_all_all);
+
+
+         $data_all = $this->convert_data_statistics($data_all, $data_all);
+
+
+         $total = [];
+         foreach ($data_all_all as $_data) {
+             $total['M_Amount'] += $_data['M_Amount'];
+             $total['M_Quantity'] += $_data['M_Quantity'];
+             $total['Y_Amount'] += $_data['Y_Amount'];
+             $total['Y_Quantity'] += $_data['Y_Quantity'];
+             $total['T_Amount'] += $_data['T_Amount'];
+             $total['T_Quantity'] += $_data['T_Quantity'];
+
+         }
+
+
+
+         return [$data_all, $total];
+     }
+
 
      protected function convert_data_statistics($data, $data_all)
      {

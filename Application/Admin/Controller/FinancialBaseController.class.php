@@ -169,7 +169,13 @@ class FinancialBaseController extends AdminController {
 
                 } else {
                     action_user_log('修改月报表type:'.$this->type.'--id:'.$id);
-                    //$this->error($ret->message);
+
+                    if (strpos($ret->message,'网络繁忙') !== false) {
+
+                    } else {
+                        $this->error($ret->message);
+                    }
+
                 }
             } else {
 
@@ -186,10 +192,7 @@ class FinancialBaseController extends AdminController {
                 $ret = $this->local_service->add_one($data);
                 if ($ret->success) {
 
-                    $jump_url = U('index_list');
-                    if ($can_all_edit) {
-                        $jump_url = U('index_all_list');
-                    }
+                    $jump_url = 'javascript:self.location=document.referrer;';
                     action_user_log('新增月报表type:'.$this->type);
 
                 } else {
@@ -202,10 +205,7 @@ class FinancialBaseController extends AdminController {
                 if (!$ret->success) {
                     $this->error($ret->message);
                 } else {
-//                    $jump_url = U('index_list');
-//                    if ($can_all_edit) {
-//                        $jump_url = U('index_all_list');
-//                    }
+                    $jump_url = 'javascript:self.location=document.referrer;';
                     $this->success('提交成功！',$jump_url);
                 }
             } else {
@@ -337,11 +337,8 @@ class FinancialBaseController extends AdminController {
                     $this->error('该月份数据已经保存');
                 }
             } else {
-//                $jump_url = U('index_list');
-//                if ($can_all_edit) {
-//                    $jump_url = U('index_all_list');
-//                }
-//                echo '<script'
+
+                $jump_url = 'javascript:self.location=document.referrer;';
             }
             $function_name = 'get_add_data_'. ACTION_NAME;
 
@@ -362,10 +359,7 @@ class FinancialBaseController extends AdminController {
                 if (!$ret->success) {
                     $this->error($ret->message);
                 } else {
-//                    $jump_url = U('index_list');
-//                    if ($can_all_edit) {
-//                        $jump_url = U('index_all_list');
-//                    }
+                    $jump_url = 'javascript:self.location=document.referrer;';
                     $this->success('提交成功！',$jump_url);
                 }
             } else {
@@ -403,6 +397,7 @@ class FinancialBaseController extends AdminController {
 
     }
     public function statistics() {
+
         $this->assign('title', $this->title);
         $get = I('get.');
         $where = [];
@@ -416,6 +411,8 @@ class FinancialBaseController extends AdminController {
         if (!$get['month']) {
             $get['month'] = intval(date('m'));
         }
+
+
         $where['year'] = $get['year'];
         $where['month'] = $get['month'];
         $service = '\Common\Service\\'.$this->local_service_name;
@@ -430,6 +427,8 @@ class FinancialBaseController extends AdminController {
         } else {
             $type = $VerifyService->get_type($this->type);
         }
+
+        $where_extra = [];
         if (isset($type)) {
             //排除非审核通过的单位
             $VerifyService = \Common\Service\VerifyService::get_instance();
@@ -441,15 +440,28 @@ class FinancialBaseController extends AdminController {
             $verifies = $VerifyService->get_by_where_all($where_verify);
             if ($verifies) {
                 $all_nams = result_to_array($verifies, 'all_name');
-                $where['all_name'][] = ['not in', $all_nams];
+                $where['all_name'][] = ['in', $all_nams];
+                $where_all['all_name'][] = ['not in', $all_nams];
+                $where_extra['all_name'] = ['not in', $all_nams];
             }
 
         }
 
 
+        if (method_exists($this, 'gain_statistics')) {
+            $this->gain_statistics($get['year'], $get['month'], $this->type, $where_extra);//自动生成统计
+        }
+
         $data_all = $this->local_service->get_by_where_all($where_all);
-        list($data, $count) = $this->local_service->get_by_where($where, 'income desc', $page);
+        if ($this->order) {
+            $order = $this->order;
+        } else {
+            $order = 'id desc';
+        }
+        list($data, $count) = $this->local_service->get_by_where($where, $order, $page);
+      //  var_dump($where);die();
         $data = $this->convert_data_statistics($data, $data_all);
+
         $PageInstance = new \Think\Page($count, $service::$page_size);
         if($total>$service::$page_size){
             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
@@ -458,6 +470,45 @@ class FinancialBaseController extends AdminController {
 
         $this->assign('list', $data);
         $this->assign('page_html', $page_html);
+
+        return [$data, $data_all];
+    }
+
+    protected function get_statistics_datas($year, $month) {
+
+        $where_all = [];
+        $where_all['year'] = $year;
+        $where_all['month'] = $month;
+
+        $VerifyService = \Common\Service\VerifyService::get_instance();
+        if ($this->verify_type) {
+            $type = $this->verify_type;
+        } else {
+            $type = $VerifyService->get_type($this->type);
+        }
+
+
+        if (isset($type)) {
+            //排除非审核通过的单位
+            $VerifyService = \Common\Service\VerifyService::get_instance();
+            $where_verify = [];
+            $where_verify['type'] = $type;
+            $where_verify['year'] = $where_all['year'];
+            $where_verify['month'] = $where_all['month'];
+            $where_verify['status'] = ['neq', 2];
+            $verifies = $VerifyService->get_by_where_all($where_verify);
+            if ($verifies) {
+                $all_nams = result_to_array($verifies, 'all_name');
+                $where_all['all_name'] = ['not in', $all_nams];
+            }
+
+        }
+
+        $data_all = $this->local_service->get_by_where_all($where_all);
+        //var_dump($data_all);die();
+        $data = $this->convert_data_statistics($data_all, $data_all);
+
+        return $data;
     }
 
     public function add_unit() {
@@ -1050,7 +1101,7 @@ class FinancialBaseController extends AdminController {
         }
 
         $where['type'] = $type;
-        list($list, $count) = $VerifyService->get_by_where($where, 'id desc', $p);
+        list($list, $count) = $VerifyService->get_by_where($where, 'month desc', $p);
 
         if ($list){
             foreach ($list as $k => $info) {
@@ -1503,140 +1554,1422 @@ class FinancialBaseController extends AdminController {
             ->setDescription("慈溪金融办报表")
             ->setKeywords("金融办报表")
             ->setCategory("金融办报表");
-        $title = '报表';
         $year = I('year') ? I('year') : intval(date('Y'));
         $month = I('month') ? I('month') : intval(date('m'));
-        $statistics = [
-            ['data'=>null,'name'=>'慈溪市金融机构本外币信贷收支情况表(表1)'],
-            ['data'=>null,'name'=>'慈溪市金融机构本外币存贷情况表(表2)'],
-            ['data'=>null,'name'=>'慈溪市金融机构不良贷款情况表(表3)'],
-            ['data'=>null,'name'=>'慈溪市金融机构不良贷款50万(含以上)明细表(表4)'],
-            ['data'=>null,'name'=>'慈溪市金融机构不良资产清收情况表(表5)'],
-            ['data'=>null,'name'=>'慈溪市金融机构关注类贷款明细表(表6)'],
-            ['data'=>null,'name'=>'慈溪市银行贷款利率执行水平监测表(表7)'],
-            ['data'=>null,'name'=>'企业贷款利率执行水平监测表(表8)'],
-            ['data'=>null,'name'=>'资产质量相关情况调查表(表9)']
 
-        ];
-        switch (I('type')) {
+        $statistics_datas = $this->get_statistics_datas($year, $month);
+        //var_dump($statistics_datas);die();
 
-            case 2:
-                $title = $statistics[1]['name'];
-                $Service = \Common\Service\BankCreditBStNewService::get_instance();
-                $statistics[1]['data'] = $Service->get_by_month_year($year, $month);
-                $statistics = $this->convert_statistics_datas($statistics);
-                $PHPExcel->setActiveSheetIndex(0)
-                    ->setCellValue('A1', $title);
-                $PHPExcel->setActiveSheetIndex(0)
-                    ->setCellValue('A2', '类型')
-                    ->setCellValue('B2', '金融机构名称!')
-                    ->setCellValue('C2', '各项存款')
-                    ->setCellValue('I2', '各项贷款')
-                    ->setCellValue('O2', '本月存贷比')
-                    ->setCellValue('C3', '年初余额')
-                    ->setCellValue('D3', '上月余额')
-                    ->setCellValue('E3', '月末余额')
-                    ->setCellValue('F3', '比上月')
-                    ->setCellValue('G3', '比年初')
-                    ->setCellValue('H3', '同比')
-                    ->setCellValue('I3', '年初余额')
-                    ->setCellValue('J3', '上月余额')
-                    ->setCellValue('K3', '月末余额')
-                    ->setCellValue('L3', '比上月')
-                    ->setCellValue('M3', '比年初')
-                    ->setCellValue('N3', '同比')
-                    ->setCellValue('O3', '余额比%')
-                    ->setCellValue('P3', '增量比%');
+        $title= '('.$year.'-'.$month.')';
 
-                // echo json_encode($statistics);die();
-                if ($statistics[1]['data']) {
-                    $start = 4;
-                    foreach ($statistics[1]['data'] as $key => $value) {
-                        if ($key != '合计') {
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$start, $key);
-                            $num = $value ? count($value) : 0;
-                            $end = $start + $num  - 1;
-                            if ($end > $start) {
-                                $PHPExcel->setActiveSheetIndex(0)->mergeCells('A'.$start.':A'.$end);
-                                $PHPExcel->getActiveSheet(0)->getStyle('A'.$start)->applyFromArray(
-                                    [
-                                        'alignment' => [
-                                            'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER
-                                        ]
-                                    ]
-                                );
-                            }
-                            if ($value) {
-                                $unit_start = $start;
-                                foreach ($value as $unit) {
-                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$unit_start, $unit['all_name']);
+        switch ($this->type) {
 
-                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$unit_start, $unit['content']['Deposits'][0]);
-                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$unit_start, $unit['content']['Deposits'][1]);
-                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$unit_start, $unit['content']['Deposits'][2]);
-                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$unit_start, $unit['content']['Deposits'][3]);
-                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$unit_start, $unit['content']['Deposits'][4]);
-                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$unit_start, $unit['content']['Deposits'][5]);
-                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$unit_start, $unit['content']['Loans'][0]);
-                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$unit_start, $unit['content']['Loans'][1]);
-                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.$unit_start, $unit['content']['Loans'][2]);
-                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.$unit_start, $unit['content']['Loans'][3]);
-                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.$unit_start, $unit['content']['Loans'][4]);
-                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.$unit_start, $unit['content']['Loans'][5]);
-                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.$unit_start, $unit['content']['Deposits_Loans'][0]);
-                                    $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.$unit_start, $unit['content']['Deposits_Loans'][1]);
-                                    $unit_start++;
-                                }
-                            }
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty:
 
-                            $start = $start + $num ;
-                        } else {
-                            // echo json_encode($statistics[0]['data'][$key]);die();
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('A'.$start, $key);
+                $all_names = result_to_array($statistics_datas, 'all_name');
+                $statistics_datas_map = result_to_map($statistics_datas, 'all_name');
+                $DepartmentService = \Common\Service\DepartmentService::get_instance();
+                $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+                $data = [];
+                foreach ($departments as $department) {
+                    $statistics_datas_map[$department['all_name']]['other_name'] = $department['other_name'] ? $department['other_name'] : $department['all_name'];
+                    if ($department['sub_type']) {
+                        $data[$department['sub_type']][] = $statistics_datas_map[$department['all_name']];
 
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('B'.$start, '');
 
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('C'.$start,  $statistics[1]['data'][$key]['Deposits'][0]);
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$start,  $statistics[1]['data'][$key]['Deposits'][1]);
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('E'.$start,  $statistics[1]['data'][$key]['Deposits'][2]);
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('F'.$start,  $statistics[1]['data'][$key]['Deposits'][3]);
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('G'.$start,  $statistics[1]['data'][$key]['Deposits'][4]);
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('H'.$start,  $statistics[1]['data'][$key]['Deposits'][5]);
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('I'.$start,  $statistics[1]['data'][$key]['Loans'][0]);
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('J'.$start,  $statistics[1]['data'][$key]['Loans'][1]);
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('K'.$start,  $statistics[1]['data'][$key]['Loans'][2]);
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('L'.$start,  $statistics[1]['data'][$key]['Loans'][3]);
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('M'.$start,  $statistics[1]['data'][$key]['Loans'][4]);
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('N'.$start,  $statistics[1]['data'][$key]['Loans'][5]);
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('O'.$start,  $statistics[1]['data'][$key]['Deposits_Loans'][0]);
-                            $PHPExcel->setActiveSheetIndex(0)->setCellValue('P'.$start,  $statistics[1]['data'][$key]['Deposits_Loans'][1]);
+                    } else {
+                        $data[0][] = $statistics_datas_map[$department['all_name']];
+                    }
+                }
 
-                        }
+                //求累计
+                $data_temp = $data;
+                foreach ($data_temp as $key => $item) {
+                    $all_item = [];
+                    $all_item['other_name'] = '累计';
+                    foreach ($item as $_item){
 
+
+                        $all_item['income'] += $_item['income'];
+                        $all_last_year_income += $_item['income'] / (1 + $_item['income_yoy'] / 100);
+                        $all_item['income_a'] += $_item['income_a'];
+                        $all_item['income_b'] += $_item['income_b'];
+                        $all_item['income_c'] += $_item['income_c'];
+                        $all_item['reserves'] += $_item['reserves'];
+                        $all_item['payoff'] += $_item['payoff'];
+                        $all_item['payoff_a'] += $_item['payoff_a'];
+                        $all_item['payoff_b'] += $_item['payoff_b'];
+                        $all_item['payoff_c'] += $_item['payoff_c'];
+                        $all_item['staff'] += $_item['staff'];
+                        $all_item['authorized'] += $_item['authorized'];
 
                     }
-
+                    $all_item['income_yoy'] = fix_2(($all_item['income'] - $all_last_year_income) / $all_last_year_income);
+                    $all_item['payoff_rate'] =$all_item['income'] ?  fix_2($all_item['payoff'] / $all_item['income']) : 100;
+                    $all_item['payoff_a_rate'] =$all_item['income_a'] ? fix_2($all_item['payoff_a'] / $all_item['income_a']) : 100;
+                    $all_item['payoff_b_rate'] =$all_item['income_b'] ? fix_2($all_item['payoff_b'] / $all_item['income_b']) : 100;
+                    $all_item['payoff_c_rate'] =$all_item['income_c'] ? fix_2($all_item['payoff_b'] / $all_item['income_c']) : 100;
+                    array_unshift($data[$key], $all_item);
 
                 }
 
 
-                $PHPExcel->getActiveSheet(0)->mergeCells('A1:P1');
-                $PHPExcel->getActiveSheet(0)->mergeCells('A2:A3');
-                $PHPExcel->getActiveSheet(0)->mergeCells('B2:B3');
-                $PHPExcel->getActiveSheet(0)->mergeCells('C2:H2');
-                $PHPExcel->getActiveSheet(0)->mergeCells('I2:N2');
-                $PHPExcel->getActiveSheet(0)->mergeCells('O2:P2');
 
-                $PHPExcel->getActiveSheet(0)->getStyle('A1')->applyFromArray(
-                    [
-                        'alignment' => [
-                            'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                //var_dump($data);die();
+
+                $title = '财产保险公司统计表' . $title;
+                $index = 0;
+
+                //没有一级部门的部门数据
+                if ($data[0]) {
+
+                    $line = 'D';
+                    foreach ($data[0] as $_data) {
+
+                        if ($line > 'Q') {
+                            $PHPExcel->createSheet();
+                            $index++;
+                            $line = 'D';
+                        }
+
+                        if ($line == 'D') {
+
+                            $PHPExcel->setActiveSheetIndex($index)
+                                ->setCellValue('A1', '财产保险公司统计表'.'('.$year.'-'.$month.')'. '    单位: 万元    '.'('.$index.')');
+
+                            $PHPExcel->setActiveSheetIndex($index)
+                                ->setCellValue('A2', '机构')
+                                ->setCellValue('A3', '保费')
+                                ->setCellValue('B3', '保费收入')
+                                ->setCellValue('B4', '同比%')
+                                ->setCellValue('B5', '其中')
+                                ->setCellValue('C5', '企业财产险')
+                                ->setCellValue('C6', '机动车辆险')
+                                ->setCellValue('C7', '其他险')
+                                ->setCellValue('A8', '存储金额')
+                                ->setCellValue('A9', '赔付')
+                                ->setCellValue('B9', '赔付支出')
+                                ->setCellValue('B10', '简单赔付率%')
+                                ->setCellValue('B11', '其中')
+                                ->setCellValue('C11', '企业财产险')
+                                ->setCellValue('C12', '赔付率%')
+                                ->setCellValue('C13', '机动车辆险')
+                                ->setCellValue('C14', '赔付率%')
+                                ->setCellValue('C15', '其他险')
+                                ->setCellValue('C16', '赔付率%')
+                                ->setCellValue('A17', '营销员')
+                                ->setCellValue('C17', '期末在岗人数')
+                                ->setCellValue('C18', '期末持证人数')
+                                ->setCellValue('A19', '保费排名')
+                                ->setCellValue('A20', '保费份额占比%');
+
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A1:Q1');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A2:C2');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A3:A7');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B3:C3');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B4:C4');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B5:B7');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A8:C8');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A9:A16');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B9:C9');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B10:C10');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B11:B16');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A17:B18');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A19:C19');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A20:C20');
+
+
+                            $PHPExcel->getActiveSheet($index)->getStyle('A1')->applyFromArray(
+                                [
+                                    'alignment' => [
+                                        'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                                    ]
+                                ]
+                            );
+                        }
+
+                        $PHPExcel->setActiveSheetIndex($index)
+                            ->setCellValue($line.'2', $_data['other_name'])
+                            ->setCellValue($line.'3', $_data['income'])
+                            ->setCellValue($line.'4', $_data['income_yoy'])
+                            ->setCellValue($line.'5', $_data['income_a'])
+                            ->setCellValue($line.'6', $_data['income_b'])
+                            ->setCellValue($line.'7', $_data['income_c'])
+                            ->setCellValue($line.'8', $_data['reserves'])
+                            ->setCellValue($line.'9', $_data['payoff'])
+                            ->setCellValue($line.'10', $_data['payoff_rate'])
+                            ->setCellValue($line.'11', $_data['payoff_a'])
+                            ->setCellValue($line.'12', $_data['payoff_a_rate'])
+                            ->setCellValue($line.'13', $_data['payoff_b'])
+                            ->setCellValue($line.'14', $_data['payoff_b_rate'])
+                            ->setCellValue($line.'15', $_data['payoff_c'])
+                            ->setCellValue($line.'16', $_data['payoff_c_rate'])
+                            ->setCellValue($line.'17', $_data['staff'])
+                            ->setCellValue($line.'18', $_data['authorized'])
+                            ->setCellValue($line.'19', $_data['sort'])
+                            ->setCellValue($line.'20', $_data['percent']);
+                        $line = chr(ord($line)+1);
+
+                    }
+                }
+
+                //获取附表
+                if (count($data) > 2) {
+                    $PHPExcel->createSheet();
+                    $index ++;
+                }
+
+                $sub_type_map = \Common\Model\FinancialDepartmentModel::$SUB_TYPE_insurance_property_MAP;
+                $line = 'D';
+
+                foreach ($data as $key => $__data) {
+                    if ($key > 0) {
+                        $PHPExcel->setActiveSheetIndex($index)->setCellValue($line.'2', $sub_type_map[$key]);
+
+                        if (isset($old_line) && $line > $old_line) {
+                           // echo $old_line . '-' . $line;
+                            $PHPExcel->getActiveSheet($index)->mergeCells($old_line.'2'.':'.chr(ord($line)-1).'2');
+                        }
+                        $old_line = $line;
+
+                        foreach ($__data as $_data){
+                            //$line = 'D';
+//                            if ($line > 'F') {
+//                                $PHPExcel->createSheet();
+//                                $index++;
+//                                $line = 'D';//Q
+//                            }
+
+                            if ($line == 'D') {
+
+                                $PHPExcel->setActiveSheetIndex($index)
+                                    ->setCellValue('A1', '财产保险公司统计表(附表)'.'('.$year.'-'.$month.')'. '    单位: 万元');
+
+                                $PHPExcel->setActiveSheetIndex($index)
+                                    ->setCellValue('A2', '机构')
+                                    ->setCellValue('A4', '保费')
+                                    ->setCellValue('B4', '保费收入')
+                                    ->setCellValue('B5', '同比%')
+                                    ->setCellValue('B6', '其中')
+                                    ->setCellValue('C6', '企业财产险')
+                                    ->setCellValue('C7', '机动车辆险')
+                                    ->setCellValue('C8', '其他险')
+                                    ->setCellValue('A9', '存储金额')
+                                    ->setCellValue('A10', '赔付')
+                                    ->setCellValue('B10', '赔付支出')
+                                    ->setCellValue('B11', '简单赔付率%')
+                                    ->setCellValue('B12', '其中')
+                                    ->setCellValue('C12', '企业财产险')
+                                    ->setCellValue('C13', '赔付率%')
+                                    ->setCellValue('C14', '机动车辆险')
+                                    ->setCellValue('C15', '赔付率%')
+                                    ->setCellValue('C16', '其他险')
+                                    ->setCellValue('C17', '赔付率%')
+                                    ->setCellValue('A18', '营销员')
+                                    ->setCellValue('C18', '期末在岗人数')
+                                    ->setCellValue('C19', '期末持证人数')
+                                    ->setCellValue('A20', '保费排名')
+                                    ->setCellValue('A21', '保费份额占比%');
+
+                                $PHPExcel->getActiveSheet($index)->mergeCells('A1:Q1');
+                                $PHPExcel->getActiveSheet($index)->mergeCells('A2:C3');
+                                $PHPExcel->getActiveSheet($index)->mergeCells('A4:A8');
+                                $PHPExcel->getActiveSheet($index)->mergeCells('B4:C4');
+                                $PHPExcel->getActiveSheet($index)->mergeCells('B5:C5');
+                                $PHPExcel->getActiveSheet($index)->mergeCells('B6:B8');
+                                $PHPExcel->getActiveSheet($index)->mergeCells('A9:C9');
+                                $PHPExcel->getActiveSheet($index)->mergeCells('A10:A17');
+                                $PHPExcel->getActiveSheet($index)->mergeCells('B10:C10');
+                                $PHPExcel->getActiveSheet($index)->mergeCells('B11:C11');
+                                $PHPExcel->getActiveSheet($index)->mergeCells('B12:B17');
+                                $PHPExcel->getActiveSheet($index)->mergeCells('A18:B19');
+                                $PHPExcel->getActiveSheet($index)->mergeCells('A20:C20');
+                                $PHPExcel->getActiveSheet($index)->mergeCells('A21:C21');
+
+
+                                $PHPExcel->getActiveSheet($index)->getStyle('A1')->applyFromArray(
+                                    [
+                                        'alignment' => [
+                                            'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                                        ]
+                                    ]
+                                );
+                            }
+
+                            $PHPExcel->setActiveSheetIndex($index)
+                                ->setCellValue($line.'3', $_data['other_name'])
+                                ->setCellValue($line.'4', $_data['income'])
+                                ->setCellValue($line.'5', $_data['income_yoy'])
+                                ->setCellValue($line.'6', $_data['income_a'])
+                                ->setCellValue($line.'7', $_data['income_b'])
+                                ->setCellValue($line.'8', $_data['income_c'])
+                                ->setCellValue($line.'9', $_data['reserves'])
+                                ->setCellValue($line.'10', $_data['payoff'])
+                                ->setCellValue($line.'11', $_data['payoff_rate'])
+                                ->setCellValue($line.'12', $_data['payoff_a'])
+                                ->setCellValue($line.'13', $_data['payoff_a_rate'])
+                                ->setCellValue($line.'14', $_data['payoff_b'])
+                                ->setCellValue($line.'15', $_data['payoff_b_rate'])
+                                ->setCellValue($line.'16', $_data['payoff_c'])
+                                ->setCellValue($line.'17', $_data['payoff_c_rate'])
+                                ->setCellValue($line.'18', $_data['staff'])
+                                ->setCellValue($line.'19', $_data['authorized'])
+                                ->setCellValue($line.'20', $_data['sort'])
+                                ->setCellValue($line.'21', $_data['percent']);
+
+
+
+                            $line = chr(ord($line)+1);
+
+                        }
+
+                    }
+                }
+                if (isset($old_line) && $line > $old_line) {
+                    // echo $old_line . '-' . $line;
+                    $PHPExcel->getActiveSheet($index)->mergeCells($old_line.'2'.':'.chr(ord($line)-1).'2');
+                }
+
+
+
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceLife:
+
+                $all_names = result_to_array($statistics_datas, 'all_name');
+                $statistics_datas_map = result_to_map($statistics_datas, 'all_name');
+                $DepartmentService = \Common\Service\DepartmentService::get_instance();
+                $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+                $data = [];
+                foreach ($departments as $department) {
+                    $statistics_datas_map[$department['all_name']]['other_name'] = $department['other_name'] ? $department['other_name'] : $department['all_name'];
+                    $data[] = $statistics_datas_map[$department['all_name']];
+
+                }
+
+              //  var_dump($data);die();
+                //求累计
+                $data_temp = $data;
+                $all_item = [];
+                $all_item['other_name'] = '累计';
+                foreach ($data_temp as $key => $_item) {
+
+                    $all_item['income'] += $_item['income'];
+                    $all_last_year_income_a += $_item['income_a'] / (1 + $_item['income_a_yoy'] / 100);
+                    $all_item['income_a'] += $_item['income_a'];
+
+                    $all_item['income_a_a'] += $_item['income_a_a'];
+                    $all_item['income_a_b'] += $_item['income_a_b'];
+                    $all_item['income_b'] += $_item['income_b'];
+                    $all_item['income_c'] += $_item['income_c'];
+
+                    $all_item['payoff_a'] += $_item['payoff_a'];
+                    $all_item['payoff_b'] += $_item['payoff_b'];
+                    $all_item['payoff_c'] += $_item['payoff_c'];
+                    $all_item['payoff_d'] += $_item['payoff_d'];
+                    $all_item['backoff'] += $_item['backoff'];
+                    $all_item['staff'] += $_item['staff'];
+                    $all_item['authorized'] += $_item['authorized'];
+
+
+                }
+
+                $all_item['income_a_yoy'] = fix_2(($all_item['income_a'] - $all_last_year_income_a) / $all_last_year_income_a);
+                $all_item['payoff_a_rate'] =$all_item['income_b'] ?  fix_2($all_item['payoff_a'] / $all_item['income_b']) : 100;
+
+
+                array_unshift($data, $all_item);
+
+                //var_dump($data);die();
+
+                $title = '人身保险公司统计表' . $title;
+                $index = 0;
+
+                if ($data) {
+
+                    $line = 'D';
+                    foreach ($data as $_data) {
+
+                        if ($line > 'F') {
+                            $PHPExcel->createSheet();
+                            $index++;
+                            $line = 'D';
+                        }
+
+                        if ($line == 'D') {
+
+                            $PHPExcel->setActiveSheetIndex($index)
+                                ->setCellValue('A1', '人身保险公司统计表'.'('.$year.'-'.$month.')'. '    单位: 万元    '.'('.$index.')');
+
+                            $PHPExcel->setActiveSheetIndex($index)
+                                ->setCellValue('A2', '机构')
+                                ->setCellValue('A3', '保费')
+                                ->setCellValue('B3', '保费收入')
+                                ->setCellValue('B4', '1.个人营销')
+                                ->setCellValue('B5', '同比%')
+                                ->setCellValue('B6', '其中')
+                                ->setCellValue('C6', '新单首期')
+                                ->setCellValue('C7', '新单期缴')
+                                ->setCellValue('B8', '2.团体业务')
+                                ->setCellValue('B9', '3.银行代理')
+                                ->setCellValue('A10', '赔付')
+                                ->setCellValue('B10', '短险赔付金额')
+                                ->setCellValue('B11', '短险赔付率%')
+                                ->setCellValue('B12', '死伤医给付金额')
+                                ->setCellValue('B13', '满期给付金额')
+                                ->setCellValue('B14', '年金给付金额')
+                                ->setCellValue('A15', '退保金额')
+                                ->setCellValue('A16', '营销员人数')
+                                ->setCellValue('A17', '持证人数')
+                                ->setCellValue('A18', '保费排名')
+                                ->setCellValue('A19', '保费占比');
+
+
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A1:Q1');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A2:C2');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A3:A9');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B3:C3');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B4:C4');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B5:C5');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B6:B7');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B8:C8');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B9:C9');
+
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A10:A14');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B10:C10');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B11:C11');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B12:C12');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B13:C13');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('B14:C14');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A15:C15');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A16:C16');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A17:C17');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A18:C18');
+                            $PHPExcel->getActiveSheet($index)->mergeCells('A19:C19');
+
+
+
+                            $PHPExcel->getActiveSheet($index)->getStyle('A1')->applyFromArray(
+                                [
+                                    'alignment' => [
+                                        'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                                    ]
+                                ]
+                            );
+                        }
+
+                        $PHPExcel->setActiveSheetIndex($index)
+                            ->setCellValue($line.'2', $_data['other_name'])
+                            ->setCellValue($line.'3', $_data['income'])
+                            ->setCellValue($line.'4', $_data['income_a'])
+                            ->setCellValue($line.'5', $_data['income_a_yoy'])
+                            ->setCellValue($line.'6', $_data['income_a_a'])
+                            ->setCellValue($line.'7', $_data['income_a_b'])
+                            ->setCellValue($line.'8', $_data['income_b'])
+                            ->setCellValue($line.'9', $_data['income_c'])
+                            ->setCellValue($line.'10', $_data['payoff_a'])
+                            ->setCellValue($line.'11', $_data['payoff_a_rate'])
+                            ->setCellValue($line.'12', $_data['payoff_b'])
+                            ->setCellValue($line.'13', $_data['payoff_c'])
+                            ->setCellValue($line.'14', $_data['payoff_d'])
+                            ->setCellValue($line.'15', $_data['backoff'])
+                            ->setCellValue($line.'16', $_data['staff'])
+                            ->setCellValue($line.'17', $_data['authorized'])
+                            ->setCellValue($line.'18', $_data['sort'])
+                            ->setCellValue($line.'19', $_data['percent']);
+                        $line = chr(ord($line)+1);
+
+                    }
+                }
+
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceMutual:
+
+                $all_names = result_to_array($statistics_datas, 'all_name');
+                $statistics_datas_map = result_to_map($statistics_datas, 'all_name');
+                $DepartmentService = \Common\Service\DepartmentService::get_instance();
+                $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+                $data = [];
+                foreach ($departments as $department) {
+                    $statistics_datas_map[$department['all_name']]['other_name'] = $department['other_name'] ? $department['other_name'] : $department['all_name'];
+                    $data[] = $statistics_datas_map[$department['all_name']];
+
+                }
+
+                //var_dump($data);die();
+                $title = '保险互助社统计表' . $title;
+
+                $index = 0;
+                if ($data) {
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A1', '保险互助社统计表'.'('.$year.'-'.$month.')'. '    单位: 万元)');
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A2', '公司名称')
+                        ->setCellValue('B2', '家庭财产险')
+                        ->setCellValue('H2', '意外险')
+                        ->setCellValue('N2', '补充医疗互助保险')
+                        ->setCellValue('T2', '合计')
+                        ->setCellValue('B3', '承保件数')
+                        ->setCellValue('C3', '承保户数')
+                        ->setCellValue('D3', '保费')
+                        ->setCellValue('E3', '保险金额')
+                        ->setCellValue('F3', '赔付件数')
+                        ->setCellValue('G3', '赔付金额')
+                        ->setCellValue('H3', '承保件数')
+                        ->setCellValue('I3', '承保户数')
+                        ->setCellValue('J3', '保费')
+                        ->setCellValue('K3', '保险金额')
+                        ->setCellValue('L3', '赔付件数')
+                        ->setCellValue('M3', '赔付金额')
+                        ->setCellValue('N3', '承保件数')
+                        ->setCellValue('O3', '承保户数')
+                        ->setCellValue('P3', '保费')
+                        ->setCellValue('Q3', '保险金额')
+                        ->setCellValue('R3', '赔付件数')
+                        ->setCellValue('S3', '赔付金额')
+                        ->setCellValue('T3', '承保件数')
+                        ->setCellValue('U3', '承保户数')
+                        ->setCellValue('V3', '保费')
+                        ->setCellValue('W3', '保险金额')
+                        ->setCellValue('X3', '赔付件数')
+                        ->setCellValue('Y3', '赔付金额');
+
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A1:Y1');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A2:A3');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('B2:G2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('H2:M2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('N2:S2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('T2:Y2');
+
+
+
+
+                    $PHPExcel->getActiveSheet($index)->getStyle('A1')->applyFromArray(
+                        [
+                            'alignment' => [
+                                'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                            ]
                         ]
-                    ]
-                );
+                    );
+
+                    $line = 4;
+                    foreach ($data as $_data) {
+                        $PHPExcel->setActiveSheetIndex($index)
+                            ->setCellValue('A'.$line, $_data['other_name'])
+                            ->setCellValue('B'.$line, $_data['Life_A'])
+                            ->setCellValue('C'.$line, $_data['Life_B'])
+                            ->setCellValue('D'.$line, $_data['Life_C'])
+                            ->setCellValue('E'.$line, $_data['Life_D'])
+                            ->setCellValue('F'.$line, $_data['Life_E'])
+                            ->setCellValue('G'.$line, $_data['Life_F'])
+                            ->setCellValue('H'.$line, $_data['Casualty_A'])
+                            ->setCellValue('I'.$line, $_data['Casualty_B'])
+                            ->setCellValue('J'.$line, $_data['Casualty_C'])
+                            ->setCellValue('K'.$line, $_data['Casualty_D'])
+                            ->setCellValue('L'.$line, $_data['Casualty_E'])
+                            ->setCellValue('M'.$line, $_data['Casualty_F'])
+                            ->setCellValue('N'.$line, $_data['Medical_A'])
+                            ->setCellValue('O'.$line, $_data['Medical_B'])
+                            ->setCellValue('P'.$line, $_data['Medical_C'])
+                            ->setCellValue('Q'.$line, $_data['Medical_D'])
+                            ->setCellValue('R'.$line, $_data['Medical_E'])
+                            ->setCellValue('S'.$line, $_data['Medical_F'])
+                            ->setCellValue('T'.$line, $_data['total_a'])
+                            ->setCellValue('U'.$line, $_data['total_b'])
+                            ->setCellValue('V'.$line, $_data['total_c'])
+                            ->setCellValue('W'.$line, $_data['total_d'])
+                            ->setCellValue('X'.$line, $_data['total_e'])
+                            ->setCellValue('Y'.$line, $_data['total_f']);
+                        $line ++;
+                        $PHPExcel->setActiveSheetIndex($index)
+                            ->setCellValue('A'.$line, $_data['other_name'].'(年度)')
+                            ->setCellValue('B'.$line, $_data['st_a']['Life_A'])
+                            ->setCellValue('C'.$line, $_data['st_a']['Life_B'])
+                            ->setCellValue('D'.$line, $_data['st_a']['Life_C'])
+                            ->setCellValue('E'.$line, $_data['st_a']['Life_D'])
+                            ->setCellValue('F'.$line, $_data['st_a']['Life_E'])
+                            ->setCellValue('G'.$line, $_data['st_a']['Life_F'])
+                            ->setCellValue('H'.$line, $_data['st_a']['Casualty_A'])
+                            ->setCellValue('I'.$line, $_data['st_a']['Casualty_B'])
+                            ->setCellValue('J'.$line, $_data['st_a']['Casualty_C'])
+                            ->setCellValue('K'.$line, $_data['st_a']['Casualty_D'])
+                            ->setCellValue('L'.$line, $_data['st_a']['Casualty_E'])
+                            ->setCellValue('M'.$line, $_data['st_a']['Casualty_F'])
+                            ->setCellValue('N'.$line, $_data['st_a']['Medical_A'])
+                            ->setCellValue('O'.$line, $_data['st_a']['Medical_B'])
+                            ->setCellValue('P'.$line, $_data['st_a']['Medical_C'])
+                            ->setCellValue('Q'.$line, $_data['st_a']['Medical_D'])
+                            ->setCellValue('R'.$line, $_data['st_a']['Medical_E'])
+                            ->setCellValue('S'.$line, $_data['st_a']['Medical_F'])
+                            ->setCellValue('T'.$line, $_data['st_a']['total_a'])
+                            ->setCellValue('U'.$line, $_data['st_a']['total_b'])
+                            ->setCellValue('V'.$line, $_data['st_a']['total_c'])
+                            ->setCellValue('W'.$line, $_data['st_a']['total_d'])
+                            ->setCellValue('X'.$line, $_data['st_a']['total_e'])
+                            ->setCellValue('Y'.$line, $_data['st_a']['total_f']);
+                        $line ++;
+                        $PHPExcel->setActiveSheetIndex($index)
+                            ->setCellValue('A'.$line, $_data['other_name'].'(开业以来)')
+                            ->setCellValue('B'.$line, $_data['st_b']['Life_A'])
+                            ->setCellValue('C'.$line, $_data['st_b']['Life_B'])
+                            ->setCellValue('D'.$line, $_data['st_b']['Life_C'])
+                            ->setCellValue('E'.$line, $_data['st_b']['Life_D'])
+                            ->setCellValue('F'.$line, $_data['st_b']['Life_E'])
+                            ->setCellValue('G'.$line, $_data['st_b']['Life_F'])
+                            ->setCellValue('H'.$line, $_data['st_b']['Casualty_A'])
+                            ->setCellValue('I'.$line, $_data['st_b']['Casualty_B'])
+                            ->setCellValue('J'.$line, $_data['st_b']['Casualty_C'])
+                            ->setCellValue('K'.$line, $_data['st_b']['Casualty_D'])
+                            ->setCellValue('L'.$line, $_data['st_b']['Casualty_E'])
+                            ->setCellValue('M'.$line, $_data['st_b']['Casualty_F'])
+                            ->setCellValue('N'.$line, $_data['st_b']['Medical_A'])
+                            ->setCellValue('O'.$line, $_data['st_b']['Medical_B'])
+                            ->setCellValue('P'.$line, $_data['st_b']['Medical_C'])
+                            ->setCellValue('Q'.$line, $_data['st_b']['Medical_D'])
+                            ->setCellValue('R'.$line, $_data['st_b']['Medical_E'])
+                            ->setCellValue('S'.$line, $_data['st_b']['Medical_F'])
+                            ->setCellValue('T'.$line, $_data['st_b']['total_a'])
+                            ->setCellValue('U'.$line, $_data['st_b']['total_b'])
+                            ->setCellValue('V'.$line, $_data['st_b']['total_c'])
+                            ->setCellValue('W'.$line, $_data['st_b']['total_d'])
+                            ->setCellValue('X'.$line, $_data['st_b']['total_e'])
+                            ->setCellValue('Y'.$line, $_data['st_b']['total_f']);
+                        $line ++;
+
+                    }
+                }
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialVouch:
+                $all_names = result_to_array($statistics_datas, 'all_name');
+                $statistics_datas_map = result_to_map($statistics_datas, 'all_name');
+                $DepartmentService = \Common\Service\DepartmentService::get_instance();
+                $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+                $data = [];
+                foreach ($departments as $department) {
+                    $statistics_datas_map[$department['all_name']]['other_name'] = $department['other_name'] ? $department['other_name'] : $department['all_name'];
+                    $data[] = $statistics_datas_map[$department['all_name']];
+
+                }
+
+                //var_dump($data);die();
+                $title = '担保公司统计表' . $title;
+
+                $index = 0;
+                if ($data) {
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A1', '担保公司统计表'.'('.$year.'-'.$month.')'. '    单位: 万元)');
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A2', '公司名称')
+                        ->setCellValue('B2', '期末担保余额')
+                        ->setCellValue('F2', '累计担保额')
+                        ->setCellValue('J2', '担保费')
+                        ->setCellValue('L2', '累计收回')
+                        ->setCellValue('N2', '本期利润')
+                        ->setCellValue('O2', '纳税总额')
+                        ->setCellValue('B3', '本期余额')
+                        ->setCellValue('C3', '本期笔数')
+                        ->setCellValue('D3', '去年同期余额')
+                        ->setCellValue('E3', '去年同期笔数')
+                        ->setCellValue('F3', '本年担保额')
+                        ->setCellValue('G3', '本年担保笔数')
+                        ->setCellValue('H3', '去年同期担保额')
+                        ->setCellValue('I3', '去年同期担保笔数')
+                        ->setCellValue('J3', '本月收入')
+                        ->setCellValue('K3', '本年收入')
+                        ->setCellValue('L3', '本月收回')
+                        ->setCellValue('M3', '本年累计收回');
 
 
 
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A1:O1');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A2:A3');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('B2:E2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('F2:I2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('J2:K2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('L2:M2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('N2:N3');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('O2:O3');
+
+
+
+                    $PHPExcel->getActiveSheet($index)->getStyle('A1')->applyFromArray(
+                        [
+                            'alignment' => [
+                                'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                            ]
+                        ]
+                    );
+
+                    $line = 4;
+
+                    foreach ($data as $_data) {
+                        $PHPExcel->setActiveSheetIndex($index)
+                            ->setCellValue('A'.$line, $_data['other_name'])
+                            ->setCellValue('B'.$line, $_data['C_Balance'])
+                            ->setCellValue('C'.$line, $_data['C_Quantity'])
+                            ->setCellValue('D'.$line, $_data['C_Balance_Ly'])
+                            ->setCellValue('E'.$line, $_data['C_Quantity_Ly'])
+                            ->setCellValue('F'.$line, $_data['G_Vouch'])
+                            ->setCellValue('G'.$line, $_data['G_Quantity'])
+                            ->setCellValue('H'.$line, $_data['G_Vouch_Ly'])
+                            ->setCellValue('I'.$line, $_data['G_Quantity_Ly'])
+                            ->setCellValue('J'.$line, $_data['C_Income'])
+                            ->setCellValue('K'.$line, $_data['G_Income'])
+                            ->setCellValue('L'.$line, $_data['C_Recover'])
+                            ->setCellValue('M'.$line, $_data['G_Recover'])
+                            ->setCellValue('N'.$line, $_data['C_Profit'])
+                            ->setCellValue('O'.$line, $_data['C_Taxable']);
+
+                        $line ++;
+
+
+                    }
+                }
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestment:
+
+                $all_names = result_to_array($statistics_datas, 'all_name');
+                $statistics_datas_map = result_to_map($statistics_datas, 'all_name');
+                $DepartmentService = \Common\Service\DepartmentService::get_instance();
+                $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+                $data = [];
+                foreach ($departments as $department) {
+                    $statistics_datas_map[$department['all_name']]['other_name'] = $department['other_name'] ? $department['other_name'] : $department['all_name'];
+                    $data[] = $statistics_datas_map[$department['all_name']];
+
+                }
+
+               // var_dump($data);die();
+                $title = '股权投资和创业投资机构统计表' . $title;
+
+                $index = 0;
+                if ($data) {
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A1', '股权投资和创业投资机构统计表'.'('.$year.'-'.$month.')'. '    单位: 万元)');
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A2', '公司名称')
+                        ->setCellValue('B2', '注册资金')
+                        ->setCellValue('C2', '已投资项目数')
+                        ->setCellValue('F2', '已投资项目额')
+                        ->setCellValue('I2', '退出项目')
+                        ->setCellValue('Y2', '各类税费')
+                        ->setCellValue('AB2', '从业人员数量')
+                        ->setCellValue('AC2', '从业人员')
+
+                        ->setCellValue('C3', '已投资项目总数')
+                        ->setCellValue('D3', '其中：属于初创期投资的项目数')
+                        ->setCellValue('E3', '所投资项目总额')
+                        ->setCellValue('F3', '其中：属于初创期投资的项目投资额')
+                        ->setCellValue('G3', '退出项目数（个）')
+                        ->setCellValue('H3', '其中：上市退出项目数（个')
+                        ->setCellValue('I3', '原始投资额')
+                        ->setCellValue('J3', '退出后回收额')
+                        ->setCellValue('K3', '管理层回购退出项目数（个）')
+                        ->setCellValue('L3', '原始投资额')
+                        ->setCellValue('M3', '退出后回收额')
+                        ->setCellValue('N3', '股权转让退出项目数（个')
+                        ->setCellValue('O3', '原始投资额')
+                        ->setCellValue('P3', '退出后回收额')
+                        ->setCellValue('Q3', '企业并购退出项目个数（个）')
+                        ->setCellValue('R3', '原始投资额')
+                        ->setCellValue('S3', '退出后回收额')
+                        ->setCellValue('T3', '其他退出方式项目数（个）')
+                        ->setCellValue('U3', '原始投资额')
+                        ->setCellValue('V3', '退出后回收额')
+                        ->setCellValue('W3', '营业税')
+                        ->setCellValue('X3', '所得税')
+                        ->setCellValue('Y3', '其他税费')
+                        ->setCellValue('Z3', '按性别')
+                        ->setCellValue('AC3', '按学历')
+                        ->setCellValue('AG3', '管理人员')
+                        ->setCellValue('AH3', '劳务派遣制员工')
+                        ->setCellValue('AI3', '持有国内高端从业资格证书的人员')
+                        ->setCellValue('AJ3', '持有国外高端从业资格证书的人员')
+                        ->setCellValue('Z4', '男性')
+                        ->setCellValue('AA4', '女性')
+                        ->setCellValue('AC4', '大专及大专以下')
+                        ->setCellValue('AD4', '本科')
+                        ->setCellValue('AE4', '硕士研究生')
+                        ->setCellValue('AF4', '博士及博士以上');
+
+
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A1:AF1');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A2:A4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('B2:B4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('AB2:AB4');
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('C2:E2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('F2:H2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('I2:X2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('Y2:AA2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('AC2:AJ2');
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('Z3:AA3');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('AC3:AF3');
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('C3:C4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('D3:D4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('E3:E4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('F3:F4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('G3:G4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('H3:H4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('I3:I4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('J3:J4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('K3:K4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('L3:L4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('M3:M4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('N3:N4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('O3:O4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('P3:P4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('Q3:Q4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('R3:R4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('S3:S4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('T3:T4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('U3:U4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('V3:V4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('W3:W4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('X3:X4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('Y3:Y4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('AG3:AG4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('AH3:AH4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('AI3:AI4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('AJ3:AJ4');
+
+                    $PHPExcel->getActiveSheet($index)->getStyle('A1')->applyFromArray(
+                        [
+                            'alignment' => [
+                                'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                            ]
+                        ]
+                    );
+
+                    $line = 5;
+
+                    foreach ($data as $_data) {
+                        $PHPExcel->setActiveSheetIndex($index)
+                            ->setCellValue('A'.$line, $_data['other_name'])
+                            ->setCellValue('B'.$line, $_data['capital'])
+                            ->setCellValue('C'.$line, $_data['Projects'])
+                            ->setCellValue('D'.$line, $_data['Projects_su'])
+                            ->setCellValue('E'.$line, $_data['Amount'])
+                            ->setCellValue('F'.$line, $_data['Amount_su'])
+                            ->setCellValue('G'.$line, $_data['exits_num'])
+                            ->setCellValue('H'.$line, $_data['exits_a_num'])
+                            ->setCellValue('I'.$line, $_data['exits_a_Investment'])
+                            ->setCellValue('J'.$line, $_data['exits_a_Recycling'])
+                            ->setCellValue('K'.$line, $_data['exits_b_num'])
+                            ->setCellValue('L'.$line, $_data['exits_b_Investment'])
+                            ->setCellValue('M'.$line, $_data['exits_b_Recycling'])
+                            ->setCellValue('N'.$line, $_data['exits_c_num'])
+                            ->setCellValue('O'.$line, $_data['exits_c_Investment'])
+                            ->setCellValue('P'.$line, $_data['exits_c_Recycling'])
+                            ->setCellValue('Q'.$line, $_data['exits_d_num'])
+                            ->setCellValue('R'.$line, $_data['exits_d_Investment'])
+                            ->setCellValue('S'.$line, $_data['exits_d_Recycling'])
+                            ->setCellValue('T'.$line, $_data['exits_e_num'])
+                            ->setCellValue('U'.$line, $_data['exits_e_Investment'])
+                            ->setCellValue('V'.$line, $_data['exits_e_Recycling'])
+                            ->setCellValue('W'.$line, $_data['Tax_B'])
+                            ->setCellValue('X'.$line, $_data['Tax_I'])
+                            ->setCellValue('Y'.$line, $_data['Tax_O'])
+                            ->setCellValue('Z'.$line, $_data['Staff'])
+                            ->setCellValue('AA'.$line, $_data['Staff_Sub'][0])
+                            ->setCellValue('AB'.$line, $_data['Staff_Sub'][1])
+                            ->setCellValue('AC'.$line, $_data['Staff_Sub'][2])
+                            ->setCellValue('AD'.$line, $_data['Staff_Sub'][3])
+                            ->setCellValue('AE'.$line, $_data['Staff_Sub'][4])
+                            ->setCellValue('AF'.$line, $_data['Staff_Sub'][5])
+                            ->setCellValue('AG'.$line, $_data['Staff_Sub'][6])
+                            ->setCellValue('AH'.$line, $_data['Staff_Sub'][7])
+                            ->setCellValue('AI'.$line, $_data['Staff_Sub'][8])
+                            ->setCellValue('AJ'.$line, $_data['Staff_Sub'][9]);
+
+                        $line ++;
+
+
+                    }
+                }
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager:
+
+                $all_names = result_to_array($statistics_datas, 'all_name');
+                $statistics_datas_map = result_to_map($statistics_datas, 'all_name');
+                $DepartmentService = \Common\Service\DepartmentService::get_instance();
+                $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+                $data = [];
+                foreach ($departments as $department) {
+                    $statistics_datas_map[$department['all_name']]['other_name'] = $department['other_name'] ? $department['other_name'] : $department['all_name'];
+                    $data[] = $statistics_datas_map[$department['all_name']];
+
+                }
+
+                // var_dump($data);die();
+                $title = '股权投资管理机构统计表' . $title;
+
+                $index = 0;
+                if ($data) {
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A1', '股权投资管理机构统计表'.'('.$year.'-'.$month.')'. '    单位: 万元)');
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A2', '公司名称')
+                        ->setCellValue('B2', '注册资金')
+                        ->setCellValue('C2', '管理资金规模')
+                        ->setCellValue('D2', '管理机构数')
+                        ->setCellValue('E2', '各类税费')
+                        ->setCellValue('H2', '从业人员数量')
+                        ->setCellValue('I2', '从业人员')
+
+                        ->setCellValue('E3', '营业税')
+                        ->setCellValue('F3', '所得税')
+                        ->setCellValue('G3', '其他税费')
+                        ->setCellValue('I3', '按性别')
+                        ->setCellValue('K3', '按学历')
+                        ->setCellValue('O3', '管理人员')
+                        ->setCellValue('P3', '劳务派遣制员工')
+                        ->setCellValue('Q3', '持有国内高端从业资格证书的人员')
+                        ->setCellValue('R3', '持有国外高端从业资格证书的人员')
+
+                        ->setCellValue('I4', '男性')
+                        ->setCellValue('J4', '女性')
+                        ->setCellValue('K4', '大专及大专以下')
+                        ->setCellValue('L4', '本科')
+                        ->setCellValue('M4', '硕士研究生')
+                        ->setCellValue('N4', '博士及博士以上');
+
+
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A1:R1');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A2:A4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('B2:B4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('C2:C4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('D2:D4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('H2:H4');
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('E2:G2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('I2:R2');
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('I3:J3');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('K3:N3');
+
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('E3:E4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('F3:F4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('G3:G4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('G3:G4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('O3:O4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('P3:P4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('Q3:Q4');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('R3:R4');
+
+                    $PHPExcel->getActiveSheet($index)->getStyle('A1')->applyFromArray(
+                        [
+                            'alignment' => [
+                                'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                            ]
+                        ]
+                    );
+
+                    $line = 5;
+
+                    foreach ($data as $_data) {
+                        $PHPExcel->setActiveSheetIndex($index)
+                            ->setCellValue('A'.$line, $_data['other_name'])
+                            ->setCellValue('B'.$line, $_data['capital'])
+                            ->setCellValue('C'.$line, $_data['Amount'])
+                            ->setCellValue('D'.$line, $_data['Projects'])
+                            ->setCellValue('E'.$line, $_data['Tax_B'])
+                            ->setCellValue('F'.$line, $_data['Tax_I'])
+                            ->setCellValue('G'.$line, $_data['Tax_O'])
+                            ->setCellValue('H'.$line, $_data['Staff'])
+                            ->setCellValue('I'.$line, $_data['Staff_Sub'][0])
+                            ->setCellValue('J'.$line, $_data['Staff_Sub'][1])
+                            ->setCellValue('K'.$line, $_data['Staff_Sub'][2])
+                            ->setCellValue('L'.$line, $_data['Staff_Sub'][3])
+                            ->setCellValue('M'.$line, $_data['Staff_Sub'][4])
+                            ->setCellValue('N'.$line, $_data['Staff_Sub'][5])
+                            ->setCellValue('O'.$line, $_data['Staff_Sub'][6])
+                            ->setCellValue('P'.$line, $_data['Staff_Sub'][7])
+                            ->setCellValue('Q'.$line, $_data['Staff_Sub'][8])
+                            ->setCellValue('R'.$line, $_data['Staff_Sub'][9]);
+
+
+                        $line ++;
+
+
+                    }
+                }
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialFutures:
+
+                $all_names = result_to_array($statistics_datas, 'all_name');
+                $statistics_datas_map = result_to_map($statistics_datas, 'all_name');
+                $DepartmentService = \Common\Service\DepartmentService::get_instance();
+                $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+                $data = [];
+                foreach ($departments as $department) {
+                    $statistics_datas_map[$department['all_name']]['other_name'] = $department['other_name'] ? $department['other_name'] : $department['all_name'];
+                    $data[] = $statistics_datas_map[$department['all_name']];
+
+                }
+
+                // var_dump($data);die();
+                $title = '期货营业部统计表' . $title;
+
+                $index = 0;
+                if ($data) {
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A1', '期货营业部统计表'.'('.$year.'-'.$month.')'. '');
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A2', '公司名称')
+                        ->setCellValue('B2', '成交量（万手')
+                        ->setCellValue('D2', '成交额（亿）')
+                        ->setCellValue('F2', '新开户数（个）')
+                        ->setCellValue('H2', '资产总值（亿）')
+                        ->setCellValue('J2', '利润总额（万）')
+
+                        ->setCellValue('B3', '本年累计')
+                        ->setCellValue('C3', '同比%')
+                        ->setCellValue('D3', '本年累计')
+                        ->setCellValue('E3', '同比%')
+                        ->setCellValue('F3', '本年累计')
+                        ->setCellValue('G3', '同比%')
+                        ->setCellValue('H3', '当月')
+                        ->setCellValue('I3', '同比%')
+                        ->setCellValue('J3', '当月')
+                        ->setCellValue('K3', '同比%');
+
+
+
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A1:K1');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A2:A3');
+
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('B2:C2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('D2:E2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('F2:G2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('H2:I2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('J2:K2');
+
+
+
+                    $PHPExcel->getActiveSheet($index)->getStyle('A1')->applyFromArray(
+                        [
+                            'alignment' => [
+                                'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                            ]
+                        ]
+                    );
+
+                    $line = 4;
+
+                    foreach ($data as $_data) {
+                        $PHPExcel->setActiveSheetIndex($index)
+                            ->setCellValue('A'.$line, $_data['other_name'])
+                            ->setCellValue('B'.$line, $_data['G_Volume'])
+                            ->setCellValue('C'.$line, $_data['G_Volume_yoy'])
+                            ->setCellValue('D'.$line, $_data['G_Turnover'])
+                            ->setCellValue('E'.$line, $_data['G_Turnover_yoy'])
+                            ->setCellValue('F'.$line, $_data['G_Account'])
+                            ->setCellValue('G'.$line, $_data['G_Account_yoy'])
+                            ->setCellValue('H'.$line, $_data['C_Assets'])
+                            ->setCellValue('I'.$line, $_data['C_Assets_yoy'])
+                            ->setCellValue('J'.$line, $_data['C_Profit'])
+                            ->setCellValue('K'.$line, $_data['C_Profit_yoy']);
+
+                        $line ++;
+
+
+                    }
+                }
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialLease:
+                $average = $statistics_datas[1];
+                $statistics_datas = $statistics_datas[0];
+                $all_names = result_to_array($statistics_datas, 'all_name');
+                $statistics_datas_map = result_to_map($statistics_datas, 'all_name');
+                $DepartmentService = \Common\Service\DepartmentService::get_instance();
+                $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+                $data = [];
+                foreach ($departments as $department) {
+                    $statistics_datas_map[$department['all_name']]['other_name'] = $department['other_name'] ? $department['other_name'] : $department['all_name'];
+                    $data[] = $statistics_datas_map[$department['all_name']];
+
+                }
+                $average['other_name'] = '合计(平均)';
+                array_push($data, $average);
+                //var_dump($data);die();
+                $title = '融资租赁统计表' . $title;
+
+                $index = 0;
+                if ($data) {
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A1', '融资租赁统计表'.'('.$year.'-'.$month.')'. '单位:万元');
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A2', '公司名称')
+                        ->setCellValue('B2', '基本信息')
+                        ->setCellValue('D2', '租赁资产额')
+                        ->setCellValue('F2', '业务笔数')
+                        ->setCellValue('I2', '服务客户数')
+                        ->setCellValue('L2', '经营情况（%）')
+                        ->setCellValue('O2', '盈利情况')
+
+                        ->setCellValue('B3', '实缴注册资本')
+                        ->setCellValue('C3', '所有者权益')
+                        ->setCellValue('D3', '月末余额')
+                        ->setCellValue('E3', '本年累计额')
+                        ->setCellValue('F3', '月末留存笔数')
+                        ->setCellValue('G3', '本年新增笔数')
+                        ->setCellValue('H3', '开业以来累计')
+                        ->setCellValue('I3', '月末留存户数')
+                        ->setCellValue('J3', '本年新增户数')
+                        ->setCellValue('K3', '开业以来累计')
+                        ->setCellValue('L3', '售后回租占比')
+                        ->setCellValue('M3', '平均收益率')
+                        ->setCellValue('N3', '租金回收率')
+                        ->setCellValue('O3', '本年累计营业收入')
+                        ->setCellValue('P3', '本年累计净利润')
+                        ->setCellValue('Q3', '本年累计应缴增值税')
+                        ->setCellValue('R3', '本年累计应缴所得税');
+
+
+
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A1:R1');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A2:A3');
+
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('B2:C2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('D2:E2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('F2:H2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('I2:K2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('L2:N2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('O2:R2');
+
+
+                    $PHPExcel->getActiveSheet($index)->getStyle('A1')->applyFromArray(
+                        [
+                            'alignment' => [
+                                'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                            ]
+                        ]
+                    );
+
+                    $line = 4;
+
+                    foreach ($data as $_data) {
+                        $PHPExcel->setActiveSheetIndex($index)
+                            ->setCellValue('A'.$line, $_data['other_name'])
+                            ->setCellValue('B'.$line, $_data['Capital'])
+                            ->setCellValue('C'.$line, $_data['Owner'])
+                            ->setCellValue('D'.$line, $_data['Assets_M'])
+                            ->setCellValue('E'.$line, $_data['Assets_Y'])
+                            ->setCellValue('F'.$line, $_data['Business_Stay'])
+                            ->setCellValue('G'.$line, $_data['Business_Y_New'])
+                            ->setCellValue('H'.$line, $_data['Business_T_New'])
+                            ->setCellValue('I'.$line, $_data['Client_Stay'])
+                            ->setCellValue('J'.$line, $_data['Client_Y_New'])
+                            ->setCellValue('K'.$line, $_data['Client_T_New'])
+                            ->setCellValue('L'.$line, $_data['Business_C1'])
+                            ->setCellValue('M'.$line, $_data['Business_C2'])
+                            ->setCellValue('N'.$line, $_data['Business_C3'])
+                            ->setCellValue('O'.$line, $_data['Profit_AY'])
+                            ->setCellValue('P'.$line, $_data['Profit_BY'])
+                            ->setCellValue('Q'.$line, $_data['Profit_CY'])
+                            ->setCellValue('R'.$line, $_data['Profit_DY']);
+
+                        $line ++;
+
+
+                    }
+                }
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialLoan:
+                //var_dump($statistics_datas);die();
+                $average = $statistics_datas[1];
+                $statistics_datas = $statistics_datas[0];
+                $all_names = result_to_array($statistics_datas, 'all_name');
+                $statistics_datas_map = result_to_map($statistics_datas, 'all_name');
+                $DepartmentService = \Common\Service\DepartmentService::get_instance();
+                $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+                $data = [];
+                foreach ($departments as $department) {
+                    $statistics_datas_map[$department['all_name']]['other_name'] = $department['other_name'] ? $department['other_name'] : $department['all_name'];
+                    $data[] = $statistics_datas_map[$department['all_name']];
+
+                }
+                $average['other_name'] = '合计';
+                array_push($data, $average);
+               // var_dump($data);die();
+                $title = '小额贷款统计表' . $title;
+
+                $index = 0;
+                if ($data) {
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A1', '小额贷款统计表'.'('.$year.'-'.$month.')'. '(单位:万元)');
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A2', '公司名称')
+                        ->setCellValue('B2', '注册资本')
+                        ->setCellValue('C2', '可放贷资金')
+                        ->setCellValue('E2', '月末贷款')
+                        ->setCellValue('I2', '本年贷款累放')
+                        ->setCellValue('M2', '开业以来贷款累放')
+                        ->setCellValue('Q2', '年利率(%)')
+                        ->setCellValue('R2', '不良贷款')
+                        ->setCellValue('S2', '净利润')
+                        ->setCellValue('T2', '总收入')
+
+
+                        ->setCellValue('C3', '所有者权益')
+                        ->setCellValue('D3', '银行融资')
+                        ->setCellValue('E3', '余额')
+                        ->setCellValue('F3', '笔数')
+                        ->setCellValue('G3', '小额贷款')
+                        ->setCellValue('H3', '笔数')
+                        ->setCellValue('I3', '余额')
+                        ->setCellValue('J3', '笔数')
+                        ->setCellValue('K3', '小额贷款')
+                        ->setCellValue('L3', '笔数')
+                        ->setCellValue('M3', '余额')
+                        ->setCellValue('N3', '笔数')
+                        ->setCellValue('O3', '小额贷款')
+                        ->setCellValue('P3', '笔数')
+                        ->setCellValue('Q3', '年利率(%)')
+                        ->setCellValue('R3', '不良贷款')
+                        ->setCellValue('S3', '净利润')
+                        ->setCellValue('T3', '总收入');
+
+
+
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A1:T1');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A2:A3');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('B2:B3');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('Q2:Q3');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('R2:R3');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('S2:S3');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('T2:T3');
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('C2:D2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('E2:H2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('I2:L2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('M2:P2');
+
+                    $PHPExcel->getActiveSheet($index)->getStyle('A1')->applyFromArray(
+                        [
+                            'alignment' => [
+                                'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                            ]
+                        ]
+                    );
+
+                    $line = 4;
+
+                    foreach ($data as $_data) {
+                        $PHPExcel->setActiveSheetIndex($index)
+                            ->setCellValue('A'.$line, $_data['other_name'])
+                            ->setCellValue('B'.$line, $_data['Capital'])
+                            ->setCellValue('C'.$line, $_data['Funds_Owner'])
+                            ->setCellValue('D'.$line, $_data['Funds_Bank'])
+                            ->setCellValue('E'.$line, $_data['Month_Amount'])
+                            ->setCellValue('F'.$line, $_data['Month_Amount_N'])
+                            ->setCellValue('G'.$line, $_data['Month_Small'])
+                            ->setCellValue('H'.$line, $_data['Month_Small_N'])
+                            ->setCellValue('I'.$line, $_data['Year_Amount'])
+                            ->setCellValue('J'.$line, $_data['Year_Amount_N'])
+                            ->setCellValue('K'.$line, $_data['Year_Small'])
+                            ->setCellValue('L'.$line, $_data['Year_Small_N'])
+                            ->setCellValue('M'.$line, $_data['Total_Amount'])
+                            ->setCellValue('N'.$line, $_data['Total_Amount_N'])
+                            ->setCellValue('O'.$line, $_data['Total_Small'])
+                            ->setCellValue('P'.$line, $_data['Total_Small_N'])
+                            ->setCellValue('Q'.$line, $_data['Interest_Rate'])
+                            ->setCellValue('R'.$line, $_data['Bad_Debt'])
+                            ->setCellValue('S'.$line, $_data['Net_Profit'])
+                            ->setCellValue('T'.$line, $_data['Revenue']);
+
+                        $line ++;
+
+
+                    }
+                }
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialSecurities:
+
+
+                $all_names = result_to_array($statistics_datas, 'all_name');
+                $statistics_datas_map = result_to_map($statistics_datas, 'all_name');
+                $DepartmentService = \Common\Service\DepartmentService::get_instance();
+                $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+                $data = [];
+                foreach ($departments as $department) {
+                    $statistics_datas_map[$department['all_name']]['other_name'] = $department['other_name'] ? $department['other_name'] : $department['all_name'];
+                    $data[] = $statistics_datas_map[$department['all_name']];
+
+                }
+
+                 //var_dump($data);die();
+                $title = '证券营业部统计表' . $title;
+
+                $index = 0;
+                if ($data) {
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A1', '证券营业部统计表'.'('.$year.'-'.$month.')'. '');
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A2', '公司名称')
+                        ->setCellValue('B2', '成交额（亿）')
+                        ->setCellValue('F2', '新开户数（个）')
+                        ->setCellValue('J2', '资产总值（亿）')
+                        ->setCellValue('L2', '利润（万）')
+
+                        ->setCellValue('B3', '本月')
+                        ->setCellValue('C3', '同比%')
+                        ->setCellValue('D3', '本年累计')
+                        ->setCellValue('E3', '同比%')
+                        ->setCellValue('F3', '本月')
+                        ->setCellValue('G3', '同比%')
+                        ->setCellValue('H3', '本年累计')
+                        ->setCellValue('I3', '同比%')
+                        ->setCellValue('J3', '当期')
+                        ->setCellValue('K3', '同比%')
+                        ->setCellValue('L3', '当期')
+                        ->setCellValue('M3', '同比%');
+
+
+
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A1:M1');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A2:A3');
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('B2:E2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('F2:I2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('J2:K2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('L2:M2');
+
+                    $PHPExcel->getActiveSheet($index)->getStyle('A1')->applyFromArray(
+                        [
+                            'alignment' => [
+                                'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                            ]
+                        ]
+                    );
+
+                    $line = 4;
+
+                    foreach ($data as $_data) {
+                        $PHPExcel->setActiveSheetIndex($index)
+                            ->setCellValue('A'.$line, $_data['other_name'])
+                            ->setCellValue('B'.$line, $_data['Volume'])
+                            ->setCellValue('C'.$line, $_data['Volume_yoy'])
+                            ->setCellValue('D'.$line, $_data['G_Volume'])
+                            ->setCellValue('E'.$line, $_data['G_Volume_yoy'])
+                            ->setCellValue('F'.$line, $_data['New_Account'])
+                            ->setCellValue('G'.$line, $_data['New_Account_yoy'])
+                            ->setCellValue('H'.$line, $_data['G_New_Account'])
+                            ->setCellValue('I'.$line, $_data['G_New_Account_yoy'])
+                            ->setCellValue('J'.$line, $_data['Assets'])
+                            ->setCellValue('K'.$line, $_data['Assets_yoy'])
+                            ->setCellValue('L'.$line, $_data['Profit'])
+                            ->setCellValue('M'.$line, $_data['Profit_yoy']);
+
+
+                        $line ++;
+
+
+                    }
+                }
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialTransferFunds:
+                //var_dump($statistics_datas);die();
+                $average = $statistics_datas[1];
+                $statistics_datas = $statistics_datas[0];
+                $all_names = result_to_array($statistics_datas, 'all_name');
+                $statistics_datas_map = result_to_map($statistics_datas, 'all_name');
+                $DepartmentService = \Common\Service\DepartmentService::get_instance();
+                $departments = $DepartmentService->get_by_all_names($all_names, $this->type);
+                $data = [];
+                foreach ($departments as $department) {
+                    $statistics_datas_map[$department['all_name']]['other_name'] = $department['other_name'] ? $department['other_name'] : $department['all_name'];
+                    $data[] = $statistics_datas_map[$department['all_name']];
+
+                }
+                $average['other_name'] = '总计';
+                array_push($data, $average);
+                // var_dump($data);die();
+                $title = '转贷统计表' . $title;
+
+                $index = 0;
+                if ($data) {
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A1', '转贷统计表'.'('.$year.'-'.$month.')'. '');
+
+                    $PHPExcel->setActiveSheetIndex($index)
+                        ->setCellValue('A2', '公司名称')
+                        ->setCellValue('B2', '本月')
+                        ->setCellValue('D2', '本年累计')
+                        ->setCellValue('F2', '开业以来累计')
+                        ->setCellValue('H2', '成立时间')
+
+                        ->setCellValue('B3', '金额(亿)')
+                        ->setCellValue('C3', '笔数')
+                        ->setCellValue('D3', '金额(亿)')
+                        ->setCellValue('E3', '笔数')
+                        ->setCellValue('F3', '金额(亿)')
+                        ->setCellValue('G3', '笔数');
+
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A1:H1');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('A2:A3');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('H2:H3');
+
+
+                    $PHPExcel->getActiveSheet($index)->mergeCells('B2:C2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('D2:E2');
+                    $PHPExcel->getActiveSheet($index)->mergeCells('F2:G2');
+
+                    $PHPExcel->getActiveSheet($index)->getStyle('A1')->applyFromArray(
+                        [
+                            'alignment' => [
+                                'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+                            ]
+                        ]
+                    );
+
+                    $line = 4;
+
+                    foreach ($data as $_data) {
+                        $PHPExcel->setActiveSheetIndex($index)
+                            ->setCellValue('A'.$line, $_data['other_name'])
+                            ->setCellValue('B'.$line, $_data['M_Amount'])
+                            ->setCellValue('C'.$line, $_data['M_Quantity'])
+                            ->setCellValue('D'.$line, $_data['Y_Amount'])
+                            ->setCellValue('E'.$line, $_data['Y_Quantity'])
+                            ->setCellValue('F'.$line, $_data['T_Amount'])
+                            ->setCellValue('G'.$line, $_data['T_Quantity'])
+                            ->setCellValue('H'.$line, time_to_date($_data['build_time']));
+
+                        $line ++;
+
+                    }
+                }
                 break;
 
         }
@@ -1656,6 +2989,181 @@ class FinancialBaseController extends AdminController {
 
         $objWriter = \PHPExcel_IOFactory::createWriter($PHPExcel, 'Excel5');
         $objWriter->save('php://output');
+
+    }
+
+
+    protected function gain_statistics($year,$month,$type,$where = []) {
+
+        $where['year'] = $year;
+        $where['month'] = $month;
+        switch ($type) {
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty:
+                $Service = \Common\Service\InsurancePropertyService::get_instance();
+                $list = $Service->get_by_where_all($where);
+                if ($list) {
+                    foreach ($list as $key => $value) {
+                        unset($value['income_yoy']);
+                        unset($value['payoff_rate']);
+                        unset($value['payoff_a_rate']);
+                        unset($value['payoff_b_rate']);
+                        unset($value['payoff_c_rate']);
+                        $Service->update_by_id($value['id'], $value);
+                    }
+                }
+
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceLife:
+                $Service = \Common\Service\InsuranceLifeService::get_instance();
+
+                $list = $Service->get_by_where_all($where);
+                if ($list) {
+                    foreach ($list as $key => $value) {
+                        unset($value['income_a_yoy']);
+                        unset($value['payoff_a_rate']);
+
+                        $Service->update_by_id($value['id'], $value);
+                    }
+                }
+
+
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceMutual:
+                $Service = \Common\Service\InsuranceMutualService::get_instance();
+                $list = $Service->get_by_where_all($where);
+                if ($list) {
+                    foreach ($list as $key => $value) {
+                        $this->update_st($value);
+                    }
+                }
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialVouch:
+                $Service = \Common\Service\VouchService::get_instance();
+                $list = $Service->get_by_where_all($where);
+                if ($list) {
+                    foreach ($list as $key => $value) {
+                        unset($value['C_Balance_Ly']);
+                        unset($value['C_Quantity_Ly']);
+                        unset($value['G_Quantity_Ly']);
+                        unset($value['G_Income']);
+                        unset($value['G_Recover']);
+                        unset($value['G_Vouch']);
+                        unset($value['G_Vouch_Ly']);
+
+                        $Service->update_by_id($value['id'], $value);
+                    }
+                }
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestment:
+                $Service = \Common\Service\InvestmentService::get_instance();
+                $list = $Service->get_by_where_all($where);
+                if ($list) {
+                    foreach ($list as $key => $value) {
+                        unset($value['Staff']);
+                        $Service->update_by_id($value['id'], $value);
+                    }
+                }
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInvestmentManager:
+                $Service = \Common\Service\InvestmentManagerService::get_instance();
+                $list = $Service->get_by_where_all($where);
+                if ($list) {
+                    foreach ($list as $key => $value) {
+                        unset($value['Staff']);
+                        $Service->update_by_id($value['id'], $value);
+                    }
+                }
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialFutures:
+                $Service = \Common\Service\FuturesService::get_instance();
+                $list = $Service->get_by_where_all($where);
+                if ($list) {
+                    foreach ($list as $key => $value) {
+                        unset($value['G_Volume']);
+                        unset($value['G_Volume_yoy']);
+                        unset($value['G_Turnover']);
+                        unset($value['G_Turnover_yoy']);
+                        unset($value['G_Account']);
+                        unset($value['G_Account_yoy']);
+                        unset($value['C_Assets_yoy']);
+                        unset($value['C_Profit_yoy']);
+
+                        $Service->update_by_id($value['id'], $value);
+                    }
+                }
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialLease:
+                $Service = \Common\Service\LeaseService::get_instance();
+
+                $list = $Service->get_by_where_all($where);
+                if ($list) {
+                    foreach ($list as $key => $value) {
+                        unset($value['Assets_Y']);
+                        unset($value['Business_Y_New']);
+                        unset($value['Business_T_New']);
+                        unset($value['Client_Y_New']);
+                        unset($value['Client_T_New']);
+                        unset($value['Profit_AY']);
+                        unset($value['Profit_BY']);
+                        unset($value['Profit_CY']);
+                        unset($value['Profit_DY']);
+                        $Service->update_by_id($value['id'], $value);
+                    }
+                }
+
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialLoan:
+                $Service = \Common\Service\LoanService::get_instance();
+                $list = $Service->get_by_where_all($where);
+                if ($list) {
+                    foreach ($list as $key => $value) {
+                        unset($value['Year_Amount']);
+                        unset($value['Year_Amount_N']);
+                        unset($value['Year_Small']);
+                        unset($value['Year_Small_N']);
+                        unset($value['Total_Amount']);
+                        unset($value['Total_Amount_N']);
+                        unset($value['Total_Small']);
+                        unset($value['Total_Small_N']);
+
+                        $Service->update_by_id($value['id'], $value);
+                    }
+                }
+
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialSecurities:
+                $Service = \Common\Service\SecuritiesService::get_instance();
+                $list = $Service->get_by_where_all($where);
+                if ($list) {
+                    foreach ($list as $key => $value) {
+                        unset($value['Volume_yoy']);
+                        unset($value['G_Volume']);
+                        unset($value['G_Volume_yoy']);
+                        unset($value['New_Account_yoy']);
+                        unset($value['G_New_Account']);
+                        unset($value['G_New_Account_yoy']);
+                        unset($value['Assets_yoy']);
+                        unset($value['Profit_yoy']);
+
+                        $Service->update_by_id($value['id'], $value);
+                    }
+                }
+
+                break;
+            case \Common\Model\FinancialDepartmentModel::TYPE_FinancialTransferFunds:
+                $Service = \Common\Service\TransferFundsService::get_instance();
+
+                $list = $Service->get_by_where_all($where);
+                $list_map = result_to_complex_map($list,'all_name');
+                if ($list_map) {
+                    foreach ($list_map as $key => $value) {
+
+                        $this->update_st($value);
+                    }
+                }
+
+                break;
+        }
 
     }
 

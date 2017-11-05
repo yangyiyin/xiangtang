@@ -30,6 +30,11 @@ class FinancialDepartmentModel extends NfBaseModel {
     const SUB_TYPE_F = 6;
     const SUB_TYPE_G = 7;
 
+    const SUB_TYPE_AA = 1;
+    const SUB_TYPE_BB = 2;
+    const SUB_TYPE_CC = 3;
+
+
     public static $SUB_TYPE_MAP = [
         self::SUB_TYPE_A => '政策性银行',
         self::SUB_TYPE_B => '大型银行',
@@ -41,6 +46,11 @@ class FinancialDepartmentModel extends NfBaseModel {
     ];
 
 
+    public static $SUB_TYPE_insurance_property_MAP = [
+        self::SUB_TYPE_AA => '人保中支',
+        self::SUB_TYPE_BB=> '太保中支',
+        self::SUB_TYPE_CC => '平安中支'
+    ];
 
   protected $_validate = array(
         /**

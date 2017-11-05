@@ -39,6 +39,17 @@
 							</select>
 						</td>
 					</tr>
+
+					<tr class="sub_type_insurance_property" <if condition="!in_array('sub_type_insurance_property',$fields)">style="display:none"</if>>
+					<td width="20%"><label class="item-label">*子类型</label></td>
+					<td width="80%">
+						<select name="sub_type_insurance_property">
+							<option value="">无</option>
+							{$sub_type_insurance_property_options}
+						</select>
+					</td>
+					</tr>
+
 							<tr class="all_name">
 					            <td width="20%"><label class="item-label">*全称(添加后不可修改)</label></td>
 					            <td width="80%">
@@ -189,6 +200,7 @@ $(function(){
 			type = parseInt(type);
 			switch (type) {
 				case 1:
+					fields = ['all_name','address','principal','phone','fixed_phone','tel_phone','filler_man','filler_man_tel','sub_type_insurance_property'];
 					break;
 				case 2:
 					break;
@@ -234,7 +246,8 @@ $(function(){
 		}
 		var type = $(this).val();
 		var fields = get_avalible_fields(type);
-		var fields_all = ['all_name','address','principal','phone','fixed_phone','tel_phone','filler_man','filler_man_tel','sub_type','capital','build_time','total_assets','staffs','equity','capital_submit'];
+		console.log(fields);
+		var fields_all = ['all_name','address','principal','phone','fixed_phone','tel_phone','filler_man','filler_man_tel','sub_type','sub_type_insurance_property','capital','build_time','total_assets','staffs','equity','capital_submit'];
 		for (var i in fields_all){
 			if ($.inArray(fields_all[i],fields) < 0) {
 				//console.log(fields);

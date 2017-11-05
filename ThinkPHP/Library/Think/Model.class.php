@@ -981,6 +981,7 @@ class Model {
                                 $data[$auto[0]]  = call_user_func_array($auto[1], $args);
                             }else{
                                 array_push($args, $data);
+
                                 $data[$auto[0]]  =  call_user_func_array(array(&$this,$auto[1]), $args);
                             }
                             break;

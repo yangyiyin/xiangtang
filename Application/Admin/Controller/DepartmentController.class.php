@@ -91,6 +91,10 @@ class DepartmentController extends AdminController {
         $DepartmentService = \Common\Service\DepartmentService::get_instance();
         $bank_type_options = $DepartmentService->get_sub_type_options($sub_type);
         $this->assign('bank_type_options', $bank_type_options);
+
+        $sub_type_insurance_property_options = $DepartmentService->sub_type_insurance_property_options($sub_type);
+        $this->assign('sub_type_insurance_property_options', $sub_type_insurance_property_options);
+
         $this->assign('cat_options', $this->get_cat_options($type));
 
         $type = $type ? $type : 1;
@@ -104,6 +108,7 @@ class DepartmentController extends AdminController {
         $fields = ['all_name','address','principal','phone','fixed_phone','tel_phone','filler_man','filler_man_tel'];
         switch ($type) {
             case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceProperty:
+                $fields = ['all_name','address','principal','phone','fixed_phone','tel_phone','filler_man','filler_man_tel','sub_type_insurance_property'];
                 break;
             case \Common\Model\FinancialDepartmentModel::TYPE_FinancialInsuranceLife:
                 break;
@@ -162,6 +167,11 @@ class DepartmentController extends AdminController {
                 }
             }
             $data_new['type'] = $type;
+
+            if ($data_new['sub_type_insurance_property']) {
+                $data_new['sub_type'] = $data_new['sub_type_insurance_property'];
+                unset($data_new['sub_type_insurance_property']);
+            }
             $data = $data_new;
             if ($id) {
                 unset($data['all_name']);//不能修改全称,因为都是靠all_name查询
@@ -170,7 +180,12 @@ class DepartmentController extends AdminController {
                     action_user_log('修改部门信息');
                     $this->success('修改成功！', U('index'));
                 } else {
-                    $this->error($ret->message);
+
+                    if (strpos($ret->message,'网络繁忙') !== false) {
+                        $this->success('修改成功！', U('index'));
+                    } else {
+                        $this->error($ret->message);
+                    }
                 }
             } else {
                 $ret = $this->DepartmentService->add_one($data);

@@ -37,21 +37,36 @@
          }
          $where['year'] = $get['year'];
          $where['month'] = $get['month'];
+
+
+
          $service = '\Common\Service\\'.$this->local_service_name;
          $page = I('get.p', 1);
 
-         //排除非审核通过的单位
-         $VerifyService = \Common\Service\VerifyService::get_instance();
-         $where_verify = [];
-         $where_verify['type'] = $VerifyService->get_type($this->type);
-         $where_verify['year'] = $where['year'];
-         $where_verify['month'] = $where['month'];
-         $where_verify['status'] = ['neq', 2];
-         $verifies = $VerifyService->get_by_where_all($where_verify);
-         if ($verifies) {
-             $all_nams = result_to_array($verifies, 'all_name');
-             $where['all_name'][] = ['not in', $all_nams];
+         $where_extra = [];
+         if (isset($type)) {
+             //排除非审核通过的单位
+             $VerifyService = \Common\Service\VerifyService::get_instance();
+             $where_verify = [];
+             $where_verify['type'] = $type;
+             $where_verify['year'] = $where['year'];
+             $where_verify['month'] = $where['month'];
+             $where_verify['status'] = ['neq', 2];
+             $verifies = $VerifyService->get_by_where_all($where_verify);
+             if ($verifies) {
+                 $all_nams = result_to_array($verifies, 'all_name');
+                 $where['all_name'][] = ['not in', $all_nams];
+                 $where_extra['all_name'] = ['not in', $all_nams];
+             }
+
          }
+
+
+         if (method_exists($this, 'gain_statistics')) {
+             $this->gain_statistics($get['year'], $get['month'], $this->type, $where_extra);//自动生成统计
+         }
+
+
 
          list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
          //获取年度和历史累计
@@ -75,6 +90,50 @@
 
 
          $this->display();
+     }
+
+     protected function get_statistics_datas($year, $month) {
+
+         $where_all = [];
+         $where_all['year'] = $year;
+         $where_all['month'] = $month;
+
+         $VerifyService = \Common\Service\VerifyService::get_instance();
+         if ($this->verify_type) {
+             $type = $this->verify_type;
+         } else {
+             $type = $VerifyService->get_type($this->type);
+         }
+
+
+         if (isset($type)) {
+             //排除非审核通过的单位
+             $VerifyService = \Common\Service\VerifyService::get_instance();
+             $where_verify = [];
+             $where_verify['type'] = $type;
+             $where_verify['year'] = $where_all['year'];
+             $where_verify['month'] = $where_all['month'];
+             $where_verify['status'] = ['neq', 2];
+             $verifies = $VerifyService->get_by_where_all($where_verify);
+             if ($verifies) {
+                 $all_nams = result_to_array($verifies, 'all_name');
+                 $where_all['all_name'] = ['not in', $all_nams];
+             }
+
+         }
+
+         $data_all = $this->local_service->get_by_where_all($where_all);
+         //获取年度和历史累计
+         $InsuranceMutualStService = \Common\Service\InsuranceMutualStService::get_instance();
+         $st_all = $InsuranceMutualStService->get_all_by_month_year($where_all['year'], $where_all['month']);
+         $st_all_map = result_to_complex_map($st_all, 'type');
+         $type_a = \Common\Model\FinancialInsuranceMutualStModel::TYPE_A;
+         $type_b = \Common\Model\FinancialInsuranceMutualStModel::TYPE_B;
+         $st_all_a_map = isset($st_all_map[$type_a]) ? $st_all_map[$type_a] : [];
+         $st_all_b_map = isset($st_all_map[$type_b]) ? $st_all_map[$type_b] : [];
+         $data = $this->convert_data_statistics($data_all, $st_all_a_map, $st_all_b_map);
+
+         return $data;
      }
 
      protected function convert_data_statistics($data, $data_a, $data_b) {
@@ -261,10 +320,11 @@
         $data_a = $this->get_data_st_a($data);
         $data_b = $this->get_data_st_b($data);
 
+
         if ($ret_a && $data_a) {
             $ret = $service->update_by_id($ret_a['id'], $data_a);
             if (!$ret->success) {
-                $this->error('更新年度保险互助社统计表失败~');
+                //$this->error('更新年度保险互助社统计表失败~');
             }
             action_user_log('修改年度保险互助社统计表');
         } else {
@@ -279,7 +339,7 @@
         if ($ret_b && $data_b) {
             $ret = $service->update_by_id($ret_b['id'], $data_b);
             if (!$ret->success) {
-                $this->error('修改历史保险互助社统计表失败~');
+                //$this->error('修改历史保险互助社统计表失败~');
             }
             action_user_log('修改历史保险互助社统计表');
 

@@ -84,37 +84,7 @@
      }
      public function statistics()
      {
-         $this->assign('title', $this->title);
-         $get = I('get.');
-         $where = [];
-         if ($get['all_name']) {
-             $where['all_name'] = ['LIKE', '%' . $get['all_name'] . '%'];
-         }
-
-         if (!$get['year']) {
-             $get['year'] = intval(date('Y'));
-         }
-         if (!$get['month']) {
-             $get['month'] = intval(date('m'));
-         }
-         $where['year'] = $get['year'];
-         $where['month'] = $get['month'];
-         $service = '\Common\Service\\'.$this->local_service_name;
-         $page = I('get.p', 1);
-         $where_all = [];
-         $where_all['year'] = $get['year'];
-         $where_all['month'] = $get['month'];
-         $data_all = $this->local_service->get_by_where_all($where_all);
-         list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
-         $data = $this->convert_data_statistics($data, $data_all);
-         $PageInstance = new \Think\Page($count, $service::$page_size);
-         if($total>$service::$page_size){
-             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
-         }
-         $page_html = $PageInstance->show();
-
-         $this->assign('list', $data);
-         $this->assign('page_html', $page_html);
+         list($data, $data_all) = parent::statistics();
 
          //获取合计
          $total = [];
@@ -142,6 +112,38 @@
          $this->assign('total', $total);
 
          $this->display();
+     }
+
+
+     protected function get_statistics_datas($year, $month) {
+
+         $data_all = parent::get_statistics_datas($year,$month);
+
+         //获取合计
+         $total = [];
+         foreach ($data_all as $data) {
+             $total['Funds_Owner'] += $data['Funds_Owner'];
+             $total['Funds_Bank'] += $data['Funds_Bank'];
+             $total['Month_Amount'] += $data['Month_Amount'];
+             $total['Month_Amount_N'] += $data['Month_Amount_N'];
+             $total['Month_Small'] += $data['Month_Small'];
+             $total['Month_Small_N'] += $data['Month_Small_N'];
+             $total['Year_Amount'] += $data['Year_Amount'];
+             $total['Year_Amount_N'] += $data['Year_Amount_N'];
+             $total['Year_Small'] += $data['Year_Small'];
+             $total['Year_Small_N'] += $data['Year_Small_N'];
+             $total['Total_Amount'] += $data['Total_Amount'];
+             $total['Total_Amount_N'] += $data['Total_Amount_N'];
+             $total['Total_Small'] += $data['Total_Small'];
+             $total['Total_Small_N'] += $data['Total_Small_N'];
+             $total['Interest_Rate'] += $data['Interest_Rate'];
+             $total['Bad_Debt'] += $data['Bad_Debt'];
+             $total['Net_Profit'] += $data['Net_Profit'];
+             $total['Revenue'] += $data['Revenue'];
+         }
+
+         return [$data_all, $total];
+
      }
 
      protected function convert_data_statistics($data, $data_all)

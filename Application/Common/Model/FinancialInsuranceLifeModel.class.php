@@ -58,7 +58,7 @@ class FinancialInsuranceLifeModel extends NfBaseModel {
         $rate = 100;
 
         if ($data['income']) {
-            $rate = fix_2($data['payoff_a'] / $data['income']);
+            $rate = fix_2($data['payoff_a'] / $data['income_b']);
         }
 
         return $rate;

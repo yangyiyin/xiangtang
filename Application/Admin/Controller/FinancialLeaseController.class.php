@@ -86,37 +86,7 @@
 
      public function statistics()
      {
-         $this->assign('title', $this->title);
-         $get = I('get.');
-         $where = [];
-         if ($get['all_name']) {
-             $where['all_name'] = ['LIKE', '%' . $get['all_name'] . '%'];
-         }
-
-         if (!$get['year']) {
-             $get['year'] = intval(date('Y'));
-         }
-         if (!$get['month']) {
-             $get['month'] = intval(date('m'));
-         }
-         $where['year'] = $get['year'];
-         $where['month'] = $get['month'];
-         $service = '\Common\Service\\'.$this->local_service_name;
-         $page = I('get.p', 1);
-         $where_all = [];
-         $where_all['year'] = $get['year'];
-         $where_all['month'] = $get['month'];
-         $data_all = $this->local_service->get_by_where_all($where_all);
-         list($data, $count) = $this->local_service->get_by_where($where, 'id desc', $page);
-         $data = $this->convert_data_statistics($data, $data_all);
-         $PageInstance = new \Think\Page($count, $service::$page_size);
-         if($total>$service::$page_size){
-             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
-         }
-         $page_html = $PageInstance->show();
-
-         $this->assign('list', $data);
-         $this->assign('page_html', $page_html);
+         list($data, $data_all) = parent::statistics();
 
          //获取平均值
          $average = [];
@@ -163,6 +133,56 @@
          $this->assign('average', $average);
          $this->display();
      }
+
+     protected function get_statistics_datas($year, $month) {
+
+         $data_all = parent::get_statistics_datas($year,$month);
+
+         //获取平均值
+         $average = [];
+         $total = [];
+         foreach ($data_all as $data) {
+             $total['Assets_M'][] = $data['Assets_M'];
+             $total['Assets_Y'][] = $data['Assets_Y'];
+             $total['Business_Stay'][] = $data['Business_Stay'];
+             $total['Business_M_New'][] = $data['Business_M_New'];
+             $total['Business_Y_New'][] = $data['Business_Y_New'];
+             $total['Business_T_New'][] = $data['Business_T_New'];
+             $total['Client_Stay'][] = $data['Client_Stay'];
+             $total['Client_M_New'][] = $data['Client_M_New'];
+             $total['Client_Y_New'][] = $data['Client_Y_New'];
+             $total['Client_T_New'][] = $data['Client_T_New'];
+             $total['Business_C1'][] = $data['Business_C1'];
+             $total['Business_C2'][] = $data['Business_C2'];
+             $total['Business_C3'][] = $data['Business_C3'];
+             $total['Profit_AY'][] = $data['Profit_AY'];
+             $total['Profit_BY'][] = $data['Profit_BY'];
+             $total['Profit_CY'][] = $data['Profit_CY'];
+             $total['Profit_DY'][] = $data['Profit_DY'];
+         }
+
+         $average['Assets_M'] = fix_2_float(array_sum($total['Assets_M']) / count($total['Assets_M']));
+         $average['Assets_Y'] = fix_2_float(array_sum($total['Assets_Y']) / count($total['Assets_Y']));
+         $average['Business_Stay'] = fix_2_float(array_sum($total['Business_Stay']) / count($total['Business_Stay']));
+         $average['Business_M_New'] = fix_2_float(array_sum($total['Business_M_New']) / count($total['Business_M_New']));
+         $average['Business_Y_New'] = fix_2_float(array_sum($total['Business_Y_New']) / count($total['Business_Y_New']));
+         $average['Business_T_New'] = fix_2_float(array_sum($total['Business_T_New']) / count($total['Business_T_New']));
+         $average['Client_Stay'] = fix_2_float(array_sum($total['Client_Stay']) / count($total['Client_Stay']));
+         $average['Client_M_New'] = fix_2_float(array_sum($total['Client_M_New']) / count($total['Client_M_New']));
+         $average['Client_Y_New'] = fix_2_float(array_sum($total['Client_Y_New']) / count($total['Client_Y_New']));
+         $average['Client_T_New'] = fix_2_float(array_sum($total['Client_T_New']) / count($total['Client_T_New']));
+         $average['Business_C1'] = fix_2_float(array_sum($total['Business_C1']) / count($total['Business_C1']));
+         $average['Business_C2'] = fix_2_float(array_sum($total['Business_C2']) / count($total['Business_C2']));
+         $average['Business_C3'] = fix_2_float(array_sum($total['Business_C3']) / count($total['Business_C3']));
+         $average['Profit_AY'] = fix_2_float(array_sum($total['Profit_AY']) / count($total['Profit_AY']));
+         $average['Profit_BY'] = fix_2_float(array_sum($total['Profit_BY']) / count($total['Profit_BY']));
+         $average['Profit_CY'] = fix_2_float(array_sum($total['Profit_CY']) / count($total['Profit_CY']));
+         $average['Profit_DY'] = fix_2_float(array_sum($total['Profit_DY']) / count($total['Profit_DY']));
+
+         return [$data_all, $average];
+
+     }
+
 
      public function add_unit(){
          $this->title = '';

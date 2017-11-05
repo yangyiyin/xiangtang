@@ -343,7 +343,7 @@
          $get = I('get.');
          $where = [];
          if ($get['all_name']) {
-             $where['all_name'] = ['LIKE', '%' . $get['all_name'] . '%'];
+             $where['all_name'][] = ['LIKE', '%' . $get['all_name'] . '%'];
          }
 
          if (!$get['year']) {
@@ -354,6 +354,39 @@
          }
          $where['year'] = $get['year'];
          $where['month'] = $get['month'];
+
+
+         $VerifyService = \Common\Service\VerifyService::get_instance();
+         if ($this->verify_type) {
+             $type = $this->verify_type;
+         } else {
+             $type = $VerifyService->get_type($this->type);
+         }
+
+         $where_extra = [];
+         if (isset($type)) {
+             //排除非审核通过的单位
+             $VerifyService = \Common\Service\VerifyService::get_instance();
+             $where_verify = [];
+             $where_verify['type'] = $type;
+             $where_verify['year'] = $where['year'];
+             $where_verify['month'] = $where['month'];
+             $where_verify['status'] = ['neq', 2];
+             $verifies = $VerifyService->get_by_where_all($where_verify);
+             if ($verifies) {
+                 $all_nams = result_to_array($verifies, 'all_name');
+                 $where['all_name'][] = ['not in', $all_nams];
+                 $where_extra['all_name'] = ['not in', $all_nams];
+             }
+
+         }
+
+
+         if (method_exists($this, 'gain_statistics')) {
+             $this->gain_statistics($get['year'], $get['month'], $this->type, $where_extra);//自动生成统计
+         }
+
+
          $service = '\Common\Service\\'.$this->local_service_name;
          $page = I('get.p', 1);
          $where['Types'] = ['eq', \Common\Model\FinancialInvestmentModel::TYPE_A];
@@ -372,6 +405,47 @@
 
          $this->display();
      }
+
+
+     protected function get_statistics_datas($year, $month) {
+
+         $where_all = [];
+         $where_all['year'] = $year;
+         $where_all['month'] = $month;
+
+         $VerifyService = \Common\Service\VerifyService::get_instance();
+         if ($this->verify_type) {
+             $type = $this->verify_type;
+         } else {
+             $type = $VerifyService->get_type($this->type);
+         }
+
+
+         if (isset($type)) {
+             //排除非审核通过的单位
+             $VerifyService = \Common\Service\VerifyService::get_instance();
+             $where_verify = [];
+             $where_verify['type'] = $type;
+             $where_verify['year'] = $where_all['year'];
+             $where_verify['month'] = $where_all['month'];
+             $where_verify['status'] = ['neq', 2];
+             $verifies = $VerifyService->get_by_where_all($where_verify);
+             if ($verifies) {
+                 $all_nams = result_to_array($verifies, 'all_name');
+                 $where_all['all_name'] = ['not in', $all_nams];
+             }
+
+         }
+         $where_all['Types'] = ['eq', \Common\Model\FinancialInvestmentModel::TYPE_A];
+         $data_all = $this->local_service->get_by_where_all($where_all);
+         //var_dump($data_all);die();
+         $this->convert_data_statistics($data_all, $year, $month);
+         //$data = $this->convert_data_statistics($data_all, $data_all);
+
+         return $data_all;
+     }
+
+
 
      public function add_unit(){
          $this->title = '';

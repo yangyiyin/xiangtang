@@ -4,21 +4,21 @@
 		<!-- 按钮工具栏 -->
 		<div class="u-tab">
 
-		    <ul class="cc" style="height: 50px">
+		    <ul class="cc">
 				<if condition="$is_all">
 					<li class="current"><a href="javascript:;">所有单位数据</a></li>
 					<else/>
 					<li class="current"><a href="javascript:;">本单位数据</a></li>
 				</if>
-				<if condition="$can_edit">
+				<if condition="$can_edit && (I('form_type', 1) == 1)">
 					<li><a href="{:U('FinancialBank/credit_new_submit_monthly')}">新增信贷收支情况</a></li>
 					<li><a href="{:U('FinancialBank/baddebt_new_submit_monthly')}">新增不良贷款监测</a></li>
 					<li><a href="{:U('FinancialBank/baddebt_detail_new_submit_monthly')}">新增不良贷款明细</a></li>
 					<li><a href="{:U('FinancialBank/baddebt_dispose_new_submit_monthly')}">新增不良资产清收明细</a></li>
 					<li><a href="{:U('FinancialBank/focus_detail_new_submit_monthly')}">新增关注类贷款明细</a></li>
 					</ul>
-
-			<ul style="height: 80px">
+			</if>
+			<if condition="$can_edit && (I('form_type', 1) == 2)">
 					<li><a href="{:U('FinancialBank/quarterly_quantity_a_new_submit_monthly')}">新增银行贷款利率执行水平监测季报表</a></li>
 					<li><a href="{:U('FinancialBank/quarterly_quantity_b_new_submit_monthly')}">新增企业贷款利率执行水平监测季填报</a></li>
 					<li><a href="{:U('FinancialBank/quarterly_quantity_c_new_submit_monthly')}">新增企业贷款利率执行水平监测季填报</a></li>
@@ -422,7 +422,7 @@
 	</div>
 </div>
 
-	<div id="look" class="show_box_temp" style="max-height:500px;overflow-y:auto;display:none;position: fixed;mx-width: 1000px;margin-left:-500px;overflow:auto;left: 50%;top:10%;z-index: 999999;background: #ddd;border: 1px solid #000000;padding: 10px">
+	<div id="look" class="show_box_temp" style="max-height:500px;overflow-y:auto;display:none;position: fixed;width: 1000px;margin-left:-500px;overflow:auto;left: 50%;top:10%;z-index: 999999;background: #ddd;border: 1px solid #000000;padding: 10px">
 		<p style="padding: 10px">
 
 		<div class="box-content">

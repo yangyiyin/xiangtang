@@ -24,6 +24,7 @@
      public function statistics()
      {
          $this->title = '财产保险统计表';
+         $this->order = 'income desc';
          parent::statistics();
 
          $this->display();

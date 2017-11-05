@@ -38,4 +38,4 @@
 //echo dechex($_num);
 //$_str = encode_big_endian($_num);
 //echo 'encode: ', $_num, '=', $_str, "\n";
-var_dump( '2017-2'>'2017-03');
+var_dump( chr(ord('A')+1));

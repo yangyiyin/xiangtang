@@ -12,12 +12,14 @@ class FinancialInsurancePropertyModel extends NfBaseModel {
         array('year', 'number', '年份必须是数字', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
         array('month', 'number', '月份必须是数字', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
         array('income', 'currency', '请检查保费收入格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('income,income_a,income_b,income_c', 'check_income', '请检查保费收入是否等于其下3项之和', self::MUST_VALIDATE, 'callback', self::MODEL_BOTH),
 //      array('income_yoy', 'currency', '请检查保费收入同比格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
         array('income_a', 'currency', '请检查企业财产险收入格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
         array('income_b', 'currency', '请检查机动车辆险收入格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
         array('income_c', 'currency', '请检查其他险收入格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
-        array('reserves', 'currency', '请检查存储金额格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('reserves', 'currency', '请检查存储金额格式', self::VALUE_VALIDATE, 'regex', self::MODEL_BOTH),
         array('payoff', 'currency', '请检查赔付支出格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('payoff,payoff_a,payoff_b,payoff_c', 'check_payoff', '请检查赔付支出是否等于其下3项之和', self::MUST_VALIDATE, 'callback', self::MODEL_BOTH),
 //      array('payoff_rate', 'currency', '请检查赔付支出率格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
         array('payoff_a', 'currency', '请检查企业财产险赔付支出格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
 //      array('payoff_a_rate', 'currency', '请检查企业财产险赔付支出率格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
@@ -25,7 +27,7 @@ class FinancialInsurancePropertyModel extends NfBaseModel {
 //      array('payoff_b_rate', 'currency', '请检查企业财产险赔付支出率格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
         array('payoff_c', 'currency', '请检查其他险赔付支出格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
 //      array('payoff_c_rate', 'currency', '请检查其他险赔付支出率格式', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
-        array('staff', 'require', '期末在岗人数不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('staff', 'require', '期末在岗人数不能为空', self::VALUE_VALIDATE, 'regex', self::MODEL_BOTH),
         array('authorized', 'require', '期末持证人数不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
 
     );
@@ -44,7 +46,26 @@ class FinancialInsurancePropertyModel extends NfBaseModel {
         return $_SERVER["REMOTE_ADDR"];
     }
 
+    protected function check_income($data) {
+
+
+        if ($data['income'] != $data['income_a'] + $data['income_b'] + $data['income_c'] ) {
+
+            return false;
+        }
+        return true;
+    }
+    protected function check_payoff($data) {
+
+        if ($data['payoff'] != $data['payoff_a'] + $data['payoff_b'] + $data['payoff_c']) {
+
+            return false;
+        }
+        return true;
+    }
+
     protected function get_income_yoy($data) {
+
         //获得去年的income
         $year = intval($data['year']);
         $month = intval($data['month']);

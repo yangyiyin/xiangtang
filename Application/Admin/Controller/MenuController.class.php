@@ -21,10 +21,10 @@ class MenuController extends AdminController {
 
             ['title' => '银行机构填报所有单位数据','url'=>'FinancialBank/submit_monthly_all','urls'=>'FinancialBank/submit_monthly_all,FinancialBank/credit_new_submit_monthly,FinancialBank/baddebt_new_submit_monthly,FinancialBank/baddebt_detail_new_submit_monthly,FinancialBank/baddebt_dispose_new_submit_monthly,
             FinancialBank/focus_detail_new_submit_monthly,FinancialBank/quarterly_quantity_a_new_submit_monthly,FinancialBank/quarterly_quantity_b_new_submit_monthly,FinancialBank/quarterly_quantity_c_new_submit_monthly,FinancialBank/submit_monthly_verify_new,FinancialBank/upload_excel','pid'=>212,'module'=>'Admin','sort'=>0,'hide'=>1],
-
-            ['title' => '银行机构查看本单位数据', 'url'=>'FinancialBank/index_list','urls'=>'FinancialBank/index_list,FinancialBank/get_detail_page_html','pid'=>212,'module'=>'Admin','sort'=>0,'hide'=>0],
-            ['title' => '银行机构查看所有单位数据', 'url'=>'FinancialBank/index_all_list','urls'=>'FinancialBank/index_all_list,FinancialBank/get_detail_page_html','pid'=>212,'module'=>'Admin','sort'=>0,'hide'=>0],
-            ['title' => '银行机构审核所有单位数据', 'url'=>'FinancialBank/verify_change_status','urls'=>'FinancialBank/verify_change_status','pid'=>212,'module'=>'Admin','sort'=>0,'hide'=>1],
+//
+//            ['title' => '银行机构查看本单位数据', 'url'=>'FinancialBank/index_list','urls'=>'FinancialBank/index_list,FinancialBank/get_detail_page_html','pid'=>212,'module'=>'Admin','sort'=>0,'hide'=>0],
+//            ['title' => '银行机构查看所有单位数据', 'url'=>'FinancialBank/index_all_list','urls'=>'FinancialBank/index_all_list,FinancialBank/get_detail_page_html','pid'=>212,'module'=>'Admin','sort'=>0,'hide'=>0],
+//            ['title' => '银行机构审核所有单位数据', 'url'=>'FinancialBank/verify_change_status','urls'=>'FinancialBank/verify_change_status','pid'=>212,'module'=>'Admin','sort'=>0,'hide'=>1],
 
 
         ];

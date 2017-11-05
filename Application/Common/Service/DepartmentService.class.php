@@ -114,6 +114,23 @@ class DepartmentService extends BaseService{
         return $FinancialModel->where($where)->select();
     }
 
+    public function get_by_id_type($id=0, $type=0) {
+
+        $FinancialModel = D('Financial' . static::$name);
+        $where = [];
+        if ($id) {
+            $where['id'] = ['eq', $id];
+        }
+
+        if ($type) {
+            $where['type'] = ['EQ', $type];
+        }
+
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $FinancialModel->where($where)->select();
+    }
+
+
     public function get_by_type($type) {
         if (!$type) {
             return [];
@@ -146,4 +163,17 @@ class DepartmentService extends BaseService{
         }
         return $options;
     }
+
+    public function sub_type_insurance_property_options($cur_id=0) {
+        $options = '';
+        foreach (\Common\Model\FinancialDepartmentModel::$SUB_TYPE_insurance_property_MAP as $id => $name) {
+            if ($cur_id && $cur_id == $id) {
+                $options .= '<option value="'.$id.'" selected="selected">'.$name.'</option>';
+            } else {
+                $options .= '<option value="'.$id.'">'.$name.'</option>';
+            }
+        }
+        return $options;
+    }
+
 }
