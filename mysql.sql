@@ -217,3 +217,6 @@ CREATE TABLE `shopy_nf_activity_apply` (
   `deleted` tinyint(3) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+alter table shopy_nf_product add attr tinyint (3) DEFAULT '1';
+alter table shopy_nf_item add attr tinyint (3) DEFAULT '1';

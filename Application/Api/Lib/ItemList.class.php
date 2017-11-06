@@ -19,6 +19,7 @@ class ItemList extends BaseApi{
         $cid = I('get.cid');
         $brand_id = I('get.brand_id');
         $page = I('get.p', 1);
+        $is_love_product = I('get.is_love_product', 0);
         $where = [];
         if ($cid) {
             //获取cid下的所有cids
@@ -42,6 +43,11 @@ class ItemList extends BaseApi{
             $where['platform'] =  ['in', [self::FROM_RETAIL, self::FROM_ALL]];
         } else {
             $where['platform'] =  ['eq', self::FROM_ALL];
+        }
+        if ($is_love_product) {
+            $where['attr'] =  \Common\Model\NfProductModel::ATTR_LOVE;
+        } else {
+            $where['attr'] =  \Common\Model\NfProductModel::ATTR_NORMAL;
         }
         $where['is_real'] = 1;
         $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];

@@ -9,6 +9,8 @@ namespace Admin\Controller;
 
 class AntItemController extends AdminController {
     private $ItemService;
+    protected $tpl = '';
+    protected $attr = \Common\Model\NfProductModel::ATTR_NORMAL;
     protected function _initialize() {
         parent::_initialize();
         $this->ItemService = \Common\Service\ItemService::get_instance();
@@ -56,6 +58,7 @@ class AntItemController extends AdminController {
             $where['uid'] = ['neq', 1];
         }
 
+        $where['attr'] = $this->attr;
         //获取加盟商的uids
         $MemberService = \Common\Service\MemberService::get_instance();
         $franchisee_uids = $MemberService->get_franchisee_uids();
@@ -77,7 +80,7 @@ class AntItemController extends AdminController {
         $this->assign('list', $data);
         $this->assign('page_html', $page_html);
 
-        $this->display();
+        $this->display($this->tpl);
     }
 
     public function unreal() {
@@ -139,7 +142,18 @@ class AntItemController extends AdminController {
         $this->display();
     }
 
-
+    public function index_love() {
+        $this->tpl = 'index';
+        $this->attr = \Common\Model\NfProductModel::ATTR_LOVE;
+        $this->assign('is_love',true);
+        $this->index();
+    }
+    public function add_love() {
+        $this->tpl = 'add';
+        $this->attr = \Common\Model\NfProductModel::ATTR_LOVE;
+        $this->assign('is_love',true);
+        $this->add();
+    }
     public function update_prices() {
         if (IS_POST) {
             $id = I('post.id');
@@ -288,7 +302,8 @@ class AntItemController extends AdminController {
         $catetree = $categoryService->get_all_tree_option($item['cid']);
         $this->assign('catetree', $catetree);
         $this->assign('item', $item);
-        $this->display();
+        $this->assign('attr', $this->attr);
+        $this->display($this->tpl);
     }
 
     public function add_unreal() {

@@ -13,6 +13,10 @@ class NfProductModel extends Model {
 
     public static $status_map = [1=>'正常',99=>'已下架'];
 
+
+    const ATTR_NORMAL = 1;
+    const ATTR_LOVE = 2;
+
     protected $_validate = array(
         array('title', 'require', '名称不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT),
         array('cid', 'require', '分类不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT),

@@ -20,7 +20,12 @@
 		<!-- 按钮工具栏 -->
 		<div class="u-tab">
 		    <ul class="cc tab-nav">
-				<li><a href="{:U('index')}">所有产品</a></li>
+				<if condition="$is_love">
+					<li><a href="{:U('index_love')}">所有产品</a></li>
+					<else/>
+					<li><a href="{:U('index')}">所有产品</a></li>
+				</if>
+
 				<if condition="I('get.id')">
 					<li class="current"><a href="javascript:;">编辑产品</a></li>
 					<else/>
@@ -35,6 +40,7 @@
 				<div id="tab">
 					<table class="" width="100%">
 				    <tbody>
+					<input type="hidden" name="attr" value="{$attr}"/>
 							<tr>
 					            <td width="20%"><label class="item-label">标题</label></td>
 					            <td width="80%">

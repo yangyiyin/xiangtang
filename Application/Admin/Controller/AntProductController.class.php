@@ -9,6 +9,8 @@ namespace Admin\Controller;
 
 class AntProductController extends AdminController {
     private $ProductService;
+    protected $tpl = '';
+    protected $attr = \Common\Model\NfProductModel::ATTR_NORMAL;
     protected function _initialize() {
         parent::_initialize();
         $this->ProductService = \Common\Service\ProductService::get_instance();
@@ -37,6 +39,8 @@ class AntProductController extends AdminController {
             }
         }
     }
+
+
     public function index() {
         $categoryService = \Common\Service\CategoryService::get_instance();
         $catetree = $categoryService->get_all_tree_option(I('get.cid'));
@@ -71,6 +75,8 @@ class AntProductController extends AdminController {
             $where['uid'] = ['neq', 1];
         }
 
+        $where['attr'] = $this->attr;
+
         $where['is_real'] = 1;
 
         //获取加盟商的uids
@@ -94,8 +100,9 @@ class AntProductController extends AdminController {
         $this->assign('list', $data);
         $this->assign('page_html', $page_html);
 
-        $this->display();
+        $this->display($this->tpl);
     }
+
 
     public function unreal() {
         $categoryService = \Common\Service\CategoryService::get_instance();
@@ -143,6 +150,12 @@ class AntProductController extends AdminController {
         $this->display();
     }
 
+    public function index_love() {
+        $this->tpl = 'index';
+        $this->attr = \Common\Model\NfProductModel::ATTR_LOVE;
+        $this->assign('is_love',true);
+        $this->index();
+    }
 
     public function add() {
         $product_no = time();//默认
@@ -198,10 +211,18 @@ class AntProductController extends AdminController {
         $this->assign('product_no',$product_no);
         $this->assign('providers',$providers);
         $this->assign('catetree',$catetree);
-        $this->display();
+        $this->assign('attr', $this->attr);
+
+        $this->display($this->tpl);
 
     }
 
+    public function add_love() {
+        $this->tpl = 'add';
+        $this->attr = \Common\Model\NfProductModel::ATTR_LOVE;
+        $this->assign('is_love',true);
+        $this->add();
+    }
 
     public function add_unreal() {
         $product_no = time();//默认
@@ -568,6 +589,7 @@ class AntProductController extends AdminController {
             $data['img'] = $product['img'];
             $data['desc'] = $product['desc'];
             $data['price'] = $product['price'];
+            $data['attr'] = $product['attr'];
             $data['unit_desc'] = $product['unit_desc'];
             $data['is_real'] = $product['is_real'];
             $data['platform'] = $product['platform'];
@@ -605,6 +627,7 @@ class AntProductController extends AdminController {
                 $data['img'] = $product['img'];
                 $data['desc'] = $product['desc'];
                 $data['price'] = $product['price'];
+                $data['attr'] = $product['attr'];
                 $data['unit_desc'] = $product['unit_desc'];
                 $data['is_real'] = $product['is_real'];
                 $data['platform'] = $product['platform'];

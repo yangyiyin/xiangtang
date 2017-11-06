@@ -6,6 +6,7 @@
 
 		    <ul class="cc">
 		      	<li class="current"><a href="javascript:;">所有商品</a></li>
+
 				<li style="display: none"><a href="{:U('add')}">添加商品</a></li>
 		    </ul>
 		</div>
@@ -56,7 +57,7 @@
 	        </select>
 	         &nbsp;标题：
 	        <input type="text" class="input length_2" name="title" style="width:200px;" value="{:I('title')}" placeholder="请输入标题文档">
-	        <a class="u-btn" href="javascript:;" id="search" url="{:U('index')}">搜索</a>
+	        <a class="u-btn" href="javascript:;" id="search" url="{:U('')}">搜索</a>
 	        <!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
 	        </span>
 	      </div>
@@ -111,8 +112,12 @@
 					</td>
 					<td style="display: none"><span>{$vo.status_text}</span></td>
 					<td>
+						<if condition="$is_love">
+							<a  class="u-btn" href="{:U('add_love')}/id/{$vo.id}" >编辑</a>
+							<else/>
+							<a  class="u-btn" href="{:U('add')}/id/{$vo.id}" >编辑</a>
+						</if>
 
-						<a  class="u-btn" href="{:U('add')}/id/{$vo.id}" >编辑</a>
 						<if condition="$vo['status']!=99">
 							<a  class="u-btn confirm J_ajax_get" href="{:U('off_shelf')}/id/{$vo.id}">下架</a>
 							<else/>
