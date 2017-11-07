@@ -7,6 +7,7 @@ namespace Common\Service;
 class ArticleService extends BaseService{
     public static $name = 'Article';
 
+    public static $page_size = 5;
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
         $data['create_time'] = isset($data['create_time']) ? $data['create_time'] : current_date();
