@@ -35,6 +35,7 @@ class IndexIndex extends BaseSapi{
             $where['is_real'] = 1;
             $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
             $where['id'] = ['in', result_to_array($item_blocks, 'iid')];
+            $where['attr'] =  \Common\Model\NfProductModel::ATTR_NORMAL;
             if ($this->from == self::FROM_SERVICE) {
                 $where['platform'] = ['in', [self::FROM_SERVICE, self::FROM_ALL]];
             } elseif($this->from == self::FROM_RETAIL) {
@@ -55,6 +56,7 @@ class IndexIndex extends BaseSapi{
             $where['is_real'] = 1;
             $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
             $where['id'] = ['in', result_to_array($item_blocks, 'iid')];
+            $where['attr'] =  \Common\Model\NfProductModel::ATTR_NORMAL;
             if ($this->from == self::FROM_SERVICE) {
                 $where['platform'] = ['in', [self::FROM_SERVICE, self::FROM_ALL]];
             } elseif($this->from == self::FROM_RETAIL) {

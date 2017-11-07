@@ -16,7 +16,7 @@ class IndexSections extends BaseSapi{
 
     public function excute() {
         $list = [
-            ['type' => 'mall', 'name'=>'商城', 'img'=>item_img('/Uploads/Picture/12.png')],
+            ['type' => 'love_mall', 'name'=>'爱心义卖', 'img'=>item_img('/Uploads/Picture/12.png')],
             ['type' => 'volunteer_apply', 'name'=>'志愿者申请', 'img'=>item_img('/Uploads/Picture/13.png')],
             ['type' => 'aid_apply', 'name'=>'残疾人救助', 'img'=>item_img('/Uploads/Picture/14.png')],
             ['type' => 'activities', 'name'=>'公益活动', 'img'=>item_img('/Uploads/Picture/15.png')],
