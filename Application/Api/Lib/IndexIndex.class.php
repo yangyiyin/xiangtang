@@ -22,7 +22,7 @@ class IndexIndex extends BaseSapi{
         //分类
         $CategoryService = \Common\Service\CategoryService::get_instance();
         $tree = $CategoryService->get_all_tree();
-        $cats = $this->make_tree($tree, '1', '');
+        $cats = $this->make_tree($tree, '1', '', $this->from);
         $result->list[] = ['items' => $cats, 'title'=>'商城', 'icon'=>item_img('/Uploads/Picture/12.png'),'type'=>'cats'];
 
         //促销商品
@@ -104,10 +104,17 @@ class IndexIndex extends BaseSapi{
     }
 
 
-    private function make_tree($tree_old, $level, $cid) {
+    private function make_tree($tree_old, $level, $cid, $from=1) {
 
         $tree = [];
         foreach ($tree_old as $_tree1) {
+            if ($from == self::FROM_SERVICE && ($_tree1['content']['platform'] != self::FROM_SERVICE && $_tree1['content']['platform'] != self::FROM_ALL)) {
+                continue;
+            }
+
+            if ($from == self::FROM_RETAIL && ($_tree1['content']['platform'] != self::FROM_RETAIL && $_tree1['content']['platform'] != self::FROM_ALL)) {
+                continue;
+            }
             $tmp_tree = [];
             $tmp_tree['cid'] = (int) $_tree1['content']['id'];
             $tmp_tree['name'] = $_tree1['content']['name'];
