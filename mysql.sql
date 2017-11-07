@@ -105,3 +105,7 @@ CREATE TABLE `shopy_nf_docs` (
 
 alter table shopy_nf_docs add url varchar (200) DEFAULT '';
 alter table shopy_nf_docs add last_edit_time datetime DEFAULT NULL;
+
+
+alter table shopy_nf_user add count int (11) DEFAULT '0';
+alter table shopy_nf_article add last_edit_time datetime DEFAULT NULL;
