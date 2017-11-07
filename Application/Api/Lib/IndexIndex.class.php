@@ -35,6 +35,13 @@ class IndexIndex extends BaseSapi{
             $where['is_real'] = 1;
             $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
             $where['id'] = ['in', result_to_array($item_blocks, 'iid')];
+            if ($this->from == self::FROM_SERVICE) {
+                $where['platform'] = ['in', [self::FROM_SERVICE, self::FROM_ALL]];
+            } elseif($this->from == self::FROM_RETAIL) {
+                $where['platform'] =  ['in', [self::FROM_RETAIL, self::FROM_ALL]];
+            } else {
+                $where['platform'] =  ['eq', self::FROM_ALL];
+            }
             list($data, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc');
             $result->list[] = ['items' => $this->convert_data($data), 'title'=>'促销商品', 'icon'=>item_img('/Uploads/Picture/12.png'),'type'=>'mall'];
         }
@@ -48,6 +55,13 @@ class IndexIndex extends BaseSapi{
             $where['is_real'] = 1;
             $where['status'] = ['EQ', \Common\Model\NfItemModel::STATUS_NORAML];
             $where['id'] = ['in', result_to_array($item_blocks, 'iid')];
+            if ($this->from == self::FROM_SERVICE) {
+                $where['platform'] = ['in', [self::FROM_SERVICE, self::FROM_ALL]];
+            } elseif($this->from == self::FROM_RETAIL) {
+                $where['platform'] =  ['in', [self::FROM_RETAIL, self::FROM_ALL]];
+            } else {
+                $where['platform'] =  ['eq', self::FROM_ALL];
+            }
             list($data, $count) = $this->ItemService->get_by_where($where, 'sort asc, id desc');
             $result->list[] = ['items' => $this->convert_data($data), 'title' => '推荐商品', 'icon' => item_img('/Uploads/Picture/12.png'), 'type' => 'mall'];
         }
