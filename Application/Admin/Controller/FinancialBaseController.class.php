@@ -338,7 +338,7 @@ class FinancialBaseController extends AdminController {
                 }
             } else {
 
-                $jump_url = 'javascript:self.location=document.referrer;';
+                $jump_url = '';
             }
             $function_name = 'get_add_data_'. ACTION_NAME;
 
