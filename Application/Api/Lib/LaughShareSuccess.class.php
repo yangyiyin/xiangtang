@@ -22,7 +22,7 @@ class LaughShareSuccess extends BaseApi{
         $info = $UserOperateLimitService->get_info_by_uid_type($this->uid, \Common\Model\NfUserOperateLimitModel::TYPE_SHARE);
 
         if ($info && $info['sum'] > 2) {
-            return result_json(TRUE, '分享成功,但是没有加积分,今天已累计3次');
+            return result_json(false, '分享成功,但是没有加积分,今天已累计3次');
         } else {
             $UserOperateLimitService->add_sum($this->uid, \Common\Model\NfUserOperateLimitModel::TYPE_SHARE, 1);
         }

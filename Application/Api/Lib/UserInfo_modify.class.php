@@ -8,6 +8,8 @@
 namespace Api\Lib;
 use Common\Model;
 use Common\Service;
+use Think\Upload;
+
 class UserInfo_modify extends BaseApi{
     protected $method = parent::API_METHOD_POST;
     private $UserService;
@@ -32,9 +34,19 @@ class UserInfo_modify extends BaseApi{
 //        }
 
         $data['user_name'] = $user_name;
+        $return = $this->uploadPicture();
+        if ($return) {
+            $data['user_name'] = $_POST['user_name'];
+            $data['avatar'] = '/Uploads/' . $return['avatar']['savepath'] . $return['avatar']['savename'];
+            //$data['avatar'] = json_encode($_POST).'1';
+        }
+
         $ret = $this->UserService->update_by_id($this->uid, $data);
         if (!$ret->success) {
-            result_json(FALSE, $ret->message);
+            if (strpos($ret->message, '网络繁忙') === false) {
+                result_json(FALSE, $ret->message);
+            }
+           echo 1;
         }
         result_json(TRUE, '修改成功!');
     }
@@ -44,25 +56,8 @@ class UserInfo_modify extends BaseApi{
         /* 返回标准数据 */
         $return  = array('status' => 1, 'info' => '上传成功', 'data' => '');
 
-        /* 调用文件上传组件上传文件 */
-        $Picture = D('Picture');
-        $pic_driver = C('PICTURE_UPLOAD_DRIVER');
-        $info = $Picture->upload(
-            $_FILES,
-            C('PICTURE_UPLOAD'),
-            C('PICTURE_UPLOAD_DRIVER'),
-            C("UPLOAD_{$pic_driver}_CONFIG")
-        ); //TODO:上传到远程服务器
-
-        /* 记录图片信息 */
-        if($info){
-            $return['status'] = 1;
-            $return = array_merge($info['download'], $return);
-        } else {
-            $return['status'] = 0;
-            $return['info']   = $Picture->getError();
-        }
-
-        $this->ajaxReturn($return);
+        $Upload = new Upload();
+        $return = $Upload->upload();
+        return $return;
     }
 }

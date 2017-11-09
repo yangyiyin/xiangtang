@@ -19,7 +19,7 @@ class UserInfo extends BaseApi{
         $info = $this->UserService->get_info_by_id($this->uid);
         $data = convert_obj($info, 'user_name,avatar');
         //$data->type = (int) $data->type;
-        $data->avatar = item_img(get_cover(46, 'path'));
+        $data->avatar = $data->avatar ? item_img($data->avatar) : item_img(get_cover(46, 'path'));
 
         //获取积分
         $AccountService = \Common\Service\AccountService::get_instance();

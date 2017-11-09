@@ -60,5 +60,5 @@
 //}
 //$tree = make_tree($list);
 
-echo substr('2015-12-11 00:00:11',0,10);
+{"avatar":{"name":"cf83771bf6ccbc1f8dbb85c6c8d326d2.jpg","type":"image\/jpeg","size":8199,"key":"avatar","ext":"jpg","md5":"0143e88e2fa9fa85e740b05ba24e9279","sha1":"41352b22b1895f6f6a8dc930ae5aa80f2d7558c8","savename":"5a03d438a384e.jpg","savepath":"2017-11-09\/"}}
 
