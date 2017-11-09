@@ -108,5 +108,33 @@ alter table shopy_nf_docs add last_edit_time datetime DEFAULT NULL;
 
 
 alter table shopy_nf_user add count int (11) DEFAULT '0';
+alter table shopy_nf_user add openid varchar (50) DEFAULT '';
 alter table shopy_nf_article add uid int(11) DEFAULT '0';
 alter table shopy_nf_article add from tinyint(3) DEFAULT '1';
+
+CREATE TABLE `shopy_nf_article_events` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` tinyint(3) NOT NULL DEFAULT '1',
+  `desc` VARCHAR(10) DEFAULT '',
+  `uid` int(11) DEFAULT '0',
+`aid` int(11) DEFAULT '0',
+`create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+alter table shopy_nf_article add status tinyint(3) DEFAULT '0';
+
+
+CREATE TABLE `shopy_nf_user_operate_limit` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` tinyint(3) NOT NULL DEFAULT '1',
+  `desc` VARCHAR(10) DEFAULT '',
+  `uid` int(11) DEFAULT '0',
+`count` int(11) DEFAULT '0',
+`create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+alter table shopy_nf_user_operate_limit add gmt int(11) DEFAULT '0';

@@ -14,4 +14,28 @@ class LaughController extends BaseController {
         $this->excute_api('Api\Lib\LaughIndex');
     }
 
+    public function my_publish_index() {
+        $this->excute_api('Api\Lib\LaughMyPublishIndex');
+    }
+
+    public function my_collect_index() {
+        $this->excute_api('Api\Lib\LaughMyCollectIndex');
+    }
+
+
+    public function login() {
+        $this->excute_api('Api\Lib\LaughLogin');
+    }
+
+    public function like() {
+        $this->excute_api('Api\Lib\LaughLike');
+    }
+
+    public function collect() {
+        $this->excute_api('Api\Lib\LaughCollect');
+    }
+
+    public function share_success() {
+        $this->excute_api('Api\Lib\LaughShareSuccess');
+    }
 }

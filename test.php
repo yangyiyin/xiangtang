@@ -60,3 +60,5 @@
 //}
 //$tree = make_tree($list);
 
+echo substr('2015-12-11 00:00:11',0,10);
+

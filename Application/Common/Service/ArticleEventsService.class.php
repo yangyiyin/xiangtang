@@ -1,13 +1,12 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-06-08 12:20:24
+ * Time: 2017-08-08 21:16:23
  */
 namespace Common\Service;
-class ArticleService extends BaseService{
-    public static $name = 'Article';
+class ArticleEventsService extends BaseService{
+    public static $name = 'ArticleEvents';
 
-    public static $page_size = 10;
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
         $data['create_time'] = isset($data['create_time']) ? $data['create_time'] : current_date();
@@ -94,50 +93,38 @@ class ArticleService extends BaseService{
         return [$data, $count];
     }
 
-    //往前多取一条
-    public function get_by_where_with_pre_one($where, $order = 'id desc', $page = 1) {
-        $NfModel = D('Nf' . static::$name);
-        $data = [];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        $count = $NfModel->where($where)->order($order)->count();
-        if ($count > 0) {
-            if ($page == 1) {
-                $limit = '0,' . static::$page_size;
-            } else {
-                $limit = (($page - 1) * static::$page_size - 1). ',' . (static::$page_size + 1);
-            }
-            $data = $NfModel->where($where)->order($order)->limit($limit)->select();
-        }
-        return [$data, $count];
-    }
 
-
-    public function get_pre_next($id, $type) {
+    public function get_by_aid_uid_type($aid,$uid,$type) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
-        $where['type'] = ['eq', $type];
-        $where['id'] = ['lt', $id];
-        $where['deleted'] = ['eq', static::$NOT_DELETED];
-        $pre = $NfModel->order('id desc')->where($where)->find();
-        $where['id'] = ['gt', $id];
-        $next = $NfModel->order('id asc')->where($where)->find();
-        return [$pre, $next];
-    }
-
-    public function get_about() {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['type'] = ['EQ', $NfModel::TYPE_ABOUT];
+        $where['uid'] = $uid;
+        $where['aid'] = $aid;
+        $where['type'] = $type;
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->find();
+
     }
 
-    public function get_contact() {
+    public function get_by_aids_uid_type($aids,$uid,$type) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
-        $where['type'] = ['EQ', $NfModel::TYPE_CONTACT];
+        $where['uid'] = $uid;
+        $where['aid'] = ['in', $aids];
+        $where['type'] = $type;
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->find();
+        return $NfModel->where($where)->select();
+
+    }
+
+
+    public function get_by_uid_type($uid,$type) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['uid'] = $uid;
+        $where['type'] = $type;
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+
     }
 
 }

@@ -7,7 +7,7 @@
  */
 namespace Api\Lib;
 use Common\Service;
-class LaughIndex extends BaseApi{
+class LaughMyCollectIndex extends BaseApi{
     protected $method = parent::API_METHOD_GET;
 
     public function init() {
@@ -17,23 +17,22 @@ class LaughIndex extends BaseApi{
     public function excute() {
 
         $p = I('p',1);
+
+        $ArticleEventsService = \Common\Service\ArticleEventsService::get_instance();
+        $collects = $ArticleEventsService->get_by_uid_type($this->uid, \Common\Model\NfArticleEventsModel::TYPE_COLLECT);
+        $collects_aids = result_to_array($collects, 'aid');
+        if (!$collects_aids) {
+            return result_json(TRUE, '', []);
+        }
+
         $ArticleService = \Common\Service\ArticleService::get_instance();
         $where = [];
+        $where['id'] = ['in', $collects_aids];
         $where['status'] = \Common\Model\NfArticleModel::STATUS_OK;
-        list($list, $count) = $ArticleService->get_by_where_with_pre_one($where,'publish_time desc,id desc',$p);
+        list($list, $count) = $ArticleService->get_by_where($where,'id desc',$p);
+
 
         $list = $this->convert($list);
-
-        if ($list && count($list) > 1 && $p != 1) {
-            if ($list[0]['title'] && isset($list[2]['title']) && $list[0]['title'] == $list[2]['title']) {
-                unset($list[2]);
-            }
-            unset($list[0]);
-            unset($list[1]);
-
-
-            $list = array_values($list);
-        }
         return result_json(TRUE, '', $list);
     }
 
@@ -49,28 +48,27 @@ class LaughIndex extends BaseApi{
         $UserService = \Common\Service\UserService::get_instance();
         $users = $UserService->get_by_ids($uids);
         $users_map = result_to_map($users, 'id');
-        $list_new = [];
-        $time = '';
         if ($list) {
             foreach ($list as $key => $_li) {
                 if (isset($likes_map[$_li['id']])) {
-                    $_li['is_like'] = true;
+                    $list[$key]['is_like'] = true;
                 }
 
                 if (isset($collects_map[$_li['id']])) {
-                    $_li['is_collect'] = true;
+                    $list[$key]['is_collect'] = true;
                 }
-                $_li['user'] = [];
+                $list[$key]['user'] = [];
                 if ($_li['from'] == \Common\Model\NfArticleModel::FROM_CUSTOM) {
 
                     if (isset($users_map[$_li['uid']])) {
 
-                        $_li['user'] =  $users_map[$_li['uid']] ;
-                        $_li['user']['avatar'] = item_img(get_cover(46, 'path'));
+                        $list[$key]['user'] =  $users_map[$_li['uid']] ;
+                        $list[$key]['user']['avatar'] = item_img(get_cover(46, 'path'));
                     }
 
+
                 } elseif ($_li['from'] == \Common\Model\NfArticleModel::FROM_ADMIN) {
-                    $_li['user'] = [
+                    $list[$key]['user'] = [
                         'user_name' => '纯笑笑',
                         'avatar' => '../../resource/images/img_75.png'
                     ];
@@ -78,31 +76,10 @@ class LaughIndex extends BaseApi{
 
                 }
 
-                $cur_time = substr($_li['publish_time'], 0, 10);
-                if ($cur_time != $time) {
-                    $time = $cur_time;
-
-                    if ($cur_time == date('Y-m-d')) {
-                        $title = '今日笑话';
-                    } elseif (strtotime($cur_time) == strtotime(date('Y-m-d')) - 3600*24) {
-                        $title = '昨日笑话';
-                    } else {
-                        $title = '往期笑话';
-                    }
-
-                    $list_new[] = [
-                        'title' => $title,
-                        'block_type' =>'title'
-                    ];
-
-                }
-                $list_new[] = $_li;
             }
 
         }
-
-//        var_dump($list_new);
-        return $list_new;
+        return $list;
     }
 
 }

@@ -33,6 +33,20 @@ class UserService extends BaseService{
     }
 
 
+    public function get_by_ids($ids) {
+        $NfUser = D('NfUser');
+        $where = [];
+        $where['uid'] = ['in',$ids];
+        return $NfUser->where($where)->select();
+    }
+
+
+    public function get_info_by_openid($id) {
+        $NfUser = D('NfUser');
+        $where = ['openid' => $id];
+        return $NfUser->where($where)->find();
+    }
+
     public function get_by_tel($tel, $status = 1) {
         $NfUser = D('NfUser');
         return $NfUser->where('user_tel = ' . $tel . ' and status = ' . $status)->find();

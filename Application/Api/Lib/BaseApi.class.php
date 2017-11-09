@@ -40,7 +40,7 @@ class BaseApi extends Api {
                 result_json(FALSE, '登录session异常', NULL, ERROR_CODE_SESSION_ERROR);
             }
             //检测是否过期,默认90天
-            if ((time() - $time) > 90 * 24 * 3600) {
+            if ((time() - $time) > 365 * 100 * 24 * 3600) {
                 result_json(FALSE, '登录信息过期,请重新登录~', NULL, ERROR_CODE_SESSION_ERROR);
             }
             //成功

@@ -17,39 +17,21 @@ class UserInfo_modify extends BaseApi{
 
     public function excute() {
         $data = [];
-        $password_old = I('post.password_old');
-        $password_new = I('post.password_new');
-        $password_old = $this->post_data['password_old'];
-        $password_new = $this->post_data['password_new'];
 
-        $user_tel = $this->post_data['user_tel'];
+        $user_name = $this->post_data['user_name'];
 
-        if (!($password_old && $password_new) && !$user_tel) {
-            result_json(FALSE, '参数不完整~');
-        }
-        if ($password_old && $password_new) {
-            //检测原密码
-            $user_info = $this->UserService->get_info_by_id($this->uid);
-            if ($user_info['password_md5'] == md5(base64_decode($password_old))) {
-                $data['password_md5'] = md5(base64_decode($password_new));
-            } else {
-                result_json(FALSE, '原密码错误~');
-            }
-        }
+//        var_dump($this->post);
+//        var_dump($_FILES);die();
 
-        if ($user_tel) { //修改用户注册手机
-            if (!is_tel_num($user_tel)) {
-                return result_json('FALSE', '您输入的手机号码可能有误~');
-            }
 
-            //检测用户是否存在
-            $ret = $this->UserService->check_tel_available($user_tel);
-            if (!$ret->success) {
-                return result_json(FALSE, $ret->message);
-            }
-            $data['user_tel'] = $user_tel;
-        }
 
+
+
+//        if (!$user_name) {
+//            result_json(FALSE, '参数不完整~');
+//        }
+
+        $data['user_name'] = $user_name;
         $ret = $this->UserService->update_by_id($this->uid, $data);
         if (!$ret->success) {
             result_json(FALSE, $ret->message);
