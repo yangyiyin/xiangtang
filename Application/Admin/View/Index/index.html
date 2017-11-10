@@ -1,18 +1,14 @@
 <extend name="Public/base"/>
 
-<block name="body">
-    <!-- 主体 -->
-    {:hook('AdminIndex')}
+<block name="body" >
+    <p style="padding: 20px;font-size: 16px;">最新提交审核单位:</p>
+
+    <volist name="list" id="vo">
+        <p style="float:left;color: #fff;background: #00aaaa;border-radius: 50px;padding: 10px 20px;margin: 10px 10px"><span >单位:{$vo.all_name}</span> &nbsp;&nbsp;&nbsp;&nbsp;提交日期:{$vo.modify_time}</p>
+    </volist>
+
 </block>
 
 <block name="script">
-<script type="text/javascript">
-    /* 插件块关闭操作 */
-    $(".title-opt .wm-slide").each(function(){
-        $(this).click(function(){
-            $(this).closest(".columns-mod").find(".bd").toggle();
-            $(this).find("i").toggleClass("mod-up");
-        });
-    })
-</script>
+
 </block>

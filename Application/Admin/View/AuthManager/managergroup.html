@@ -50,18 +50,18 @@
                     <tbody>
                         <volist name="node_list" id="node" >
                             <tr>
-                              <td width="12%"><label class="checkbox"><input class="auth_rules rules_all" type="checkbox" name="rules[]" value="<?php echo $main_rules[$node['url']] ?>">{$node.title}管理</label></td>
+                              <td width="15%"><label class="checkbox"><input class="auth_rules rules_all" type="checkbox" name="rules[]" value="<?php echo $main_rules[$node['url']] ?>">{$node.title}管理</label></td>
                               <td>
                                 <present name="node['child']">
                                 <table width="100%" class="rule_check">
                                     <volist name="node['child']" id="child" >
                                         <tr>
-                                            <td width="12%">
+                                            <td width="30%">
                                                 <label class="checkbox" <notempty name="child['tip']">title='{$child.tip}'</notempty>>
                                                 <input class="auth_rules rules_row {$child['url_class']}" type="checkbox" name="rules[]" value="<?php echo $auth_rules[$child['url']] ?>"/>{$child.title}
                                                 </label>
                                             </td>
-                                            <td width="88%">
+                                            <td width="70%">
                                                 <notempty name="child['operator']">
                                                    <span class="child_row">
                                                        <volist name="child['operator']" id="op">

@@ -19,8 +19,76 @@ class IndexController extends AdminController {
      */
     public function index(){
         if(UID){
-            $this->meta_title = '管理首页';
-            $this->display();
+//            $this->meta_title = '管理首页';
+//            $this->display();
+            $du_info = D('FinancialDepartmentUid')->where(['uid'=>UID])->find();
+
+            if ($du_info) {
+                $DepartmentService = \Common\Service\DepartmentService::get_instance();
+                $info = $DepartmentService->get_info_by_id($du_info['did']);
+                if ($info) {
+                    $type = $info['type'];
+
+                    switch ($type) {
+                        case 1:
+                            $this->redirect('FinancialInsuranceProperty/index_list', ['menuId' => 317]);
+                        case 2:
+                            $this->redirect('FinancialInsuranceLife/index_list', ['menuId' => 325]);
+                        case 3:
+                            $this->redirect('FinancialInsuranceMutual/index_list', ['menuId' => 329]);
+                        case 4:
+                            $this->redirect('FinancialVouch/index_list', ['menuId' => 333]);
+                        case 5:
+                            $this->redirect('FinancialInvestment/index_list', ['menuId' => 343]);
+                        case 6:
+                            $this->redirect('FinancialInvestmentManager/index_list', ['menuId' => 338]);
+                        case 7:
+                            $this->redirect('FinancialFutures/index_list', ['menuId' => 358]);
+                        case 8:
+                            $this->redirect('FinancialLease/index_list', ['menuId' => 363]);
+                        case 9:
+                            $this->redirect('FinancialLoan/index_list', ['menuId' => 368]);
+                        case 10:
+                            $this->redirect('FinancialSecurities/index_list', ['menuId' => 373]);
+                        case 11:
+                            $this->redirect('FinancialTransferFunds/index_list', ['menuId' => 378]);
+                        case 12:
+                            $this->redirect('FinancialBank/index_list', ['menuId' => 383]);
+                        case 13:
+                            //金融办
+                            //获取最新的提交情况
+                            $VerifyService = \Common\Service\VerifyService::get_instance();
+                            $where = [];
+                            $where['status'] = \Common\Model\FinancialVerifyModel::STATUS_SUBMIT;
+                            $where['type'] = ['in', [\Common\Model\FinancialVerifyModel::TYPE_BANK_MONTH, \Common\Model\FinancialVerifyModel::TYPE_BANK_quarter]];
+                            list($list, $count) = $VerifyService->get_by_where($where, 'modify_time desc, id desc', 1);
+                            $this->assign('list', $list);
+
+                            $this->display();
+                            exit();
+                        case 14:
+                            //保险协会
+
+                            $VerifyService = \Common\Service\VerifyService::get_instance();
+                            $where = [];
+                            $where['status'] = \Common\Model\FinancialVerifyModel::STATUS_SUBMIT;
+                            $where['type'] = ['in', [\Common\Model\FinancialVerifyModel::TYPE_FinancialInsuranceProperty, \Common\Model\FinancialVerifyModel::TYPE_FinancialInsuranceLife]];
+                            list($list, $count) = $VerifyService->get_by_where($where, 'modify_time desc, id desc', 1);
+                            $this->assign('list', $list);
+
+                            $this->display();
+                            exit();
+                    }
+
+                } else {
+
+                }
+            } else {
+
+            }
+
+            $this->display('index_error');
+
         } else {
             $this->redirect('Public/login');
         }
