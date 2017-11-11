@@ -152,14 +152,7 @@ class PayService extends BaseService{
         }
 
         $order_ids = result_to_array($orders);
-        if ($pay = $this->get_info_by_oids($order_ids)) {
-            if ($pay['status'] != \Common\Model\NfPayModel::STATUS_SUBMIT) {
-                return result(FALSE, '该订单无法支付~');
-            }
-            //删除这个记录
-            $this->del_by_id_real($pay['id']);//重新创建一个支付记录的原因是因为,有可能修改了订单总价
-            //return result(TRUE, '订单已创建支付', $pay);
-        }
+
 
         $sum = 0;
         foreach ($orders as $order) {
@@ -184,6 +177,18 @@ class PayService extends BaseService{
         }
         if ($sum < 0) {
             return result(FALSE, '该订单支付异常~');
+        }
+
+
+
+        if ($pay = $this->get_info_by_oids($order_ids)) {
+            if ($pay['status'] != \Common\Model\NfPayModel::STATUS_SUBMIT) {
+                return result(FALSE, '该订单无法支付~');
+            }
+            //删除这个记录
+            //$this->del_by_id_real($pay['id']);//重新创建一个支付记录的原因是因为,有可能修改了订单总价
+            $pay['sum'] = $sum;//计算订单总价,因为可能有订单价格更改
+            return result(TRUE, '订单已创建支付', $pay);
         }
 
 
