@@ -18,8 +18,14 @@ class UserAvatar_modify extends BaseApi{
     public function excute() {
         $data = [];
 
-        
 
+        $return = $this->uploadPicture();
+        if ($return) {
+            $data['avatar'] = '/Uploads/' . $return['avatar']['savepath'] . $return['avatar']['savename'];
+            //$data['avatar'] = json_encode($_POST).'1';
+        } else {
+            result_json(FALSE, '上传数据有误!');
+        }
 
 
         $ret = $this->UserService->update_by_id($this->uid, $data);
@@ -28,4 +34,17 @@ class UserAvatar_modify extends BaseApi{
         }
         result_json(TRUE, '修改成功!');
     }
+
+
+    public function uploadPicture(){
+
+        /* 返回标准数据 */
+        $return  = array('status' => 1, 'info' => '上传成功', 'data' => '');
+
+        $Upload = new Upload();
+        $return = $Upload->upload();
+        return $return;
+    }
+
+
 }
