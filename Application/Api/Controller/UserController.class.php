@@ -25,6 +25,11 @@ class UserController extends BaseController {
     public function info_modify() {
         $this->excute_api('Api\Lib\UserInfo_modify');
     }
+
+    public function avatar_modify() {
+        $this->excute_api('Api\Lib\UserAvatar_modify');
+    }
+
     public function extra_info() {
         $this->excute_api('Api\Lib\UserExtraInfo');
     }
