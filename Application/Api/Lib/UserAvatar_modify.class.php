@@ -8,6 +8,7 @@
 namespace Api\Lib;
 use Common\Model;
 use Common\Service;
+use Think\Upload;
 class UserAvatar_modify extends BaseApi{
     protected $method = parent::API_METHOD_POST;
     private $UserService;
