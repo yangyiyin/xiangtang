@@ -60,5 +60,27 @@
 //}
 //$tree = make_tree($list);
 
-{"avatar":{"name":"cf83771bf6ccbc1f8dbb85c6c8d326d2.jpg","type":"image\/jpeg","size":8199,"key":"avatar","ext":"jpg","md5":"0143e88e2fa9fa85e740b05ba24e9279","sha1":"41352b22b1895f6f6a8dc930ae5aa80f2d7558c8","savename":"5a03d438a384e.jpg","savepath":"2017-11-09\/"}}
+function get_diff_num($arr) {
+    if (!is_array($arr) || count($arr) < 3) {
+        return false;
+    }
 
+    $dif = $arr[1] - $arr[0];//等差值
+
+    foreach ($arr as $key => $value) {
+        if ($key == 0 || $value - $cur == $dif) {
+            $cur = $value;//上一个值
+            continue;
+        }
+        if ($value - $cur < $dif) {
+            return $value - $dif;
+        } else {
+            return $cur + $dif;
+        }
+
+    }
+    return false;
+
+}
+
+var_dump(get_diff_num([3,6,9,12,19]));
