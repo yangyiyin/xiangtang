@@ -103,5 +103,23 @@ class AntOrderController extends AdminController {
     }
 
 
+    public function order_info() {
+        $order_id = I('get.id');
+        $info = $this->OrderService->get_info_by_id($order_id);
+
+        if (!$info) {
+            $this->error('没有该订单');
+        } else {
+            $list = [$info];
+            $this->convert_data($list);
+            $this->assign('vo', $list[0]);
+            //增加打印次数
+           // $this->OrderService->add_print_count($order_id);
+        }
+
+        $this->display('AntOrder/info');
+    }
+
+
 
 }
