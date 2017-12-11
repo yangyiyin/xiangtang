@@ -120,6 +120,7 @@
 						<if condition="$vo['status'] == 1">
 							<a class="u-btn confirm J_ajax_get" url="{:U('order_step')}/id/{$vo.id}/step/cancel">取消订单</a>
 						</if>
+						<a class="btn print_btn" id="{$vo.id}">打印</a>
 					</td>
 				</tr>
 				</volist>
