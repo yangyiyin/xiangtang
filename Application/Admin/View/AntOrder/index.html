@@ -106,6 +106,7 @@
 						</p>
 						<p class="short_info">总价:{$vo.sum|format_price}元(含运费{$vo.freight|format_price}元)
 						<a class="btn show_box" order_id="{$vo.id}" tmp_id="edit_total">修改总价</a>
+							<a class="btn u-btn confirm J_ajax_get" url="{:U('order_modify_total')}/id/{$vo.id}/is_no_freight/1">免运费</a>
 						</p>
 
 						<p class="short_info">总数量:{$vo.num}</p>

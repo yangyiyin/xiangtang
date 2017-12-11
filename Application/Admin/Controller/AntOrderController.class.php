@@ -286,20 +286,35 @@ class AntOrderController extends AdminController {
         $order_id = I('id');
         $total = I('total');
         $remark = I('remark');
-        if (!$order_id || !$total) {
+        $is_no_freight = I('is_no_freight', 0);
+        if (!$is_no_freight && (!$order_id || !$total)) {
             $this->error('参数错误');
 
         }
         $data = [];
         $data['sum'] = $total * 100;
         $data['remark'] = $remark;
+
+        if ($is_no_freight) {
+
+            $info = $this->OrderService->get_info_by_id($order_id);
+            if (!$info) {
+                $this->error('没有找到对应的订单信息');
+            }
+            if (!$info['freight']) {
+                $this->error('运费已为0元');
+            }
+            $data = [];
+            $data['sum'] = $info['sum'] - $info['freight'];
+            $data['freight'] = 0;
+        }
         $ret = $this->OrderService->update_by_id($order_id,$data);
 
         if (!$ret->success){
             $this->error($ret->message);
         }
-        action_user_log('修改订单总价');
-        $this->success('修改成功');
+        action_user_log('修改订单总价,是否为修改运费:'.$is_no_freight);
+        $this->success('设置成功');
     }
 
 
