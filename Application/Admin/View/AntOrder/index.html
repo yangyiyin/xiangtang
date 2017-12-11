@@ -203,7 +203,16 @@ $(function(){
         autoclose:true,
         pickerPosition:'bottom-left'
     });
+	$(document).on('click', '.print_btn', function () {
+		var id = $(this).attr('id');
+		var url = '{:U('order_info')}/id/' + id;
 
+		$.get(url, function (html) {
+			$("#print").html(html);
+			$("#print").jqprint();
+		})
+
+	});
 });
 
 </script>
