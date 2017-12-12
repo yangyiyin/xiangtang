@@ -115,7 +115,7 @@ class newModule {
 }
 
 
-$newModule = new newModule('activityApply', '公益活动报名');
+$newModule = new newModule('cooperationBlock', '合作单位');
 //['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]
-$newModule->gain([ 'model'=>1,'controller'=>1, 'service'=>1, 'view'=>1]);
-$newModule->gain_power([ 'model'=>1,'controller'=>1, 'service'=>1, 'view'=>1]);
+$newModule->gain([ 'model'=>1, 'service'=>1]);
+$newModule->gain_power([ 'model'=>1, 'service'=>1]);

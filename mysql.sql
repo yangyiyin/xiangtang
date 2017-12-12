@@ -220,3 +220,23 @@ CREATE TABLE `shopy_nf_activity_apply` (
 
 alter table shopy_nf_product add attr tinyint (3) DEFAULT '1';
 alter table shopy_nf_item add attr tinyint (3) DEFAULT '1';
+
+
+
+CREATE TABLE `shopy_nf_cooperation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+`title` int(11)  NOT NULL,
+`content` text,
+`status` tinyint(3) DEFAULT 1,
+`create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `shopy_nf_cooperation_block` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+`cid` int(11)  NOT NULL,
+`type` tinyint(5) DEFAULT 1,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
