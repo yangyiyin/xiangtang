@@ -93,5 +93,73 @@ class CooperationBlockService extends BaseService{
         return [$data, $count];
     }
 
+    public function get_by_cids_type($cids, $type){
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['cids'] = ['in', $cids];
+        $where['type'] = ['eq', $type];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
+    public function get_by_type($type){
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['type'] = ['eq', $type];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
+
+    public function set_block($cids, $type){
+        if (!isset(\Common\Model\NfCooperationBlockModel::$type_map[$type])) {
+            return result(FALSE, '非法type');
+        }
+        $items = $this->get_by_cids_type($cids, $type);
+
+        if ($items) {
+            $exists = result_to_array($items, 'cid');
+            $news = array_diff($cids, $exists);
+            if ($news) {
+                $data = [];
+                foreach ($news as $cid) {
+                    $data[] = ['cid'=>$cid, 'type'=>$type];
+                }
+                return $this->add_batch($data);
+            }
+        } else {
+            $data = [];
+            foreach ($cids as $cid) {
+                $data[] = ['cid'=>$cid, 'type'=>$type];
+            }
+            return $this->add_batch($data);
+        }
+        return result(FALSE, '设置失败');
+
+    }
+
+
+    public function cancel_block($cids, $type){
+        if (!isset(\Common\Model\NfCooperationBlockModel::$type_map[$type])) {
+            return result(FALSE, '非法type');
+        }
+        $items = $this->get_by_cids_type($cids, $type);
+
+        if ($items) {
+            $NfModel = D('Nf' . static::$name);
+            $where = [];
+            $where['id'] = ['in', result_to_array($items)];
+
+            $ret = $NfModel->where($where)->save(['deleted'=>static::$DELETED]);
+            if ($ret) {
+                return result(TRUE, '设置成功');
+            }
+        } else {
+
+        }
+        return result(FALSE, '设置失败');
+
+    }
+
 
 }

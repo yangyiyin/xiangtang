@@ -24,6 +24,9 @@ class AntCooperationController extends AdminController {
             $where['name'] = ['LIKE', '%' . I('get.name') . '%'];
         }
         */
+        if (I('get.title')) {
+            $where['title'] = ['LIKE', '%' . I('get.title') . '%'];
+        }
         $page = I('get.p', 1);
         list($data, $count) = $this->CooperationService->get_by_where($where, 'id desc', $page);
         $this->convert_data($data);
@@ -95,6 +98,68 @@ class AntCooperationController extends AdminController {
         }
     }
     public function convert_data(&$data) {
+        if ($data) {
 
+            $cids = result_to_array($data);
+            $CooperationBlockService = \Common\Service\CooperationBlockService::get_instance();
+            $promotion = $CooperationBlockService->get_by_cids_type($cids, \Common\Model\NfCooperationBlockModel::TYPE_PROMOTION);
+            $recommend = $CooperationBlockService->get_by_cids_type($cids, \Common\Model\NfCooperationBlockModel::TYPE_RECOMMEND);
+            $promotion_cids = result_to_array($promotion, 'cid');
+            $recommend_cids = result_to_array($recommend, 'cid');
+
+            foreach ($data as $key => $_item) {
+
+
+                if (in_array($_item['id'], $promotion_cids)) {
+                    $data[$key]['is_promotion'] = TRUE;
+                }
+                if (in_array($_item['id'], $recommend_cids)) {
+                    $data[$key]['is_recommend'] = TRUE;
+                }
+
+            }
+        }
+    }
+
+    public function set_block() {
+        $ids = I('post.ids');
+        $id = I('get.id');
+        $type = I('get.type');
+        $CooperationBlockService = \Common\Service\CooperationBlockService::get_instance();
+
+        if ($id) {
+            $ret = $CooperationBlockService->set_block([$id], $type);
+        }
+
+        if ($ids) {
+            $ret = $CooperationBlockService->set_block($ids, $type);
+        }
+
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        action_user_log('批量设置活动合作单位');
+        $this->success('设置成功！');
+    }
+
+    public function cancel_block() {
+        $ids = I('post.ids');
+        $id = I('get.id');
+        $type = I('get.type');
+        $CooperationBlockService = \Common\Service\CooperationBlockService::get_instance();
+
+        if ($id) {
+            $ret = $CooperationBlockService->cancel_block([$id], $type);
+        }
+
+        if ($ids) {
+            $ret = $CooperationBlockService->cancel_block($ids, $type);
+        }
+
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        action_user_log('批量取消活动合作单位');
+        $this->success('取消成功！');
     }
 }

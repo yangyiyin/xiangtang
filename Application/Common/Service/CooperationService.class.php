@@ -93,5 +93,12 @@ class CooperationService extends BaseService{
         return [$data, $count];
     }
 
+    public function get_by_ids($ids) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['id'] = ['in', $ids];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
 
 }

@@ -27,7 +27,8 @@
 					<th><input class="check-all" type="checkbox"/></th>
 					<th>id</th>
 					<th>名称</th>
-					<th >操作</th>
+					<th >设置</th>
+					<th>操作</th>
 				</tr>
 		    </thead>
 		    <tbody>
@@ -40,10 +41,26 @@
 						{$vo.title}
 					</td>
 					<td>
+						<if condition="$vo['is_promotion']">
+							<a style="border-radius:3px;padding: 2px;width:30px;background-color: red;color: #fff">促销</a>
+						</if>
+						<if condition="$vo['is_recommend']">
+							<a style="border-radius:3px;padding: 2px;width:30px;background-color: #0CA818;color: #fff">推荐</a>
+						</if>
+						<if condition="!$vo['is_promotion']">
+
+							<a  class="u-btn confirm J_ajax_get" href="{:U('set_block')}/type/1/id/{$vo.id}">设置为促销</a>
+						</if>
+						<if condition="!$vo['is_recommend']">
+							<a  class="u-btn confirm J_ajax_get" href="{:U('set_block')}/type/2//id/{$vo.id}">设置为推荐</a>
+						</if>
+					</td>
+					<td>
 						<a  href="{:U('add')}/id/{$vo.id}" class="u-btn">编辑</a>|
 						<a  href="{:U('del')}/id/{$vo.id}" class="u-btn confirm J_ajax_get">删除</a>
 
 					</td>
+
 				</tr>
 				</volist>
 			</tbody>
@@ -52,6 +69,14 @@
 		<div class="btn_wrap">
 			<div class="btn_wrap_pd">
 				<a class="btn btn_small J_ajax_get" href="{:U('Index/setKey',array('cid'=>$_GET['menuId'],'title'=>$meta_title))}"><i class="fa fa-heart"></i></a>
+
+				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("set_block")}/type/1'>批量设置为促销</button>
+
+				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("set_block")}/type/2'>批量设置为推荐</button>
+
+				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("cancel_block")}/type/1'>批量取消促销</button>
+
+				<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("cancel_block")}/type/2'>批量取消推荐</button>
 
 		    </div>
 		</div>

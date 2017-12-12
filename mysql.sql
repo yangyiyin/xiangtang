@@ -236,7 +236,9 @@ CREATE TABLE `shopy_nf_cooperation` (
 CREATE TABLE `shopy_nf_cooperation_block` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
 `cid` int(11)  NOT NULL,
-`type` tinyint(5) DEFAULT 1,
+`type` tinyint(5) DEFAULT 0,
   `deleted` tinyint(3) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+alter table shopy_nf_cooperation_block add type tinyint (5) DEFAULT '0';

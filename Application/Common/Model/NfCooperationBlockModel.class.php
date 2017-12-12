@@ -6,6 +6,9 @@
 namespace Common\Model;
 use Think\Model;
 class NfCooperationBlockModel extends NfBaseModel {
+    const TYPE_PROMOTION = 1;
+    const TYPE_RECOMMEND = 2;
+    public static $type_map = [self::TYPE_PROMOTION => '促销', self::TYPE_RECOMMEND => '推荐'];
   protected $_validate = array(
         /**
         array('title', 'require', '名称不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT),
