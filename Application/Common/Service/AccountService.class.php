@@ -47,6 +47,14 @@ class AccountService extends BaseService{
         return $NfModel->where($where)->select();
     }
 
+    public function get_all() {
+
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
     public function update_by_id($id, $data) {
 
         if (!$id) {
