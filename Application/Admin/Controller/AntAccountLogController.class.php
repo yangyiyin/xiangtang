@@ -257,13 +257,27 @@ class AntAccountLogController extends AdminController {
         //list($data, $count) = $this->AccountLogService->get_by_where($where, 'id desc', $page);
         if (I('export')) {
             list($data, $count) = $this->AccountLogService->get_group_by_uid_all(join(' and ', $where_arr));
-
+            $where_arr_all = [];
+            foreach ($where_arr as $_where) {
+                if (strpos($_where,'create_time') !== false) {
+                    continue;
+                }
+                $where_arr_all[] = $_where;
+            }
+            list($data_all, ) = $this->AccountLogService->get_group_by_uid_all(join(' and ', $where_arr_all));
         } else {
-            list($data, $count) = $this->AccountLogService->get_group_by_uid(join(' and ', $where_arr), 'id desc',$page);
-
+            list($data, $count) = $this->AccountLogService->get_group_by_uid_all(join(' and ', $where_arr));
+            $where_arr_all = [];
+            foreach ($where_arr as $_where) {
+                if (strpos($_where,'create_time') !== false) {
+                    continue;
+                }
+                $where_arr_all[] = $_where;
+            }
+            list($data_all, $count) = $this->AccountLogService->get_group_by_uid(join(' and ', $where_arr_all), 'id desc',$page);
         }
 
-        $data = $this->convert_commission_data($data, $where);
+        $data = $this->convert_commission_data($data, $where, $data_all);
         //echo json_encode($data);die();
         $PageInstance = new \Think\Page($count, \Common\Service\AccountLogService::$page_size);
         if($total>\Common\Service\AccountLogService::$page_size){
@@ -403,7 +417,7 @@ class AntAccountLogController extends AdminController {
         return $data;
 
     }
-    public function convert_commission_data($data, $where='') {
+    public function convert_commission_data($data, $where='', $data_all=[]) {
 
         if ($data) {
             $uids = result_to_array($data, 'uid');
@@ -423,7 +437,7 @@ class AntAccountLogController extends AdminController {
             }
 
             $AccountService = \Common\Service\AccountService::get_instance();
-            $accounts = $AccountService->get_by_uids($uids);
+            $accounts = $AccountService->get_all();
             $accounts_map = result_to_map($accounts, 'uid');
 
             //获取截止结束时间的佣金综合
@@ -439,7 +453,7 @@ class AntAccountLogController extends AdminController {
                 unset($where[$unset_key]);
             }
 
-            list($all_datas_sum, ) = $this->AccountLogService->get_by_where_all($where);
+            list($all_datas_sum, ) = $this->AccountLogService->get_by_where_all([]);
 
             $all_datas_sum_map = result_to_complex_map($all_datas_sum, 'uid');
             $uid_sum_map = [];
@@ -500,7 +514,22 @@ class AntAccountLogController extends AdminController {
             }
         }
 
-        return $data;
+        $data_map = result_to_map($data,'uid');
+        $new_data = [];
+        if ($data_all) {
+            foreach ($data_all as $_data) {
+                if (!isset($data_map[$_data['uid']])) {
+                    $tmp_data['account'] = $tmp_data['account_before'] = isset($accounts_map[$_data['uid']]) ? $accounts_map[$_data['uid']] : 0;
+                    $new_data[] = $tmp_data;
+                } else {
+                    $new_data[] = $data_map[$_data['uid']];
+                }
+            }
+        } else {
+            $new_data = $data;
+        }
+
+        return $new_data;
 
     }
 
