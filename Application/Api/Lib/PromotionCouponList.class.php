@@ -30,7 +30,7 @@ class PromotionCouponList extends BaseApi{
             }
         }
         $my_coupons = $my_coupons ? $my_coupons : [];
-        $my_coupons = convert_objs($my_coupons, 'id=coupon_id,code,title,least,deductible');
+        $my_coupons = convert_objs($my_coupons, 'id=coupon_id,code,title,least,deductible,function');
         return result_json(TRUE, '', $my_coupons);
     }
 

@@ -29,7 +29,7 @@ class PromotionItem extends BaseApi{
             $result['end_time'] = strtotime($itemtimelimit[0]['end_time']);
 
             foreach ($itemtimelimit as $timelimit) {
-                $result['sku_prices'][$timelimit['sku_id']] = $timelimit['price'];
+                $result['sku_prices'][] = $timelimit;
             }
         }
 
