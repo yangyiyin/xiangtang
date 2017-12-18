@@ -419,6 +419,9 @@ class AntAccountLogController extends AdminController {
     }
     public function convert_commission_data($data, $where='', $data_all=[]) {
 
+        $AccountService = \Common\Service\AccountService::get_instance();
+        $accounts = $AccountService->get_all();
+        $accounts_map = result_to_map($accounts, 'uid');
         if ($data) {
             $uids = result_to_array($data_all, 'uid');
             $type_map = \Common\Model\NfAccountLogModel::$TYPE_MAP;
@@ -436,9 +439,6 @@ class AntAccountLogController extends AdminController {
                 $orders_map = result_to_map($orders);
             }
 
-            $AccountService = \Common\Service\AccountService::get_instance();
-            $accounts = $AccountService->get_all();
-            $accounts_map = result_to_map($accounts, 'uid');
 
             //获取截止结束时间的佣金综合
             $unset_key = '';
@@ -519,7 +519,7 @@ class AntAccountLogController extends AdminController {
         if ($data_all) {
             foreach ($data_all as $_data) {
                 if (!isset($data_map[$_data['uid']])) {
-                    $tmp_data['account'] = $tmp_data['account_before'] = isset($accounts_map[$_data['uid']]) ? $accounts_map[$_data['uid']] : 0;
+                    $tmp_data['account'] = $tmp_data['account_before'] = isset($accounts_map[$_data['uid']]) ? $accounts_map[$_data['uid']]['sum'] : 0;
                     $tmp_data['user'] = isset($users_map[$_data['uid']]) ? $users_map[$_data['uid']] : [];
                     $new_data[] = $tmp_data;
                 } else {
