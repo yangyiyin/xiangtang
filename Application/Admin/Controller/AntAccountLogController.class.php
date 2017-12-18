@@ -420,7 +420,7 @@ class AntAccountLogController extends AdminController {
     public function convert_commission_data($data, $where='', $data_all=[]) {
 
         if ($data) {
-            $uids = result_to_array($data, 'uid');
+            $uids = result_to_array($data_all, 'uid');
             $type_map = \Common\Model\NfAccountLogModel::$TYPE_MAP;
             $UserService = \Common\Service\UserService::get_instance();
             $users = $UserService->get_by_ids($uids);
@@ -520,6 +520,7 @@ class AntAccountLogController extends AdminController {
             foreach ($data_all as $_data) {
                 if (!isset($data_map[$_data['uid']])) {
                     $tmp_data['account'] = $tmp_data['account_before'] = isset($accounts_map[$_data['uid']]) ? $accounts_map[$_data['uid']] : 0;
+                    $tmp_data['user'] = isset($users_map[$_data['uid']]) ? $users_map[$_data['uid']] : [];
                     $new_data[] = $tmp_data;
                 } else {
                     $new_data[] = $data_map[$_data['uid']];
