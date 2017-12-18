@@ -36,6 +36,12 @@ class ItemDetail extends BaseApi{
 
             $UserService = Service\UserService::get_instance();
             $user_info = $this->user_info;
+            //优惠(限时抢购)
+            $iids = result_to_array($data);
+            $ItemTimelimitActivityService = \Common\Service\ItemTimelimitActivityService::get_instance();
+            $limit_activities = $ItemTimelimitActivityService->get_by_iids($iids);
+            $limit_activities_map = result_to_complex_map($limit_activities, 'iid');
+
             foreach ($data as $key => $_item) {
                 $_item['img'] = item_img(get_cover($_item['img'], 'path'));//todo 这种方式后期改掉
 
@@ -48,7 +54,13 @@ class ItemDetail extends BaseApi{
                     $_item['show_price'] = (int) $_item['min_normal_price'];
                     $_item['pay_price'] = (int) $_item['min_normal_price'];
                 }
-
+                //优惠(限时抢购)
+                if (isset($limit_activities_map[$_item['id']])) {
+                    $price = $ItemTimelimitActivityService->get_price_by_info($limit_activities_map[$_item['id']]);
+                    if ($price) {
+                        $_item['price'] = $_item['pay_price'] = $_item['show_price'] = $price;
+                    }
+                }
                 $_item['id'] = (int) $_item['id'];
                 $_item['pid'] = (int) $_item['pid'];
                 $_item['price'] = (int) $_item['price'];

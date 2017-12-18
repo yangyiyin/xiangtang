@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-08-08 21:16:23
+ * Time: 2017-12-13 10:24:27
  */
 namespace Common\Service;
-class OrderBenefitService extends BaseService{
-    public static $name = 'OrderBenefit';
+class DeductibleCouponService extends BaseService{
+    public static $name = 'DeductibleCoupon';
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
@@ -16,6 +16,7 @@ class OrderBenefitService extends BaseService{
         if ($NfModel->add()) {
             return result(TRUE, '', $NfModel->getLastInsID());
         } else {
+
             return result(FALSE, '网络繁忙~');
         }
     }
@@ -92,20 +93,5 @@ class OrderBenefitService extends BaseService{
         return [$data, $count];
     }
 
-    public function get_info_by_oids($oids) {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['oids'] = ['EQ', $oids];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->select();
-    }
-
-    public function get_by_oids($oids) {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['oids'] = ['in', $oids];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->select();
-    }
 
 }

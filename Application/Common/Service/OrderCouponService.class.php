@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-08-08 21:16:23
+ * Time: 2017-12-18 09:59:02
  */
 namespace Common\Service;
-class OrderBenefitService extends BaseService{
-    public static $name = 'OrderBenefit';
+class OrderCouponService extends BaseService{
+    public static $name = 'OrderCoupon';
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
@@ -16,6 +16,7 @@ class OrderBenefitService extends BaseService{
         if ($NfModel->add()) {
             return result(TRUE, '', $NfModel->getLastInsID());
         } else {
+
             return result(FALSE, '网络繁忙~');
         }
     }
@@ -26,6 +27,30 @@ class OrderBenefitService extends BaseService{
         $where['id'] = ['EQ', $id];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->find();
+    }
+
+    public function get_by_oids($oids) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['oid'] = ['in', $oids];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
+    public function get_by_oid($oid) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['oid'] = $oid;
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->find();
+    }
+
+    public function get_by_cid($cid) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['cid'] = $cid;
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
     }
 
     public function update_by_id($id, $data) {
@@ -92,20 +117,5 @@ class OrderBenefitService extends BaseService{
         return [$data, $count];
     }
 
-    public function get_info_by_oids($oids) {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['oids'] = ['EQ', $oids];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->select();
-    }
-
-    public function get_by_oids($oids) {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['oids'] = ['in', $oids];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->select();
-    }
 
 }

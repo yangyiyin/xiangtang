@@ -27,7 +27,7 @@ class OrderPre_order extends BaseApi{
 
         $items_num_arr = $items_num;
 
-        //$items_num_arr = json_decode($items_num,true);
+        $items_num_arr = json_decode($items_num,true);
 
         if (!is_array($items_num_arr)) {
             return result_json(FALSE, '参数错误~');
@@ -201,6 +201,13 @@ class OrderPre_order extends BaseApi{
             $pids = result_to_array($items_map, 'pid');
 //            $products = $ProductService->get_by_ids($pids);
 //            $products_map = result_to_map($products);
+
+            //优惠(限时抢购)
+            $iids = result_to_array($data, 'item_id');
+            $ItemTimelimitActivityService = \Common\Service\ItemTimelimitActivityService::get_instance();
+            $limit_activities = $ItemTimelimitActivityService->get_by_iids($iids);
+            $limit_activities_map = result_to_complex_map($limit_activities, 'iid');
+
             foreach ($data as $key => $_item) {
                 $_item['img'] = item_img(get_cover($items_map[$_item['item_id']]['img'], 'path'));//todo 这种方式后期改掉
 
@@ -213,7 +220,21 @@ class OrderPre_order extends BaseApi{
                     $_item['show_price'] = (int) $skus_map[$_item['sku_id']]['price'];
                     $_item['pay_price'] = (int) $skus_map[$_item['sku_id']]['price'];
                 }
+
                 $_item['price'] = (int) $skus_map[$_item['sku_id']]['price']; //订单价格都按照普通价格
+
+
+                //优惠(限时抢购)
+                if (isset($limit_activities_map[$_item['item_id']])) {
+                    $sku_prices = $ItemTimelimitActivityService->get_price_by_info($limit_activities_map[$_item['item_id']], 0);
+
+                    if ($sku_prices) {
+                        if (isset($sku_prices[$_item['sku_id']]['price'])) {
+                            $_item['price'] = $_item['pay_price'] = $_item['show_price'] = $sku_prices[$_item['sku_id']]['price'];
+                        }
+                    }
+                }
+
                 $_item['dealer_profit'] = $_item['show_price'] - $_item['pay_price']; //经销商利润
                 $_item['pay_price'] = $_item['show_price'];
 

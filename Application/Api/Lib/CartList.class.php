@@ -67,6 +67,12 @@ class CartList extends BaseApi{
             $skus = $ProductSkuService->get_by_ids($sku_ids);
             $skus_map = result_to_map($skus);
 
+            //优惠(限时抢购)
+            $iids = result_to_array($data);
+            $ItemTimelimitActivityService = \Common\Service\ItemTimelimitActivityService::get_instance();
+            $limit_activities = $ItemTimelimitActivityService->get_by_iids($iids);
+            $limit_activities_map = result_to_complex_map($limit_activities, 'iid');
+
             $all_count = 0;
             foreach ($data as $key => $_item) {
                 $_item['img'] = item_img(get_cover($_item['img'], 'path'));//todo 这种方式后期改掉
@@ -99,6 +105,16 @@ class CartList extends BaseApi{
                             $_item['price'] = (int) $skus_map[$_item['sku_id']]['price'];
                             $_item['show_price'] = (int) $skus_map[$_item['sku_id']]['price'];
                             $_item['pay_price'] = (int) $skus_map[$_item['sku_id']]['price'];
+                        }
+
+                        //优惠(限时抢购)
+                        if (isset($limit_activities_map[$_item['id']])) {
+                            $sku_prices = $ItemTimelimitActivityService->get_price_by_info($limit_activities_map[$_item['id']], 0);
+                            if ($sku_prices) {
+                                if (isset($sku_prices[$_item['sku_id']]['price'])) {
+                                    $_item['price'] = $_item['pay_price'] = $_item['show_price'] = $sku_prices[$_item['sku_id']]['price'];
+                                }
+                            }
                         }
 
                         $list[$cate_name]['item_list'][] = convert_obj($_item, 'id=item_id,sku_id,pid,title,img,desc,unit_desc,price,show_price,pay_price,num,status_desc,props');

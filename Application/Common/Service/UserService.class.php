@@ -47,6 +47,11 @@ class UserService extends BaseService{
         return $NfUser->where('user_tel = ' . $tel . ' and status = ' . $status)->find();
     }
 
+    public function get_by_tel_all($tel) {
+        $NfUser = D('NfUser');
+        return $NfUser->where('user_tel = ' . $tel)->find();
+    }
+
     public function update_by_id($id, $data) {
 
         if (!$id) {

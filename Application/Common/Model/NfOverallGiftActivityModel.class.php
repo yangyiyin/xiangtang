@@ -1,14 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-08-08 21:16:23
+ * Time: 2017-12-13 10:20:49
  */
 namespace Common\Model;
 use Think\Model;
-class NfOrderBenefitModel extends NfBaseModel {
-    const TYPE_ACCOUNT = 1;
-    const TYPE_OVERALL = 2;
-    const TYPE_COUPON = 3;
+class NfOverallGiftActivityModel extends NfBaseModel {
   protected $_validate = array(
         /**
         array('title', 'require', '名称不能为空', self::EXISTS_VALIDATE, 'regex', self::MODEL_INSERT),

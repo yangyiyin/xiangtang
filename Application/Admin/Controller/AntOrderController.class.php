@@ -166,6 +166,13 @@ class AntOrderController extends AdminController {
             $franchisees = $MemberService->get_franchisees($seller_uids);
             $franchisees_map = result_to_map($franchisees, 'uid');
 
+            //获取订单促销信息
+            $OrderBenefitService = \Common\Service\OrderBenefitService::get_instance();
+            $benefits = $OrderBenefitService->get_by_oids($order_ids);
+            $benefits_map = result_to_complex_map($benefits, 'oids');
+            $OrderCouponService = \Common\Service\OrderCouponService::get_instance();
+            $coupons = $OrderCouponService->get_by_oids($order_ids);
+            $coupons_map = result_to_map($coupons, 'oid');
             foreach ($data as $key => $_item) {
                 if (isset($snapshots_map[$_item['id']])) {
                     $data[$key]['order_snapshot'] = json_decode($snapshots_map[$_item['id']]['content'], TRUE);
@@ -188,7 +195,18 @@ class AntOrderController extends AdminController {
                 } else {
                     $data[$key]['franchisee_info'] = [];
                 }
+                $data[$key]['promotion_info'] = '';
+                if (isset($benefits_map[$_item['id']])) {
+                    foreach ($benefits_map[$_item['id']] as $benefit) {
+                        if ($benefit['type'] == \Common\Model\NfOrderBenefitModel::TYPE_OVERALL) {
+                            $data[$key]['promotion_info'] .= $benefit['rule'];
+                        }
+                    }
+                }
 
+                if (isset($coupons_map[$_item['id']])) {
+                    $data[$key]['promotion_info'] .= '。使用优惠券id:' . $coupons_map[$_item['id']]['cid'];
+                }
             }
             //var_dump($data);die();
         }

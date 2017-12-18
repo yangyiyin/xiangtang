@@ -225,7 +225,7 @@ alter table shopy_nf_item add attr tinyint (3) DEFAULT '1';
 
 CREATE TABLE `shopy_nf_cooperation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-`title` int(11)  NOT NULL,
+`title` varchar(50) DEFAULT '',
 `content` text,
 `status` tinyint(3) DEFAULT 1,
 `create_time` datetime DEFAULT NULL,
@@ -242,3 +242,96 @@ CREATE TABLE `shopy_nf_cooperation_block` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 alter table shopy_nf_cooperation_block add type tinyint (5) DEFAULT '0';
+
+
+CREATE TABLE `shopy_nf_market_activity` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` tinyint(5) DEFAULT 1,
+`title` varchar(50) DEFAULT '',
+`extra` VARCHAR (200) DEFAULT '',
+ `status` tinyint(3) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+CREATE TABLE `shopy_nf_overall_gift_activity` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+`start_time`  datetime DEFAULT NULL,
+ `end_time`  datetime DEFAULT NULL,
+ `least` int(11)  NOT NULL,
+`extra` VARCHAR (200) DEFAULT '',
+ `status` tinyint(3) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `shopy_nf_deductible_coupon` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+`title` varchar(50) DEFAULT '',
+ `least` int(11)  NOT NULL,
+`deductible` int(11)  NOT NULL,
+ `status` tinyint(3) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `shopy_nf_user_deductible_coupon` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+`title` varchar(50) DEFAULT '',
+`code` VARCHAR (15) DEFAULT '',
+`uid` int(11) DEFAULT '0',
+ `least` int(11)  NOT NULL,
+`deductible` int(11)  NOT NULL,
+ `status` tinyint(3) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `shopy_nf_timelimit_activity` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+`title` varchar(50) DEFAULT '',
+`start_time`  datetime DEFAULT NULL,
+ `end_time`  datetime DEFAULT NULL,
+ `status` tinyint(3) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `shopy_nf_item_timelimit_activity` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+`iid` int(11)  NOT NULL,
+`start_time`  datetime DEFAULT NULL,
+ `end_time`  datetime DEFAULT NULL,
+ `price` int(11)  NOT NULL,
+ `status` tinyint(3) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+alter table shopy_nf_overall_gift_activity add `title` varchar(50) DEFAULT ''
+
+alter table shopy_nf_market_activity add `create_time` datetime DEFAULT NULL;
+alter table shopy_nf_market_activity  add `deleted` tinyint(3) DEFAULT '0';
+
+alter table shopy_nf_overall_gift_activity add `create_time` datetime DEFAULT NULL;
+alter table shopy_nf_overall_gift_activity  add `deleted` tinyint(3) DEFAULT '0';
+
+alter table shopy_nf_deductible_coupon add `create_time` datetime DEFAULT NULL;
+alter table shopy_nf_deductible_coupon  add `deleted` tinyint(3) DEFAULT '0';
+
+alter table shopy_nf_user_deductible_coupon add `create_time` datetime DEFAULT NULL;
+alter table shopy_nf_user_deductible_coupon  add `deleted` tinyint(3) DEFAULT '0';
+
+alter table shopy_nf_timelimit_activity add `create_time` datetime DEFAULT NULL;
+alter table shopy_nf_timelimit_activity  add `deleted` tinyint(3) DEFAULT '0';
+
+alter table shopy_nf_item_timelimit_activity add `create_time` datetime DEFAULT NULL;
+alter table shopy_nf_item_timelimit_activity  add `deleted` tinyint(3) DEFAULT '0';
+alter table shopy_nf_item_timelimit_activity add `sku_id` int(11)  NOT NULL;
+
+alter table shopy_nf_user_deductible_coupon  add `cid` int(11) DEFAULT '0';
+
+
+CREATE TABLE `shopy_nf_order_coupon` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `oid` varchar(255) COLLATE utf8_bin NOT NULL,
+  `cid` tinyint(5) DEFAULT '0',
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

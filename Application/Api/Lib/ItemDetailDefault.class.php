@@ -38,6 +38,11 @@ class ItemDetailDefault extends BaseSapi{
             $prices = $itemUsertypePricesService->get_by_iids($iids);
             $prices_map = result_to_complex_map($prices, 'iid');
 
+            //优惠(限时抢购)
+            $ItemTimelimitActivityService = \Common\Service\ItemTimelimitActivityService::get_instance();
+            $limit_activities = $ItemTimelimitActivityService->get_by_iids($iids);
+            $limit_activities_map = result_to_complex_map($limit_activities, 'iid');
+
             foreach ($data as $key => $_item) {
                 $_item['img'] = item_img(get_cover($_item['img'], 'path'));//todo 这种方式后期改掉
                 $_item['id'] = (int) $_item['id'];
@@ -47,6 +52,15 @@ class ItemDetailDefault extends BaseSapi{
                 $_item['content'] = $_item['content'];
                 $_item['tips'] = $_item['tips'];
                 $_item['labels'] = $_item['lables'] ? explode(',', $_item['lables']) : [];
+
+                //优惠(限时抢购)
+                if (isset($limit_activities_map[$_item['id']])) {
+                    $price = $ItemTimelimitActivityService->get_price_by_info($limit_activities_map[$_item['id']]);
+                    if ($price) {
+                        $_item['price'] = $_item['show_price'] = $price;
+                    }
+                }
+
                 $list[] = convert_obj($_item, 'id=item_id,pid,title,img,desc,unit_desc,price,content,tips,labels,show_price');
             }
 

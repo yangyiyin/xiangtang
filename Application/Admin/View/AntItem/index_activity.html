@@ -1,0 +1,359 @@
+<extend name="Public/base"/>
+<block name="body">
+	<div class="g-wrap">
+		<!-- 按钮工具栏 -->
+		<div class="u-tab">
+
+		    <ul class="cc">
+		      	<li class="current"><a href="javascript:;">设置活动</a></li>
+		    </ul>
+		</div>
+	    <div class="search_type cc mb10 search-form">
+
+	      <div class="mb10">
+			    <span class="mr20">平台：
+						<php>
+
+        		$a = (I('get.platform')==1)?'selected':'';
+        		$b = (I('get.platform')==2)?'selected':'';
+							$c = (I('get.platform')==3)?'selected':'';
+        	</php>
+	        <select class="select_2 select" name="platform">
+	          	<option value='' >全部</option>
+				<option value="1" {$a}>服务版</option>
+	          	<option value="2" {$b}>零售版</option>
+				 	<option value="3" {$c}>服务+零售</option>
+	        </select>
+
+					    <span class="mr20">自营：
+						<php>
+
+        		$a = (I('get.is_self')==1)?'selected':'';
+        		$b = (I('get.is_self')==2)?'selected':'';
+        	</php>
+	        <select class="select_2 select" name="is_self">
+	          	<option value='' >全部</option>
+				<option value="1" {$a}>是</option>
+	          	<option value="2" {$b}>否</option>
+	        </select>
+
+	        <span class="mr20">分类：
+	        <select class="select_2 select" name="cid">
+	          	<option value='' >全部</option>
+	          	{$catetree}
+	        </select>
+	        <span class="mr20">状态：
+        	<php>
+        		$all = (I('get.status'))?'selected':'';
+        		$first = (I('get.status')==1)?'selected':'';
+        		$second = (I('get.status')==99)?'selected':'';
+        	</php>
+	        <select class="select_2 select" id="sch-sort-txt" name="status">
+	          	<option value="" {$all}>全部</option>
+	          	<option value="1" {$first}>正常</option>
+	          	<option value="99" {$second}>已下架</option>
+	        </select>
+	         &nbsp;标题：
+	        <input type="text" class="input length_2" name="title" style="width:200px;" value="{:I('title')}" placeholder="请输入标题文档">
+	        <a class="u-btn" href="javascript:;" id="search" url="{:U('')}/activity/{:I('activity')}/aid/{:I('aid')}">搜索</a>
+	        <!-- <a href="javascript:;" class="u-btn" onclick="{:U('post/index',array('resetFiter'=>true))}">重置</a> -->
+	        </span>
+	      </div>
+	    </div>
+		<!-- 数据表格 -->
+	    <div class="table_list">
+			<table class="" width="100%">
+		    <thead>
+		        <tr>
+					<th width="5%"><input class="check-all" type="checkbox"/></th>
+					<th width="5%">产品id</th>
+					<th width="5%">预览</th>
+					<th width="15%">基本信息</th>
+					<th width="5%">分类</th>
+					<th width="5%">状态</th>
+					<th width="12%">活动信息</th>
+					<th width="12%">设置</th>
+				</tr>
+		    </thead>
+		    <tbody>
+				<volist name="list" id="vo">
+				<tr>
+		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
+					<td>{$vo.pid} </td>
+					<td><img src="{$vo['img']|get_cover}" width="50" height="50"/></td>
+					<td>
+						<p class="short_info">标题:{$vo.title}</p>
+						<p>
+							<if condition="$vo['franchisee_info']"><span class="btn-primary">所属加盟商:{$vo.franchisee_info.nickname}</span></if>
+
+						</p>
+						<p class="short_info">关键词:{$vo.keyword}</p>
+						<p class="short_info">描述:{$vo.desc}</p>
+						<p class="short_info">购买须知:{$vo.tips}</p>
+						<p class="short_info">创建时间:{$vo.create_time}</p>
+						<p>
+							<if condition="$vo.platform == 1 || $vo.platform == 3"><span class="btn-success">服务版</span></if>
+							<if condition="$vo.platform == 2 || $vo.platform == 3"><span class="btn-success">零售版</span></if>
+
+						</p>
+					</td>
+					<td><span>{$vo['cate']['name']}</span></td>
+
+					<td ><span>{$vo.status_text}</span></td>
+					<td >
+						<if condition="$vo['timelimit_activity_info']">
+							<div style="background: red;padding: 5px;color: #fff;border-radius: 4px">
+								<p style="font-size: 16px;padding: 2px">限时抢购:</p>
+								<p>开始时间:{$vo['timelimit_activity_info']['start_time']}</p>
+								<p>结束时间:{$vo['timelimit_activity_info']['end_time']}</p>
+
+							</div>
+
+
+						</if>
+
+					</td>
+					<td>
+						<a  class="u-btn show_box" href="javascript:;" tmp_id="set_timelimit_activity" iid="{$vo.id}" min_dealer_price="{$vo.min_dealer_price}" start_time="{$activity_info.start_time}" end_time="{$activity_info.end_time}">
+							设置限时抢购
+							<if condition="$vo['skus']">
+								<div class="skus" style="display: none">
+									<volist name="vo['skus']" id="_sku">
+										<p style="padding: 10px">
+											{$_sku.props}(现经销商价{$_sku.dealer_price|format_price}元) : 设置限时价为<input sku_id="{$_sku.id}" value="{$vo['timelimit_activity_info'][$_sku['id']]['price']|format_price}" class="input sku_price"/>
+										</p>
+									</volist>
+								</div>
+							</if>
+
+						</a>
+						<a  class="u-btn confirm J_ajax_get" href="{:U('cancel_timelimit_activity')}/aid/{:I('aid')}/id/{$vo.id}">取消限时抢购</a>
+					</td>
+
+				</tr>
+				</volist>
+			</tbody>
+		    </table> 
+		</div>
+		<div class="btn_wrap">
+			<div class="btn_wrap_pd">
+				<a class="btn btn_small" href="{:U('AntTimelimitActivity/index')}">返回</a>
+
+				<!--<button  class="btn show_box" tmp_id="set_timelimit_activity" tmp_type="batch" start_time="{$activity_info.start_time}" end_time="{$activity_info.end_time}">批量设置限时抢购</button>-->
+
+				<!--<button  class="btn J_ajax_post confirm" target-form="ids" url='{:U("cancel_timelimit_activity")}/aid/{:I("aid")}'>批量取消限时抢购</button>-->
+
+			</div>
+		</div>
+		<!-- 分页 -->
+	    <div class="page">
+	        {$page_html}
+	    </div>
+	</div>
+</div>
+	<div id="set_timelimit_activity" class="show_box_temp" style="display:none;position: fixed;width: 500;left: 50%;top:30%;z-index: 1000;background: #ddd;border: 1px solid #000000;padding: 10px">
+		<p style="padding: 10px;font-size: 20px" class="title">设置限时抢购</p>
+		<p style="padding: 10px">
+			开始时间:<input value="0" class="input start_time"/>
+		</p>
+		<p style="padding: 10px">
+			开始时间:<input value="0" class="input end_time"/>
+		</p>
+		<div class="sku_price_box">
+
+		</div>
+		<!--<p style="padding: 10px">-->
+			<!--价格:<input value="0" class="input price"/>-->
+		<!--</p>-->
+		<input style='display:none' disabled="disabled" value="0" class="input iids"/>
+		<p style="padding: 10px">
+			<a class="u-btn submit" url="{:U('set_timelimit_activity')}/aid/{:I('aid')}" href="javascript:;">确定</a>
+			<a class="u-btn	close_show_box" href="javascript:;">取消</a>
+		</p>
+	</div>
+
+</block>
+<block name="script">
+<link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
+<php>if(C('COLOR_STYLE')=='blue_color') echo '<link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css" rel="stylesheet" type="text/css">';</php>
+<link href="__STATIC__/datetimepicker/css/dropdown.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script type="text/javascript">
+$(function(){
+	//搜索功能
+	$("#search").click(function(){
+		var url = $(this).attr('url');
+        var query  = $('.search-form').find('input,select').serialize();
+        query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+        query = query.replace(/^&/g,'');
+
+
+        if( url.indexOf('?')>0 ){
+            url += '&' + query;
+        }else{
+            url += '?' + query;
+        }
+		window.location.href = url;
+	});
+
+	/* 状态搜索子菜单 */
+	$(".search-form").find(".drop-down").hover(function(){
+		$("#sub-sch-menu").removeClass("hidden");
+	},function(){
+		$("#sub-sch-menu").addClass("hidden");
+	});
+	$("#sub-sch-menu li").find("a").each(function(){
+		$(this).click(function(){
+			var text = $(this).text();
+			$("#sch-sort-txt").text(text).attr("data",$(this).attr("value"));
+			$("#sub-sch-menu").addClass("hidden");
+		})
+	});
+
+    //回车自动提交
+    $('.search-form').find('input').keyup(function(event){
+        if(event.keyCode===13){
+            $("#search").click();
+        }
+    });
+
+	$('.start_time').datetimepicker({
+		format: 'yyyy-mm-dd hh:ii',
+		language:"zh-CN",
+		minView:0,
+		autoclose:true
+	});
+	$('.end_time').datetimepicker({
+		format: 'yyyy-mm-dd hh:ii',
+		language:"zh-CN",
+		minView:0,
+		autoclose:true
+	});
+
+
+	$('.show_box').on('click', function () {
+		//console.log($(this).attr('data'));
+		$('.show_box_temp').hide();
+
+		var id = $(this).attr('tmp_id');
+		$('#'+id).show();
+		after_show_box($(this), $('#'+id));
+	});
+	$('.close_show_box').on('click',function () {
+		$(this).parents('.show_box_temp').hide();
+	});
+
+	$('#set_timelimit_activity').find('.submit').on('click',function () {
+		var url = $(this).attr('url');
+		var skus = [];
+		$('#set_timelimit_activity').find('.sku_price').each(function(index, ele){
+			var sku = $(ele).attr('sku_id') + '-' + $(ele).val();
+			skus.push(sku);
+		});
+		var data = {
+			iids:$('#set_timelimit_activity').find('.iids').val(),
+			start_time:$('#set_timelimit_activity').find('.start_time').val(),
+			end_time:$('#set_timelimit_activity').find('.end_time').val(),
+			//price:$('#set_timelimit_activity').find('.price').val()
+			skus:skus.join('|')
+		}
+
+		do_post(url, data, this);
+	});
+
+
+
+	function do_post(url, query, that) {
+
+		$.post(url,query).success(function(data){
+			if (data.status==1) {
+				if (data.url) {
+					updateAlert(data.info + ' 页面即将自动跳转~','alert-success');
+				}else{
+					updateAlert(data.info ,'alert-success');
+				}
+				setTimeout(function(){
+					if (data.url) {
+						location.href=data.url;
+					}else if( $(that).hasClass('no-refresh')){
+						$('#top-alert').find('button').click();
+						$(that).removeClass('disabled').prop('disabled',false);
+					}else{
+						location.reload();
+					}
+				},200);
+			}else{
+				updateAlert(data.info);
+				setTimeout(function(){
+					if (data.url) {
+						location.href=data.url;
+					}else{
+						$('#top-alert').find('button').click();
+						$(that).removeClass('disabled').prop('disabled',false);
+					}
+				},200);
+			}
+		});
+
+	}
+
+	function after_show_box(_this, box) {
+		var iids = _this.attr('iid');
+		if (_this.attr('tmp_type') == 'batch') {
+			iids = [];
+			$('.ids:checked').each(function(index,ele){
+				iids.push($(ele).val());
+			});
+			iids = iids.join(',');
+		}
+		var start_time = _this.attr('start_time');
+		var end_time = _this.attr('end_time');
+		var price = _this.attr('min_dealer_price');
+		var skus = _this.find('.skus').html();
+		//console.log(skus);
+		if (!skus) {
+			alert('当前商品没有sku,无法设置限时价');
+			$('.close_show_box').click();
+			return;
+		}
+
+		box.find('.iids').val(iids);
+		box.find('.start_time').val(start_time);
+		box.find('.end_time').val(end_time);
+		box.find('.sku_price_box').html(skus);
+		//box.find('.price').val(price);
+	}
+
+
+	$('.sort_text').on('click',function(){
+		$(this).css('display', 'none');
+		$(this).next().css('display', '');
+	});
+	$('.sort_submit').on('click',function(){
+		var url = '{:U("modify_sort")}';
+		var sort = $(this).prev().val();
+		var query = {
+			id:$(this).attr('iid'),
+			sort:sort
+		}
+		$.post(url,query).success(function(data){
+			if (data.status==1) {
+				updateAlert(data.info ,'alert-success');
+				$(this).parent().css('display', 'none');
+				$(this).parent().prev().html(sort);
+				$(this).parent().prev().css('display', '');
+			}else{
+				updateAlert('网络繁忙~请稍后再试~');
+			}
+		}.bind(this));
+
+	});
+
+    
+});
+
+</script>
+</block>
+
+

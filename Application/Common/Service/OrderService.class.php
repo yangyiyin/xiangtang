@@ -331,7 +331,23 @@ class OrderService extends BaseService{
             return result(FALSE, '订单状态不是已提交状态,不能取消操作!');
         }
 
-        return $this->update_by_id($order['id'], ['status'=>\Common\Model\NfOrderModel::STATUS_CANCEL]);
+        $ret = $this->update_by_id($order['id'], ['status'=>\Common\Model\NfOrderModel::STATUS_CANCEL]);
+        if ($ret->success) {
+            //恢复优惠券
+            $OrderCouponService = \Common\Service\OrderCouponService::get_instance();
+            $coupon = $OrderCouponService->get_by_oid($order['id']);
+            if ($coupon) {
+                $coupons = $OrderCouponService->get_by_cid($coupon['cid']);
+                $OrderCouponService->del_by_id($coupon['id']);
+                if ($coupons && count($coupons) == 1) {
+                    //恢复优惠券
+                    $UserDeductibleCouponService = \Common\Service\UserDeductibleCouponService::get_instance();
+                    $UserDeductibleCouponService->recover_by_id($coupon['cid']);
+                }
+            }
+
+        }
+        return $ret;
     }
 
 

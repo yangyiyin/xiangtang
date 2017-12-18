@@ -83,8 +83,32 @@ class ProductSkuService extends BaseService{
             return false;
         }
         $NfProductSku = D('NfProductSku');
-        return $NfProductSku->where('pid in (' . join(',', $pids) . ')')->order('id asc')->select();
+        $where = [];
+        $where['pid'] = ['in', $pids];
+        return $NfProductSku->where($where)->order('id asc')->select();
 
+    }
+
+    public function get_skus_by_items($items) {
+        if (!$items) {
+            return [];
+        }
+        $pids = result_to_array($items, 'pid');
+        $skus = $this->get_by_pids($pids);
+        //var_dump($pids);die();
+        $sku_ids = result_to_array($skus);
+        $SkuPropertyService = \Common\Service\SkuPropertyService::get_instance();
+        $sku_props = $SkuPropertyService->get_by_sku_ids($sku_ids);
+        $sku_props_map = result_to_map($sku_props, 'sku_id');
+        foreach ($skus as $_key => $_sku) {
+            if (isset($sku_props_map[$_sku['id']])) {
+                $skus[$_key]['props'] = $sku_props_map[$_sku['id']]['property_name'] . '-' . $sku_props_map[$_sku['id']]['property_value_name'];
+            } else {
+                $skus[$_key]['props'] = '默认';
+            }
+        }
+
+        return $skus;
     }
 
 

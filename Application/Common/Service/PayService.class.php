@@ -162,18 +162,26 @@ class PayService extends BaseService{
         //检测优惠
         sort($order_ids);
         $OrderBenefitService = \Common\Service\OrderBenefitService::get_instance();
-        $benefit = $OrderBenefitService->get_info_by_oids(join(',', $order_ids));
-        if ($benefit) {
-            if ($benefit['type'] == \Common\Model\NfOrderBenefitModel::TYPE_ACCOUNT) {
+        $benefits = $OrderBenefitService->get_info_by_oids(join(',', $order_ids));
+        if ($benefits) {
+            foreach ($benefits as $benefit) {
+                if ($benefit['type'] == \Common\Model\NfOrderBenefitModel::TYPE_ACCOUNT) {
 
-                $AccountService = \Common\Service\AccountService::get_instance();
-                $ret = $AccountService->check_is_available($this->uid, $benefit['rule']);
-                if (!$ret->success) {
-                    return result_json(FALSE, $ret->message);
+                    $AccountService = \Common\Service\AccountService::get_instance();
+                    $ret = $AccountService->check_is_available($this->uid, $benefit['rule']);
+                    if (!$ret->success) {
+                        return result_json(FALSE, $ret->message);
+                    }
+
+                    $sum -=  $benefit['rule'];
                 }
 
-                $sum -=  $benefit['rule'];
+                if ($benefit['type'] == \Common\Model\NfOrderBenefitModel::TYPE_COUPON) {
+                    $sum -=  $benefit['rule'];
+                }
+
             }
+
         }
         if ($sum < 0) {
             return result(FALSE, '该订单支付异常~');

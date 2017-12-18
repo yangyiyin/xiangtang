@@ -76,13 +76,45 @@ class AntItemController extends AdminController {
             $PageInstance->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
         }
         $page_html = $PageInstance->show();
-
-        $this->assign('list', $data);
         $this->assign('page_html', $page_html);
 
+        //如果是限时抢购页面
+        if (I('activity') == 'timelimit') {
+            $this->tpl = 'index_activity';
+            $aid = I('aid');
+            $TimelimitActivityService = \Common\Service\TimelimitActivityService::get_instance();
+            $info = $TimelimitActivityService->get_info_by_id($aid);
+            if (!$info) {
+                $this->error('没有对应的信息');
+            }
+            $this->assign('activity_info', $info);
+
+            //获取sku信息
+            $ProductSkuService = \Common\Service\ProductSkuService::get_instance();
+            $skus = $ProductSkuService->get_skus_by_items($data);
+            $this->convert_data_skus($data, $skus);
+        }
+
+        $this->assign('list', $data);
+        //var_dump($data[0]);die();
         $this->display($this->tpl);
     }
 
+    private function convert_data_skus(&$data, $skus) {
+        $skus_pid_map = result_to_complex_map($skus, 'pid');
+
+
+        if ($data) {
+
+            foreach ($data as $key => $_item) {
+                if (isset($skus_pid_map[$_item['pid']])) {
+                    $data[$key]['skus'] = $skus_pid_map[$_item['pid']];
+                }
+            }
+        }
+
+        //print_r($data[0]);die();
+    }
     public function unreal() {
         $categoryService = \Common\Service\CategoryService::get_instance();
         $catetree = $categoryService->get_all_tree_option(I('get.cid'));
@@ -199,6 +231,16 @@ class AntItemController extends AdminController {
             $franchisees = $MemberService->get_franchisees($uids);
             $franchisees_map = result_to_map($franchisees, 'uid');
 
+            //获取活动信息
+            $ItemTimelimitActivityService = \Common\Service\ItemTimelimitActivityService::get_instance();
+            $itemtimelimit = $ItemTimelimitActivityService->get_by_iids($iids);
+            $itemtimelimit_map = result_to_complex_map($itemtimelimit, 'iid');
+            foreach ($itemtimelimit_map as $key => $_itemtimelimit) {
+                $itemtimelimit_map[$key] = result_to_map($_itemtimelimit, 'sku_id');
+                $itemtimelimit_map[$key]['start_time'] = $_itemtimelimit[0]['start_time'];
+                $itemtimelimit_map[$key]['end_time'] = $_itemtimelimit[0]['end_time'];
+
+            }
             foreach ($data as $key => $_product) {
                 if (isset($cates_map[$_product['cid']])) {
                     $data[$key]['cate'] = $cates_map[$_product['cid']];
@@ -224,6 +266,10 @@ class AntItemController extends AdminController {
                     $data[$key]['franchisee_info'] = [];
                 }
 
+                if (isset($itemtimelimit_map[$_product['id']])) {
+
+                    $data[$key]['timelimit_activity_info'] = $itemtimelimit_map[$_product['id']];
+                }
             }
         }
     }
@@ -415,5 +461,94 @@ class AntItemController extends AdminController {
         action_user_log('批量取消活动商品');
         $this->success('取消成功！');
     }
+
+    public function set_timelimit_activity() {
+        $iids = I('post.iids') ? explode(',', I('post.iids')) : [];
+        $price = intval(strval(I('post.price') * 100));
+        $start_time = I('post.start_time');
+        $end_time = I('post.end_time');
+
+        $skus = I('post.skus');
+
+        if (!$iids || !$skus || !$start_time || !$end_time) {
+            $this->error('参数错误');
+        }
+
+        $skus_arr = explode('|', $skus);
+        $skus_map = [];
+        foreach ($skus_arr as $sku) {
+            $_sku_arr = explode('-', $sku);
+            if(!$_sku_arr[1]) {
+                $this->error('请填写完整价格');
+            }
+            $skus_map[$_sku_arr[0]] = $_sku_arr[1];
+        }
+        $ItemTimelimitActivityService = \Common\Service\ItemTimelimitActivityService::get_instance();
+        //获得老的
+        $exits = $ItemTimelimitActivityService->get_by_iids($iids);
+
+        if ($exits) {
+            //更新老的
+            //$ids = result_to_array($exits);
+            $data_update = [];
+            $data_update['start_time'] = $start_time;
+            $data_update['end_time'] = $end_time;
+            foreach ($exits as $_value) {
+                if (isset($skus_map[$_value['sku_id']])) {
+                    $data_update['price'] = intval(strval($skus_map[$_value['sku_id']] * 100));
+                    $ItemTimelimitActivityService->update_by_id($_value['id'],$data_update);
+                }
+            }
+            $exit_iids = result_to_array($exits, 'iid');
+            $new_iids = array_diff($iids, $exit_iids);
+
+        } else {
+            $new_iids = $iids;
+        }
+
+        if ($new_iids) {
+          //  $data_add = [];
+            foreach ($new_iids as $_iid) {
+                $temp = [];
+                $temp['iid'] = $_iid;
+                $temp['start_time'] = $start_time;
+                $temp['end_time'] = $end_time;
+//                $temp['price'] = $price;
+                foreach ($skus_map as $sku_id => $price) {
+                    $temp['price'] = intval(strval($price * 100));
+                    $temp['sku_id'] = $sku_id;
+                    $ItemTimelimitActivityService->add_one($temp);
+                }
+             //  $data_add[] = $temp;
+            }
+           // $ItemTimelimitActivityService->add_batch($data_add);
+        }
+        action_user_log('批量设置限时抢购商品');
+        $this->success('设置成功！');
+    }
+
+    public function cancel_timelimit_activity() {
+        $ids = I('post.ids');
+        $id = I('get.id');
+
+        $ItemTimelimitActivityService = \Common\Service\ItemTimelimitActivityService::get_instance();
+
+        if ($id) {
+            $ret = $ItemTimelimitActivityService->cancel_timelimit_activity([$id]);
+        }
+
+        if ($ids) {
+            $ret = $ItemTimelimitActivityService->cancel_timelimit_activity($ids);
+        }
+
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        action_user_log('批量取消限时抢购活动商品');
+        $this->success('取消成功！');
+    }
+
+
+
 
 }

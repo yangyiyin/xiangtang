@@ -63,21 +63,24 @@ class OrderPre_order_info extends BaseApi{
             $sku_props_map = $SkuPropertyService->get_sku_props_map($sku_props);
             foreach ($data as $key => $_item) {
 
-                if ($UserService->is_dealer($user_info['type'])) {
-                    $_item['price'] = (int) $skus_map[$_item['sku_id']]['dealer_price'];
-                    $_item['show_price'] = (int) $skus_map[$_item['sku_id']]['price'];
-                    $_item['pay_price'] = (int) $skus_map[$_item['sku_id']]['dealer_price'];
-                } elseif ($UserService->is_normal($user_info['type'])) {
-                    $_item['price'] = (int) $skus_map[$_item['sku_id']]['price'];
-                    $_item['show_price'] = (int) $skus_map[$_item['sku_id']]['price'];
-                    $_item['pay_price'] = (int) $skus_map[$_item['sku_id']]['price'];
-                }
+//                if ($UserService->is_dealer($user_info['type'])) {
+//                    $_item['price'] = (int) $skus_map[$_item['sku_id']]['dealer_price'];
+//                    $_item['show_price'] = (int) $skus_map[$_item['sku_id']]['price'];
+//                    $_item['pay_price'] = (int) $skus_map[$_item['sku_id']]['dealer_price'];
+//                } elseif ($UserService->is_normal($user_info['type'])) {
+//                    $_item['price'] = (int) $skus_map[$_item['sku_id']]['price'];
+//                    $_item['show_price'] = (int) $skus_map[$_item['sku_id']]['price'];
+//                    $_item['pay_price'] = (int) $skus_map[$_item['sku_id']]['price'];
+//                }
 
                 $_item['img'] = item_img(get_cover($items_map[$_item['iid']]['img'], 'path'));//todo 这种方式后期改掉
                 $_item['num'] = (int)  $_item['num'];
                 $_item['id'] = (int) $items_map[$_item['iid']]['id'];
                 $_item['pid'] = (int) $items_map[$_item['iid']]['pid'];
-                $_item['price'] = (int) $items_map[$_item['iid']]['price'];
+                //$_item['price'] = (int) $items_map[$_item['iid']]['price'];
+                $_item['pay_price'] = (int) $_item['price'];
+                $_item['show_price'] = (int) ($_item['price'] + $_item['sum_dealer_profit']);
+
                 $_item['title'] = $items_map[$_item['iid']]['title'];
                 $_item['desc'] =  $items_map[$_item['iid']]['desc'];
                 $_item['unit_desc'] = $items_map[$_item['iid']]['unit_desc'];
