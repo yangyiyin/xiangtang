@@ -1250,7 +1250,7 @@ function result_to_array($result, $field = 'id') {
 }
 
 function format_price($price){
-    return intval($price) / 100;
+    return intval(strval($price)) / 100;
 }
 
 function is_tel_num($tel) {
