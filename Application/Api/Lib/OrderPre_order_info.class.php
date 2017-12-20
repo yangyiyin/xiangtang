@@ -78,8 +78,8 @@ class OrderPre_order_info extends BaseApi{
                 $_item['id'] = (int) $items_map[$_item['iid']]['id'];
                 $_item['pid'] = (int) $items_map[$_item['iid']]['pid'];
                 //$_item['price'] = (int) $items_map[$_item['iid']]['price'];
-                $_item['pay_price'] = (int) $_item['price'];
-                $_item['show_price'] = (int) ($_item['price'] + $_item['sum_dealer_profit']);
+                $_item['show_price'] = $_item['pay_price'] = (int) $_item['price'];
+//                $_item['show_price'] = (int) ($_item['price'] + $_item['sum_dealer_profit']);
 
                 $_item['title'] = $items_map[$_item['iid']]['title'];
                 $_item['desc'] =  $items_map[$_item['iid']]['desc'];
