@@ -205,7 +205,7 @@ class AntOrderController extends AdminController {
                 }
 
                 if (isset($coupons_map[$_item['id']])) {
-                    $data[$key]['promotion_info'] .= '。使用抵扣优惠券抵扣:' . ($coupons_map[$_item['id']]['deductible']/100) . '元';
+                    $data[$key]['promotion_info'] .= '。使用优惠券id:' . $coupons_map[$_item['id']]['cid'];
                 }
             }
             //var_dump($data);die();
