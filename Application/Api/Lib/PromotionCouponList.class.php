@@ -27,7 +27,7 @@ class PromotionCouponList extends BaseApi{
                 if ($sum < $coupon['least']) {
                     continue;
                 }
-                $my_coupons[$key]['function'] = 'function (data){data["new_total_price"] = data["new_total_price"]?data["new_total_price"]:data["total_price"];if(data["new_total_price"]>='.$coupon['least'].'){data["new_total_price"]-='.$coupon['deductible'].'; data["coupon_discount"] = data["coupon_discount"]?data["coupon_discount"]:0;data["coupon_discount"]+='.$coupon['deductible'].'}';
+                $my_coupons[$key]['function'] = 'function (data){data["new_total_price"] = data["new_total_price"]?data["new_total_price"]:data["total_price"];if(data["new_total_price"]>='.$coupon['least'].'){data["new_total_price"]-='.$coupon['deductible'].'; data["coupon_discount"] = data["coupon_discount"]?data["coupon_discount"]:0;data["coupon_discount"]+='.$coupon['deductible'].'} return data;}';
                 $my_coupons[$key]['desc'] = '满'.$coupon['least'].'可用';
                 $new_my_coupons[] = $my_coupons[$key];
             }
