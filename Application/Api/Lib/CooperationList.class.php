@@ -27,7 +27,7 @@ class CooperationList extends BaseSapi{
                 $not_in_ids = array_merge($not_in_ids, $recommed_cids);
                 $recommed_list = $this->CooperationService->get_by_ids($recommed_cids);
                 $recommed_list = $this->convert($recommed_list);
-                $recommed_list = convert_objs($recommed_list,'id,title');
+                $recommed_list = convert_objs($recommed_list,'id,title,img');
                 $result['recommed_list'] = $recommed_list;
             } else {
                 $result['recommed_list'] = [];
@@ -61,12 +61,32 @@ class CooperationList extends BaseSapi{
         $data = $this->convert($data);
         $data = convert_objs($data,'id,title');
         $result['list'] = $data;
+
+        if ($result['recommed_list']) {
+            $result['list'] = array_merge($result['recommed_list'], $result['list']);
+            unset($result['recommed_list']);
+        }
+
+        if ($result['promotion_list']) {
+            $result['list'] = array_merge($result['promotion_list'], $result['list']);
+            unset($result['promotion_list']);
+        }
+        
         $result['has_more'] = has_more($count,$p, Service\CooperationService::$page_size);
         return result_json(TRUE, '', $result);
         
     }
 
     private function convert($data) {
+        if ($data) {
+            foreach ($data as $key => $_item) {
+                if ($_item['img']) {
+                    $data[$key]['img'] = item_img(get_cover($_item['img'], 'path'));
+                }
+
+            }
+        }
+
         return $data;
 
     }

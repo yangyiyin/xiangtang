@@ -242,7 +242,7 @@ CREATE TABLE `shopy_nf_cooperation_block` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 alter table shopy_nf_cooperation_block add type tinyint (5) DEFAULT '0';
-
+alter table shopy_nf_cooperation add img varchar(50) DEFAULT NULL;
 
 CREATE TABLE `shopy_nf_market_activity` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
