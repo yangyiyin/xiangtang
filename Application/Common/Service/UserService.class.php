@@ -338,7 +338,7 @@ class UserService extends BaseService{
 
 
     public function get_inviter_code($uid) {
-        return mt_rand(10,99) . $uid;
+        return mt_rand(10,99) . '-' . $uid;
     }
 
     public function is_dealer($type) {
