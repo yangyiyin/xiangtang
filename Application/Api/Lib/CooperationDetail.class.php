@@ -20,7 +20,7 @@ class CooperationDetail extends BaseSapi{
         if (!$info) {
             return result_json(false, '未找到合作单位信息');
         }
-        $info = convert_obj($info, 'id,content,create_time');
+        $info = convert_obj($info, 'id,title,content,create_time');
         return result_json(TRUE, '', $info);
         
     }
