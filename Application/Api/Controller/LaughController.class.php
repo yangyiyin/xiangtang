@@ -38,4 +38,9 @@ class LaughController extends BaseController {
     public function share_success() {
         $this->excute_api('Api\Lib\LaughShareSuccess');
     }
+
+    public function welcome_info() {
+        $this->excute_api('Api\Lib\LaughWelcomeInfo');
+    }
+
 }
