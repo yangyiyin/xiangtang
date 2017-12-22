@@ -7,7 +7,7 @@
  */
 namespace Api\Lib;
 use Common\Service;
-class LaughWelcome extends BaseSapi{
+class LaughWelcomeInfo extends BaseSapi{
     protected $method = parent::API_METHOD_GET;
 
     public function init() {
