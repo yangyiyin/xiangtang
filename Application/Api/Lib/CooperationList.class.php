@@ -71,7 +71,7 @@ class CooperationList extends BaseSapi{
             $result['list'] = array_merge($result['promotion_list'], $result['list']);
             unset($result['promotion_list']);
         }
-        
+
         $result['has_more'] = has_more($count,$p, Service\CooperationService::$page_size);
         return result_json(TRUE, '', $result);
         
