@@ -79,7 +79,6 @@ class newModule {
         }
 
         echo 'success';
-        exit();
     }
 
     public function gain_power($names) {
@@ -115,7 +114,7 @@ class newModule {
 }
 
 
-$newModule = new newModule('outCash', '提现');
+$newModule = new newModule('articleClicks', '提现');
 //['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]
-//$newModule->gain(['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]);
-$newModule->gain_power(['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]);
+$newModule->gain(['model'=>1,'service'=>1]);
+$newModule->gain_power(['model'=>1, 'service'=>1]);

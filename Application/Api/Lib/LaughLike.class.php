@@ -54,6 +54,22 @@ class LaughLike extends BaseApi{
             $AccountService->add_account($info['uid'], $account_data['sum']);
         }
 
+        //增加文章点击数
+        $ArticleCliksService = \Common\Service\ArticleClicksService::get_instance();
+        $info = $ArticleCliksService->get_info_by_aid($aid, \Common\Model\NfArticleClicksModel::TYPE_COLLECT);
+        if ($info) {
+            $data = [];
+            $data['count'] = $info['count'] + 1;
+            $ArticleCliksService->update_by_id($data, $info['id']);
+        } else {
+            $data = [];
+            $data['type'] = \Common\Model\NfArticleClicksModel::TYPE_LIKE;
+            $data['desc'] = '点赞';
+            $data['count'] = 1;
+            $data['aid'] = $aid;
+            $ArticleCliksService->add_one($data);
+        }
+
 
         return result_json(TRUE, '谢谢喜欢');
     }

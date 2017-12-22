@@ -36,6 +36,24 @@ class LaughCollect extends BaseApi{
         if (!$ret->success) {
             return result_json(false, $ret->message);
         }
+
+        //增加文章点击数
+        $ArticleCliksService = \Common\Service\ArticleClicksService::get_instance();
+        $info = $ArticleCliksService->get_info_by_aid($aid, \Common\Model\NfArticleClicksModel::TYPE_COLLECT);
+        if ($info) {
+            $data = [];
+            $data['count'] = $info['count'] + 1;
+            $ArticleCliksService->update_by_id($data, $info['id']);
+        } else {
+            $data = [];
+            $data['type'] = \Common\Model\NfArticleClicksModel::TYPE_COLLECT;
+            $data['desc'] = '收藏';
+            $data['count'] = 1;
+            $data['aid'] = $aid;
+            $ArticleCliksService->add_one($data);
+        }
+
+
         return result_json(TRUE, '收藏成功');
     }
 

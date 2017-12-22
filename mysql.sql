@@ -138,3 +138,14 @@ CREATE TABLE `shopy_nf_user_operate_limit` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 alter table shopy_nf_user_operate_limit add gmt int(11) DEFAULT '0';
+
+CREATE TABLE `shopy_nf_article_clicks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` tinyint(3) NOT NULL DEFAULT '1',
+  `desc` VARCHAR(10) DEFAULT '',
+  `count` int(11) DEFAULT '0',
+`aid` int(11) DEFAULT '0',
+`create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

@@ -49,6 +49,23 @@ class LaughIndex extends BaseApi{
         $UserService = \Common\Service\UserService::get_instance();
         $users = $UserService->get_by_ids($uids);
         $users_map = result_to_map($users, 'id');
+
+        //获取点击相关
+        $ArticleCliksService = \Common\Service\ArticleClicksService::get_instance();
+        $clicks = $ArticleCliksService->get_by_aids($aids);
+        $clicks_map = result_to_complex_map($clicks, 'aid');
+        foreach ($clicks_map as $aid => $click) {
+            foreach ($click as $key => $_click) {
+                if ($_click['type'] == \Common\Model\NfArticleClicksModel::TYPE_LIKE) {
+                    $clicks_map[$aid]['like'] = $_click;
+                }
+                if ($_click['type'] == \Common\Model\NfArticleClicksModel::TYPE_COLLECT) {
+                    $clicks_map[$aid]['collect'] = $_click;
+                }
+            }
+
+        }
+        //var_dump($clicks_map);die();
         $list_new = [];
         $time = '';
         if ($list) {
@@ -96,6 +113,8 @@ class LaughIndex extends BaseApi{
                     ];
 
                 }
+                $_li['like_count'] = isset($clicks_map[$_li['id']]['like']['count']) ? $clicks_map[$_li['id']]['like']['count'] : 0;
+                $_li['collect_count'] = isset($clicks_map[$_li['id']]['collect']['count']) ? $clicks_map[$_li['id']]['collect']['count'] : 0;
                 $list_new[] = $_li;
             }
 
