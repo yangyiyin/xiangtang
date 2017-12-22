@@ -26,8 +26,8 @@ class CooperationList extends BaseSapi{
             if ($recommed_cids) {
                 $not_in_ids = array_merge($not_in_ids, $recommed_cids);
                 $recommed_list = $this->CooperationService->get_by_ids($recommed_cids);
-                $recommed_list = $this->convert($recommed_list);
-                $recommed_list = convert_objs($recommed_list,'id,title,img');
+                $recommed_list = $this->convert($recommed_list, '推荐');
+                $recommed_list = convert_objs($recommed_list,'id,title,img,tip');
                 $result['recommed_list'] = $recommed_list;
             } else {
                 $result['recommed_list'] = [];
@@ -40,8 +40,8 @@ class CooperationList extends BaseSapi{
             if ($promotion_cids) {
                 $not_in_ids = array_merge($not_in_ids, $promotion_cids);
                 $promotion_list = $this->CooperationService->get_by_ids($promotion_cids);
-                $promotion_list = $this->convert($promotion_list);
-                $promotion_list = convert_objs($promotion_list,'id,title');
+                $promotion_list = $this->convert($promotion_list, '促销');
+                $promotion_list = convert_objs($promotion_list,'id,title,img,tip');
                 $result['promotion_list'] = $promotion_list;
             } else {
                 $result['promotion_list'] = [];
@@ -59,7 +59,7 @@ class CooperationList extends BaseSapi{
 
         list($data,$count) = $this->CooperationService->get_by_where($where,'id desc',$p);
         $data = $this->convert($data);
-        $data = convert_objs($data,'id,title');
+        $data = convert_objs($data,'id,title,img');
         $result['list'] = $data;
 
         if ($result['recommed_list']) {
@@ -77,11 +77,14 @@ class CooperationList extends BaseSapi{
         
     }
 
-    private function convert($data) {
+    private function convert($data, $tip) {
         if ($data) {
             foreach ($data as $key => $_item) {
                 if ($_item['img']) {
                     $data[$key]['img'] = item_img(get_cover($_item['img'], 'path'));
+                    if ($tip) {
+                        $data[$key]['tip'] = $tip;
+                    }
                 }
 
             }
