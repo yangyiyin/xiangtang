@@ -42,5 +42,7 @@ class LaughController extends BaseController {
     public function welcome_info() {
         $this->excute_api('Api\Lib\LaughWelcomeInfo');
     }
-
+    public function sys_tips() {
+        $this->excute_api('Api\Lib\LaughSysTips');
+    }
 }
