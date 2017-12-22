@@ -5,7 +5,7 @@
  * Date: 17/4/25
  * Time: 下午8:25
  */
-namespace Api\Lib;
+namespace Apimanagerrecommend\Lib;
 use Common\Model;
 use Common\Service;
 use Think\Upload;
