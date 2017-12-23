@@ -335,3 +335,5 @@ CREATE TABLE `shopy_nf_order_coupon` (
   `deleted` tinyint(3) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+alter table shopy_nf_user_inviter_code add uid int (11) DEFAULT '0';
