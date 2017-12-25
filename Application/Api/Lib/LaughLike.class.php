@@ -56,7 +56,7 @@ class LaughLike extends BaseApi{
 
         //增加文章点击数
         $ArticleCliksService = \Common\Service\ArticleClicksService::get_instance();
-        $info = $ArticleCliksService->get_info_by_aid($aid, \Common\Model\NfArticleClicksModel::TYPE_COLLECT);
+        $info = $ArticleCliksService->get_info_by_aid($aid, \Common\Model\NfArticleClicksModel::TYPE_LIKE);
         if ($info) {
             $data = [];
             $data['count'] = $info['count'] + 1;
