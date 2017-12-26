@@ -49,4 +49,9 @@ class LaughController extends BaseController {
     public function img_upload() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughImgUpload');
     }
+
+    public function page_submit() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughPageSubmit');
+    }
+
 }

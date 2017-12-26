@@ -149,3 +149,37 @@ CREATE TABLE `shopy_nf_article_clicks` (
   `deleted` tinyint(3) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+CREATE TABLE `shopy_nf_template` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` tinyint(3) NOT NULL DEFAULT '1',
+  `title` VARCHAR(10) DEFAULT '',
+   `img` VARCHAR(50) DEFAULT '',
+  `content`  text ,
+  `extra` VARCHAR(500) DEFAULT '',
+  `create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `shopy_nf_user_template` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tid` int(11) NOT NULL DEFAULT '0',
+  `uid` int(11) NOT NULL DEFAULT '0',
+
+  `create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `shopy_nf_page` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL DEFAULT '0',
+  `title` VARCHAR(10) DEFAULT '',
+  `img` VARCHAR(50) DEFAULT '',
+  `url`  VARCHAR(50) DEFAULT '',
+  `create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
