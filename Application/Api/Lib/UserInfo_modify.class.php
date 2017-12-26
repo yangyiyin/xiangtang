@@ -46,7 +46,7 @@ class UserInfo_modify extends BaseApi{
             if (strpos($ret->message, '网络繁忙') === false) {
                 result_json(FALSE, $ret->message);
             } else {
-                result_json(FALSE, '网络繁忙');
+                result_json(FALSE, '什么都没修改~');
             }
         }
         result_json(TRUE, '修改成功!');
