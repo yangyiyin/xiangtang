@@ -24,4 +24,7 @@ class PromotionController extends BaseController {
     public function coupon_take() {
         $this->excute_api('Api\Lib\PromotionCouponTake');
     }
+    public function coupon_mylist() {
+        $this->excute_api('Api\Lib\PromotionCouponMylist');
+    }
 }
