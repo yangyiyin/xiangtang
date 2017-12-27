@@ -22,8 +22,8 @@ class PromotionCouponPublicList extends BaseApi{
         list($list, $count) = $DeductibleCouponService->get_by_where($where,'id desc',$p);
 
         $result = [];
-        $result->list = $this->convert_data($list);
-        $result->has_more = has_more($count, $p, \Common\Service\DeductibleCouponService::$page_size);
+        $result['list'] = $this->convert_data($list);
+        $result['has_more'] = has_more($count, $p, \Common\Service\DeductibleCouponService::$page_size);
 
 
         return result_json(TRUE, '', $result);
