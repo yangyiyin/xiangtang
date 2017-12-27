@@ -17,9 +17,22 @@ class LaughPageSubmit extends BaseApi{
     public function excute() {
 
         $tmp_data = $this->post_data['tmp_data'];
-        if (!$tmp_data) {
+        $tmp_id = $this->post_data['tmp_id'];
+        if (!$tmp_data || !$tmp_id) {
             return result_json(false, '页面内容异常!');
         }
+
+        //生成page
+        $TemplateService = \Common\Service\TemplateService::get_instance();
+        $tmp_info = $TemplateService->get_info_by_id($tmp_id);
+        if (!$tmp_info) {
+            return result_json(false, '页面内容异常!');
+        }
+
+        $data = [];
+        $data['uid'] = $this->uid;
+        $data['title'] = $tmp_info['title'];
+        $data['img'] = $tmp_info['img'];
 
 
         return result_json(TRUE, '发布成功','http://baidu.com');
