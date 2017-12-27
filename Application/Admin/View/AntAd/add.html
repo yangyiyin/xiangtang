@@ -72,12 +72,12 @@
 								</td>
 							</tr>
 
-							<tr>
-								<td width="20%"><label class="item-label">链接</label></td>
-								<td width="80%">
-									<input type="text" class="input input-medium" name="link" value="{$info.link}">
-								</td>
-							</tr>
+							<!--<tr>-->
+								<!--<td width="20%"><label class="item-label">链接</label></td>-->
+								<!--<td width="80%">-->
+									<!--<input type="text" class="input input-medium" name="link" value="{$info.link}">-->
+								<!--</td>-->
+							<!--</tr>-->
 							<tr>
 								<td width="20%"><label class="item-label">图片</label></td>
 								<td width="80%">
@@ -90,13 +90,16 @@
 													<?php if(!$info['imgs']):?>
 													<ul class="imagelist" id="image_result"></ul>
 													<?php else:?>
-													<?php $images = explode(',', $info['imgs']);?>
+													<?php $images = explode(',', $info['imgs']);$info['urls'] = explode(',', $info['link']);?>
+
 													<ul class="imagelist" id="image_result">
 														<volist name="images" id="vo"  key="k">
 															<li class="imageitem" id="gallery_{$k}">
 																<input type="hidden" name="imgs[]" value="{$vo}">
 																<img height="160" width="160" src="{$vo|get_cover}" />
 																<a title="删除" href="javascript:remove({$k});"><i class="fa fa-times-circle"></i></a>
+																<br>
+																链接:<input name="urls[]" value="{$info['urls'][$k-1]}">
 															</li>
 														</volist>
 													</ul>
@@ -157,7 +160,7 @@
 												var html = '<li class="imageitem" id="gallery_'+data.id+'">';
 												html+= '<input type="hidden" name="imgs[]" value="'+data.path+'">'; //隐藏域，是为了把图片地址入库。。
 												html+= '<img height="160" width="160" src="'+src+'" />';
-
+												html+= '<br/>链接:<input name="urls[]" value="">';
 												html+=  '<a title="删除" href="javascript:remove('+data.id+')" class="J_ajax_get confirm"><i class="fa fa-times-circle"></i></a>';
 												html+=  '</li>';
 												$('#image_result').append(html);

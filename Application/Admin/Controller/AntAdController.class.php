@@ -87,6 +87,9 @@ class AntAdController extends AdminController {
             if ($data['imgs']) {
                 $data['imgs'] = join(',', $data['imgs']);
             }
+            if ($data['urls']) {
+                $data['link'] = join(',', $data['urls']);
+            }
             if ($id) {
                 $ret = $this->AdService->update_by_id($id, $data);
                 if ($ret->success) {

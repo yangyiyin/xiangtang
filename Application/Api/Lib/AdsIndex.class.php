@@ -35,8 +35,12 @@ class AdsIndex extends BaseSapi{
             $data[$ad['name']] = convert_obj($ad, 'id,type,height,width,link=url');
 
             $imgs = explode(',', $ad['imgs']);
-            foreach ($imgs as $img_id) {
+            $urls = explode(',', $ad['link']);
+            foreach ($imgs as $k => $img_id) {
                 $data[$ad['name']]->imgs[] = item_img(get_cover($img_id, 'path'));
+                $url = isset($urls[$k]) ? $urls[$k] : '';
+                $data[$ad['name']]->imgs_urls[] = ['img'=>item_img(get_cover($img_id, 'path')), 'url'=>$url];
+
             }
         }
 
