@@ -60,7 +60,7 @@ class LaughLike extends BaseApi{
         if ($info) {
             $data = [];
             $data['count'] = $info['count'] + 1;
-            $ArticleCliksService->update_by_id($data, $info['id']);
+            $ArticleCliksService->update_by_id($info['id'], $data);
         } else {
             $data = [];
             $data['type'] = \Common\Model\NfArticleClicksModel::TYPE_LIKE;
