@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{$page_info.title}</title>
+    <script type="text/javascript" src="__STATIC__/jquery_danchu/jquery-1.4.4.min.js"></script>
+    <!--<script type="text/javascript" src="__STATIC__/jquery_danchu/jquery.reveal.js"></script>-->
+    <!--<link rel="stylesheet" href="__STATIC__/jquery_danchu/reveal.css">-->
+
+</head>
+<body>
+加载中。。。
+
+<!--<view class="container" style="background-image: url( {$tmp_data.bg.src} );background-repeat: repeat-y;">-->
+
+<!--</view>-->
+
+
+
+</body>
+<script>
+    $(document).ready(function(){
+        var width = document.documentElement.clientWidth;
+        var height= document.documentElement.clientHeight;
+
+        $.get("{:U('show')}?id={:I('id')}&w="+width+'&h='+height,function(res){
+            $('body').html(res);
+        })
+
+
+    })
+</script>
+
+</html>

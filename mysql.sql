@@ -183,3 +183,4 @@ CREATE TABLE `shopy_nf_page` (
   `deleted` tinyint(3) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+alter table shopy_nf_page add tmp_data MediumText;
