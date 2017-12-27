@@ -26,7 +26,8 @@
 		        <tr>
 					<th><input class="check-all" type="checkbox"/></th>
 
-					<th></th>
+					<th>预览</th>
+					<th>优惠信息</th>
 					<th >操作</th>
 				</tr>
 		    </thead>
@@ -35,11 +36,13 @@
 				<tr>
 		            <td><input class="ids" type="checkbox" name="ids[]" value="{$vo.id}" /></td>
 					<td>
-						<div style="background: red;padding: 15px;border-radius: 3px;color: #fff;width: 200px;text-align: center">
-							<p style="padding: 10px;font-size: 20px">{$vo.title}</p>
-							<p>满{$vo.least|format_price}可抵扣{$vo.deductible|format_price}元</p>
-						</div>
+						<!--<div style="background: red;padding: 15px;border-radius: 3px;color: #fff;width: 200px;text-align: center">-->
+							<!--<p style="padding: 10px;font-size: 20px">{$vo.title}</p>-->
+							<!--<p>满{$vo.least|format_price}可抵扣{$vo.deductible|format_price}元</p>-->
+						<!--</div>-->
+						<img src="{$vo['img']|get_cover}" width="50" height="50"/>
 					</td>
+					<td>满{$vo.least|format_price}可抵扣{$vo.deductible|format_price}元</td>
 					<td>
 						<a  href="{:U('add')}/id/{$vo.id}" class="u-btn">编辑</a>|
 						<a  href="{:U('del')}/id/{$vo.id}" class="u-btn confirm J_ajax_get">删除</a>|

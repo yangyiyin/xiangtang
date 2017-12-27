@@ -18,4 +18,10 @@ class PromotionController extends BaseController {
     public function coupon_list() {
         $this->excute_api('Api\Lib\PromotionCouponList');
     }
+    public function coupon_public_list() {
+        $this->excute_api('Api\Lib\PromotionCouponPublicList');
+    }
+    public function coupon_take() {
+        $this->excute_api('Api\Lib\PromotionCouponTake');
+    }
 }

@@ -315,8 +315,12 @@ alter table shopy_nf_overall_gift_activity  add `deleted` tinyint(3) DEFAULT '0'
 alter table shopy_nf_deductible_coupon add `create_time` datetime DEFAULT NULL;
 alter table shopy_nf_deductible_coupon  add `deleted` tinyint(3) DEFAULT '0';
 
+alter table shopy_nf_deductible_coupon add `img` varchar(50) DEFAULT '';
+alter table shopy_nf_user_deductible_coupon add `img` varchar(50) DEFAULT '';
+
 alter table shopy_nf_user_deductible_coupon add `create_time` datetime DEFAULT NULL;
 alter table shopy_nf_user_deductible_coupon  add `deleted` tinyint(3) DEFAULT '0';
+
 
 alter table shopy_nf_timelimit_activity add `create_time` datetime DEFAULT NULL;
 alter table shopy_nf_timelimit_activity  add `deleted` tinyint(3) DEFAULT '0';

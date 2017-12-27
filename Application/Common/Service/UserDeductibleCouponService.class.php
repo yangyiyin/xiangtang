@@ -141,4 +141,20 @@ class UserDeductibleCouponService extends BaseService{
         $where['cid'] = $id;
         return $NfModel->where($where)->count();
     }
+
+    public function take_one($uid) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['uid'] = ['EQ', 0];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        $info = $NfModel->where($where)->order('id desc')->find();
+        if (!$info) {
+            return result(FALSE, '领取失败,优惠券已被领完');
+        }
+
+        //领取
+        $data = [];
+        $data['uid'] = $uid;
+        return $this->update_by_id($info['id'], $data);
+    }
 }
