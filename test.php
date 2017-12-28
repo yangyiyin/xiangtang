@@ -60,27 +60,4 @@
 //}
 //$tree = make_tree($list);
 
-function get_diff_num($arr) {
-    if (!is_array($arr) || count($arr) < 3) {
-        return false;
-    }
-
-    $dif = $arr[1] - $arr[0];//等差值
-
-    foreach ($arr as $key => $value) {
-        if ($key == 0 || $value - $cur == $dif) {
-            $cur = $value;//上一个值
-            continue;
-        }
-        if ($value - $cur < $dif) {
-            return $value - $dif;
-        } else {
-            return $cur + $dif;
-        }
-
-    }
-    return false;
-
-}
-
-var_dump(get_diff_num([3,6,9,12,19]));
+file_put_contents('123.html',123);

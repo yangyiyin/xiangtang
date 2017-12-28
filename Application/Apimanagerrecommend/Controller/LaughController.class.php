@@ -54,4 +54,8 @@ class LaughController extends BaseController {
         $this->excute_api('Apimanagerrecommend\Lib\LaughPageSubmit');
     }
 
+    public function make_qrcode() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughMakeQrcode');
+    }
+
 }

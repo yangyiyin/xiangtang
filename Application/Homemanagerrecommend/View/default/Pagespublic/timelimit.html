@@ -1,0 +1,22 @@
+<div id="timelimit" style="{$item.style}"></div>
+<script>
+    $(document).ready(function(){
+        var time_limit_left = 20;
+        var time_limit_left_desc = '';
+        if (time_limit_left > 0) {
+            var Interval = setInterval(function () {
+                time_limit_left -= 1;
+                var day = parseInt(time_limit_left / 3600 / 24);
+                var hour = parseInt((time_limit_left - day * 3600 * 24) / 3600);
+                var min = parseInt((time_limit_left - day * 3600 * 24 - hour * 3600) / 60);
+                var sec = parseInt(time_limit_left - day * 3600 * 24 - hour * 3600 - min * 60);
+                time_limit_left_desc = day + '天' + hour + '时' + min + '分' + sec + '秒';
+                $('#timelimit').html(time_limit_left_desc);
+                if (time_limit_left <= 0) {
+                    clearInterval(Interval);
+                }
+            }.bind(this), 1000);
+        }
+
+    });
+</script>

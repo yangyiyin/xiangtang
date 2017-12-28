@@ -1,19 +1,33 @@
-<view class="container" style="background-image: url({{tmp_data.bg.src}});background-repeat: repeat-y;">
+<style>
+    .container{
+        min-height:100%;
+        height:auto;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        box-sizing:border-box;
+    }
+</style>
+<div class="container" style="background-image: url({$tmp_data.bg.src});background-size:100%;background-repeat: repeat-y;font-size:{$font_size};position: relative;">
+    <volist name="tmp_data.page" id="item">
+        <div>
+            <if condition="$item['type'] == 'swiper'">
+                <include  file="Pagespublic/swiper"/>
+            </if>
+            <if condition="$item['type'] == 'img'">
+                <include  file="Pagespublic/img"/>
+            </if>
+            <if condition="$item['type'] == 'text'">
+                <include  file="Pagespublic/text"/>
+            </if>
+            <if condition="$item['type'] == 'sign'">
+                <include  file="Pagespublic/sign"/>
+            </if>
+            <if condition="$item['type'] == 'timelimit'">
+                <include  file="Pagespublic/timelimit"/>
+            </if>
 
-    <include  src="../common/pop_change_text.wxml"/>
-    <include  src="../common/pop_change_time_limit_left.wxml"/>
-    <include  src="../common/pop_change_img.wxml"/>
-    <view wx:for="{{tmp_data.page}}">
+        </div>
+    </volist>
 
-
-        <include wx:if="{{item.type == 'swiper'}}" src="../common/tmp_part/swiper.wxml"/>
-        <include  wx:if="{{item.type == 'img'}}" src="../common/tmp_part/img.wxml"/>
-        <include  wx:if="{{item.type == 'text'}}" src="../common/tmp_part/text.wxml"/>
-        <include  wx:if="{{item.type == 'sign'}}" src="../common/tmp_part/sign.wxml"/>
-        <include  wx:if="{{item.type == 'timelimit'}}" src="../common/tmp_part/timelimit.wxml"/>
-    </view>
-
-    <view wx-if="{{page_status == '1'}}" class="action_btn start_make" bindtap="start_make">开始制作</view>
-    <view wx-if="{{page_status == '2'}}" class="action_btn complete_make" bindtap="complete_make">完成制作</view>
-    <view wx-if="{{page_status == '3'}}" class="action_btn share_make" bindtap="share_make">分享</view>
-</view>
+</div>
