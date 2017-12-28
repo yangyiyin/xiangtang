@@ -29,6 +29,18 @@ class UserDeductibleCouponService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
+    public function get_by_cids($uid, $cids) {
+        if (!check_num_ids($cids)) {
+            return [];
+        }
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['uid'] = ['eq', $uid];
+        $where['cid'] = ['in', $cids];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
     public function get_by_uid($uid) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
@@ -142,14 +154,19 @@ class UserDeductibleCouponService extends BaseService{
         return $NfModel->where($where)->count();
     }
 
-    public function take_one($uid) {
+    public function take_one($uid, $cid) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
         $where['uid'] = ['EQ', 0];
+        $where['cid'] = ['EQ', $cid];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         $info = $NfModel->where($where)->order('id desc')->find();
         if (!$info) {
             return result(FALSE, '领取失败,优惠券已被领完');
+        }
+        //判断是否已经领取
+        if ($this->get_by_cids($uid, [$cid])) {
+            return result(FALSE, '您已领取过该优惠券');
         }
 
         //领取

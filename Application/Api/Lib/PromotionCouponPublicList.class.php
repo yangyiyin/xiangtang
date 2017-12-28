@@ -33,6 +33,11 @@ class PromotionCouponPublicList extends BaseApi{
         $new_list = [];
         if ($list) {
 
+            //获取我已领取的优惠券
+            $cids = result_to_array($list);
+            $UserDeductibleCouponService = \Common\Service\UserDeductibleCouponService::get_instance();
+            $usercoupons = $UserDeductibleCouponService->get_by_cids($this->uid,$cids);
+            $usercoupons_map = result_to_map($usercoupons, 'cid');
             foreach ($list as $_li) {
                 $tmp = [];
                 $tmp['id'] = $_li['id'];
@@ -41,6 +46,7 @@ class PromotionCouponPublicList extends BaseApi{
                 $tmp['deductible'] = $_li['deductible'];
                 $tmp['img'] = item_img($_li['img']);
                 $tmp['desc'] = '满'. format_price($_li['least']) . '元减'. format_price($_li['deductible']) .'元';
+                $tmp['is_taked'] = isset($usercoupons_map[$_li['id']]) ? true : false;
                 $new_list[] = $tmp;
             }
         }

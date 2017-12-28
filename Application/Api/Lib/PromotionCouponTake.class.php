@@ -22,7 +22,7 @@ class PromotionCouponTake extends BaseApi{
         }
 
         $UserDeductibleCouponService = \Common\Service\UserDeductibleCouponService::get_instance();
-        $ret = $UserDeductibleCouponService->take_one($this->uid);
+        $ret = $UserDeductibleCouponService->take_one($this->uid, $id);
         if (!$ret->success) {
             return result_json(false, $ret->message);
         }
