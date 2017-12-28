@@ -65,7 +65,6 @@ class PagesController extends Controller {
         $data = preg_replace_callback($pattern, function($matches){
             return $matches[1] * self::$rate . 'px';
         }, $data);
-
         return $data;
     }
 

@@ -21,7 +21,6 @@ class LaughPageSubmit extends BaseApi{
         if (!$tmp_data || !$tmp_id) {
             return result_json(false, '页面内容异常!');
         }
-
         //生成page
         $TemplateService = \Common\Service\TemplateService::get_instance();
         $tmp_info = $TemplateService->get_info_by_id($tmp_id);
@@ -33,6 +32,11 @@ class LaughPageSubmit extends BaseApi{
         $data['uid'] = $this->uid;
         $data['title'] = $tmp_info['title'];
         $data['img'] = $tmp_info['img'];
+        foreach ($tmp_data['page'] as $k => $_page) {
+            if ($_page['type'] == 'text') {
+                $tmp_data['page'][$k]['text'] = str_replace("\n","<br/>",$_page['text']);
+            }
+        }
         $data['tmp_data'] = json_encode($tmp_data);
         $PageService = \Common\Service\PageService::get_instance();
         $ret = $PageService->add_one($data);
