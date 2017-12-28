@@ -31,7 +31,7 @@ class PromotionCouponMylist extends BaseApi{
                 $tmp['img'] = item_img($coupon['img']);
                 $tmp['desc'] = '满'. format_price($coupon['least']) . '元减'. format_price($coupon['deductible']) .'元';
                 
-                $coupons = $temp;
+                $coupons[] = $temp;
             }
         }
 
