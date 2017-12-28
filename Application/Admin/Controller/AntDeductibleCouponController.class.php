@@ -120,7 +120,7 @@ class AntDeductibleCouponController extends AdminController {
         }
 
         $UserDeductibleCouponService = \Common\Service\UserDeductibleCouponService::get_instance();
-        $ret = $UserDeductibleCouponService->gain($id, $info['title'],$info['least'],$info['deductible'],$num);
+        $ret = $UserDeductibleCouponService->gain($id, $info['title'],$info['least'],$info['deductible'],$num,$info['img']);
         if ($ret->success) {
             action_user_log('生成抵扣优惠券'.$num);
             $this->success('生成成功！');

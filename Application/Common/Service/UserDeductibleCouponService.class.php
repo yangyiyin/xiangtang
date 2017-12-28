@@ -127,7 +127,7 @@ class UserDeductibleCouponService extends BaseService{
     }
 
 
-    public function gain($cid, $title, $least, $deductible, $num) {
+    public function gain($cid, $title, $least, $deductible, $num, $img) {
         $batch_data = [];
         for($i = 0; $i < $num; $i++) {
             $tmp = [];
@@ -135,6 +135,7 @@ class UserDeductibleCouponService extends BaseService{
             $tmp['title'] = $title;
             $tmp['code'] = $this->gain_code($i);
             $tmp['least'] = $least;
+            $tmp['img'] = $img;
             $tmp['deductible'] = $deductible;
             $batch_data[] = $tmp;
         }
