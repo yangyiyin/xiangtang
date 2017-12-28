@@ -59,5 +59,3 @@
 //    $list[$_li['pid']][] = $_li;
 //}
 //$tree = make_tree($list);
-
-file_put_contents('123.html',123);

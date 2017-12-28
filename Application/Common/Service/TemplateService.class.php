@@ -29,6 +29,20 @@ class TemplateService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
+    public function get_by_type_ids($type, $ids) {
+
+        if (!check_num_ids($ids)) {
+            return [];
+        }
+
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['type'] = ['eq', $type];
+        $where['id'] = ['in', $ids];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
     public function update_by_id($id, $data) {
 
         if (!$id) {

@@ -61,5 +61,7 @@ class LaughController extends BaseController {
     public function my_tmplist() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughMyTmplist');
     }
-
+    public function tmp_info() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughTmpInfo');
+    }
 }

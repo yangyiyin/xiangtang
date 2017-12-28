@@ -29,6 +29,14 @@ class UserTemplateService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
+    public function get_by_uid($uid) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['uid'] = ['EQ', $uid];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
     public function update_by_id($id, $data) {
 
         if (!$id) {

@@ -15,9 +15,14 @@ class LaughMyTmplist extends BaseApi{
     }
 
     public function excute() {
+        $type = I('type');
+        $UserTemplateService = \Common\Service\UserTemplateService::get_instance();
+        $mylist = $UserTemplateService->get_by_uid($this->uid);
+        $tids = result_to_array($mylist, 'tid');
+        $TemplateService = \Common\Service\TemplateService::get_instance();
+        $tmp_list = $TemplateService->get_by_type_ids($type, $tids);
 
-        
-        return result_json(TRUE, '发布成功',$link);
+        return result_json(TRUE, '获取成功',$tmp_list);
     }
 
 
