@@ -1,7 +1,7 @@
 <div id="timelimit" style="{$item.style}"></div>
 <script>
     $(document).ready(function(){
-        var time_limit_left = 20;
+        var time_limit_left = {$tmp_data.time_limit_left};
         var time_limit_left_desc = '';
         if (time_limit_left > 0) {
             var Interval = setInterval(function () {

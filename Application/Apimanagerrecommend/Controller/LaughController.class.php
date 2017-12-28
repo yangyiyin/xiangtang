@@ -58,4 +58,8 @@ class LaughController extends BaseController {
         $this->excute_api('Apimanagerrecommend\Lib\LaughMakeQrcode');
     }
 
+    public function my_tmplist() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughMyTmplist');
+    }
+
 }
