@@ -8,7 +8,7 @@
         box-sizing:border-box;
     }
 </style>
-<div class="container" style="background-image: url({$tmp_data.bg.src});background-size:100%;background-repeat: repeat-y;font-size:{$font_size};position: relative;height:{$tmp_data.height}">
+<div class="container" style="background-image: url({$tmp_data.bg.src});background-size:100%;background-repeat: repeat-y;font-size:{$font_size};position: relative;min-height:{$tmp_data.height}">
     <volist name="tmp_data.page" id="item">
         <div>
             <if condition="$item['type'] == 'swiper'">

@@ -14,20 +14,35 @@ use Think\Exception;
  */
 class PagesController extends Controller {
     protected static $rate = 1;
-
+    protected static $file_name = "pages/tmp/preview.tmp_data";
 	//系统首页
     public function index(){
-
-
         $this->display();
     }
 
     public function show(){
-        $id = I('id');
-
         $width = I('w', 750);
         $height = I('h', 1334);//默认iphone6尺寸
         self::$rate = $width / 750;
+
+        $is_preview = I('is_preview');
+        //预览
+        if ($is_preview) {
+            $file_name = self::$file_name;
+            $tmp_data = file_get_contents($file_name);
+            if (!$tmp_data) {
+                $this->error('信息异常!');
+            }
+
+            $tmp_data = $this->parse_rpx($tmp_data);
+            $this->assign('tmp_data', json_decode($tmp_data, true));
+            $this->assign('font_size', (self::$rate * 28).'px');
+
+            $this->display();
+            return;
+        }
+        $id = I('id');
+
         if (!$id) {
             $this->error('信息异常');
         }
