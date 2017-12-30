@@ -152,6 +152,7 @@ class UserDeductibleCouponService extends BaseService{
         }
         $NfModel = D('Nf' . static::$name);
         $where['cid'] = $id;
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->count();
     }
 
