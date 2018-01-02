@@ -21,7 +21,20 @@ class LaughTmpInfo extends BaseApi{
         $info = $TemplateService->get_info_by_id($id);
 
         if ($info) {
-            $info['content'] = json_decode($info['content']);
+            $info['content'] = json_decode($info['content'], true);
+        }
+
+        foreach ($info['content']['page'] as $_page) {
+            if ($_page['type'] == 'sign') {
+                $info['content']['sign_list'] = true;
+            }
+            if ($_page['type'] == 'cut_price') {
+                $info['content']['cut_price_list'] = true;
+            }
+            if ($_page['type'] == 'praise') {
+                $info['content']['praise_list'] = true;
+            }
+
         }
         return result_json(TRUE, '获取成功', $info);
     }

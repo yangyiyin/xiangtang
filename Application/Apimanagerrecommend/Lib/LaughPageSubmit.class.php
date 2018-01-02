@@ -18,6 +18,7 @@ class LaughPageSubmit extends BaseApi{
 
         $tmp_data = $this->post_data['tmp_data'];
         $tmp_id = $this->post_data['tmp_id'];
+        $page_title = $this->post_data['page_title'];
         if (!$tmp_data || !$tmp_id) {
             return result_json(false, '页面内容异常!');
         }
@@ -30,12 +31,16 @@ class LaughPageSubmit extends BaseApi{
 
         $data = [];
         $data['uid'] = $this->uid;
-        $data['title'] = $tmp_info['title'];
+        $data['title'] = $page_title ? $page_title : $tmp_info['title'];
         $data['img'] = $tmp_info['img'];
         foreach ($tmp_data['page'] as $k => $_page) {
             if ($_page['type'] == 'text') {
                 $tmp_data['page'][$k]['text'] = str_replace("\n","<br/>",$_page['text']);
             }
+        }
+
+        if (isset($tmp_data['time_limit_left'])) {
+            $tmp_data['time_limit_end'] = date('Y-m-d H:i:s', (time() + $tmp_data['time_limit_left']));
         }
         $data['tmp_data'] = json_encode($tmp_data);
         $PageService = \Common\Service\PageService::get_instance();

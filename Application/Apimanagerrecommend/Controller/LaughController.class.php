@@ -72,6 +72,10 @@ class LaughController extends BaseController {
     public function page_info() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughPageInfo');
     }
+    public function page_detail_info() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughPageDetailInfo');
+    }
+
     public function add_tmp() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughAddTmp');
     }

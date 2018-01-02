@@ -7,7 +7,7 @@
  */
 namespace Apimanagerrecommend\Lib;
 use Common\Service;
-class LaughPageInfo extends BaseApi{
+class LaughPageDetailInfo extends BaseApi{
     protected $method = parent::API_METHOD_GET;
 
     public function init() {
@@ -21,12 +21,11 @@ class LaughPageInfo extends BaseApi{
         $info = $PageService->get_info_by_id($id);
 
         if ($info) {
-           // $info['tmp_data'] = str_replace('<br\/>',"\n",$info['tmp_data']);
-           // $info['tmp_data'] = str_replace('<br>',"\n",$info['tmp_data']);
+
             $tmp_data = $info['content'] = json_decode($info['tmp_data'],true);
             foreach ($info['content']['page'] as $k => $_page) {
-                if ($_page['type'] == 'text') {
-                    $info['content']['page'][$k]['text'] = str_replace("<br/>","\n",$_page['text']);
+                if ($_page['type'] == 'sign') {
+                    $info['show_sign_list'] = true;
                 }
             }
 
@@ -38,7 +37,6 @@ class LaughPageInfo extends BaseApi{
                 $info['sign_list'] = $sign_list;
             }
 
-            $info['page_url'] = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/index.html?id=' . $id;
         }
         return result_json(TRUE, '获取成功', $info);
     }

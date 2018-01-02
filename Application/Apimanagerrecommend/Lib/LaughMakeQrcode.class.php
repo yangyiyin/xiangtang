@@ -34,7 +34,7 @@ class LaughMakeQrcode extends BaseApi{
 
         $tmp_png = time() . 'qrcode.png';
 
-        $logo = 'logo.jpeg';//准备好的logo图片
+        $logo = 'logo.png';//准备好的logo图片
 
         //生成二维码图片
 

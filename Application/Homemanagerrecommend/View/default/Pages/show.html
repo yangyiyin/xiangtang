@@ -8,6 +8,7 @@
         box-sizing:border-box;
     }
 </style>
+<div style="display: none" class="title">{$page_title}</div>
 <div class="container" style="background-image: url({$tmp_data.bg.src});background-size:100%;background-repeat: repeat-y;font-size:{$font_size};position: relative;min-height:{$tmp_data.height}">
     <volist name="tmp_data.page" id="item">
         <div>
@@ -29,5 +30,8 @@
 
         </div>
     </volist>
+    <if condition="$tmp_data['sign_list']">
+        <include  file="Pagespublic/sign_list"/>
+    </if>
 
 </div>

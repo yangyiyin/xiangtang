@@ -1,1 +1,15 @@
-<div style="{$item.style}" >{$item.text}</div>
+<div class="sign" style="{$item.style}" >{$item.text}</div>
+
+<script>
+    $(document).ready(function(){
+       $('.sign').click(function(){
+           var url = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/sign?id={:I("id")}';
+           $.post(url,{}, function(res){
+               alert(res.info);
+                console.log(res);
+           })
+        })
+
+
+    });
+</script>

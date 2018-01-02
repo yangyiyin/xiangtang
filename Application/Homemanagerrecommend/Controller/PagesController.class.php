@@ -17,6 +17,7 @@ class PagesController extends Controller {
     protected static $file_name = "pages/tmp/preview.tmp_data";
 	//系统首页
     public function index(){
+
         $this->display();
     }
 
@@ -66,10 +67,21 @@ class PagesController extends Controller {
             fclose($myfile);
         }
 
+        $tmp_data = json_decode($page_info['tmp_data'], true);
+        if ($tmp_data['sign_list']) {
+            $PageSignService = \Common\Service\PageSignService::get_instance();
+            $sign_list = $PageSignService->get_by_page_id($id);
+            $sign_list = $this->convert($sign_list);
+            $this->assign('sign_list', $sign_list);
+        }
 
-        $this->assign('tmp_data', json_decode($page_info['tmp_data'], true));
+        if ($tmp_data['time_limit_end']) {
+            $tmp_data['time_limit_left'] = strtotime($tmp_data['time_limit_end']) - time();
+        }
+        $this->assign('page_title', $page_info['title']);
+        $this->assign('tmp_data', $tmp_data);
         $this->assign('font_size', (self::$rate * 28).'px');
-
+        $this->assign('rate', self::$rate);
         $this->display();
     }
 
@@ -83,7 +95,47 @@ class PagesController extends Controller {
         return $data;
     }
 
+    public function sign() {
+        $id = I('get.id');
 
+        $PageService = \Common\Service\PageService::get_instance();
+        $page_info = $PageService->get_info_by_id($id);
+        if ($page_info['tmp_data']) {
+            $page_info['tmp_data'] = json_decode($page_info['tmp_data'], true);
+        }
+        if (isset($page_info['tmp_data']['time_limit_end'])) {
+            if (time() > strtotime($page_info['tmp_data']['time_limit_end'])) {
+                $this->error('报名已结束!');
+            }
+        }
 
+        //存入
+        $PageSignService = \Common\Service\PageSignService::get_instance();
+        $data = [];
+        $data['uid'] = 1;
+        $data['page_id'] = $id;
+        if ($PageSignService->get_by_uid_page_id($data['uid'], $data['page_id'])) {
+            $this->error('您已报名!');
+        }
+
+        $ret = $PageSignService->add_one($data);
+        if (!$ret->success) {
+            $this->error($ret->message);
+        }
+        $this->success('报名成功!');
+    }
+
+    private function convert($list) {
+        if ($list) {
+            $uids = result_to_array($list, 'uid');
+            $UserService = \Common\Service\UserService::get_instance();
+            $users = $UserService->get_by_ids($uids);
+            $users_map = result_to_map($users);
+            foreach ($list as $k => $value) {
+                $list[$k]['user'] = isset($users_map[$value['uid']]) ? $users_map[$value['uid']] : [];
+            }
+        }
+        return $list;
+    }
 
 }

@@ -207,3 +207,58 @@ CREATE TABLE `shopy_nf_suggest` (
   `deleted` tinyint(3) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+CREATE TABLE `shopy_nf_page_sign` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL DEFAULT '0',
+     `page_id` int(11) NOT NULL DEFAULT '0',
+  `create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `shopy_nf_page_cutprice` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL DEFAULT '0',
+  `price` int(11) NOT NULL DEFAULT '0',
+   `pid` int(11) NOT NULL DEFAULT '0',
+    `cutprice` int(11) NOT NULL DEFAULT '0',
+       `page_id` int(11) NOT NULL DEFAULT '0',
+  `create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+CREATE TABLE `shopy_nf_page_praise` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL DEFAULT '0',
+  `sum` int(11) NOT NULL DEFAULT '0',
+   `pid` int(11) NOT NULL DEFAULT '0',
+   `page_id` int(11) NOT NULL DEFAULT '0',
+  `create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `shopy_nf_page_sort` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sort_id` int(11) NOT NULL DEFAULT '0',
+  `sum` int(11) NOT NULL DEFAULT '0',
+     `page_id` int(11) NOT NULL DEFAULT '0',
+  `create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+CREATE TABLE `shopy_nf_page_sort_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL DEFAULT '0',
+  `sort_id` int(11) NOT NULL DEFAULT '0',
+     `page_id` int(11) NOT NULL DEFAULT '0',
+  `create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

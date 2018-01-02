@@ -39,6 +39,7 @@
 
         $.get("{:U('show')}?id={:I('id')}&w="+width+'&h='+height+"&is_preview={:I('is_preview')}",function(res){
            $('body').html(res);
+            $('title').html($('.title').html());
         })
 
         //timelimit

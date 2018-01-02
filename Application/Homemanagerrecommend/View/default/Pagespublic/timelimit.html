@@ -16,6 +16,9 @@
                     clearInterval(Interval);
                 }
             }.bind(this), 1000);
+        } else {
+            time_limit_left_desc = '活动已结束'
+            $('#timelimit').html(time_limit_left_desc);
         }
 
     });

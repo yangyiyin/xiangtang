@@ -1,0 +1,13 @@
+<div  class=""  style="position:relative;width: <php>echo $rate * 690;</php>px;padding: <php>echo $rate * 20;</php>px;border: 1px solid #0CD400;margin-top: <php>echo $rate * 10;</php>px" >
+    <div style="background: #0CD400;color: #fff;padding: <php>echo $rate * 10;</php>px">活动报名情况</div>
+    <volist name="sign_list" id="sign">
+        <div style="margin-top: <php>echo $rate * 10;</php>px">
+            <div style="float: left">微信名:{$sign.user.user_name}</div>
+            <div style="float: right;">{$sign.create_time}</div>
+        </div>
+        <div style="clear: both"></div>
+    </volist>
+
+</div>
+
+
