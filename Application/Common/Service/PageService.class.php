@@ -58,12 +58,15 @@ class PageService extends BaseService{
         }
     }
 
-    public function del_by_id($id) {
+    public function del_by_id($id, $uid) {
         if (!check_num_ids([$id])) {
             return false;
         }
         $NfModel = D('Nf' . static::$name);
-        $ret = $NfModel->where('id=' . $id)->save(['deleted'=>static::$DELETED]);
+        $where = [];
+        $where['id'] = ['eq', $id];
+        $where['uid'] = $uid;
+        $ret = $NfModel->where($where)->save(['deleted'=>static::$DELETED]);
         if ($ret) {
             return result(TRUE);
         } else {

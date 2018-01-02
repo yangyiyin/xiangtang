@@ -17,19 +17,39 @@ class UserInfo extends BaseApi{
 
     public function excute() {
         $info = $this->UserService->get_info_by_id($this->uid);
-        $data = convert_obj($info, 'user_name,avatar');
+        $data = convert_obj($info, 'user_name,avatar,entity_title,entity_tel');
         //$data->type = (int) $data->type;
         $data->avatar = $data->avatar ? item_img($data->avatar) : item_img(get_cover(46, 'path'));
 
-        //获取积分
-        $AccountService = \Common\Service\AccountService::get_instance();
-        $info = $AccountService->get_info_by_uid($this->uid);
-        $data->count = isset($info['sum']) ? $info['sum'] : 0;
+        //获取会员信息
+        $VipService = \Common\Service\VipService::get_instance();
+        $vip = $VipService->get_info_by_uid($this->uid);
+        if ($vip) {
+            $data->vip = $vip;
+            $data->is_vip = true;
+            $data->is_past = false;
+            $data->day_left = '';
 
-        //获取点赞数
-        $ArticleEventsService = \Common\Service\ArticleEventsService::get_instance();
-        $likes = $ArticleEventsService->get_by_uid_type($this->uid, \Common\Model\NfArticleEventsModel::TYPE_LIKE);
-        $data->likes = $likes ? count($likes) : 0;
+            $left_time = strtotime($vip['end_time']) - time();
+            if ($left_time <= 0) {
+                $data->is_past = true;
+                $data->day_left = '已过期';
+
+            } elseif ($left_time < 7 * 3600 * 24) {
+                $left_day = floor($left_time / 3600 / 24);
+                if ($left_day == 0) {
+                    $data->day_left = '今天到期';
+                } else {
+                    $data->day_left = '还剩'.$left_day.'天';
+                }
+
+            }
+        } else {
+            $data->vip = [];
+            $data->is_vip = false;
+            $data->day_left = '';
+        }
+
         return result_json(TRUE, '', $data);
     }
 }

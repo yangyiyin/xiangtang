@@ -21,19 +21,22 @@ class UserInfo_modify extends BaseApi{
         $data = [];
 
         $user_name = $this->post_data['user_name'];
+        if ($user_name) {
+            $data['user_name'] = $user_name;
+        }
+        if ($this->post_data['entity_title']) {
+            $data['entity_title'] = $this->post_data['entity_title'];
+        }
+        if ($this->post_data['entity_tel']) {
+            $data['entity_tel'] = $this->post_data['entity_tel'];
+        }
 
-//        var_dump($this->post);
-//        var_dump($_FILES);die();
-
-
-
-
-
-//        if (!$user_name) {
-//            result_json(FALSE, '参数不完整~');
-//        }
-
-        $data['user_name'] = $user_name;
+        if ($data['entity_tel'] && !is_tel_num($data['entity_tel'])) {
+            result_json(FALSE, '请输入正确的手机号');
+        }
+        if (isset($data['entity_title']) && $data['entity_title']) {
+            $data['user_name'] = $data['entity_title'];
+        }
         $return = $this->uploadPicture();
         if ($return) {
             $data['user_name'] = $_POST['user_name'];
@@ -46,7 +49,7 @@ class UserInfo_modify extends BaseApi{
             if (strpos($ret->message, '网络繁忙') === false) {
                 result_json(FALSE, $ret->message);
             } else {
-                result_json(FALSE, '网络繁忙');
+               // result_json(FALSE, '网络繁忙');
             }
         }
         result_json(TRUE, '修改成功!');

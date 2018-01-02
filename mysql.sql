@@ -184,3 +184,26 @@ CREATE TABLE `shopy_nf_page` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 alter table shopy_nf_page add tmp_data MediumText;
+
+CREATE TABLE `shopy_nf_vip` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+   `type` tinyint(3) NOT NULL DEFAULT '1',
+  `uid` int(11) NOT NULL DEFAULT '0',
+  `start_time` datetime DEFAULT NULL,
+    `end_time` datetime DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `shopy_nf_suggest` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+   `type` tinyint(3) NOT NULL DEFAULT '1',
+  `uid` int(11) NOT NULL DEFAULT '0',
+ `content` VARCHAR(2048) DEFAULT '',
+ `pid` int(11) NOT NULL DEFAULT '0',
+
+  `create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

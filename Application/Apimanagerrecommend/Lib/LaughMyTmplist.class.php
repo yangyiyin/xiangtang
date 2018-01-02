@@ -21,8 +21,14 @@ class LaughMyTmplist extends BaseApi{
         $tids = result_to_array($mylist, 'tid');
         $TemplateService = \Common\Service\TemplateService::get_instance();
         $tmp_list = $TemplateService->get_by_type_ids($type, $tids);
-
-        return result_json(TRUE, '获取成功',$tmp_list);
+        $tmp_list_map = result_to_map($tmp_list);
+        $new_list = [];
+        foreach ($tids as $tid) {
+            if (isset($tmp_list_map[$tid])) {
+                $new_list[] = $tmp_list_map[$tid];
+            }
+        }
+        return result_json(TRUE, '获取成功',$new_list);
     }
 
 

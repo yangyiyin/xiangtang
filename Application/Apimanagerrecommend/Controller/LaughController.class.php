@@ -61,7 +61,38 @@ class LaughController extends BaseController {
     public function my_tmplist() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughMyTmplist');
     }
+
+    public function alltmplist() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughAlltmplist');
+    }
+
     public function tmp_info() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughTmpInfo');
+    }
+    public function page_info() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughPageInfo');
+    }
+    public function add_tmp() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughAddTmp');
+    }
+
+    public function del_tmp() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughDelTmp');
+    }
+    public function mypages() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughMypages');
+    }
+    public function del_page() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughDelPage');
+    }
+    public function contact() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughContact');
+    }
+
+    public function suggest_list() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughSuggestList');
+    }
+    public function add_suggest() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughAddSuggest');
     }
 }

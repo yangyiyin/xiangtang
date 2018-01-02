@@ -59,3 +59,8 @@
 //    $list[$_li['pid']][] = $_li;
 //}
 //$tree = make_tree($list);
+$ids = [1,2,3];
+$a = [0=>2,1=>4];
+array_multisort($ids, SORT_DESC,$a);
+var_dump($ids);
+var_dump($a);

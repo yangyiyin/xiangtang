@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-12-26 13:57:34
+ * Time: 2017-12-30 13:37:04
  */
 namespace Common\Service;
-class UserTemplateService extends BaseService{
-    public static $name = 'UserTemplate';
+class VipService extends BaseService{
+    public static $name = 'Vip';
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
@@ -29,22 +29,12 @@ class UserTemplateService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
-    public function get_by_tids_uid($tids, $uid) {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['tid'] = ['in', $tids];
-        $where['uid'] = ['eq', $uid];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->select();
-    }
-
-
-    public function get_by_uid($uid) {
+    public function get_info_by_uid($uid) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
         $where['uid'] = ['EQ', $uid];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->order('id desc')->select();
+        return $NfModel->where($where)->find();
     }
 
     public function update_by_id($id, $data) {
@@ -88,21 +78,6 @@ class UserTemplateService extends BaseService{
             return result(FALSE, '网络繁忙~');
         }
     }
-
-    public function del_by_tid($tid,$uid) {
-
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['tid'] = $tid;
-        $where['uid'] = $uid;
-        $ret = $NfModel->where($where)->save(['deleted'=>static::$DELETED]);
-        if ($ret) {
-            return result(TRUE);
-        } else {
-            return result(FALSE, '网络繁忙~');
-        }
-    }
-
 
 
     public function add_batch($data) {

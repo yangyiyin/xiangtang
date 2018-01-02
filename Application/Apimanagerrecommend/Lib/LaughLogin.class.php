@@ -24,7 +24,7 @@ class LaughLogin extends BaseSapi{
         }
         //获取openid
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://api.weixin.qq.com/sns/jscode2session?appid=wx58a7a04a0f264340&secret=1f942bc2027d37995db97bd0e37056c8&js_code=".$code."&grant_type=authorization_code");
+        curl_setopt($ch, CURLOPT_URL, "https://api.weixin.qq.com/sns/jscode2session?appid=wx979328bc70cabb2d&secret=d2e17f107d1204f6a6545662894040c0&js_code=".$code."&grant_type=authorization_code");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         $output = curl_exec($ch);
