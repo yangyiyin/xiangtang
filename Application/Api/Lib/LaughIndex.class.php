@@ -83,7 +83,7 @@ class LaughIndex extends BaseApi{
                     if (isset($users_map[$_li['uid']])) {
 
                         $_li['user'] =  $users_map[$_li['uid']] ;
-                        $_li['user']['avatar'] = item_img(get_cover(46, 'path'));
+                        $_li['user']['avatar'] = $_li['user']['avatar'] ? item_img($_li['user']['avatar']): item_img(get_cover(46, 'path'));
                     }
 
                 } elseif ($_li['from'] == \Common\Model\NfArticleModel::FROM_ADMIN) {

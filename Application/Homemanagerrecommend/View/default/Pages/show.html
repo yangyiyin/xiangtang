@@ -27,7 +27,18 @@
             <if condition="$item['type'] == 'timelimit'">
                 <include  file="Pagespublic/timelimit"/>
             </if>
-
+            <if condition="$item['type'] == 'cutprice_btn'">
+                <include  file="Pagespublic/cutprice_btn"/>
+            </if>
+            <if condition="$item['type'] == 'cutprice_price'">
+                <include  file="Pagespublic/cutprice_price"/>
+            </if>
+            <if condition="$item['type'] == 'praise'">
+                <include  file="Pagespublic/praise"/>
+            </if>
+            <if condition="$item['type'] == 'vote'">
+                <include  file="Pagespublic/vote"/>
+            </if>
         </div>
     </volist>
     <if condition="$tmp_data['sign_list']">

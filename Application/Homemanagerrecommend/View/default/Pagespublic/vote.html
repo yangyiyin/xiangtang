@@ -1,0 +1,43 @@
+<div style="{$item.style}" >
+    <div style="width: <php>echo $rate * 750;</php>px;">
+        <if condition="$item.vote_num_arr">
+            <volist id="vote_item" key="k" name="item.vote_num_arr">
+                <div style="position:relative;float:left;width: <php>echo $rate * 175;</php>px;margin-left: <php>echo $rate * 10;</php>px;margin-top: <php>echo $rate * 20;</php>px;">
+                    <img style="width: <php>echo $rate * 175;</php>px;height: <php>echo $rate * 175;</php>px;" src="{$vote_item.src}"/>
+                    <div style="position: absolute;top: 0;width: 100%;height:<php>echo $rate * 40;</php>px;background: rgba(255,255,255,0.7)"></div>
+                    <div style="position: absolute;top:0;left: 0;font-size: <php>echo $rate * 20;</php>px;">编号:{$k+1}</div>
+                    <div style="position: absolute;top:0;right: 0;font-size: <php>echo $rate * 20;</php>px;">{$vote_item.sign|intval}票</div>
+                    <div style="margin:0 auto;width: <php>echo $rate * 80;</php>px;text-align:center;padding: <php>echo $rate * 5;</php>px;background: #0CD400;color: #fff;border-radius: <php>echo $rate * 3;</php>px;">投票</div>
+                </div>
+
+            </volist>
+            <else/>
+            <for start="0" end="$item.vote_num">
+                <div style="position:relative;float:left;width: <php>echo $rate * 175;</php>px;margin-left: <php>echo $rate * 10;</php>px;margin-top: <php>echo $rate * 20;</php>px;">
+                    <img style="width: <php>echo $rate * 175;</php>px;height: <php>echo $rate * 175;</php>px;" src=""/>
+                    <div style="position: absolute;top: 0;width: 100%;height:<php>echo $rate * 40;</php>px;background: rgba(255,255,255,0.7)"></div>
+                    <div style="position: absolute;top:0;left: 0;font-size: <php>echo $rate * 20;</php>px;">编号:{$i+1}</div>
+                    <div style="position: absolute;top:0;right: 0;font-size: <php>echo $rate * 20;</php>px;">0票</div>
+                    <div style="margin:0 auto;width: <php>echo $rate * 80;</php>px;text-align:center;padding: <php>echo $rate * 5;</php>px;background: #0CD400;color: #fff;border-radius: <php>echo $rate * 3;</php>px;">投票</div>
+                </div>
+
+            </for>
+        </if>
+
+
+    </div>
+    <div style="clear: both"></div>
+</div>
+<script>
+    $(document).ready(function(){
+//       $('.sign').click(function(){
+//           var url = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/sign?id={:I("id")}';
+//           $.post(url,{}, function(res){
+//               alert(res.info);
+//                console.log(res);
+//           })
+//        })
+
+
+    });
+</script>

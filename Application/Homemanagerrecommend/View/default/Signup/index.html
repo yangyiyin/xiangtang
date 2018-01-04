@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>php初学者报名</title>
+    <meta name="keywords" content="php,php初学者,php初学,初学,网页编程,网站开发,开发初学"/>
+    <meta name="description" content="网站开发初学,php开发入门教程,网站后台开发免费培训"/>
+    <style>
+
+        body{
+            background: #666;
+        }
+        *{
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        a{
+            font-size: 12px;
+        }
+        .content{
+            width: 1000px;
+            height: auto;
+            margin: auto auto;
+            background: #eee;
+
+        }
+        .info{
+            width: 900px;
+            margin: 20px auto;
+            position: relative;
+            margin-top: 50px;
+        }
+        .info img{
+            position:absolute;
+            top: -29px;
+            left: 0;
+        }
+        .text{
+            background: #fff;
+            padding: 30px;
+        }
+        .btn{
+            width: 900px;
+            margin: 40px auto;
+            background: #faf5ac;
+            position: relative;
+            height:200px;
+            margin-bottom: 40px;
+        }
+        .btn .signup{
+            position: absolute;
+            top:50px;
+            left: 50px;
+            cursor: pointer;
+        }
+        .user-list{
+            position: absolute;
+            top:30px;
+            right: 80px;
+            font-size: 14px;
+            color: rgb(162,93,30);
+        }
+        .user-list ul{
+            height: 120px;
+            overflow-y: auto;
+        }
+        .user-list ul li {
+            padding: 2px 20px;
+        }
+        .btn_text{
+            font-size: 25px;
+            font-weight: bolder;
+            color: #fff;
+            position: absolute;
+            top:75px;
+            left: 150px;
+            cursor: pointer;
+        }
+        .btn_text_sub{
+            font-size: 12px;
+            font-weight: bolder;
+            color: rgb(249,217,118);
+            position: absolute;
+            top:110px;
+            left: 137px;
+            cursor: pointer;
+        }
+        .zhifu_text{
+            font-size: 25px;
+            font-weight: bolder;
+            position: absolute;
+            top:75px;
+            left: 70px;
+        }
+        .zhifu_text_sub{
+            font-size: 12px;
+            font-weight: bolder;
+            position: absolute;
+            top:110px;
+            left: 55px;
+        }
+
+        .bottom {
+            width: 1000px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            line-height: 20px;
+        }
+        .baoming{
+            padding: 2px 10px;
+            border: none;
+            margin-top: 10px;
+            background: rgb(240,120,20);
+            color:#fff;
+            cursor: pointer;
+
+        }
+        .nav{
+            background: #000;
+            height: 40px;
+            color: #ddd;
+        }
+        .nav ul {
+            float: left;
+            width: 100px;
+            cursor: pointer;
+            font-size: 14px;
+
+        }
+        .nav ul:hover,.nav ul.cur{
+            background: #faf5ac;
+            color: #000;
+        }
+        .nav ul li {
+            line-height: 40px;
+            text-align: center;
+        }
+    </style>
+    <script type="text/javascript" src="__STATIC__/jquery_danchu/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/jquery_danchu/jquery.reveal.js"></script>
+    <link rel="stylesheet" href="__STATIC__/jquery_danchu/reveal.css">
+
+</head>
+<body>
+<div class="content">
+    
+
+    <div class="nav">
+        <ul class="cur">
+            <li>
+                报名
+            </li>
+        </ul>
+        <ul>
+            <li url="{:U('History/index')}">
+                往期视频下载
+            </li>
+        </ul>
+    </div>
+
+    <div>
+        <img src="__IMG__/banner3.jpg">
+    </div>
+
+    <div>
+        <div class="info">
+            <img src="__IMG__/title.png">
+            <div class="text">
+
+                <p><span style="color: rgb(240,120,20)">课程内容:</span>本节课主要实战--留言板demo<a style="font-size: 14px" target="_blank" href="http://www.88plus.net/public/index.php/Home/History/index">(往期视频下载)</a></p>
+                <p><span style="color: rgb(240,120,20)">YY频道号:</span>94956278 &nbsp;&nbsp;<a href="http://yydl.duowan.com/4/setup/YYSetup-8.28.0.0-zh-CN.exe">下载yy(官方pc版yy8)</a>&nbsp;&nbsp;</p>
+                <!--<p><span style="color: rgb(240,120,20)">直播地址:</span><a style="font-size: 14px" target="_blank" href="http://www.douyu.com/plus88">http://www.douyu.com/plus88</a></p>-->
+                <p><span style="color: rgb(240,120,20)">本期主讲人:</span> 群主</p>
+                <p><span style="color: rgb(240,120,20)">本期时间:</span>2017/10/17 20:00 - 21:00</p>
+
+
+                <p style="font-size: 12px;margin-top: 5px">下一期预告:待定 主要内容:待定</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="btn">
+        <if condition="!$has_signup">
+            <img class="signup" src="__IMG__/btn.png">
+            <div class="btn_text">马上报名</div>
+            <div class="btn_text_sub">手慢无,抢限量免费名额</div>
+            <else/>
+            <img style="width: 200px;position: absolute;left: 180px" src="__IMG__/weixinzhifu.png">
+            <div class="zhifu_text">打赏</div>
+            <div class="zhifu_text_sub">使用<span style="color: red">微信</span>扫一扫>></div>
+        </if>
+
+        <div class="user-list">
+            <img class="title2" src="__IMG__/title2.png">
+            <ul>
+                <volist id="vo" name="list">
+                    <li>qq:{$vo.qq}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$vo.create_time}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$vo.status_desc}</li>
+
+                </volist>
+
+            </ul>
+        </div>
+    </div>
+
+
+    <div id="login" class="reveal-modal">
+
+      <p style="text-align: center">
+          QQ号:<input id="qq" type="text" value=""/><span class="must">*</span><br/>
+          <input style="display: none" id="yy" type="text" value=""/>&nbsp;<br/>
+          <input type="button" class="baoming" value="报名">
+      </p>
+
+    </div>
+
+    <div id="error" class="reveal-modal">
+
+        <p class="error_message" style="text-align: center">
+
+        </p>
+
+    </div>
+
+    <div id="success" class="reveal-modal">
+
+        <p style="text-align: center">
+         报名成功!页面即将自动刷新
+        </p>
+
+    </div>
+
+    <div class="bottom">
+        学习交流,欢迎初学者加入,QQ群号:641829936<br/>
+        浙ICP备14040875号-1
+    </div>
+
+</div>
+</body>
+<script>
+    $(document).ready(function(){
+        $('.signup,.btn_text,.btn_text_sub').live('click', function(e) {
+            e.preventDefault();
+            $('#login').reveal({animation:'fade'});
+        });
+
+        $('.baoming').click(function(){
+            if (!$('#qq').val()) {
+                $('.must').css('color','red');
+            }
+            var url = '{:U('')}';
+            var data = {
+                qq:$('#qq').val(),
+                yy:$('#yy').val()
+            }
+            $.post(url,data,function(data){
+                if(data.status) {
+                    $('#login').trigger('reveal:close');
+                    $('#success').reveal({animation:'fade'});
+                    setTimeout(function(){
+                        history.go(0)
+                    },2000)
+                } else {
+                    $('.error_message').text(data.info);
+                    $('#login').trigger('reveal:close')
+                    $('#error').reveal({animation:'fade'});
+                }
+            });
+        })
+        $('.nav li').click(function(){
+            var url = $(this).attr('url');
+            if (url) {
+                window.location.href=url;
+            }
+        })
+    })
+</script>
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+</html>

@@ -30,8 +30,29 @@ class LaughPageInfo extends BaseApi{
                 }
             }
 
-            $info['sign_list'] = [];
+            $info['sign_list'] = $info['praise_list'] = $info['cutprice_list'] = $info['vote_list']=[];
             if ($tmp_data['sign_list']) {
+                $PageSignService = \Common\Service\PageSignService::get_instance();
+                $sign_list = $PageSignService->get_by_page_id($id);
+                $sign_list = $this->convert($sign_list);
+                $info['sign_list'] = $sign_list;
+            }
+
+            if ($tmp_data['praise_list']) {
+                $PageSignService = \Common\Service\PageSignService::get_instance();
+                $sign_list = $PageSignService->get_by_page_id($id);
+                $sign_list = $this->convert($sign_list);
+                $info['praise_list'] = $sign_list;
+            }
+
+            if ($tmp_data['cutprice_list']) {
+                $PageSignService = \Common\Service\PageSignService::get_instance();
+                $sign_list = $PageSignService->get_by_page_id($id);
+                $sign_list = $this->convert($sign_list);
+                $info['sign_list'] = $sign_list;
+            }
+
+            if ($tmp_data['vote_list']) {
                 $PageSignService = \Common\Service\PageSignService::get_instance();
                 $sign_list = $PageSignService->get_by_page_id($id);
                 $sign_list = $this->convert($sign_list);

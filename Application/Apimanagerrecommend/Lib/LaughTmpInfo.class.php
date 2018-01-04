@@ -28,11 +28,14 @@ class LaughTmpInfo extends BaseApi{
             if ($_page['type'] == 'sign') {
                 $info['content']['sign_list'] = true;
             }
-            if ($_page['type'] == 'cut_price') {
-                $info['content']['cut_price_list'] = true;
+            if ($_page['type'] == 'cutprice_btn') {
+                $info['content']['cutprice_list'] = true;
             }
             if ($_page['type'] == 'praise') {
                 $info['content']['praise_list'] = true;
+            }
+            if ($_page['type'] == 'vote') {
+                $info['content']['vote_list'] = true;
             }
 
         }

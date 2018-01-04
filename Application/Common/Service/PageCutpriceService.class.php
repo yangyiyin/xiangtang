@@ -29,6 +29,15 @@ class PageCutpriceService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
+    public function get_by_uid_page_id($uid, $id) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['page_id'] = ['EQ', $id];
+        $where['uid'] = ['EQ', $uid];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->find();
+    }
+
     public function update_by_id($id, $data) {
 
         if (!$id) {
