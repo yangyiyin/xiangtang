@@ -80,7 +80,8 @@ class LaughMyCollectIndex extends BaseApi{
                     if (isset($users_map[$_li['uid']])) {
 
                         $list[$key]['user'] =  $users_map[$_li['uid']] ;
-                        $list[$key]['user']['avatar'] = item_img(get_cover(46, 'path'));
+//                        $list[$key]['user']['avatar'] = item_img(get_cover(46, 'path'));
+                        $list[$key]['user']['avatar'] = $list[$key]['user']['avatar'] ? item_img($list[$key]['user']['avatar']): item_img(get_cover(46, 'path'));
                     }
 
 
