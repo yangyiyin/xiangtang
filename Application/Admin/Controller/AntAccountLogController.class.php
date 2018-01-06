@@ -453,7 +453,7 @@ class AntAccountLogController extends AdminController {
                 unset($where[$unset_key]);
             }
 
-            list($all_datas_sum, ) = $this->AccountLogService->get_by_where_all([]);
+            list($all_datas_sum, ) = $this->AccountLogService->get_by_where_all($where);
 
             $all_datas_sum_map = result_to_complex_map($all_datas_sum, 'uid');
             $uid_sum_map = [];
