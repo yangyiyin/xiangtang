@@ -18,6 +18,7 @@ CREATE TABLE `shopy_nf_account` (
 
 CREATE TABLE `shopy_nf_order_benefit` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  
 `oid` int(11)  NOT NULL,
 `type` tinyint(5) DEFAULT '0',
 `rule` VARCHAR(255) DEFAULT '',
