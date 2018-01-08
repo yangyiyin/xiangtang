@@ -15,7 +15,6 @@ CREATE TABLE `shopy_nf_account` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-
 CREATE TABLE `shopy_nf_order_benefit` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   
