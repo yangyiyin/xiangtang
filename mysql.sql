@@ -5,6 +5,8 @@ CREATE TABLE `shopy_nf_brand` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+
+
 CREATE TABLE `shopy_nf_account` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
 `uid` int(11)  NOT NULL,
