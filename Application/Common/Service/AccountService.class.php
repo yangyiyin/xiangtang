@@ -140,6 +140,7 @@ class AccountService extends BaseService{
             if ($sum > $ret['sum']) {
                 return result(FALSE, '账户余额不足~');
             }
+            
             $ret_inc = $NfModel->where(['id'=>$ret['id']])->setDec('sum', $sum);
             if ($ret_inc) {
                 return result(TRUE, '');
