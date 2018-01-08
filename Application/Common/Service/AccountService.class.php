@@ -127,6 +127,7 @@ class AccountService extends BaseService{
     }
 
     public function minus_account($uid, $sum) {
+        
         if (!$uid || !$sum) {
             return result(FALSE, '参数错误');
         }
