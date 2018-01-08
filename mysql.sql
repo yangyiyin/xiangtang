@@ -11,6 +11,7 @@ CREATE TABLE `shopy_nf_account` (
 `sum` int(11) DEFAULT '0',
 `hold` int(11) DEFAULT '0',
   `deleted` tinyint(3) DEFAULT '0',
+  
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
