@@ -119,6 +119,7 @@ class AccountService extends BaseService{
         return [$data, $count];
     }
 
+    
     public function add_account($uid, $sum) {
         if (!$uid || !$sum) {
             return result(FALSE, '参数错误');
