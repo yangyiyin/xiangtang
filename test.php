@@ -58,12 +58,3 @@
 //foreach ($list as $k => $_li) {
 //    $list[$_li['pid']][] = $_li;
 //}$exception
-function aa() {
-    num(3);
-}
-
-try{$exception
-    aa();
-} catch (Exception $exception) {
-    var_dump($exception);
-}
