@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-12-13 10:24:27
+ * Time: 2018-01-09 15:38:05
  */
 namespace Common\Service;
-class DeductibleCouponService extends BaseService{
-    public static $name = 'DeductibleCoupon';
+class DeductibleCouponLogService extends BaseService{
+    public static $name = 'DeductibleCouponLog';
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
@@ -16,7 +16,6 @@ class DeductibleCouponService extends BaseService{
         if ($NfModel->add()) {
             return result(TRUE, '', $NfModel->getLastInsID());
         } else {
-
             return result(FALSE, '网络繁忙~');
         }
     }
@@ -27,14 +26,6 @@ class DeductibleCouponService extends BaseService{
         $where['id'] = ['EQ', $id];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->find();
-    }
-
-    public function get_by_ids($ids) {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['id'] = ['in', $ids];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->select();
     }
 
     public function update_by_id($id, $data) {
@@ -51,6 +42,22 @@ class DeductibleCouponService extends BaseService{
             return result(FALSE, '网络繁忙~');
         }
     }
+
+    public function update_by_couponid($id, $data) {
+
+        if (!$id) {
+            return result(FALSE, 'id不能为空');
+        }
+
+        $NfModel = D('Nf' . static::$name);
+
+        if ($NfModel->where('coupon_id=' . $id)->save($data)) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, '网络繁忙~');
+        }
+    }
+
 
     public function update_by_ids($ids, $data) {
         if (!check_num_ids($ids)) {
@@ -101,5 +108,15 @@ class DeductibleCouponService extends BaseService{
         return [$data, $count];
     }
 
+    public function get_by_where_all($where, $order = 'id desc') {
+        $NfModel = D('Nf' . static::$name);
+        $data = [];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        $count = $NfModel->where($where)->order($order)->count();
+        if ($count > 0) {
+            $data = $NfModel->where($where)->order($order)->select();
+        }
+        return [$data, $count];
+    }
 
 }

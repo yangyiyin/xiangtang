@@ -26,7 +26,17 @@ class PromotionCouponTake extends BaseApi{
         if (!$ret->success) {
             return result_json(false, $ret->message);
         }
-
+        //记录
+        $one_info = $ret->data;
+        $DeductibleCouponLogService = \Common\Service\DeductibleCouponLogService::get_instance();
+        $data = [];
+        $data['coupon_id'] = $one_info['id'];
+        $data['title'] = $one_info['title'];
+        $data['uid'] = $this->uid;
+        $data['user_name'] = (string) $this->user_info['user_name'];
+        $data['enable_time'] = current_date();
+        $data['num'] = $info['num'];
+        $DeductibleCouponLogService->add_one($data);
 
         return result_json(TRUE, '领取成功');
     }

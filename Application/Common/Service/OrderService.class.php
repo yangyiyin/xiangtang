@@ -258,6 +258,80 @@ class OrderService extends BaseService{
 
             $AccountLogService->add_one($account_data);
 
+            //记录限时优惠统计
+            $OrderItemService = \Common\Service\OrderItemService::get_instance();
+            $order_items = $OrderItemService->get_by_order_id($order['id']);
+            if ($order_items) {
+                $itemlimit_items = [];
+                foreach ($order_items as $_item) {
+                    if ($_item['promotion_type'] == \Common\Model\NfOrderModel::PROMOTION_TYPE_TIMELIMIT) {
+                        //记录
+                        $itemlimit_items[$_item['sku_id']] = $_item;
+                    }
+                }
+
+                if ($itemlimit_items) {
+                    $ItemTimelimitLogService = \Common\Service\ItemTimelimitLogService::get_instance();
+                    $sku_ids = result_to_array($itemlimit_items, 'sku_id');
+                    $logs = $ItemTimelimitLogService->get_by_sku_ids($sku_ids);
+                    $logs_map = result_to_complex_map($logs, 'sku_id');
+
+                    $batch_data = [];
+                    foreach ($itemlimit_items as $sku_id => $_item) {
+                        //获取商品名称和属性以及活动信息
+                        $promotion_extra = json_decode($_item['promotion_extra'], true);
+
+                        if (isset($logs_map[$sku_id])) {
+                            $is_update = false;
+
+                            foreach ($logs_map[$sku_id] as $log) {
+                                if ($log['start_time'] == $promotion_extra['start_time'] && $log['end_time'] == $promotion_extra['end_time'] && $log['timelimit_price'] == $promotion_extra['timelimit_price']) {
+                                    //更新
+                                    $data = [];
+                                    $data['num'] = $log['num'] + $_item['num'];
+                                    $ItemTimelimitLogService->update_by_id($log['id'], $data);
+                                    $is_update = true;
+                                }
+                            }
+
+                            if (!$is_update) {
+                                $temp = [];
+                                $temp['item_id'] = $_item['iid'];
+                                $temp['sku_id'] = $_item['sku_id'];
+                                $temp['num'] = $_item['num'];
+                                $temp['title'] = $promotion_extra['title'];
+                                $temp['start_time'] = $promotion_extra['start_time'];
+                                $temp['end_time'] = $promotion_extra['end_time'];
+                                $temp['price'] = $promotion_extra['price'];
+                                $temp['dealer_price'] = $promotion_extra['dealer_price'];
+                                $temp['timelimit_price'] = $promotion_extra['timelimit_price'];
+                                $temp['create_time'] = current_date();
+                                $batch_data[] = $temp;
+                            }
+
+
+                        } else {
+
+                            $temp = [];
+                            $temp['item_id'] = $_item['iid'];
+                            $temp['sku_id'] = $_item['sku_id'];
+                            $temp['num'] = $_item['num'];
+                            $temp['title'] = $promotion_extra['title'];
+                            $temp['start_time'] = $promotion_extra['start_time'];
+                            $temp['end_time'] = $promotion_extra['end_time'];
+                            $temp['price'] = $promotion_extra['price'];
+                            $temp['dealer_price'] = $promotion_extra['dealer_price'];
+                            $temp['timelimit_price'] = $promotion_extra['timelimit_price'];
+                            $temp['create_time'] = current_date();
+                            $batch_data[] = $temp;
+                        }
+                    }
+                    if ($batch_data) {
+                        $ItemTimelimitLogService->add_batch($batch_data);
+                    }
+
+                }
+            }
 
         }
         return $ret;
@@ -333,18 +407,18 @@ class OrderService extends BaseService{
 
         $ret = $this->update_by_id($order['id'], ['status'=>\Common\Model\NfOrderModel::STATUS_CANCEL]);
         if ($ret->success) {
-            //恢复优惠券
-            $OrderCouponService = \Common\Service\OrderCouponService::get_instance();
-            $coupon = $OrderCouponService->get_by_oid($order['id']);
-            if ($coupon) {
-                $coupons = $OrderCouponService->get_by_cid($coupon['cid']);
-                $OrderCouponService->del_by_id($coupon['id']);
-                if ($coupons && count($coupons) == 1) {
-                    //恢复优惠券
-                    $UserDeductibleCouponService = \Common\Service\UserDeductibleCouponService::get_instance();
-                    $UserDeductibleCouponService->recover_by_id($coupon['cid']);
-                }
-            }
+//            //恢复优惠券
+//            $OrderCouponService = \Common\Service\OrderCouponService::get_instance();
+//            $coupon = $OrderCouponService->get_by_oid($order['id']);
+//            if ($coupon) {
+//                $coupons = $OrderCouponService->get_by_cid($coupon['cid']);
+//                $OrderCouponService->del_by_id($coupon['id']);
+//                if ($coupons && count($coupons) == 1) {
+//                    //恢复优惠券
+//                    $UserDeductibleCouponService = \Common\Service\UserDeductibleCouponService::get_instance();
+//                    $UserDeductibleCouponService->recover_by_id($coupon['cid']);
+//                }
+//            }
 
         }
         return $ret;
@@ -455,6 +529,9 @@ class OrderService extends BaseService{
             $temp['sum'] = $_item['sum'];
             $temp['price'] = $_item['price'];
             $temp['sum_dealer_profit'] = $_item['sum_dealer_profit'];
+            $temp['promotion_type'] = $_item['promotion_type'];
+            $temp['promotion_extra'] = $_item['promotion_extra'];
+
             $data_order_items[] = $temp;
         }
         $OrderItemService = \Common\Service\OrderItemService::get_instance();
@@ -499,7 +576,7 @@ class OrderService extends BaseService{
                 $_item['props'] = $sku_props_map[$_item['sku_id']];
             }
 
-            $snap[] = convert_obj($_item, 'id=iid,pid,code,sku_id,title,img,desc,unit_desc,price,num,sum,props,sum_dealer_profit');
+            $snap[] = convert_obj($_item, 'id=iid,pid,code,sku_id,title,img,desc,unit_desc,price,num,sum,props,sum_dealer_profit,promotion_type,promotion_extra');
         }
         $snap_content = json_encode($snap);
         $OrderSnapshotService = \Common\Service\OrderSnapshotService::get_instance();

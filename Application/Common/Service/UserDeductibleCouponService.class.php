@@ -29,6 +29,19 @@ class UserDeductibleCouponService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
+    public function get_by_ids($ids) {
+        if (!check_num_ids($ids)) {
+            return [];
+        }
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+
+        $where['id'] = ['in', $ids];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
+
     public function get_by_cids($uid, $cids) {
         if (!check_num_ids($cids)) {
             return [];
@@ -90,6 +103,21 @@ class UserDeductibleCouponService extends BaseService{
             return result(FALSE, '网络繁忙~');
         }
     }
+
+
+    public function disable_by_id($id) {
+        if (!check_num_ids([$id])) {
+            return false;
+        }
+        $NfModel = D('Nf' . static::$name);
+        $ret = $NfModel->where('id=' . $id)->save(['status'=>\Common\Model\NfUserDeductibleCouponModel::STATUS_NONE]);
+        if ($ret) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, '网络繁忙~');
+        }
+    }
+
 
     public function recover_by_id($id) {
         if (!check_num_ids([$id])) {
@@ -174,6 +202,12 @@ class UserDeductibleCouponService extends BaseService{
         //领取
         $data = [];
         $data['uid'] = $uid;
-        return $this->update_by_id($info['id'], $data);
+        $ret = $this->update_by_id($info['id'], $data);
+
+        if ($ret->success) {
+            return result(TRUE, '', $info);
+        } else {
+            return result(FALSE, '网络繁忙~');
+        }
     }
 }

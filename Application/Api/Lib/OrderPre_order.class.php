@@ -162,6 +162,8 @@ class OrderPre_order extends BaseApi{
                 $tmp['price'] = $_item->price;
                 $tmp['sum'] = $_item->num * $_item->price;
                 $tmp['sum_dealer_profit'] = $_item->num * $_item->dealer_profit;
+                $tmp['promotion_type'] = $_item->promotion_type;
+                $tmp['promotion_extra'] = $_item->promotion_extra;
 
                 $data_order_item_pre[] = $tmp;
             }
@@ -230,6 +232,21 @@ class OrderPre_order extends BaseApi{
 
                     if ($sku_prices) {
                         if (isset($sku_prices[$_item['sku_id']]['price'])) {
+
+                            $_item['promotion_type'] = \Common\Model\NfOrderModel::PROMOTION_TYPE_TIMELIMIT;
+                            $promotion_extra = [];
+                            $promotion_extra['title'] = $items_map[$_item['item_id']]['title'];
+                            if (isset($sku_props_map[$_item['sku_id']])) {
+                                $promotion_extra['title'] .= $sku_props_map[$_item['sku_id']];
+                            }
+                            $promotion_extra['start_time'] = $limit_activities_map[$_item['item_id']][0]['start_time'];
+                            $promotion_extra['end_time'] = $limit_activities_map[$_item['item_id']][0]['end_time'];
+                            $promotion_extra['price'] = $_item['price'];
+                            $promotion_extra['dealer_price'] = $skus_map[$_item['sku_id']]['dealer_price'];
+                            $promotion_extra['timelimit_price'] = $sku_prices[$_item['sku_id']]['price'];
+
+                            $_item['promotion_extra'] = json_encode($promotion_extra);
+
                             $_item['price'] = $_item['pay_price'] = $_item['show_price'] = $sku_prices[$_item['sku_id']]['price'];
                         }
                     }
@@ -256,7 +273,7 @@ class OrderPre_order extends BaseApi{
                 }
 
 
-                $list[] = convert_obj($_item, 'id=item_id,sku_id,pid,title,img,desc,unit_desc,price,num,is_real,seller_uid,props,show_price,pay_price,dealer_profit,code');
+                $list[] = convert_obj($_item, 'id=item_id,sku_id,pid,title,img,desc,unit_desc,price,num,is_real,seller_uid,props,show_price,pay_price,dealer_profit,code,promotion_type,promotion_extra');
             }
 
         }

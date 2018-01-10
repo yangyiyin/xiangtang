@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-12-13 10:24:27
+ * Time: 2018-01-09 15:40:54
  */
 namespace Common\Service;
-class DeductibleCouponService extends BaseService{
-    public static $name = 'DeductibleCoupon';
+class ItemTimelimitLogService extends BaseService{
+    public static $name = 'ItemTimelimitLog';
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
@@ -29,10 +29,10 @@ class DeductibleCouponService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
-    public function get_by_ids($ids) {
+    public function get_by_sku_ids($ids) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
-        $where['id'] = ['in', $ids];
+        $where['sku_id'] = ['in', $ids];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->select();
     }
@@ -101,5 +101,15 @@ class DeductibleCouponService extends BaseService{
         return [$data, $count];
     }
 
+    public function get_by_where_all($where, $order = 'id desc') {
+        $NfModel = D('Nf' . static::$name);
+        $data = [];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        $count = $NfModel->where($where)->order($order)->count();
+        if ($count > 0) {
+            $data = $NfModel->where($where)->order($order)->select();
+        }
+        return [$data, $count];
+    }
 
 }

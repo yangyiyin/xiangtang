@@ -115,7 +115,7 @@ class newModule {
 }
 
 
-$newModule = new newModule('orderCoupon', '订单优惠券');
+$newModule = new newModule('deductibleCouponLog', '优惠券统计');
 //['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]
-$newModule->gain(['model'=>1, 'service'=>1]);
-$newModule->gain_power(['model'=>1, 'service'=>1]);
+$newModule->gain(['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]);
+$newModule->gain_power(['model'=>1, 'controller'=>1, 'service'=>1, 'view'=>1]);

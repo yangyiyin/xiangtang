@@ -36,6 +36,8 @@ class NfOrderModel extends Model {
     const FROM_DEALER = 1;//经销商app
     const FROM_NORMAL = 2;//零售版app
 
+    const PROMOTION_TYPE_TIMELIMIT = 1;
+
     public static $type_map = [
         1 => '工厂订单',
         2 => '美团订单',
@@ -61,5 +63,7 @@ class NfOrderModel extends Model {
         self::PAY_TYPE_ALI => '支付宝支付',
         self::PAY_TYPE_WECHAT => '微信支付'
     ];
+
+
 
 }

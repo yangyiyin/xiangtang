@@ -69,7 +69,7 @@ class OrderAdd extends BaseApi{
             //检测优惠券信息
             $UserDeductibleCouponService = \Common\Service\UserDeductibleCouponService::get_instance();
             $coupon = $UserDeductibleCouponService->get_info_by_id($coupon_id);
-            if (!$coupon || $coupon['uid'] != $this->uid) {
+            if (!$coupon || $coupon['uid'] != $this->uid || $coupon['status']!= \Common\Model\NfUserDeductibleCouponModel::STATUS_OK) {
                 return result_json(FALSE, '非法的优惠券!');
             }
             if ($sum < $coupon['least']) {
@@ -181,7 +181,7 @@ class OrderAdd extends BaseApi{
             } else {
                 //删除优惠券
                 $UserDeductibleCouponService = \Common\Service\UserDeductibleCouponService::get_instance();
-                $UserDeductibleCouponService->del_by_id($coupon['id']);
+                $UserDeductibleCouponService->disable_by_id($coupon['id']);
 
                 //插入订单优惠券表
                 $OrderCouponService = \Common\Service\OrderCouponService::get_instance();
@@ -191,6 +191,9 @@ class OrderAdd extends BaseApi{
                     $order_coupon_data['cid'] = $coupon['id'];
                     $OrderCouponService->add_one($order_coupon_data);
                 }
+                //插入记录
+                $DeductibleCouponLogService = \Common\Service\DeductibleCouponLogService::get_instance();
+                $DeductibleCouponLogService->update_by_couponid($coupon['id'], ['disable_time' => current_date()]);
             }
         }
         //全场满赠
