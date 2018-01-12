@@ -68,6 +68,9 @@ class PromotionItem extends BaseApi{
             }
             $result['skus'] = $result_skus;
         }
+        if (!$result) {
+            $result = null;
+        }
 
         return result_json(TRUE, '', $result);
     }
