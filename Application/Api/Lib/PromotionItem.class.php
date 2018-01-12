@@ -71,7 +71,6 @@ class PromotionItem extends BaseApi{
         if (!$result) {
             $result = null;
         }
-
         return result_json(TRUE, '', $result);
     }
 
