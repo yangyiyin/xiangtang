@@ -39,7 +39,7 @@ class LaughPageSubmit extends BaseApi{
             }
         }
 
-        if (isset($tmp_data['time_limit_left'])) {
+        if (isset($tmp_data['time_limit_left']) && $tmp_data['time_limit_left']) {
             $tmp_data['time_limit_end'] = date('Y-m-d H:i:s', (time() + $tmp_data['time_limit_left']));
         }
         $data['tmp_data'] = json_encode($tmp_data);

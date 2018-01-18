@@ -28,11 +28,14 @@ class PageSortUserService extends BaseService{
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->find();
     }
-    public function get_by_uid_page_id($uid, $id) {
+    public function get_by_uid_page_id($uid, $id, $sort_id=false) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
         $where['page_id'] = ['EQ', $id];
         $where['uid'] = ['EQ', $uid];
+        if ($sort_id !== false) {
+            $where['sort_id'] = ['EQ', $sort_id];
+        }
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->find();
     }

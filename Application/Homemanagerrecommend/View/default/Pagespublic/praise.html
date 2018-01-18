@@ -1,19 +1,38 @@
 <div style="{$item.style}" >
-    <div style="float: left;padding: <php>echo $rate * 20;</php>px;background: #0CD400;color: #fff;border-radius: <php>echo $rate * 5;</php>px;">报名活动</div>
-    <div style="float: left;padding: <php>echo $rate * 20;</php>px;margin-left: <php>echo $rate * 20;</php>px;background: #0CD400;color: #fff;border-radius: <php>echo $rate * 5;</php>px;">喊人点赞</div>
-    <div style="float: left;padding: <php>echo $rate * 20;</php>px;margin-left: <php>echo $rate * 20;</php>px;background: #0CD400;color: #fff;border-radius: <php>echo $rate * 5;</php>px;">点赞</div>
+
+    <if condition="!$is_sign_praise">
+    <div class="praise_sign" style="float: left;padding: <php>echo $rate * 20;</php>px;background: #0CD400;color: #fff;border-radius: <php>echo $rate * 5;</php>px;">我要报名</div>
+   <else/>
+        <div style="float: left;padding: <php>echo $rate * 20;</php>px;background: #999;color: #fff;border-radius: <php>echo $rate * 5;</php>px;">已报名</div>
+
+        <div style="float: left;padding: <php>echo $rate * 20;</php>px;margin-left: <php>echo $rate * 20;</php>px;background: #0CD400;color: #fff;border-radius: <php>echo $rate * 5;</php>px;">喊人点赞</div>
+
+    </if>
+
+    <if condition="!$is_help_praise && $extra_uid && !$is_sign_praise">
+        <div class="praise_praise" style="float: left;padding: <php>echo $rate * 20;</php>px;margin-left: <php>echo $rate * 20;</php>px;background: #0CD400;color: #fff;border-radius: <php>echo $rate * 5;</php>px;">点赞</div>
+    </if>
+    <if condition="$is_help_praise && $extra_uid && !$is_sign_praise">
+        <div style="float: left;padding: <php>echo $rate * 20;</php>px;margin-left: <php>echo $rate * 20;</php>px;background: #999;color: #fff;border-radius: <php>echo $rate * 5;</php>px;">已点赞</div>
+    </if>
     <div style="clear: both"></div>
 </div>
 <script>
     $(document).ready(function(){
-//       $('.sign').click(function(){
-//           var url = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/sign?id={:I("id")}';
-//           $.post(url,{}, function(res){
-//               alert(res.info);
-//                console.log(res);
-//           })
-//        })
-
+       $('.praise_sign').click(function(){
+           var url = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/praise_sign?id={:I("id")}';
+           $.post(url,{}, function(res){
+               alert(res.info);
+                console.log(res);
+           })
+        })
+        $('.praise_praise').click(function(){
+            var url = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/praise_praise?id={:I("id")}&extra_uid={$extra_uid}';
+            $.post(url,{}, function(res){
+                alert(res.info);
+                console.log(res);
+            })
+        })
 
     });
 </script>

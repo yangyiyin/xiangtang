@@ -1,19 +1,38 @@
 <div style="{$item.style}" >
-    <div style="float: left;padding: <php>echo $rate * 20;</php>px;background: #0CD400;color: #fff;border-radius: <php>echo $rate * 5;</php>px;">报名砍价</div>
-    <div style="float: left;padding: <php>echo $rate * 20;</php>px;margin-left: <php>echo $rate * 20;</php>px;background: #0CD400;color: #fff;border-radius: <php>echo $rate * 5;</php>px;">喊人砍价</div>
-    <div style="float: left;padding: <php>echo $rate * 20;</php>px;margin-left: <php>echo $rate * 20;</php>px;background: #0CD400;color: #fff;border-radius: <php>echo $rate * 5;</php>px;">帮他砍价</div>
+    <if condition="!$is_sign_cutprice">
+        <div class="cutprice_sign" style="float: left;padding: <php>echo $rate * 20;</php>px;background: #0CD400;color: #fff;border-radius: <php>echo $rate * 5;</php>px;">我要报名</div>
+
+        <else/>
+        <div  style="float: left;padding: <php>echo $rate * 20;</php>px;background: #999;color: #fff;border-radius: <php>echo $rate * 5;</php>px;">已报名</div>
+        <div style="float: left;padding: <php>echo $rate * 20;</php>px;margin-left: <php>echo $rate * 20;</php>px;background: #0CD400;color: #fff;border-radius: <php>echo $rate * 5;</php>px;">喊人砍价</div>
+
+    </if>
+    <if condition="!$is_help_cutprice && $extra_uid && !$is_sign_cutprice">
+        <div class="cutprice_cut" style="float: left;padding: <php>echo $rate * 20;</php>px;margin-left: <php>echo $rate * 20;</php>px;background: #0CD400;color: #fff;border-radius: <php>echo $rate * 5;</php>px;">帮他砍价</div>
+    </if>
+
+    <if condition="$is_help_cutprice && $extra_uid && !$is_sign_cutprice">
+        <div style="float: left;padding: <php>echo $rate * 20;</php>px;margin-left: <php>echo $rate * 20;</php>px;background: #999;color: #fff;border-radius: <php>echo $rate * 5;</php>px;">已砍价</div>
+    </if>
     <div style="clear: both"></div>
 </div>
 <script>
     $(document).ready(function(){
-//       $('.sign').click(function(){
-//           var url = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/sign?id={:I("id")}';
-//           $.post(url,{}, function(res){
-//               alert(res.info);
-//                console.log(res);
-//           })
-//        })
+       $('.cutprice_sign').click(function(){
+           var url = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/cutprice_sign?id={:I("id")}';
+           $.post(url,{}, function(res){
+               alert(res.info);
+                console.log(res);
+           })
+        })
 
+        $('.cutprice_cut').click(function(){
+            var url = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/cutprice_cut?id={:I("id")}&extra_uid={$extra_uid}';
+            $.post(url,{}, function(res){
+                alert(res.info);
+                console.log(res);
+            })
+        })
 
     });
 </script>

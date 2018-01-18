@@ -39,24 +39,30 @@ class LaughPageInfo extends BaseApi{
             }
 
             if ($tmp_data['praise_list']) {
-                $PageSignService = \Common\Service\PageSignService::get_instance();
-                $sign_list = $PageSignService->get_by_page_id($id);
-                $sign_list = $this->convert($sign_list);
-                $info['praise_list'] = $sign_list;
+                $PageSignService = \Common\Service\PagePraiseService::get_instance();
+                $list = $PageSignService->get_by_page_id($id);
+                $list = $this->convert($list);
+                $info['praise_list'] = $list;
             }
 
             if ($tmp_data['cutprice_list']) {
-                $PageSignService = \Common\Service\PageSignService::get_instance();
-                $sign_list = $PageSignService->get_by_page_id($id);
-                $sign_list = $this->convert($sign_list);
-                $info['sign_list'] = $sign_list;
+                $PageCutpriceService = \Common\Service\PageCutpriceService::get_instance();
+                $list = $PageCutpriceService->get_by_page_id($id);
+                $list = $this->convert($list);
+                $info['cutprice_list'] = $list;
             }
 
             if ($tmp_data['vote_list']) {
-                $PageSignService = \Common\Service\PageSignService::get_instance();
-                $sign_list = $PageSignService->get_by_page_id($id);
-                $sign_list = $this->convert($sign_list);
-                $info['sign_list'] = $sign_list;
+                $PageSortService = \Common\Service\PageSortService::get_instance();
+                $list = $PageSortService->get_by_page_id($id);
+                $key = 0;
+                foreach ($info['content']['page'] as $_key => $_page) {
+                    if ($_page['type'] == 'vote') {
+                        $key = $_key;
+                        break;
+                    }
+                }
+                $info['content']['page'][$key]['vote_num_arr'] = $this->convert_vote_list($info['content']['page'][$key]['vote_num_arr'], $list);
             }
 
             $info['page_url'] = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/index.html?id=' . $id;
@@ -75,6 +81,16 @@ class LaughPageInfo extends BaseApi{
             }
         }
         return $list;
+    }
+
+    private function convert_vote_list($vote_arr, $list) {
+        if ($vote_arr) {
+            $list_map = result_to_map($list, 'sort_id');
+            foreach ($vote_arr as $key => $value) {
+                $vote_arr[$key]['sign'] = isset($list_map[$key]) ? $list_map[$key]['sum'] : 0;
+            }
+        }
+        return $vote_arr;
     }
 
 }

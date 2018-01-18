@@ -17,7 +17,7 @@ class UserInfo extends BaseApi{
 
     public function excute() {
         $info = $this->UserService->get_info_by_id($this->uid);
-        $data = convert_obj($info, 'user_name,avatar,entity_title,entity_tel');
+        $data = convert_obj($info, 'id,user_name,avatar,entity_title,entity_tel');
         //$data->type = (int) $data->type;
         $data->avatar = $data->avatar ? item_img($data->avatar) : item_img(get_cover(46, 'path'));
 

@@ -75,22 +75,70 @@ class PagesController extends Controller {
             $this->assign('sign_list', $sign_list);
         }
         if ($tmp_data['cutprice_list']) {
-//            $PageCutpriceService = \Common\Service\PageCutpriceService::get_instance();
-//            $sign_list = $PageCutpriceService->get_by_page_id($id);
-//            $sign_list = $this->convert($sign_list);
-//            $this->assign('cutprice_list', $sign_list);
+            $PageCutpriceService = \Common\Service\PageCutpriceService::get_instance();
+            $list = $PageCutpriceService->get_by_page_id($id);
+            $list = $this->convert($list);
+            $this->assign('cutprice_list', $list);
+
+            $extra_uid = I('extra_uid');
+            $all_log = $PageCutpriceService->get_by_uid_page_id_all(1,$id);
+            $is_sign_cutprice = $is_help_cutprice = 0;
+            if ($all_log) {
+                foreach ($all_log as $log) {
+                    if ($log['pid'] == 0) {
+                        $is_sign_cutprice = 1;
+                    } else {
+                        if ($extra_uid == $log['pid']) {
+                            $is_help_cutprice = 1;
+                        }
+
+                    }
+                }
+            }
+
+            $this->assign('is_sign_cutprice', $is_sign_cutprice);
+            $this->assign('is_help_cutprice', $is_help_cutprice);
+            $this->assign('extra_uid', $extra_uid);
+
+            //var_dump($list);die();
         }
         if ($tmp_data['praise_list']) {
-//            $PageSignService = \Common\Service\PageSignService::get_instance();
-//            $sign_list = $PageSignService->get_by_page_id($id);
-//            $sign_list = $this->convert($sign_list);
-//            $this->assign('sign_list', $sign_list);
+            $PageSignService = \Common\Service\PagePraiseService::get_instance();
+            $list = $PageSignService->get_by_page_id($id);
+            $list = $this->convert($list);
+            $this->assign('praise_list', $list);
+
+            $extra_uid = I('extra_uid');
+            $all_log = $PageSignService->get_by_uid_page_id_all(1,$id);
+            $is_sign_praise = $is_help_praise = 0;
+            if ($all_log) {
+                foreach ($all_log as $log) {
+                    if ($log['pid'] == 0) {
+                        $is_sign_praise = 1;
+                    } else {
+                        if ($extra_uid == $log['pid']) {
+                            $is_help_praise = 1;
+                        }
+
+                    }
+                }
+            }
+
+            $this->assign('is_sign_praise', $is_sign_praise);
+            $this->assign('is_help_praise', $is_help_praise);
+            $this->assign('extra_uid', $extra_uid);
         }
         if ($tmp_data['vote_list']) {
-//            $PageSignService = \Common\Service\PageSignService::get_instance();
-//            $sign_list = $PageSignService->get_by_page_id($id);
-//            $sign_list = $this->convert($sign_list);
-//            $this->assign('sign_list', $sign_list);
+            $PageSortService = \Common\Service\PageSortService::get_instance();
+            $list = $PageSortService->get_by_page_id($id);
+            $key = 0;
+            foreach ($tmp_data['page'] as $_key => $_page) {
+                if ($_page['type'] == 'vote') {
+                    $key = $_key;
+                    break;
+                }
+            }
+            $tmp_data['page'][$key]['vote_num_arr'] = $this->convert_vote_list($tmp_data['page'][$key]['vote_num_arr'], $list);
         }
 
 
@@ -167,14 +215,17 @@ class PagesController extends Controller {
         if (!$price) {
             $this->error('活动信息异常!');
         }
+
         //存入
         $PageCutpriceService = \Common\Service\PageCutpriceService::get_instance();
+
         $data = [];
         $data['uid'] = 1;
         $data['page_id'] = $id;
         if ($PageCutpriceService->get_by_uid_page_id($data['uid'], $data['page_id'])) {
             $this->error('您已报名!');
         }
+
         $data['price'] = $price * 100;
         $ret = $PageCutpriceService->add_one($data);
         if (!$ret->success) {
@@ -186,7 +237,7 @@ class PagesController extends Controller {
 
     public function cutprice_cut() {
         $id = I('get.id');
-        $cutprice_uid = I('get.cutprice_uid');
+        $extra_uid = I('get.extra_uid');
         $PageService = \Common\Service\PageService::get_instance();
         $page_info = $PageService->get_info_by_id($id);
         if ($page_info['tmp_data']) {
@@ -215,29 +266,31 @@ class PagesController extends Controller {
         $data = [];
         $data['uid'] = 1;
         $data['page_id'] = $id;
-        if ($PageCutpriceService->get_by_uid_page_id($data['uid'], $data['page_id'])) {
+        $data['pid'] = $extra_uid;
+        if ($PageCutpriceService->get_by_uid_page_id($data['uid'], $data['page_id'], $data['pid'])) {
             $this->error('您已砍价!');
+
         }
-        $cut_info = $PageCutpriceService->get_by_uid_page_id($cutprice_uid, $data['page_id']);
+        $cut_info = $PageCutpriceService->get_by_uid_page_id($extra_uid, $data['page_id']);
         if (!$cut_info) {
             $this->error('砍价信息异常!');
         }
 
-        $left_price = $price * 100 - $cut_info['price'];
-        if ($left_price <= $max_minus_price * 100) {
+        $left_price = $max_minus_price * 100 - ($price * 100 - $cut_info['price']);
+        if ($left_price <= 0) {
             $this->error('该砍价已经到上限!');
         }
-        $can_cut_price = $left_price > ($average_price * 1.4 * 100) ? ($average_price * 1.2 * 100) : $left_price;
-        $data['pid'] = $cutprice_uid;
+        $can_cut_price = $left_price > ($average_price * 1.4 * 100) ? ($average_price * 1.4 * 100) : $left_price;
+
         $data['cutprice'] = mt_rand($can_cut_price * 0.4, $can_cut_price);
         $ret = $PageCutpriceService->add_one($data);
         if (!$ret->success) {
             $this->error($ret->message);
         }
 
-        $data = [];
-        $data['price'] = $cut_info['price'] - $data['cutprice'];
-        $PageCutpriceService->update_by_id($cut_info['id'], $data);
+        $data_up = [];
+        $data_up['price'] = $cut_info['price'] - $data['cutprice'];
+        $PageCutpriceService->update_by_id($cut_info['id'], $data_up);
         $this->success('成功砍价!');
     }
 
@@ -274,7 +327,7 @@ class PagesController extends Controller {
 
     public function praise_praise() {
         $id = I('get.id');
-        $praise_uid = I('get.praise_uid');
+        $extra_uid = I('get.extra_uid');
         $PageService = \Common\Service\PageService::get_instance();
         $page_info = $PageService->get_info_by_id($id);
         if ($page_info['tmp_data']) {
@@ -293,23 +346,25 @@ class PagesController extends Controller {
         $data = [];
         $data['uid'] = 1;
         $data['page_id'] = $id;
-        if ($PagePraiseService->get_by_uid_page_id($data['uid'], $data['page_id'])) {
+        $data['pid'] = $extra_uid;
+        $data['sum'] = 0;
+        if ($PagePraiseService->get_by_uid_page_id($data['uid'], $data['page_id'], $data['pid'])) {
             $this->error('您已点赞!');
         }
-        $praise_info = $PagePraiseService->get_by_uid_page_id($praise_uid, $data['page_id']);
+        $praise_info = $PagePraiseService->get_by_uid_page_id($extra_uid, $data['page_id']);
         if (!$praise_info) {
             $this->error('点赞信息异常!');
         }
 
-        $data['pid'] = $praise_uid;
+
         $ret = $PagePraiseService->add_one($data);
         if (!$ret->success) {
             $this->error($ret->message);
         }
 
-        $data = [];
-        $data['sum'] = $praise_info['sum'] + 1;
-        $PagePraiseService->update_by_id($praise_info['id'], $data);
+        $data_up = [];
+        $data_up['sum'] = $praise_info['sum'] + 1;
+        $PagePraiseService->update_by_id($praise_info['id'], $data_up);
         $this->success('点赞成功!');
     }
 
@@ -333,7 +388,8 @@ class PagesController extends Controller {
         $data = [];
         $data['uid'] = 1;
         $data['page_id'] = $id;
-        if ($PageSortUserService->get_by_uid_page_id($data['uid'], $data['page_id'])) {
+        $data['sort_id'] = $vote_id;
+        if ($PageSortUserService->get_by_uid_page_id($data['uid'], $data['page_id'], $data['sort_id'])) {
             $this->error('您已投票!');
         }
         $data['sort_id'] = $vote_id;
@@ -351,10 +407,11 @@ class PagesController extends Controller {
             $data = [];
             $data['sort_id'] = $vote_id;
             $data['page_id'] = $id;
-            $PageSortUserService->add_one($data);
+            $data['sum'] = 1;
+            $PageSortService->add_one($data);
         }
 
-        $this->success('报名成功!');
+        $this->success('投票成功!');
     }
 
     private function convert($list) {
@@ -370,4 +427,13 @@ class PagesController extends Controller {
         return $list;
     }
 
+    private function convert_vote_list($vote_arr, $list) {
+        if ($vote_arr) {
+            $list_map = result_to_map($list, 'sort_id');
+            foreach ($vote_arr as $key => $value) {
+                $vote_arr[$key]['sign'] = isset($list_map[$key]) ? $list_map[$key]['sum'] : 0;
+            }
+        }
+        return $vote_arr;
+    }
 }

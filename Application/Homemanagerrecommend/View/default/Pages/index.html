@@ -37,7 +37,7 @@
 
         $('body').css('height',height+'px');
 
-        $.get("{:U('show')}?id={:I('id')}&w="+width+'&h='+height+"&is_preview={:I('is_preview')}",function(res){
+        $.get("{:U('show')}?id={:I('id')}&extra_uid={:I('extra_uid')}&w="+width+'&h='+height+"&is_preview={:I('is_preview')}",function(res){
            $('body').html(res);
             $('title').html($('.title').html());
         })

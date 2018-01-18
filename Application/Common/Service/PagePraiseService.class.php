@@ -28,14 +28,37 @@ class PagePraiseService extends BaseService{
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->find();
     }
-    public function get_by_uid_page_id($uid, $id) {
+
+    public function get_by_page_id($id) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['page_id'] = ['EQ', $id];
+
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
+
+    public function get_by_uid_page_id($uid, $id, $pid=0) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['page_id'] = ['EQ', $id];
+        $where['uid'] = ['EQ', $uid];
+        $where['pid'] = ['EQ', $pid];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->find();
+    }
+
+
+    public function get_by_uid_page_id_all($uid, $id) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
         $where['page_id'] = ['EQ', $id];
         $where['uid'] = ['EQ', $uid];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->find();
+        return $NfModel->where($where)->select();
     }
+
     public function update_by_id($id, $data) {
 
         if (!$id) {
