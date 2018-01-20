@@ -59,4 +59,4 @@
 //    $list[$_li['pid']][] = $_li;
 //}
 //$tree = make_tree($list);
-var_dump(base64_decode('YVNEZmEyMjNTZA=='));
+var_dump(urlencode('id=3'));

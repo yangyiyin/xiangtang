@@ -99,4 +99,24 @@ class LaughController extends BaseController {
     public function add_suggest() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughAddSuggest');
     }
+
+    public function sign() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughSign');
+    }
+    public function cutprice_sign() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughCutpriceSign');
+    }
+    public function cutprice_cut() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughCutpriceCut');
+    }
+    public function praise_sign() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughPraiseSign');
+    }
+    public function praise_praise() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughPraisePraise');
+    }
+    public function vote() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughVote');
+    }
+
 }

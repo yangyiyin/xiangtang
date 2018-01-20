@@ -50,7 +50,7 @@ class LaughPageSubmit extends BaseApi{
             return result_json(false, $ret->message);
         }
         $url = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/index.html?id=' . $ret->data;
-        return result_json(TRUE, '制作成功',$url);
+        return result_json(TRUE, '制作成功',['url'=>$url,'page_id'=>$ret->data]);
     }
 
 
