@@ -43,6 +43,26 @@ class LaughPageInfo extends BaseApi{
                 $list = $PageSignService->get_by_page_id($id);
                 $list = $this->convert($list);
                 $info['praise_list'] = $list;
+
+                $extra_uid = I('extra_uid');
+                $all_log = $PageSignService->get_by_uid_page_id_all(1,$id);
+                $is_sign_praise = $is_help_praise = 0;
+                if ($all_log) {
+                    foreach ($all_log as $log) {
+                        if ($log['pid'] == 0) {
+                            $is_sign_praise = 1;
+                        } else {
+                            if ($extra_uid == $log['pid']) {
+                                $is_help_praise = 1;
+                            }
+
+                        }
+                    }
+                }
+                
+                $info['is_sign_praise'] = $is_sign_praise;
+                $info['is_help_praise'] = $is_help_praise;
+                $info['extra_uid'] = $extra_uid;
             }
 
             if ($tmp_data['cutprice_list']) {
@@ -50,6 +70,26 @@ class LaughPageInfo extends BaseApi{
                 $list = $PageCutpriceService->get_by_page_id($id);
                 $list = $this->convert($list);
                 $info['cutprice_list'] = $list;
+
+                $extra_uid = I('extra_uid');
+                $all_log = $PageCutpriceService->get_by_uid_page_id_all(1,$id);
+                $is_sign_cutprice = $is_help_cutprice = 0;
+                if ($all_log) {
+                    foreach ($all_log as $log) {
+                        if ($log['pid'] == 0) {
+                            $is_sign_cutprice = 1;
+                        } else {
+                            if ($extra_uid == $log['pid']) {
+                                $is_help_cutprice = 1;
+                            }
+
+                        }
+                    }
+                }
+
+                $info['is_sign_cutprice'] = $is_sign_cutprice;
+                $info['is_help_cutprice'] = $is_help_cutprice;
+                $info['extra_uid'] = $extra_uid;
             }
 
             if ($tmp_data['vote_list']) {
