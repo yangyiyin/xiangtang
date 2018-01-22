@@ -40,12 +40,12 @@ class LaughPageInfo extends BaseApi{
 
             if ($tmp_data['praise_list']) {
                 $PageSignService = \Common\Service\PagePraiseService::get_instance();
-                $list = $PageSignService->get_by_page_id($id);
+                $list = $PageSignService->get_by_page_id($id,1);
                 $list = $this->convert($list);
                 $info['praise_list'] = $list;
 
                 $extra_uid = I('extra_uid');
-                $all_log = $PageSignService->get_by_uid_page_id_all(1,$id);
+                $all_log = $PageSignService->get_by_uid_page_id_all($this->uid,$id);
                 $is_sign_praise = $is_help_praise = 0;
                 if ($all_log) {
                     foreach ($all_log as $log) {
@@ -59,7 +59,7 @@ class LaughPageInfo extends BaseApi{
                         }
                     }
                 }
-                
+
                 $info['is_sign_praise'] = $is_sign_praise;
                 $info['is_help_praise'] = $is_help_praise;
                 $info['extra_uid'] = $extra_uid;
@@ -67,12 +67,12 @@ class LaughPageInfo extends BaseApi{
 
             if ($tmp_data['cutprice_list']) {
                 $PageCutpriceService = \Common\Service\PageCutpriceService::get_instance();
-                $list = $PageCutpriceService->get_by_page_id($id);
+                $list = $PageCutpriceService->get_by_page_id($id,1);
                 $list = $this->convert($list);
                 $info['cutprice_list'] = $list;
 
                 $extra_uid = I('extra_uid');
-                $all_log = $PageCutpriceService->get_by_uid_page_id_all(1,$id);
+                $all_log = $PageCutpriceService->get_by_uid_page_id_all($this->uid,$id);
                 $is_sign_cutprice = $is_help_cutprice = 0;
                 if ($all_log) {
                     foreach ($all_log as $log) {
@@ -118,6 +118,9 @@ class LaughPageInfo extends BaseApi{
             $users_map = result_to_map($users);
             foreach ($list as $k => $value) {
                 $list[$k]['user'] = isset($users_map[$value['uid']]) ? $users_map[$value['uid']] : [];
+                if (isset($value['price'])) {
+                    $list[$k]['price'] = format_price($value['price']);
+                }
             }
         }
         return $list;
@@ -128,6 +131,7 @@ class LaughPageInfo extends BaseApi{
             $list_map = result_to_map($list, 'sort_id');
             foreach ($vote_arr as $key => $value) {
                 $vote_arr[$key]['sign'] = isset($list_map[$key]) ? $list_map[$key]['sum'] : 0;
+
             }
         }
         return $vote_arr;

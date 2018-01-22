@@ -80,6 +80,13 @@ class LaughMakeQrcode extends BaseApi{
     public function excute(){
         $page_id = $this->post_data['id'];
         $extra_uid = $this->post_data['extra_uid'];
+
+        $file_name = 'pages/qrcode/'.md5($page_id.','.$extra_uid).'.png';
+        $link = 'https://www.88plus.net/public/'.$file_name;
+        if (file_get_contents($file_name)) {
+            return result_json(TRUE, '成功', $link);
+        }
+
         //获取openid
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx979328bc70cabb2d&secret=d2e17f107d1204f6a6545662894040c0");
@@ -95,7 +102,9 @@ class LaughMakeQrcode extends BaseApi{
         $access_token = $ret['access_token'];
 
         //https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=ACCESS_TOKEN
-        $post_data = ['scene'=>urlencode($page_id.','.$extra_uid),'path'=>'pages/tmp_make/index'];
+        $scene = $page_id.'a'.$extra_uid;
+//        var_dump($scene);
+        $post_data = ['scene'=>urlencode($scene),'path'=>'pages/tmp_make/index'];
         $post_data = json_encode($post_data);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=".$access_token);
@@ -106,10 +115,11 @@ class LaughMakeQrcode extends BaseApi{
         $output = curl_exec($ch);
         curl_close($ch);
         //$ret = json_decode($output,true);
-        $file_name = 'pages/qrcode/'.md5($page_id.','.$extra_uid).'.png';
+       // var_dump($output);die();
+//        $file_name = 'pages/qrcode/'.md5($page_id.','.$extra_uid).'.png';
         file_put_contents($file_name, $output);
-        $link = 'https://www.88plus.net/public/'.$file_name;
-        return result_json(TRUE, '发布成功', $link);
+//        $link = 'https://www.88plus.net/public/'.$file_name;
+        return result_json(TRUE, '成功', $link);
     }
 
 

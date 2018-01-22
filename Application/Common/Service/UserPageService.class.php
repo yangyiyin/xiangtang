@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2018-01-02 09:28:48
+ * Time: 2018-01-21 12:45:14
  */
 namespace Common\Service;
-class PageCutpriceService extends BaseService{
-    public static $name = 'PageCutprice';
+class UserPageService extends BaseService{
+    public static $name = 'UserPage';
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
@@ -29,35 +29,16 @@ class PageCutpriceService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
-    public function get_by_page_id($id, $is_master=0) {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['page_id'] = ['EQ', $id];
-        if ($is_master) {
-            $where['pid'] = ['EQ', 0];
-        }
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->select();
-    }
 
-    public function get_by_uid_page_id($uid, $id, $pid=0) {
+    public function get_by_uid_page_id($uid,$page_id) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
-        $where['page_id'] = ['EQ', $id];
         $where['uid'] = ['EQ', $uid];
-        $where['pid'] = ['EQ', $pid];
+        $where['page_id'] = ['EQ', $page_id];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->find();
     }
 
-    public function get_by_uid_page_id_all($uid, $id) {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['page_id'] = ['EQ', $id];
-        $where['uid'] = ['EQ', $uid];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->select();
-    }
 
     public function update_by_id($id, $data) {
 

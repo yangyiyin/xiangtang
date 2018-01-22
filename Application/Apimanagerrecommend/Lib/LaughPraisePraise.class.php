@@ -59,6 +59,13 @@ class LaughPraisePraise extends BaseApi{
         $data_up['sum'] = $praise_info['sum'] + 1;
         $PagePraiseService->update_by_id($praise_info['id'], $data_up);
 
+        //记录我的报名
+        $UserPageService = \Common\Service\UserPageService::get_instance();
+        $user_page = $UserPageService->get_by_uid_page_id($this->uid, $id);
+        if (!$user_page) {
+            $UserPageService->add_one(['uid'=>$this->uid, 'page_id'=>$id]);
+        }
+
         return result_json(TRUE, '点赞成功!');
     }
 

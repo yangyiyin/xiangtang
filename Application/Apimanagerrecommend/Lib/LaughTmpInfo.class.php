@@ -39,6 +39,7 @@ class LaughTmpInfo extends BaseApi{
             }
 
         }
+//        return result_json(false, '您的vip已到期,请联系客服续费', $info);
         return result_json(TRUE, '获取成功', $info);
     }
 

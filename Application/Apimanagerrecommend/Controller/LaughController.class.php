@@ -89,6 +89,15 @@ class LaughController extends BaseController {
     public function del_page() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughDelPage');
     }
+
+    public function user_pages() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughUserPages');
+    }
+    public function del_user_page() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughDelUserPage');
+    }
+
+
     public function contact() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughContact');
     }
@@ -118,5 +127,10 @@ class LaughController extends BaseController {
     public function vote() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughVote');
     }
+    public function remark_sign() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughRemarkSign');
+    }
+
+
 
 }

@@ -76,7 +76,7 @@ class PagesController extends Controller {
         }
         if ($tmp_data['cutprice_list']) {
             $PageCutpriceService = \Common\Service\PageCutpriceService::get_instance();
-            $list = $PageCutpriceService->get_by_page_id($id);
+            $list = $PageCutpriceService->get_by_page_id($id,1);
             $list = $this->convert($list);
             $this->assign('cutprice_list', $list);
 
@@ -104,7 +104,7 @@ class PagesController extends Controller {
         }
         if ($tmp_data['praise_list']) {
             $PageSignService = \Common\Service\PagePraiseService::get_instance();
-            $list = $PageSignService->get_by_page_id($id);
+            $list = $PageSignService->get_by_page_id($id,1);
             $list = $this->convert($list);
             $this->assign('praise_list', $list);
 
@@ -291,7 +291,7 @@ class PagesController extends Controller {
         $data_up = [];
         $data_up['price'] = $cut_info['price'] - $data['cutprice'];
         $PageCutpriceService->update_by_id($cut_info['id'], $data_up);
-        $this->success('成功砍价!');
+        $this->success('成功砍价'.format_price($data['cutprice']).'元!');
     }
 
 
@@ -422,6 +422,7 @@ class PagesController extends Controller {
             $users_map = result_to_map($users);
             foreach ($list as $k => $value) {
                 $list[$k]['user'] = isset($users_map[$value['uid']]) ? $users_map[$value['uid']] : [];
+
             }
         }
         return $list;

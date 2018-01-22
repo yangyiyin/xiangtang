@@ -29,11 +29,14 @@ class PagePraiseService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
-    public function get_by_page_id($id) {
+    public function get_by_page_id($id, $is_master=0) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
         $where['page_id'] = ['EQ', $id];
 
+        if ($is_master) {
+            $where['pid'] = ['EQ', 0];
+        }
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->select();
     }

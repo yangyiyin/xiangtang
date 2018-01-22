@@ -267,3 +267,19 @@ CREATE TABLE `shopy_nf_page_sort_user` (
   `deleted` tinyint(3) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+
+CREATE TABLE `shopy_nf_user_page` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL DEFAULT '0',
+     `page_id` int(11) NOT NULL DEFAULT '0',
+  `create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+alter table shopy_nf_page_cutprice add remark VARCHAR (50) DEFAULT '';
+alter table shopy_nf_page_sign add remark VARCHAR (50) DEFAULT '';
+alter table shopy_nf_page_praise add remark VARCHAR (50) DEFAULT '';

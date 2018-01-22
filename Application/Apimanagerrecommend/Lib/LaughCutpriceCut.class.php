@@ -79,7 +79,14 @@ class LaughCutpriceCut extends BaseApi{
         $data_up['price'] = $cut_info['price'] - $data['cutprice'];
         $PageCutpriceService->update_by_id($cut_info['id'], $data_up);
 
-        return result_json(TRUE, '成功砍价!');
+        //记录我的报名
+        $UserPageService = \Common\Service\UserPageService::get_instance();
+        $user_page = $UserPageService->get_by_uid_page_id($this->uid, $id);
+        if (!$user_page) {
+            $UserPageService->add_one(['uid'=>$this->uid, 'page_id'=>$id]);
+        }
+
+        return result_json(TRUE, '成功砍价'.format_price($data['cutprice']).'元!');
     }
 
 }

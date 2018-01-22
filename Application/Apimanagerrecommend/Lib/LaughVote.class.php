@@ -60,6 +60,13 @@ class LaughVote extends BaseApi{
             $PageSortService->add_one($data);
         }
 
+        //记录我的报名
+        $UserPageService = \Common\Service\UserPageService::get_instance();
+        $user_page = $UserPageService->get_by_uid_page_id($this->uid, $id);
+        if (!$user_page) {
+            $UserPageService->add_one(['uid'=>$this->uid, 'page_id'=>$id]);
+        }
+
         return result_json(TRUE, '投票成功!');
     }
 

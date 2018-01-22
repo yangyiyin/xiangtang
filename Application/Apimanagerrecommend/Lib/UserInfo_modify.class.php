@@ -31,15 +31,39 @@ class UserInfo_modify extends BaseApi{
             $data['entity_tel'] = $this->post_data['entity_tel'];
         }
 
+        if ($this->post_data['address']) {
+            $data['address'] = $this->post_data['address'];
+        }
+
         if ($data['entity_tel'] && !is_tel_num($data['entity_tel'])) {
             result_json(FALSE, '请输入正确的手机号');
         }
         if (isset($data['entity_title']) && $data['entity_title']) {
             $data['user_name'] = $data['entity_title'];
         }
+
+        if ($this->post_data['avatarUrl']) {
+            $data['avatar'] = $this->post_data['avatarUrl'];
+        }
+
+        if ($this->post_data['gender']) {
+            $data['sex'] = $this->post_data['gender'];
+        }
+        if ($this->post_data['province']) {
+            $data['province'] = $this->post_data['province'];
+        }
+        if ($this->post_data['city']) {
+            $data['city'] = $this->post_data['city'];
+        }
+        if ($this->post_data['verify_status']) {
+//            $data['verify_status'] = $this->post_data['verify_status'];//审核
+        }
+
         $return = $this->uploadPicture();
         if ($return) {
-            $data['user_name'] = $_POST['user_name'];
+            if ($_POST['user_name']) {
+                $data['user_name'] = $_POST['user_name'];
+            }
             $data['avatar'] = '/Uploads/' . $return['avatar']['savepath'] . $return['avatar']['savename'];
             //$data['avatar'] = json_encode($_POST).'1';
         }
@@ -52,7 +76,14 @@ class UserInfo_modify extends BaseApi{
                // result_json(FALSE, '网络繁忙');
             }
         }
-        result_json(TRUE, '修改成功!');
+        if ($this->post_data['verify_status']) {
+            //默认开通vip
+
+
+            result_json(TRUE, '提交成功!');
+        } else {
+            result_json(TRUE, '修改成功!');
+        }
     }
 
     public function uploadPicture(){
