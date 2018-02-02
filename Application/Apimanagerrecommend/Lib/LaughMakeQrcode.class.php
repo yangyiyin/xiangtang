@@ -97,14 +97,14 @@ class LaughMakeQrcode extends BaseApi{
         $ret = json_decode($output,true);
 
         if (!$ret || !isset($ret['access_token'])) {
-            return result_json(false, '参数错误');
+            return result_json(false, '网络繁忙,请稍后再试');
         }
         $access_token = $ret['access_token'];
 
         //https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=ACCESS_TOKEN
         $scene = $page_id.'a'.$extra_uid;
 //        var_dump($scene);
-        $post_data = ['scene'=>urlencode($scene),'path'=>'pages/tmp_make/index'];
+        $post_data = ['scene'=>urlencode($scene),'page'=>'pages/tmp_make/index'];
         $post_data = json_encode($post_data);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=".$access_token);

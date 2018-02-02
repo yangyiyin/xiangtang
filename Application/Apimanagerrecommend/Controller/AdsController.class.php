@@ -8,6 +8,6 @@
 namespace Apimanagerrecommend\Controller;
 class AdsController extends BaseController {
     public function index() {
-        $this->excute_api('Api\Lib\AdsIndex');
+        $this->excute_api('Apimanagerrecommend\Lib\AdsIndex');
     }
 }

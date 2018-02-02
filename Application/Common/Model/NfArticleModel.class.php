@@ -10,6 +10,7 @@ class NfArticleModel extends NfBaseModel {
     const TYPE_ABOUT = 'about';
     const TYPE_CONTACT = 'contact';
     const TYPE_LAUGH = 'laugh';
+    const TYPE_LAUGH_PICS = 'laugh_pics';
 
     const FROM_ADMIN = 1;
     const FROM_CUSTOM = 2;

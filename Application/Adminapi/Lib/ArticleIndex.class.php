@@ -32,7 +32,7 @@ class ArticleIndex extends BaseApi{
                 $where['from'] = $map[$type];
             }
         }
-        $where['type'] = \Common\Model\NfArticleModel::TYPE_LAUGH;
+       // $where['type'] = \Common\Model\NfArticleModel::TYPE_LAUGH;
         list($list, $count) = $service->get_by_where($where, 'id desc', $p);
 
         $list = $this->convert($list);
@@ -67,6 +67,11 @@ class ArticleIndex extends BaseApi{
                 } else {
 
                 }
+
+                if ($_li['type'] == \Common\Model\NfArticleModel::TYPE_LAUGH_PICS) {
+                    $list[$key]['content'] = 'pics:' . $_li['imgs'] . 'yyyyyy' . $_li['content'];
+                }
+
 
 
             }

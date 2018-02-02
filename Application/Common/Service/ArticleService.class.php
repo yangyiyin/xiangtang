@@ -88,8 +88,10 @@ class ArticleService extends BaseService{
         $data = [];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         $count = $NfModel->where($where)->order($order)->count();
+        //echo $NfModel->getLastSql();
         if ($count > 0) {
             $data = $NfModel->where($where)->order($order)->page($page . ',' . static::$page_size)->select();
+
         }
         return [$data, $count];
     }

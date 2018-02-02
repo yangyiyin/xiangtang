@@ -93,7 +93,7 @@ class LaughMyCollectIndex extends BaseApi{
                 } else {
 
                 }
-
+                $list[$key]['imgs'] = $_li['imgs'] ? explode(',', $_li['imgs']) : [];
                 $list[$key]['like_count'] = isset($clicks_map[$_li['id']]['like']['count']) ? $clicks_map[$_li['id']]['like']['count'] : 0;
                 $list[$key]['collect_count'] = isset($clicks_map[$_li['id']]['collect']['count']) ? $clicks_map[$_li['id']]['collect']['count'] : 0;
 

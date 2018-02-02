@@ -16,7 +16,7 @@ class LaughSysTips extends BaseSapi{
 
     public function excute() {
         $infos = [];
-        $infos[]= '纯小助手:点击下方菜单栏中间的+号可以投稿哦!';
+//        $infos[]= '纯小助手:点击下方菜单栏中间的+号可以投稿哦!';
         $infos[]= '纯小助手:投稿(中稿)、被赞、转发的用户可获得笑笑币奖励!';
         $infos[]= '纯小助手:在我的里面,可以设置个性化笔名和头像哦~';
         $infos[]= '纯小助手:笑笑币奖励规则在我的页面可以查看~';

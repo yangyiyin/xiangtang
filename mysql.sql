@@ -283,3 +283,15 @@ CREATE TABLE `shopy_nf_user_page` (
 alter table shopy_nf_page_cutprice add remark VARCHAR (50) DEFAULT '';
 alter table shopy_nf_page_sign add remark VARCHAR (50) DEFAULT '';
 alter table shopy_nf_page_praise add remark VARCHAR (50) DEFAULT '';
+
+alter table shopy_nf_article add imgs VARCHAR (1024) DEFAULT '';
+
+
+CREATE TABLE `shopy_nf_article_pic_ids` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+     `aid` int(11) NOT NULL DEFAULT '0',
+  `create_time` datetime DEFAULT NULL,
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+

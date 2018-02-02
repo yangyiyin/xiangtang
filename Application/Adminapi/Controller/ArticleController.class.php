@@ -19,6 +19,10 @@ class ArticleController extends BaseController {
         $this->excute_api('Adminapi\Lib\ArticleChangeStatus');
     }
 
+    public function spider_laugh() {
+        $this->excute_api('Adminapi\Lib\SpiderLaugh');
+    }
+
 
 
 

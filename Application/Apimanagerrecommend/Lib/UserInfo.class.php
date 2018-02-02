@@ -35,7 +35,7 @@ class UserInfo extends BaseApi{
                 $data->is_past = true;
                 $data->day_left = '已过期';
 
-            } elseif ($left_time < 7 * 3600 * 24) {
+            } elseif ($left_time < 16 * 3600 * 24) {
                 $left_day = floor($left_time / 3600 / 24);
                 if ($left_day == 0) {
                     $data->day_left = '今天到期';

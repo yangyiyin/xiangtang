@@ -940,6 +940,9 @@ function get_cover($cover_id, $field = null){
         }
         return __ROOT__ . $cover_id;
     }
+    if (strpos($cover_id, 'http') !== FALSE) {
+        return $cover_id;
+    }
     if(empty($cover_id)){
         return false;
     }

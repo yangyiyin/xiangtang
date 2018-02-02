@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-12-30 13:37:04
+ * Time: 2018-01-23 13:45:02
  */
 namespace Common\Service;
-class VipService extends BaseService{
-    public static $name = 'Vip';
+class ArticlePicIdsService extends BaseService{
+    public static $name = 'ArticlePicIds';
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
@@ -25,14 +25,6 @@ class VipService extends BaseService{
         $NfModel = D('Nf' . static::$name);
         $where = [];
         $where['id'] = ['EQ', $id];
-        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->find();
-    }
-
-    public function get_info_by_uid($uid) {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['uid'] = ['EQ', $uid];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->find();
     }
@@ -101,59 +93,34 @@ class VipService extends BaseService{
         return [$data, $count];
     }
 
-    public function extend_days($uid, $days) {
-        //查询
-        $info = $this->get_info_by_uid($uid);
-        $now = time();
-        if ($info) {
-            $end_time_int = strtotime($info['end_time']);
-            //比较是否在期内
-            if ($end_time_int >= $now) {
-                $end_time_int_modify = $end_time_int + $days * 3600 * 24;
-                $end_time = date('Y-m-d H:i:s', $end_time_int_modify);
-                $ret = $this->update_by_id($info['id'], ['end_time' => $end_time]);
-            } else {
-                $end_time_int_modify = $now + $days * 3600 * 24;
-                $end_time = date('Y-m-d H:i:s', $end_time_int_modify);
-
-                $start_time = date('Y-m-d H:i:s', $now);
-                $ret = $this->update_by_id($info['id'], ['start_time' => $start_time, 'end_time' => $end_time]);
-            }
-
-        } else {
-            $end_time_int_modify = $now + $days * 3600 * 24;
-            $end_time = date('Y-m-d H:i:s', $end_time_int_modify);
-            $start_time = date('Y-m-d H:i:s', $now);
-
-            $data = [];
-            $data['uid'] = $uid;
-            $data['start_time'] = $start_time;
-            $data['end_time'] = $end_time;
-            $ret = $this->add_one($data);
-        }
-
-        return $ret;
-    }
-
-    public function is_vip($uid) {
-        $info = $this->get_info_by_uid($uid);
+    public function get_random_aids($num) {
+        $aids = [];
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        $info = $NfModel->where($where)->order('id desc')->find();
         if (!$info) {
-            return result(FALSE, '您还不是vip,请联系客服开通');
+            return $aids;
         }
-        $date = date('Y-m-d H:i:s');
-        if ($info['start_time'] > $date ) {
-            return result(FALSE, '您的vip未生效');
-        }
-        if ($info['end_time'] < $date) {
-            return result(FALSE, '您的vip已过期');
+        $arr = [];
+        for($i = 1;$i<=$info['id']; $i++) {
+            $arr[$i] = $i;
         }
 
-        if ($info['start_time'] <= $date && $info['end_time'] >= $date) {
-            return result(TRUE, '');
+        if ($num > count($arr)) {
+            $num = count($arr);
         }
-
-        return result(FALSE, '您的vip异常,请联系客服');
+     //   var_dump($arr);
+        $ids = array_rand($arr,$num);
+       // var_dump($ids);
+        if (is_int($ids)) {
+            $ids = [$ids];
+        }
+        $where = [];
+        $where['id'] = ['in', $ids];
+        $infos = $NfModel->where($where)->select();
+        $aids = result_to_array($infos,'aid');
+        return $aids;
     }
-
 
 }

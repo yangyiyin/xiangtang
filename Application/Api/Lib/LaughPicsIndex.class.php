@@ -7,7 +7,7 @@
  */
 namespace Api\Lib;
 use Common\Service;
-class LaughIndex extends BaseApi{
+class LaughPicsIndex extends BaseApi{
     protected $method = parent::API_METHOD_GET;
 
     public function init() {
@@ -20,21 +20,21 @@ class LaughIndex extends BaseApi{
         $ArticleService = \Common\Service\ArticleService::get_instance();
         $where = [];
         $where['status'] = \Common\Model\NfArticleModel::STATUS_OK;
-        $where['type'] = \Common\Model\NfArticleModel::TYPE_LAUGH;
-        list($list, $count) = $ArticleService->get_by_where_with_pre_one($where,'publish_time desc,id desc',$p);
+        $where['type'] = \Common\Model\NfArticleModel::TYPE_LAUGH_PICS;
+        //获取随机ids
+//        $ArticlePicIdsService = \Common\Service\ArticlePicIdsService::get_instance();
+//        $ids = $ArticlePicIdsService->get_random_aids(10);
+//        if ($ids) {
+//            $where['id'] = ['in', $ids];
+//            list($list, $count) = $ArticleService->get_by_where($where,'publish_time desc,id desc',$p);
+//        } else {
+//            $list = [];
+//        }
+        list($list, $count) = $ArticleService->get_by_where($where,'publish_time desc,id desc',$p);
 
         $list = $this->convert($list);
 
-        if ($list && count($list) > 1 && $p != 1) {
-            if ($list[0]['title'] && isset($list[2]['title']) && $list[0]['title'] == $list[2]['title']) {
-                unset($list[2]);
-            }
-            unset($list[0]);
-            unset($list[1]);
 
-
-            $list = array_values($list);
-        }
         return result_json(TRUE, '', $list);
     }
 
@@ -96,24 +96,8 @@ class LaughIndex extends BaseApi{
 
                 }
 
-                $cur_time = substr($_li['publish_time'], 0, 10);
-                if ($cur_time != $time) {
-                    $time = $cur_time;
+                $_li['imgs'] = $_li['imgs'] ? explode(',', $_li['imgs']) : [];
 
-                    if ($cur_time == date('Y-m-d')) {
-                        $title = '今日笑话';
-                    } elseif (strtotime($cur_time) == strtotime(date('Y-m-d')) - 3600*24) {
-                        $title = '昨日笑话';
-                    } else {
-                        $title = '往期笑话';
-                    }
-
-                    $list_new[] = [
-                        'title' => $title,
-                        'block_type' =>'title'
-                    ];
-
-                }
                 $_li['like_count'] = isset($clicks_map[$_li['id']]['like']['count']) ? $clicks_map[$_li['id']]['like']['count'] : 0;
                 $_li['collect_count'] = isset($clicks_map[$_li['id']]['collect']['count']) ? $clicks_map[$_li['id']]['collect']['count'] : 0;
                 $list_new[] = $_li;
