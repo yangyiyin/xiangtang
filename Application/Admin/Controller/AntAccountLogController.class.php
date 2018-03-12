@@ -250,8 +250,8 @@ class AntAccountLogController extends AdminController {
             }
         }
 
-        $where[] = ['uid',['not in', [1,15]]];
-        $where_arr[] =  ['uid',['not in', [1,15]]];
+        $where[] = ['uid'=>['not in', [1,15]]];
+        $where_arr[] =  ['uid'=>['not in', [1,15]]];
 
         $this->assign('create_begin', $create_begin);
         $this->assign('create_end', $create_end);
