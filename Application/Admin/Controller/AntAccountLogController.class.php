@@ -250,6 +250,8 @@ class AntAccountLogController extends AdminController {
             }
         }
 
+        $where['uid'] = ['not in', [1,15]];
+        $where_arr['uid'] = ['not in', [1,15]];
 
         $this->assign('create_begin', $create_begin);
         $this->assign('create_end', $create_end);
@@ -428,8 +430,7 @@ class AntAccountLogController extends AdminController {
             $UserService = \Common\Service\UserService::get_instance();
             $users = $UserService->get_by_ids($uids);
             $users_map = result_to_map($users);
-            $uids = array_diff($uids, [1,15]);//排除测试账号
-            
+
             $where['uid'] = ['in', $uids];
             list($all_datas, ) = $this->AccountLogService->get_by_where_all($where);
             $all_datas_map = result_to_complex_map($all_datas, 'uid');
