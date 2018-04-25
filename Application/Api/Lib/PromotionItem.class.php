@@ -31,6 +31,9 @@ class PromotionItem extends BaseApi{
             $result['start_time'] = strtotime($itemtimelimit[0]['start_time']);
             $result['end_time'] = strtotime($itemtimelimit[0]['end_time']);
 
+            if (time() < $result['start_time'] || time() > $result['end_time']) {
+                return result_json(TRUE, '');
+            }
             //获取商品sku
             $itemService = \Common\Service\ItemService::get_instance();
             $item_info = $itemService->get_info_by_id($iid);
@@ -54,6 +57,7 @@ class PromotionItem extends BaseApi{
 
                 //覆盖价格
                 if (isset($itemtimelimit_sku_map[$sku['id']]['price']) && time() >= $result['start_time'] && time() <= $result['end_time']) {
+
                     $temp['price'] = $temp['normal_price'] = $temp['dealer_price'] = (int) $itemtimelimit_sku_map[$sku['id']]['price']; //去掉 2018.4.25
                 } else {
                     $temp['price'] = $temp['dealer_price'] = $sku['dealer_price'];;
