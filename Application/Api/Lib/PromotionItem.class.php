@@ -53,8 +53,12 @@ class PromotionItem extends BaseApi{
                 $temp['num'] = intval($sku['num']);
 
                 //覆盖价格
-                if (isset($itemtimelimit_sku_map[$sku['id']]['price'])) {
-                    //$temp['price'] = $temp['normal_price'] = $temp['dealer_price'] = (int) $itemtimelimit_sku_map[$sku['id']]['price']; //去掉 2018.4.25
+                if (isset($itemtimelimit_sku_map[$sku['id']]['price']) && time() > $result['start_time']) {
+                    $temp['price'] = $temp['normal_price'] = $temp['dealer_price'] = (int) $itemtimelimit_sku_map[$sku['id']]['price']; //去掉 2018.4.25
+                } else {
+                    $temp['price'] = $temp['dealer_price'] = $sku['dealer_price'];;
+                    $temp['normal_price'] = $sku['price'];;
+
                 }
 
                 if (isset($prop_sku_map[$sku['id']])) {
