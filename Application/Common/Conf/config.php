@@ -58,13 +58,5 @@ $arr = array(
     'SERVER_CIDS' => [8,19],
     'INVITER_RATE' => 0.01
 );
-if (file_exists(__ROOT__.'/development.lock')) {
-    $arr2 = [
-    'DB_HOST'   => '192.168.38.29', // 服务器地址
-    'DB_NAME'   => 'public', // 数据库名
-    'DB_USER'   => 'root', // 用户名
-    'DB_PWD'    => '123123',  // 密码
-    ];
-    $arr = array_merge($arr, $arr2);
-}
+
 return $arr;

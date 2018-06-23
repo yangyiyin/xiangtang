@@ -105,4 +105,5 @@ return array(
 
     'FLINK_TYPE'       =>array('text','logo'),
     'DB_NAME'   => 'managerrecommend' // 数据库名
+
 );
