@@ -104,4 +104,5 @@ return array(
     'URL_HTML_SUFFIX'       =>  '',  // URL伪静态后缀设置
 
     'FLINK_TYPE'       =>array('text','logo'),
+    'DB_NAME'   => 'public' // 数据库名
 );
