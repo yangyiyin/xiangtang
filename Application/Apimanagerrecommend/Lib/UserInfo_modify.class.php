@@ -79,7 +79,7 @@ class UserInfo_modify extends BaseApi{
         if ($this->post_data['verify_status']) {
             //默认开通vip
             $VipService = \Common\Service\VipService::get_instance();
-            $VipService->extend_days($this->uid, 15);
+            $VipService->extend_days($this->uid, 7);
             result_json(TRUE, '提交成功!');
         } else {
             result_json(TRUE, '修改成功!');

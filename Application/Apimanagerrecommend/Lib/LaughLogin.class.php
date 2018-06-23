@@ -56,6 +56,10 @@ class LaughLogin extends BaseSapi{
             $uid = $user_info['id'];
         }
 
+        //默认开通vip
+        $VipService = \Common\Service\VipService::get_instance();
+        $VipService->extend_days($uid, 7);
+
         $ret = $UserSessionService->update_session_by_uid($uid);
         if (!$ret->success) {
             return result_json(false, '更新session失败');
