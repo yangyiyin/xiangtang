@@ -8,7 +8,7 @@
  * 系统配文件
  * 所有系统级别的配置
  */
-$arr = array(
+return array(
     /* 模块相关配置 */
     'AUTOLOAD_NAMESPACE' => array('Addons' => ZCMS_ADDON_PATH), //扩展模块列表
     'DEFAULT_MODULE'     => 'Home',
@@ -36,12 +36,12 @@ $arr = array(
 
     /* 数据库配置 */
     'DB_TYPE'   => 'mysql', // 数据库类型
-
     'DB_HOST'   => '127.0.0.1', // 服务器地址
     'DB_NAME'   => 'public', // 数据库名
+//    'DB_USER'   => 'gd_ant_user', // 用户名
+//    'DB_PWD'    => 'fpf5Vsdv2HfANSAB',  // 密码
     'DB_USER'   => 'root', // 用户名
     'DB_PWD'    => '',  // 密码
-
     'DB_PORT'   => '3306', // 端口
     'DB_PREFIX' => 'shopy_', // 数据库表前缀
 
@@ -58,5 +58,3 @@ $arr = array(
     'SERVER_CIDS' => [8,19],
     'INVITER_RATE' => 0.01
 );
-
-return $arr;
