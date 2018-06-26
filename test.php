@@ -59,3 +59,6 @@
 //    $list[$_li['pid']][] = $_li;
 //}
 //$tree = make_tree($list);
+$list = file_get_contents('http://11dfgdfgfdg1.com');
+var_dump($list);
+json_decode($list, true);
