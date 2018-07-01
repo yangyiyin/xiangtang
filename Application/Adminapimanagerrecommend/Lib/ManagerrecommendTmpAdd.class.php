@@ -19,6 +19,7 @@ class ManagerrecommendTmpAdd extends BaseSapi{
 
     public function excute() {
 
+        $id = $this->post_data['id'];
         $tmp_data = $this->post_data['tmp_data'];
         $title = $this->post_data['title'];
         $img = $this->post_data['img'];
@@ -27,13 +28,20 @@ class ManagerrecommendTmpAdd extends BaseSapi{
             result_json(false, '无数据!');
         }
         $TemplateService = \Common\Service\TemplateService::get_instance();
+
         $data = [];
         $data['title'] = $title;
         $data['img'] = $img;
         $data['type'] = $type;
         //$tmp_data = str_replace("\n",'<br/>',$tmp_data);
         $data['content'] = json_encode($tmp_data);
-        $TemplateService->add_one($data);
+
+        if ($id) {//更新
+            $TemplateService->update_by_id($id, $data);
+        } else {
+            $TemplateService->add_one($data);
+        }
+
         result_json(TRUE, '保存成功!');
     }
 
