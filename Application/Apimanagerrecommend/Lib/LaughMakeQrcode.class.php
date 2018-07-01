@@ -114,7 +114,7 @@ class LaughMakeQrcode extends BaseApi{
         curl_setopt($ch, CURLOPT_HEADER, 0);
         $output = curl_exec($ch);
         curl_close($ch);
-        
+
         //$ret = json_decode($output,true);
        // var_dump($output);die();
 //        $file_name = 'pages/qrcode/'.md5($page_id.','.$extra_uid).'.png';
