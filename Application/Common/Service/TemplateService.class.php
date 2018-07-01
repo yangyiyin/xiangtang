@@ -100,6 +100,7 @@ class TemplateService extends BaseService{
         $NfModel = D('Nf' . static::$name);
         $data = [];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        $where['status'] = ['EQ', 1];
         $count = $NfModel->where($where)->order($order)->count();
         if ($count > 0) {
             $data = $NfModel->where($where)->order($order)->page($page . ',' . static::$page_size)->select();
