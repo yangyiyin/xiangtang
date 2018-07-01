@@ -106,7 +106,7 @@ class TemplateService extends BaseService{
             $data = $NfModel->where($where)->order($order)->page($page . ',' . static::$page_size)->select();
         }
         return [$data, $count];
-        
+
     }
 
 

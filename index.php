@@ -40,3 +40,9 @@ header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE');
  * ThinkPHP亦可移动到WEB以外的目录
  */
 require './ThinkPHP/ThinkPHP.php';
+
+/**
+mkdir -m 777 /data/www/walle/xiangtang/Runtime
+mkdir -m 777 /data/www/walle/xiangtang/Uploads
+chmod -R 777 /data/www/walle/xiangtang/pages
+ */
