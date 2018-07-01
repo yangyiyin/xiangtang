@@ -31,6 +31,10 @@ if(!is_file(APP_PATH . 'User/Conf/config.php') && !is_file(APP_PATH . 'Common/Co
  */
 define ( 'RUNTIME_PATH', './Runtime/' );
 
+header("Access-Control-Allow-Origin:*");
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE');
+
 /**
  * 引入核心入口
  * ThinkPHP亦可移动到WEB以外的目录
