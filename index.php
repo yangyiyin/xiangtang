@@ -44,5 +44,5 @@ require './ThinkPHP/ThinkPHP.php';
 /**
 mkdir -m 777 /data/www/walle/xiangtang/Runtime
 mkdir -m 777 /data/www/walle/xiangtang/Uploads
-chmod -R 777 /data/www/walle/xiangtang/pages
+mkdir -m 777 /data/www/walle/xiangtang/pages
  */
