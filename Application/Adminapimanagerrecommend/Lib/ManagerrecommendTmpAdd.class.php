@@ -10,7 +10,7 @@ namespace Adminapimanagerrecommend\Lib;
 use Common\Model;
 use Common\Service;
 use Think\Upload;
-class ManagerrecommendTmpAdd extends BaseApi{
+class ManagerrecommendTmpAdd extends BaseSapi{
     protected $method = parent::API_METHOD_POST;
 
     public function init() {

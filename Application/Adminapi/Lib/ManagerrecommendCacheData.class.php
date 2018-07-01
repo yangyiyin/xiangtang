@@ -10,7 +10,7 @@ namespace Adminapi\Lib;
 use Common\Model;
 use Common\Service;
 use Think\Upload;
-class ManagerrecommendCacheData extends BaseApi{
+class ManagerrecommendCacheData extends BaseSapi{
     protected $method = parent::API_METHOD_POST;
 
     public function init() {
