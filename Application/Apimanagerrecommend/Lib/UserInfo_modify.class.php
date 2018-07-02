@@ -59,13 +59,16 @@ class UserInfo_modify extends BaseApi{
 //            $data['verify_status'] = $this->post_data['verify_status'];//审核
         }
 
+        if ($this->post_data['type']) {
+            $data['type'] = $this->post_data['type'];
+        }
+
         $return = $this->uploadPicture();
         if ($return) {
             if ($_POST['user_name']) {
                 $data['user_name'] = $_POST['user_name'];
             }
             $data['avatar'] = '/Uploads/' . $return['avatar']['savepath'] . $return['avatar']['savename'];
-            //$data['avatar'] = json_encode($_POST).'1';
         }
 
         $ret = $this->UserService->update_by_id($this->uid, $data);

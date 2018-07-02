@@ -29,7 +29,11 @@ class UserService extends BaseService{
 
     public function get_info_by_id($id) {
         $NfUser = D('NfUser');
-        return $NfUser->where('id = ' . $id)->find();
+        $where = [];
+        $where['id'] = $id;
+        $where['deleted'] = 0;
+
+        return $NfUser->where($where)->find();
     }
 
 
@@ -44,6 +48,7 @@ class UserService extends BaseService{
     public function get_info_by_openid($id) {
         $NfUser = D('NfUser');
         $where = ['openid' => $id];
+        $where['deleted'] = 0;
         return $NfUser->where($where)->find();
     }
 

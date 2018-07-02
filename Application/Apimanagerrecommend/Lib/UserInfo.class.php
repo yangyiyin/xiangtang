@@ -17,7 +17,7 @@ class UserInfo extends BaseApi{
 
     public function excute() {
         $info = $this->UserService->get_info_by_id($this->uid);
-        $data = convert_obj($info, 'id,user_name,avatar,entity_title,entity_tel,verify_status,address');
+        $data = convert_obj($info, 'id,type,user_name,avatar,status,entity_title,entity_tel,verify_status,address');
         //$data->type = (int) $data->type;
         $data->avatar = $data->avatar ? item_img($data->avatar) : item_img(get_cover(46, 'path'));
 
@@ -48,6 +48,10 @@ class UserInfo extends BaseApi{
             $data->vip = [];
             $data->is_vip = false;
             $data->day_left = '';
+        }
+        //账号冻结
+        if ($data->status == 0) {
+            return result_json(false, '您的账号已冻结,请发送说明原因至邮箱:178340042@qq.com申请解冻');
         }
 
         return result_json(TRUE, '', $data);
