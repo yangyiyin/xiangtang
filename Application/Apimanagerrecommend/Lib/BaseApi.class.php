@@ -33,8 +33,12 @@ class BaseApi extends Api {
             $UserService = Service\UserService::get_instance();
             $ret = $UserService->is_available($uid);
             if (!$ret->success) {
+                if ($ret->data == 1) {
+                    result_json(FALSE, $ret->message, NULL, ERROR_USER_NOT_EXIST_ERROR);
+                }
                 result_json(FALSE, $ret->message, NULL, ERROR_CODE_NORMAL_ERROR);
             }
+
 
             if ($user_session_info['session'] != $user_session) {
                 result_json(FALSE, '登录session异常', NULL, ERROR_CODE_SESSION_ERROR);

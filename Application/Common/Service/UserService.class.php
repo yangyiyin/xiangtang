@@ -192,7 +192,7 @@ class UserService extends BaseService{
         if ($info && $info['status'] == \Common\Model\NfUserModel::STATUS_NORAML) {
             return result(TRUE, '', $info);
         } else {
-            if (!$info) return result(FALSE, '该账号未开通');
+            if (!$info) return result(FALSE, '该账号未开通',1);
 
             return result(FALSE, '该账号状态为' . \Common\Model\NfUserModel::$status_map[$info['status']]);
         }
