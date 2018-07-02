@@ -79,7 +79,7 @@ class UserInfo_modify extends BaseApi{
                // result_json(FALSE, '网络繁忙');
             }
         }
-        if ($this->post_data['verify_status']) {
+        if ($this->post_data['type'] && $this->post_data['type'] == 2) {
             //默认开通vip
             $VipService = \Common\Service\VipService::get_instance();
             $VipService->extend_days($this->uid, 7);
