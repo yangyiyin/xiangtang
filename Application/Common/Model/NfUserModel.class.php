@@ -42,6 +42,7 @@ class NfUserModel extends Model {
         4=>'个人'
     ];
     public static $status_map = [
+        0=>'冻结',
         1=>'正常',
         2=>'待审核',
         99=>'禁用'
