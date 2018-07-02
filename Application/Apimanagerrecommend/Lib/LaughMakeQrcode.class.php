@@ -89,7 +89,9 @@ class LaughMakeQrcode extends BaseApi{
 
         //获取openid
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx979328bc70cabb2d&secret=d2e17f107d1204f6a6545662894040c0");
+        //curl_setopt($ch, CURLOPT_URL, "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx979328bc70cabb2d&secret=d2e17f107d1204f6a6545662894040c0");
+        curl_setopt($ch, CURLOPT_URL, "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx939ea03c3f8d5f12&secret=d792f5bb4265934e2d19e59c16620535");
+
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         $output = curl_exec($ch);
@@ -114,7 +116,6 @@ class LaughMakeQrcode extends BaseApi{
         curl_setopt($ch, CURLOPT_HEADER, 0);
         $output = curl_exec($ch);
         curl_close($ch);
-
         //$ret = json_decode($output,true);
        // var_dump($output);die();
 //        $file_name = 'pages/qrcode/'.md5($page_id.','.$extra_uid).'.png';
