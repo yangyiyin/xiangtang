@@ -39,7 +39,7 @@ class PagesController extends Controller {
             $tmp_data_arr = json_decode($tmp_data, true);
             foreach ($tmp_data_arr['page'] as &$item) {
                 if ($item['type'] == 'vote') {
-                    $item['vote_num_arr'] = ['src'=>'http://paz3jxo1v.bkt.clouddn.com/logo144.png', 'desc'=>'描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容'];
+                    $item['vote_num_arr'] = [['src'=>'http://paz3jxo1v.bkt.clouddn.com/logo144.png', 'desc'=>'描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容']];
                 }
             }
             $this->assign('tmp_data', $tmp_data_arr);
