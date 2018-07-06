@@ -39,6 +39,9 @@
             <if condition="$item['type'] == 'vote'">
                 <include  file="Pagespublic/vote"/>
             </if>
+            <if condition="$item['type'] == 'fight_group'">
+                <include  file="Pagespublic/fight_group"/>
+            </if>
         </div>
     </volist>
     <if condition="$tmp_data['sign_list']">
