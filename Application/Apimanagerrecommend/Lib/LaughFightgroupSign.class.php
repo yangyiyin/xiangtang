@@ -49,7 +49,8 @@ class LaughFightgroupSign extends BaseApi{
         $data['page_id'] = $id;
         $data['group_number'] = 1;
         $data['price'] = $price;
-        $data['group'] = json_encode('uid'=>$this->user_info['id'], 'user_name'=>$this->user_info['user_name'], 'avatar'=>item_img($this->user_info['avatar']), 'user_tel'=>$this->user_info['user_tel']);
+
+        $data['group'] = [json_encode('uid'=>$this->user_info['id'], 'user_name'=>$this->user_info['user_name'], 'avatar'=>item_img($this->user_info['avatar']), 'user_tel'=>$this->user_info['user_tel']]);
         if ($PageFightgroupService->get_by_uid_page_id($data['uid'], $data['page_id'])) {
             return result_json(false, '您已开团!');
         }
