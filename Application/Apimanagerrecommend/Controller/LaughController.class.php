@@ -124,6 +124,12 @@ class LaughController extends BaseController {
     public function praise_praise() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughPraisePraise');
     }
+    public function fightgroup_sign() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughFightgroupSign');
+    }
+    public function fightgroup_join() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughFightgroupJoin');
+    }
     public function vote() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughVote');
     }

@@ -37,6 +37,9 @@ class LaughTmpInfo extends BaseApi{
             if ($_page['type'] == 'vote') {
                 $info['content']['vote_list'] = true;
             }
+            if ($_page['type'] == 'fight_group') {
+                $info['content']['fight_group_list'] = true;
+            }
 
         }
         $VipService = \Common\Service\VipService::get_instance();

@@ -105,6 +105,34 @@ class LaughPageInfo extends BaseApi{
                 $info['content']['page'][$key]['vote_num_arr'] = $this->convert_vote_list($info['content']['page'][$key]['vote_num_arr'], $list);
             }
 
+            if ($tmp_data['fight_group_list']) {
+                $PageFightgroupService = \Common\Service\PageFightgroupService::get_instance();
+                $list = $PageFightgroupService->get_by_page_id($id,1);
+                $list = $this->convert($list);
+                $info['fight_group_list'] = $list;
+
+                $extra_uid = I('extra_uid');
+                $all_log = $PageFightgroupService->get_by_uid_page_id_all($this->uid,$id);
+                $is_sign_fightgroup = $is_help_fightgroup = 0;
+                if ($all_log) {
+                    foreach ($all_log as $log) {
+                        if ($log['pid'] == 0) {
+                            $is_sign_fightgroup = 1;
+                        } else {
+                            if ($extra_uid == $log['pid']) {
+                                $is_help_fightgroup = 1;
+                            }
+
+                        }
+                    }
+                }
+
+                $info['is_sign_fightgroup'] = $is_sign_fightgroup;
+                $info['is_help_fightgroup'] = $is_help_fightgroup;
+                $info['extra_uid'] = $extra_uid;
+            }
+
+
             $info['page_url'] = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/index.html?id=' . $id;
         }
         return result_json(TRUE, '获取成功', $info);

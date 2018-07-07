@@ -295,3 +295,18 @@ CREATE TABLE `shopy_nf_article_pic_ids` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+
+CREATE TABLE `shopy_nf_page_fightgroup` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL DEFAULT '0',
+  `price` int(11) NOT NULL DEFAULT '0',
+   `pid` int(11) NOT NULL DEFAULT '0',
+    `group` VARCHAR (2048) DEFAULT '',
+       `page_id` int(11) NOT NULL DEFAULT '0',
+  `create_time` timestamp DEFAULT NOW(),
+  `deleted` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+alter table shopy_nf_page_fightgroup add status tinyint (3) DEFAULT '0';
+alter table shopy_nf_page_fightgroup add group_number int (6) DEFAULT '0';

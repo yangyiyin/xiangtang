@@ -1,11 +1,13 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-12-26 14:07:31
+ * Time: 2018-01-02 09:28:48
  */
 namespace Common\Service;
-class PageService extends BaseService{
-    public static $name = 'Page';
+class PageFightgroupService extends BaseService{
+    public static $name = 'PageFightgroup';
+    const STATUS_INIT = 0;
+    const STATUS_COMPLETE = 1;
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
@@ -25,14 +27,36 @@ class PageService extends BaseService{
         $NfModel = D('Nf' . static::$name);
         $where = [];
         $where['id'] = ['EQ', $id];
-//        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->find();
     }
 
-    public function get_by_ids($ids) {
+    public function get_by_page_id($id, $is_master=0) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
-        $where['id'] = ['in', $ids];
+        $where['page_id'] = ['EQ', $id];
+        if ($is_master) {
+            $where['pid'] = ['EQ', 0];
+        }
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
+    public function get_by_uid_page_id($uid, $id, $pid=0) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['page_id'] = ['EQ', $id];
+        $where['uid'] = ['EQ', $uid];
+        $where['pid'] = ['EQ', $pid];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->find();
+    }
+
+    public function get_by_uid_page_id_all($uid, $id) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['page_id'] = ['EQ', $id];
+        $where['uid'] = ['EQ', $uid];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->select();
     }
@@ -66,15 +90,12 @@ class PageService extends BaseService{
         }
     }
 
-    public function del_by_id($id, $uid) {
+    public function del_by_id($id) {
         if (!check_num_ids([$id])) {
             return false;
         }
         $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['id'] = ['eq', $id];
-        $where['uid'] = $uid;
-        $ret = $NfModel->where($where)->save(['deleted'=>static::$DELETED]);
+        $ret = $NfModel->where('id=' . $id)->save(['deleted'=>static::$DELETED]);
         if ($ret) {
             return result(TRUE);
         } else {
@@ -104,5 +125,22 @@ class PageService extends BaseService{
         return [$data, $count];
     }
 
+    public function join_group($main_group, $join_data) {
+        if (!$main_group || !$join_data) {
+            return false;
+        }
+        $NfModel = D('Nf' . static::$name);
+        $data = [];
+        $data['group_number'] = $main_group['group_number'] + 1;
+        $data['group'] = $main_group['group'] ? json_decode($main_group['group'], true) : [];
+        $UserService = \Common\Service\UserService::get_instance();
+        $info = $UserService->get_info_by_id($join_data['uid']);
+        if (!$info) {
+            return false;
+        }
+        array_push($data['group'], ['uid'=>$info['id'], 'user_name'=>$info['user_name'], 'avatar'=>item_img($info['avatar']), 'user_tel'=>$info['user_tel']]);
+        $data['group'] = json_encode($data['group']);
+        return $NfModel->where(['id'=>$main_group['id']])->save($data);
+    }
 
 }
