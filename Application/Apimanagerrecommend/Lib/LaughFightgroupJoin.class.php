@@ -71,6 +71,7 @@ class LaughFightgroupJoin extends BaseApi{
         //更新主团信息
         $ret = $PageFightgroupService->join_group($group_info, $data);
         if (!$ret->success) {
+            //todo 记录日志,回滚
             return result_json(false, '参团失败,请联系客服');
         }
 

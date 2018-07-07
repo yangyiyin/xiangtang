@@ -131,7 +131,13 @@ class PageFightgroupService extends BaseService{
         }
         $NfModel = D('Nf' . static::$name);
         $data = [];
-        $data['group_number'] = $main_group['group_number'] + 1;
+        $data['group_number'] = $main_group['group_number'] + 1;//只能是1,因为满人了会改状态,外面是根据状态判断的。这里如果返回为false,则需要外面回滚
+        if ($data['group_number'] > $main_group['max_number']) {
+            return false;
+        }
+        if ($data['group_number'] >= $main_group['max_number']) {
+            $data['status'] = self::STATUS_COMPLETE;//完成拼团
+        }
         $data['group'] = $main_group['group'] ? json_decode($main_group['group'], true) : [];
         $UserService = \Common\Service\UserService::get_instance();
         $info = $UserService->get_info_by_id($join_data['uid']);
@@ -141,6 +147,7 @@ class PageFightgroupService extends BaseService{
         array_push($data['group'], ['uid'=>$info['id'], 'user_name'=>$info['user_name'], 'avatar'=>item_img($info['avatar']), 'user_tel'=>$info['user_tel']]);
         $data['group'] = json_encode($data['group']);
         return $NfModel->where(['id'=>$main_group['id']])->save($data);
+
     }
 
 }
