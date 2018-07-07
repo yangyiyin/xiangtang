@@ -54,7 +54,7 @@ class LaughFightgroupSign extends BaseApi{
         if ($PageFightgroupService->get_by_uid_page_id($data['uid'], $data['page_id'])) {
             return result_json(false, '您已开团!');
         }
-        $ret = $PagePraiseService->add_one($data);
+        $ret = $PageFightgroupService->add_one($data);
         if (!$ret->success) {
             return result_json(false, $ret->message);
         }
