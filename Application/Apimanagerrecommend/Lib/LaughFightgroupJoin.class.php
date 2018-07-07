@@ -56,7 +56,7 @@ class LaughFightgroupJoin extends BaseApi{
         $data['price'] = $price;
 
         $group_info = $PageFightgroupService->get_by_uid_page_id($extra_uid, $data['page_id']);
-        if (!$group_info || $group_info['status'] != \Common\Service\PageFightgroupService::STATUS_COMPLETE) {
+        if (!$group_info || $group_info['status'] != \Common\Service\PageFightgroupService::STATUS_INIT) {
             return result_json(false, '拼团信息异常!');
         }
 
