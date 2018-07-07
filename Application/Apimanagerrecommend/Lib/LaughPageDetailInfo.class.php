@@ -36,9 +36,12 @@ class LaughPageDetailInfo extends BaseApi{
                 if ($_page['type'] == 'vote') {
                     $info['show_vote_list'] = true;
                 }
+                if ($_page['type'] == 'fight_group') {
+                    $info['show_fight_group_list'] = true;
+                }
             }
 
-            $info['sign_list'] = $info['praise_list'] = $info['cutprice_list'] = $info['vote_list'] = [];
+            $info['sign_list'] = $info['praise_list'] = $info['cutprice_list'] = $info['vote_list'] = $info['fight_group_list'] = [];
             if (isset($info['show_sign_list']) && $info['show_sign_list']) {
                 $PageSignService = \Common\Service\PageSignService::get_instance();
                 $sign_list = $PageSignService->get_by_page_id($id);
@@ -72,6 +75,13 @@ class LaughPageDetailInfo extends BaseApi{
                 }
                 $info['vote_list'] = $this->convert_vote_list($info['content']['page'][$key]['vote_num_arr'], $list);
             }
+            if (isset($info['show_fight_group_list']) && $info['show_fight_group_list']) {
+                $PageFightgroupService = \Common\Service\PageFightgroupService::get_instance();
+                $list = $PageFightgroupService->get_by_page_id($id,1);
+                $list = $this->convert($list);
+                $info['fight_group_list'] = $list;
+            }
+
 
         }
         return result_json(TRUE, '获取成功', $info);
