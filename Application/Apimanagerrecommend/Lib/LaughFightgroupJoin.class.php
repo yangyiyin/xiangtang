@@ -26,7 +26,7 @@ class LaughFightgroupJoin extends BaseApi{
         $price = 0;
         if ($page_info['tmp_data']) {
             $page_info['tmp_data'] = json_decode($page_info['tmp_data'], true);
-            if (isset(!$page_info['tmp_data']['page']) || !$page_info['tmp_data']['page']) {
+            if (!isset($page_info['tmp_data']['page']) || !$page_info['tmp_data']['page']) {
                 return result_json(false, '页面信息异常!');
             }
             //获取拼团价格

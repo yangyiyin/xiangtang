@@ -23,7 +23,7 @@ class LaughFightgroupSign extends BaseApi{
         $price = 0;
         if ($page_info['tmp_data']) {
             $page_info['tmp_data'] = json_decode($page_info['tmp_data'], true);
-            if (isset(!$page_info['tmp_data']['page']) || !$page_info['tmp_data']['page']) {
+            if (!isset($page_info['tmp_data']['page']) || !$page_info['tmp_data']['page']) {
                 return result_json(false, '页面信息异常!');
             }
             //获取拼团价格
@@ -50,7 +50,7 @@ class LaughFightgroupSign extends BaseApi{
         $data['group_number'] = 1;
         $data['price'] = $price;
 
-        $data['group'] = [json_encode('uid'=>$this->user_info['id'], 'user_name'=>$this->user_info['user_name'], 'avatar'=>item_img($this->user_info['avatar']), 'user_tel'=>$this->user_info['user_tel']]);
+        $data['group'] = [json_encode(['uid'=>$this->user_info['id'], 'user_name'=>$this->user_info['user_name'], 'avatar'=>item_img($this->user_info['avatar']), 'user_tel'=>$this->user_info['user_tel']])];
         if ($PageFightgroupService->get_by_uid_page_id($data['uid'], $data['page_id'])) {
             return result_json(false, '您已开团!');
         }

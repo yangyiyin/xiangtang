@@ -149,6 +149,11 @@ class LaughPageInfo extends BaseApi{
                 if (isset($value['price'])) {
                     $list[$k]['price'] = format_price($value['price']);
                 }
+
+                //拼团
+                if (isset($value['group'])) {
+                    $list[$k]['group'] = json_decode($value['group'], true);
+                }
             }
         }
         return $list;
