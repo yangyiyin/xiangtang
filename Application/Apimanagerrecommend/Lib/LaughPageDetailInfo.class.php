@@ -39,9 +39,12 @@ class LaughPageDetailInfo extends BaseApi{
                 if ($_page['type'] == 'fight_group') {
                     $info['show_fight_group_list'] = true;
                 }
+                if ($_page['type'] == 'quick_buy') {
+                    $info['show_quick_buy_list'] = true;
+                }
             }
 
-            $info['sign_list'] = $info['praise_list'] = $info['cutprice_list'] = $info['vote_list'] = $info['fight_group_list'] = [];
+            $info['sign_list'] = $info['praise_list'] = $info['cutprice_list'] = $info['vote_list'] = $info['fight_group_list'] = $info['quick_buy_list'] = [];
             if (isset($info['show_sign_list']) && $info['show_sign_list']) {
                 $PageSignService = \Common\Service\PageSignService::get_instance();
                 $sign_list = $PageSignService->get_by_page_id($id);
@@ -80,6 +83,13 @@ class LaughPageDetailInfo extends BaseApi{
                 $list = $PageFightgroupService->get_by_page_id($id,1);
                 $list = $this->convert($list);
                 $info['fight_group_list'] = $list;
+            }
+
+            if (isset($info['show_quick_buy_list']) && $info['show_quick_buy_list']) {
+                $PageQuickbuyService = \Common\Service\PageQuickbuyService::get_instance();
+                $quick_buy_list = $PageQuickbuyService->get_by_page_id($id);
+                $quick_buy_list = $this->convert($quick_buy_list);
+                $info['quick_buy_list'] = $quick_buy_list;
             }
 
 

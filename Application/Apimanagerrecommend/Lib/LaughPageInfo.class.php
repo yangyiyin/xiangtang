@@ -30,7 +30,7 @@ class LaughPageInfo extends BaseApi{
                 }
             }
 
-            $info['sign_list'] = $info['praise_list'] = $info['cutprice_list'] = $info['vote_list']=[];
+            $info['sign_list'] = $info['praise_list'] = $info['cutprice_list'] = $info['vote_list']= $info['fight_group_list'] = $info['quick_buy_list'] = [];
             if ($tmp_data['sign_list']) {
                 $PageSignService = \Common\Service\PageSignService::get_instance();
                 $sign_list = $PageSignService->get_by_page_id($id);
@@ -132,6 +132,12 @@ class LaughPageInfo extends BaseApi{
                 $info['extra_uid'] = $extra_uid;
             }
 
+            if ($tmp_data['quick_buy_list']) {
+                $PageQuickbuyService = \Common\Service\PageQuickbuyService::get_instance();
+                $quick_buy_list = $PageQuickbuyService->get_by_page_id($id);
+                $quick_buy_list = $this->convert($quick_buy_list);
+                $info['quick_buy_list'] = $quick_buy_list;
+            }
 
             $info['page_url'] = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/index.html?id=' . $id;
         }

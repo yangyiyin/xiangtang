@@ -41,6 +41,10 @@ class LaughTmpInfo extends BaseApi{
                 $info['content']['fight_group_list'] = true;
             }
 
+            if ($_page['type'] == 'quick_buy') {
+                $info['content']['quick_buy_list'] = true;
+            }
+
         }
         $VipService = \Common\Service\VipService::get_instance();
         $ret = $VipService->is_vip($this->uid);
