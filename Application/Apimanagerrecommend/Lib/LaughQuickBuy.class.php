@@ -7,7 +7,7 @@
  */
 namespace Apimanagerrecommend\Lib;
 use Common\Service;
-class LaughSign extends BaseApi{
+class LaughQuickBuy extends BaseApi{
     protected $method = parent::API_METHOD_POST;
 
     public function init() {
