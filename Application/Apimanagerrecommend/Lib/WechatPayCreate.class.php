@@ -7,8 +7,9 @@
  */
 namespace Api\Lib;
 use Common\Service;
-require APP_PATH . '/Common/Lib/alipay/aop/AopClient.php';
-require APP_PATH . '/Common/Lib/alipay/aop/request/AlipayTradeAppPayRequest.php';
+
+require APP_PATH . '/Common/Lib/wx_pay_sdk/wechat_api.php';
+
 
 class WechatPayCreate extends BaseApi{
     private $PayService;
@@ -18,6 +19,7 @@ class WechatPayCreate extends BaseApi{
     public function init() {
         $this->PayService = Service\PayService::get_instance();
         $this->OrderService = Service\OrderService::get_instance();
+
     }
 
     public function excute() {
@@ -38,41 +40,29 @@ class WechatPayCreate extends BaseApi{
 
 
 
-        $ret = $this->PayService->create_by_orders($orders);
+        $ret = $this->PayService->create_by_orders($orders, \Common\Model\NfPayModel::PAY_AGENT_WECHAT_PAY);
         if (!$ret->success) {
             return result_json(FALSE, $ret->message);
         }
-        if ($ret->message == 'all_by_account') {//全部账户支付
-            return result_json(TRUE, '', 1);
-        }
 
         $pay_info = $ret->data;
+        //
+        require APP_PATH . '/Common/Lib/wx_pay_sdk/wechat_config.php';
+        $wechat = new \Wechat($wechat_config);
 
-        $aop = new \AopClient;
-        //$aop->gatewayUrl = "https://openapi.alipay.com/gateway.do";
-        $aop->gatewayUrl = "https://openapi.alipaydev.com/gateway.do";
-        $aop->appId = Service\PayService::AlipayAppId;
-        $aop->rsaPrivateKey = Service\PayService::AlipayPriKey;
-        $aop->format = "json";
-        $aop->charset = "UTF-8";
-        $aop->signType = "RSA2";
-        $aop->alipayrsaPublicKey = Service\PayService::AlipayPubKey;
-        //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
-        $request = new \AlipayTradeAppPayRequest();
-        //SDK已经封装掉了公共参数，这里只需要传入业务参数
-        $bizcontent = "{\"body\":\"蚂蚁app支付\","
-            . "\"subject\": \"蚂蚁app支付\","
-            . "\"out_trade_no\": \"" . $pay_info['pay_no'] . "\","
-            . "\"timeout_express\": \"30m\","
-            . "\"total_amount\": \"".($pay_info['sum'] / 100)."\","
-            . "\"product_code\":\"QUICK_MSECURITY_PAY\""
-            . "}";
-        $request->setNotifyUrl("http://php.gooduo.net/project_ant/index.php/API/Pay/alipay_notify");
-        $request->setBizContent($bizcontent);
-        //这里和普通的接口调用不同，使用的是sdkExecute
-        $response = $aop->sdkExecute($request);
-        //htmlspecialchars是为了输出到页面时防止被浏览器将关键参数html转义，实际打印到日志以及http传输不会有这个问题
-        //echo htmlspecialchars($response);//就是orderString 可以直接给客户端请求，无需再做处理。
-        result_json(TRUE, '', $response);
+        $response = $wechat->createPrepay($pay_info['pay_no'], $pay_info['sum']);
+        if ($response) {
+            $ret = [];
+            $ret['appid'] = $response['appid'];
+            $ret['prepayid'] = $response['prepay_id'];
+            $ret['noncestr'] = $response['nonce_str'];
+            $ret['partnerid'] = $response['mch_id'];
+            $ret['timestamp'] = time();
+            $ret['package'] = "Sign=WXPay";
+            $ret['sign'] = $wechat->setWxSign($ret);
+            ksort($ret);
+        }
+        result_json(TRUE, '', json_encode($ret));
+
     }
 }
