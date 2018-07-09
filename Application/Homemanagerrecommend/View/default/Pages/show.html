@@ -42,6 +42,9 @@
             <if condition="$item['type'] == 'fight_group'">
                 <include  file="Pagespublic/fight_group"/>
             </if>
+            <if condition="$item['type'] == 'quick_buy'">
+                <include  file="Pagespublic/quick_buy"/>
+            </if>
         </div>
     </volist>
     <if condition="$tmp_data['sign_list']">
