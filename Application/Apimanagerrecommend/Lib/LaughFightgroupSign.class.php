@@ -29,7 +29,7 @@ class LaughFightgroupSign extends BaseApi{
             //获取拼团价格
             foreach ($page_info['tmp_data']['page'] as $item) {
                 if ($item['type'] == 'fight_group') {
-                    $price = isset($item['fight_group_price']) ? $item['fight_group_price'] : 0;
+                    $price = isset($item['fight_group_price']) ? $item['fight_group_price'] * 100 : 0;
                     $max_number = isset($item['fight_group_number']) ? $item['fight_group_number'] : 0;
 
                 }

@@ -130,6 +130,9 @@ class LaughController extends BaseController {
     public function fightgroup_join() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughFightgroupJoin');
     }
+    public function quick_buy() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughQuickBuy');
+    }
     public function vote() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughVote');
     }
