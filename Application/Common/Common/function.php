@@ -1409,5 +1409,24 @@ function get_tree($map, $m, &$child_pids) {
     return $m;
 }
 
+function logfile($str,$fileName='api')
+{
+    $log = date('Ymd', time());
+    if ($fileName) {
 
+        // 创建对应的log文件夹
+        if (!is_dir(__ROOT__.'logs/'.$fileName)) mkdir(__ROOT__.'logs/'.$fileName, 0777);
+        if (!is_dir(__ROOT__.'logs/'.$fileName.'/'.$log)) mkdir(__ROOT__.'logs/'.$fileName.'/'.$log, 0777);
+    } else {
+        if (!is_dir(__ROOT__.'logs/'.$log)) mkdir(__ROOT__.'logs/'.$log, 0777);
+    }
+
+    $log = $fileName.'/'.date('Ymd/H', time());
+    $logfile=fopen(__ROOT__.'logs/'.$log.'.log',"a+");
+    if (is_array($str)) {
+        $str = print_r($str,TRUE);
+    }
+    fwrite($logfile,"\r\n [".date("Y-m-d H:i:s",time())."] ".$str);
+    fclose($logfile);
+}
 
