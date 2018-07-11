@@ -45,7 +45,7 @@ class WechatPayCreate extends BaseApi{
         $response = $wechat->createPrepay($pay_info['pay_no'], $pay_info['sum'], $this->user_info['openid']);
         if ($response) {
             $ret = [];
-            $ret['appid'] = $response['appid'];
+            $ret['appId'] = $response['appid'];
            // $ret['prepayid'] = $response['prepay_id'];
             $ret['nonceStr'] = $response['nonce_str'];
             $ret['signType'] = 'MD5';
