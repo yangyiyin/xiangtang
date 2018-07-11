@@ -5,7 +5,7 @@
  * Date: 17/4/25
  * Time: 下午8:25
  */
-namespace Api\Lib;
+namespace Apimanagerrecommend\Lib;
 use Common\Service;
 require APP_PATH . '/Common/Lib/wx_pay_sdk/wechat_api.php';
 
