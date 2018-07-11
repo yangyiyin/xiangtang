@@ -7,6 +7,6 @@ $wechat_config['KEY'] = "150858720115085872011508587201YX";// 加密密钥 Key�
 
 $wechat_config['MCH_ID'] = '1508587201';// 财付通商户身份标识
 
-$wechat_config['NOTIFY_URL'] = 'http://public/index.php/Apimanagerrecommend/pay/wechat_pay_notify.html';// 微信支付完成服务器通知页面地址
+$wechat_config['NOTIFY_URL'] = 'http://88plus.net/public/index.php/Apimanagerrecommend/pay/wechat_pay_notify.html';// 微信支付完成服务器通知页面地址
 
 ?>
