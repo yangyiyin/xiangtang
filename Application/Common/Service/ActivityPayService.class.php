@@ -117,13 +117,13 @@ class ActivityPayService extends BaseService{
         }
         $tmp_data = json_decode($page_info['tmp_data'], TRUE);
 
-        if (!$tmp_data) {
+        if (!$tmp_data || !isset($tmp_data['page']) || !$tmp_data['page']) {
             return false;
         }
 
         $is_legal = false;
         $price = 0;
-        foreach ($tmp_data as $item) {
+        foreach ($tmp_data['page'] as $item) {
             if ($activity_label == 'fight_group' && $activity_label == $item['type']) {//检测通过
                 $is_legal = true;
                 //获取价格
@@ -143,6 +143,7 @@ class ActivityPayService extends BaseService{
         $data['extra_uid'] = $extra_uid;
         $data['sum'] = $price * 100;
         $data['pay_no'] = $this->gen_pay_no($uid, 'fg');
+        $data['lable'] = $activity_label;
         if ($NfModel->add($data)) {
             return $data;
         } else {
