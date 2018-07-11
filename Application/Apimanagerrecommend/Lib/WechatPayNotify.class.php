@@ -32,6 +32,7 @@ class WechatPayNotify extends BaseSapi{
         $data_notify['remark'] = '';
         $this->PayNotifyLogService->add_one($data_notify);
 
+
         if ($verify_info === false) {
             echo 'fail';
             $data_notify['create_time'] = current_date();
@@ -40,21 +41,22 @@ class WechatPayNotify extends BaseSapi{
             exit();
         }
 
+        $ActivityPayService = Service\ActivityPayService::get_instance();
+        $ActivityPayService->update_by_pay_no($verify_info['out_trade_no'], ['callback_content'=>json_encode($verify_info)]);
 
         //业务处理
         //记录回调
 
         if ($verify_info['result_code'] == 'SUCCESS') {//成功
-            //更新交易状态
-
+            $ActivityPayService->update_by_pay_no($verify_info['out_trade_no'], ['status'=>1]);
             echo 'success';
             exit;
         } elseif ($verify_info['result_code'] == 'FAIL') {//完成
-
+            $ActivityPayService->update_by_pay_no($verify_info['out_trade_no'], ['status'=>2]);
             echo 'fail1';
             exit;
         }  else {//异常
-
+            $ActivityPayService->update_by_pay_no($verify_info['out_trade_no'], ['status'=>2]);
             echo 'fail2';
             exit;
         }

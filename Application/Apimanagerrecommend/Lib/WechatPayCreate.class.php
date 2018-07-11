@@ -54,6 +54,7 @@ class WechatPayCreate extends BaseApi{
             $ret['sign'] = $wechat->setWxSign($ret);
             ksort($ret);
         }
+        $ret['pay_no'] = $pay_info['pay_no'];
         result_json(TRUE, '', $ret);
 
     }

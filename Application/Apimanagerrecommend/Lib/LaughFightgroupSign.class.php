@@ -17,6 +17,14 @@ class LaughFightgroupSign extends BaseApi{
     public function excute() {
 
         $id = $this->post_data['id'];
+        $pay_no = $this->post_data['pay_no'];
+
+        //查询支付状态
+        $ActivityPayService = \Common\Service\ActivityPayService::get_instance();
+        $pay_info = $ActivityPayService->get_by_pay_no($pay_no);
+        if ($pay_info['status'] != 1) {
+            return result_json(false, '未支付!');
+        }
 
         $PageService = \Common\Service\PageService::get_instance();
         $page_info = $PageService->get_info_by_id($id);

@@ -29,6 +29,14 @@ class ActivityPayService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
+    public function get_by_pay_no($pay_no) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['pay_no'] = ['EQ', $pay_no];
+//        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->find();
+    }
+
     public function get_by_ids($ids) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
@@ -52,6 +60,20 @@ class ActivityPayService extends BaseService{
         }
     }
 
+    public function update_by_pay_no($pay_no, $data) {
+
+        if (!$id) {
+            return result(FALSE, 'id不能为空');
+        }
+
+        $NfModel = D('Nf' . static::$name);
+        $where = ['pay_no' => $pay_no];
+        if ($NfModel->where($where)->save($data)) {
+            return result(TRUE);
+        } else {
+            return result(FALSE, '网络繁忙~');
+        }
+    }
     public function update_by_ids($ids, $data) {
         if (!check_num_ids($ids)) {
             return result(FALSE, 'ids不能为空');
