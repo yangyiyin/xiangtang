@@ -37,7 +37,7 @@ class Wechat{
     /**
      * 获取微信预支单
      */
-    public function createPrepay($out_trade_no,$total_fee){
+    public function createPrepay($out_trade_no,$total_fee, $openid){
         $spbill_create_ip = get_client_ip();
         $nonce_str = uniqid();
         $pay_time_limit = 1800;
@@ -57,6 +57,8 @@ class Wechat{
             'time_start'        => $time_start,
             'time_expire'       => $time_expire,
             'detail'            => '订单支付',
+            'openid'            => $openid,
+
         );
         $sign = $this->setWxSign($sign_data);
         $sign_data['sign'] = $sign;
