@@ -62,8 +62,8 @@ class ActivityPayService extends BaseService{
 
     public function update_by_pay_no($pay_no, $data) {
 
-        if (!$id) {
-            return result(FALSE, 'id不能为空');
+        if (!$pay_no) {
+            return result(FALSE, 'pay_no');
         }
 
         $NfModel = D('Nf' . static::$name);
