@@ -105,7 +105,7 @@ class ActivityPayService extends BaseService{
     }
 
     public function gen_pay_no($uid, $pre='fg'){
-        return $pre.'-'.time().'-'.$uid.mt_rand(11,99);
+        return $pre.'-'.time().'-'.$uid.'-'.mt_rand(11,99);
     }
 
     public function create_pay($activity_label, $page_id, $uid, $extra_uid) {
@@ -143,7 +143,7 @@ class ActivityPayService extends BaseService{
         $data['extra_uid'] = $extra_uid;
         $data['sum'] = $price * 100;
         $data['pay_no'] = $this->gen_pay_no($uid, 'fg');
-        $data['lable'] = $activity_label;
+        $data['label'] = $activity_label;
         if ($NfModel->add($data)) {
             return $data;
         } else {
