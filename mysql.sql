@@ -311,3 +311,19 @@ CREATE TABLE `shopy_nf_page_fightgroup` (
 alter table shopy_nf_page_fightgroup add status tinyint (3) DEFAULT '0';
 alter table shopy_nf_page_fightgroup add group_number int (6) DEFAULT '0';
 alter table shopy_nf_page_fightgroup add max_number int (6) DEFAULT '0';
+
+
+CREATE TABLE `shopy_nf_activity_pay` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pay_no` varchar(50) DEFAULT NULL,
+  `status` tinyint(3) DEFAULT '0',
+  `uid` int(11) DEFAULT NULL,
+  `extra_uid` int(11) DEFAULT NULL,
+  `activity_id` varchar(255) DEFAULT NULL,
+  `sum` int(11) DEFAULT NULL,
+  `callback_content` VARCHAR (2048) DEFAULT NULL,
+  `create_time` timestamp DEFAULT NOW(),
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `pay_no` (`pay_no`) USING BTREE COMMENT '(null)'
+) ENGINE=MyISAM AUTO_INCREMENT=84 DEFAULT CHARSET=utf8;
+alter table shopy_nf_activity_pay add label VARCHAR (20) DEFAULT '';

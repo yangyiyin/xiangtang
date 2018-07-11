@@ -52,7 +52,7 @@ class Wechat{
             'total_fee'         => $total_fee,
             'spbill_create_ip'  => $spbill_create_ip,
             'notify_url'        => $this->wechat_config['NOTIFY_URL'],
-            'trade_type'        => 'APP',
+            'trade_type'        => 'JSAPI',
             'fee_type'          => 'CNY',
             'time_start'        => $time_start,
             'time_expire'       => $time_expire,
