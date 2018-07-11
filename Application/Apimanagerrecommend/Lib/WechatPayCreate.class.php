@@ -50,7 +50,7 @@ class WechatPayCreate extends BaseApi{
             $ret['nonceStr'] = $response['nonce_str'];
             $ret['signType'] = 'MD5';
             $ret['timeStamp'] = time();
-            $ret['package'] = "prepay_id=".$response['prepayid'];
+            $ret['package'] = "prepay_id=".$response['prepay_id'];
             $ret['sign'] = $wechat->setWxSign($ret);
             ksort($ret);
         }
