@@ -20,6 +20,7 @@ class LaughUserPages extends BaseApi{
         $UserPageService = \Common\Service\UserPageService::get_instance();
         $where = [];
         $where['uid'] = $this->uid;
+        $where['status'] = \Common\Service\UserPageService::STATUS_ENABLE;
         list($list, $count) = $UserPageService->get_by_where($where, 'id desc', $p);
 
         $result = [];

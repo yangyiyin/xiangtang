@@ -140,6 +140,11 @@ class LaughController extends BaseController {
         $this->excute_api('Apimanagerrecommend\Lib\LaughRemarkSign');
     }
 
-
+    public function verify_code() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughVerifyCode');
+    }
+    public function send_code() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughSendCode');
+    }
 
 }

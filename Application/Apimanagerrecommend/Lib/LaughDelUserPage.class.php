@@ -22,7 +22,7 @@ class LaughDelUserPage extends BaseApi{
         }
         $UserPageService = \Common\Service\UserPageService::get_instance();
 
-        $ret = $UserPageService->del_by_id($id);
+        $ret = $UserPageService->update_by_id($id,['status'=>\Common\Service\UserPageService::STATUS_DISABLE]);
 
         if (!$ret->success) {
             return result_json(false, $ret->message);

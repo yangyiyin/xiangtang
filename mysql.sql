@@ -327,3 +327,4 @@ CREATE TABLE `shopy_nf_activity_pay` (
   KEY `pay_no` (`pay_no`) USING BTREE COMMENT '(null)'
 ) ENGINE=MyISAM AUTO_INCREMENT=84 DEFAULT CHARSET=utf8;
 alter table shopy_nf_activity_pay add label VARCHAR (20) DEFAULT '';
+alter table shopy_nf_page add status tinyint(1) DEFAULT '1';

@@ -6,6 +6,9 @@
 namespace Common\Service;
 class UserPageService extends BaseService{
     public static $name = 'UserPage';
+    const STATUS_ENABLE = 1;
+    const STATUS_DISABLE = 2;
+
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
