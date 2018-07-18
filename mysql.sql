@@ -315,6 +315,7 @@ alter table shopy_nf_page_fightgroup add phone varchar(12) DEFAULT '';
 alter table shopy_nf_page_cutprice add phone varchar(12) DEFAULT '';
 alter table shopy_nf_page_quick_buy add phone varchar(12) DEFAULT '';
 alter table shopy_nf_page_sign add phone varchar(12) DEFAULT '';
+alter table shopy_nf_page_praise add phone varchar(12) DEFAULT '';
 
 
 CREATE TABLE `shopy_nf_activity_pay` (
