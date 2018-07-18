@@ -33,6 +33,11 @@ class LaughFightgroupJoin extends BaseApi{
         if (!$page_info || !$extra_uid) {
             return result_json(false, '页面不存在!');
         }
+
+        if ($extra_uid == $this->uid) {
+            return result_json(false, '您不能参加自己的拼团!');
+        }
+
         $price = 0;
         if ($page_info['tmp_data']) {
             $page_info['tmp_data'] = json_decode($page_info['tmp_data'], true);
@@ -83,6 +88,15 @@ class LaughFightgroupJoin extends BaseApi{
         if (!$ret->success) {
             return result_json(false, $ret->message);
         }
+
+        //生成提货码
+        $pick_code = \Common\Service\PageFightgroupService::pick_code_fightgroup . sprintf("%04d", $ret->data);
+        $ret = $PageFightgroupService->update_by_id($ret->data, ['pick_code'=>$pick_code]);
+        if (!$ret->success) {
+            return result_json(false, '系统异常,您的提货码生成失败,请联系客服');
+        }
+        //发送短信 todo
+
         //更新主团信息
         $ret = $PageFightgroupService->join_group($group_info, $data);
         if (!$ret) {

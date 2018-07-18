@@ -73,10 +73,16 @@ class LaughCutpriceCut extends BaseApi{
         $data['cutprice'] = mt_rand($can_cut_price * 0.4, $can_cut_price);
         $ret = $PageCutpriceService->add_one($data);
         if (!$ret->success) {
-
             return result_json(false, $ret->message);
-
         }
+
+//        //生成提货码
+//        $pick_code = sprintf("%04d", $ret->data);
+//        $ret = $PageCutpriceService->update_by_id($ret->data, ['pick_code'=>$pick_code]);
+//        if (!$ret->success) {
+//            return result_json(false, '系统异常,您的提货码生成失败,请联系客服');
+//        }
+//        //发送短信 todo
 
         $data_up = [];
         $data_up['price'] = $cut_info['price'] - $data['cutprice'];

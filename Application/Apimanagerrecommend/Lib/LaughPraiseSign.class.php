@@ -47,6 +47,14 @@ class LaughPraiseSign extends BaseApi{
             return result_json(false, $ret->message);
         }
 
+        //生成提货码
+        $pick_code = \Common\Service\PagePraiseService::pick_code_praise . sprintf("%04d", $ret->data);
+        $ret = $PagePraiseService->update_by_id($ret->data, ['pick_code'=>$pick_code]);
+        if (!$ret->success) {
+            return result_json(false, '系统异常,您的提货码生成失败,请联系客服');
+        }
+        //发送短信 todo
+
         //记录我的报名
         $UserPageService = \Common\Service\UserPageService::get_instance();
         $user_page = $UserPageService->get_by_uid_page_id($this->uid, $id);

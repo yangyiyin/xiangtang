@@ -110,5 +110,13 @@ class PageSignService extends BaseService{
         return [$data, $count];
     }
 
+    public function get_by_uid_page_id_all($uid, $id) {
+        $NfModel = D('Nf' . static::$name);
+        $where = [];
+        $where['page_id'] = ['EQ', $id];
+        $where['uid'] = ['EQ', $uid];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
 
 }

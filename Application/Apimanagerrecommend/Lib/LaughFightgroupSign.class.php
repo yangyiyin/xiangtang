@@ -72,7 +72,7 @@ class LaughFightgroupSign extends BaseApi{
         }
 
         //生成提货码
-        $pick_code = sprintf("%04d", $ret->data);
+        $pick_code = \Common\Service\PageFightgroupService::pick_code_fightgroup . sprintf("%04d", $ret->data);
         $ret = $PageFightgroupService->update_by_id($ret->data, ['pick_code'=>$pick_code]);
         if (!$ret->success) {
             return result_json(false, '系统异常,您的提货码生成失败,请联系客服');
