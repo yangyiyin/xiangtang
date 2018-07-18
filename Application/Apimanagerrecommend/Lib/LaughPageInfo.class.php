@@ -31,6 +31,7 @@ class LaughPageInfo extends BaseApi{
             }
 
             $info['sign_list'] = $info['praise_list'] = $info['cutprice_list'] = $info['vote_list']= $info['fight_group_list'] = $info['quick_buy_list'] = [];
+            $info['pick_code'] = '';
             if ($tmp_data['sign_list']) {
                 $PageSignService = \Common\Service\PageSignService::get_instance();
                 $sign_list = $PageSignService->get_by_page_id($id);
@@ -38,7 +39,6 @@ class LaughPageInfo extends BaseApi{
                 $info['sign_list'] = $sign_list;
 
                 $all_log = $PageSignService->get_by_uid_page_id($this->uid,$id);
-                $info['pick_code'] = '';
                 if ($all_log) {
                     foreach ($all_log as $log) {
                         $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
@@ -55,7 +55,6 @@ class LaughPageInfo extends BaseApi{
                 $extra_uid = I('extra_uid');
                 $all_log = $PageSignService->get_by_uid_page_id_all($this->uid,$id);
                 $is_sign_praise = $is_help_praise = 0;
-                $info['pick_code'] = '';
                 if ($all_log) {
                     foreach ($all_log as $log) {
                         $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
@@ -84,7 +83,6 @@ class LaughPageInfo extends BaseApi{
                 $extra_uid = I('extra_uid');
                 $all_log = $PageCutpriceService->get_by_uid_page_id_all($this->uid,$id);
                 $is_sign_cutprice = $is_help_cutprice = 0;
-                $info['pick_code'] = '';
                 if ($all_log) {
                     foreach ($all_log as $log) {
                         $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
@@ -126,7 +124,7 @@ class LaughPageInfo extends BaseApi{
                 $extra_uid = I('extra_uid');
                 $all_log = $PageFightgroupService->get_by_uid_page_id_all($this->uid,$id);
                 $is_sign_fightgroup = $is_help_fightgroup = 0;
-                $info['pick_code'] = '';
+
                 if ($all_log) {
                     foreach ($all_log as $log) {
 
@@ -154,7 +152,6 @@ class LaughPageInfo extends BaseApi{
                 $info['quick_buy_list'] = $quick_buy_list;
 
                 $all_log = $PageQuickbuyService->get_by_uid_page_id($this->uid,$id);
-                $info['pick_code'] = '';
                 if ($all_log) {
                     foreach ($all_log as $log) {
                         $log['pick_code'] && $info['pick_code'] = $log['pick_code'];

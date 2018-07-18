@@ -12,11 +12,11 @@ class BaseService {
     public static $NOT_DELETED = 0;
     public static $DELETED = 1;
 
-    const pick_code_fightgroup = 'fg';
-    const pick_code_praise = 'pr';
-    const pick_code_sign = 'si';
-    const pick_code_quick_buy = 'qu';
-    const pick_code_cutprice = 'cu';
+    const pick_code_fightgroup = '01';
+    const pick_code_praise = '02';
+    const pick_code_sign = '03';
+    const pick_code_quick_buy = '04';
+    const pick_code_cutprice = '05';
 
     // 不允许实例化，子类禁止覆盖
     final protected function __construct() {
