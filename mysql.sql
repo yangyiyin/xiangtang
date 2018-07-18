@@ -311,6 +311,10 @@ CREATE TABLE `shopy_nf_page_fightgroup` (
 alter table shopy_nf_page_fightgroup add status tinyint (3) DEFAULT '0';
 alter table shopy_nf_page_fightgroup add group_number int (6) DEFAULT '0';
 alter table shopy_nf_page_fightgroup add max_number int (6) DEFAULT '0';
+alter table shopy_nf_page_fightgroup add phone varchar(12) DEFAULT '';
+alter table shopy_nf_page_cutprice add phone varchar(12) DEFAULT '';
+alter table shopy_nf_page_quick_buy add phone varchar(12) DEFAULT '';
+alter table shopy_nf_page_sign add phone varchar(12) DEFAULT '';
 
 
 CREATE TABLE `shopy_nf_activity_pay` (

@@ -17,6 +17,7 @@ class LaughQuickBuy extends BaseApi{
     public function excute() {
 
         $id = $this->post_data['id'];
+        $phone = isset($this->post_data['phone']) ? $this->post_data['phone'] : '';
 
         $PageService = \Common\Service\PageService::get_instance();
         $page_info = $PageService->get_info_by_id($id);
@@ -52,6 +53,7 @@ class LaughQuickBuy extends BaseApi{
         $data['uid'] = $this->uid;
         $data['page_id'] = $id;
         $data['price'] = $price;
+        $data['phone'] = $phone;
 
         if ($PageQuickbuyService->get_by_uid_page_id($data['uid'], $data['page_id'])) {
             return result_json(false, '您已报名');

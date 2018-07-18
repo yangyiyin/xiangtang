@@ -18,6 +18,8 @@ class LaughCutpriceCut extends BaseApi{
 
         $id = $this->post_data['id'];
         $extra_uid = $this->post_data['extra_uid'];
+        $phone = isset($this->post_data['phone']) ? $this->post_data['phone'] : '';
+
         $PageService = \Common\Service\PageService::get_instance();
         $page_info = $PageService->get_info_by_id($id);
         if ($page_info['tmp_data']) {
@@ -49,6 +51,7 @@ class LaughCutpriceCut extends BaseApi{
         $data['uid'] = $this->uid;
         $data['page_id'] = $id;
         $data['pid'] = $extra_uid;
+        $data['phone'] = $phone;
         if ($PageCutpriceService->get_by_uid_page_id($data['uid'], $data['page_id'], $data['pid'])) {
 
             return result_json(false, '您已砍价!');

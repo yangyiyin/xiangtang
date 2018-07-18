@@ -18,6 +18,16 @@ class LaughFightgroupJoin extends BaseApi{
 
         $id = $this->post_data['id'];
         $extra_uid = $this->post_data['extra_uid'];
+        $phone = isset($this->post_data['phone']) ? $this->post_data['phone'] : '';
+        $pay_no = $this->post_data['pay_no'];
+
+        //查询支付状态
+        $ActivityPayService = \Common\Service\ActivityPayService::get_instance();
+        $pay_info = $ActivityPayService->get_by_pay_no($pay_no);
+        if (!$pay_info || $pay_info['status'] != 1) {
+            return result_json(false, '您还未支付,暂无法下单!!');
+        }
+
         $PageService = \Common\Service\PageService::get_instance();
         $page_info = $PageService->get_info_by_id($id);
         if (!$page_info || !$extra_uid) {
@@ -54,6 +64,7 @@ class LaughFightgroupJoin extends BaseApi{
         $data['page_id'] = $id;
         $data['pid'] = $extra_uid;
         $data['price'] = $price;
+        $data['phone'] = $phone;
 
         $group_info = $PageFightgroupService->get_by_uid_page_id($extra_uid, $data['page_id']);
         if (!$group_info) {

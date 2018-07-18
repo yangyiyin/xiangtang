@@ -17,7 +17,7 @@ class LaughCutpriceSign extends BaseApi{
     public function excute() {
 
         $id = $this->post_data['id'];
-
+        $phone = isset($this->post_data['phone']) ? $this->post_data['phone'] : '';
         $PageService = \Common\Service\PageService::get_instance();
         $page_info = $PageService->get_info_by_id($id);
         if ($page_info['tmp_data']) {
@@ -50,6 +50,7 @@ class LaughCutpriceSign extends BaseApi{
         }
 
         $data['price'] = $price * 100;
+        $data['phone'] = $phone;
         $ret = $PageCutpriceService->add_one($data);
         if (!$ret->success) {
             return result_json(false, $ret->message);

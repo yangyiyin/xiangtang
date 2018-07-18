@@ -18,12 +18,13 @@ class LaughFightgroupSign extends BaseApi{
 
         $id = $this->post_data['id'];
         $pay_no = $this->post_data['pay_no'];
+        $phone = isset($this->post_data['phone']) ? $this->post_data['phone'] : '';
 
         //查询支付状态
         $ActivityPayService = \Common\Service\ActivityPayService::get_instance();
         $pay_info = $ActivityPayService->get_by_pay_no($pay_no);
-        if ($pay_info['status'] != 1) {
-            return result_json(false, '未支付!');
+        if (!$pay_info || $pay_info['status'] != 1) {
+            return result_json(false, '您还未支付,暂无法下单!');
         }
 
         $PageService = \Common\Service\PageService::get_instance();
@@ -60,6 +61,7 @@ class LaughFightgroupSign extends BaseApi{
         $data['group_number'] = 1;
         $data['max_number'] = $max_number;
         $data['price'] = $price;
+        $data['phone'] = $phone;
         $data['group'] = json_encode([['uid'=>$this->user_info['id'], 'user_name'=>$this->user_info['user_name'], 'avatar'=>item_img($this->user_info['avatar']), 'user_tel'=>$this->user_info['user_tel']]]);
         if ($PageFightgroupService->get_by_uid_page_id($data['uid'], $data['page_id'])) {
             return result_json(false, '您已开团!');
