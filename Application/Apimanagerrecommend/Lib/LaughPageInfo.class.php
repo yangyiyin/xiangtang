@@ -38,7 +38,7 @@ class LaughPageInfo extends BaseApi{
                 $sign_list = $this->convert($sign_list);
                 $info['sign_list'] = $sign_list;
 
-                $all_log = $PageSignService->get_by_uid_page_id($this->uid,$id);
+                $all_log = $PageSignService->get_by_uid_page_id_all($this->uid,$id);
                 if ($all_log) {
                     foreach ($all_log as $log) {
                         $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
@@ -151,7 +151,7 @@ class LaughPageInfo extends BaseApi{
                 $quick_buy_list = $this->convert($quick_buy_list);
                 $info['quick_buy_list'] = $quick_buy_list;
 
-                $all_log = $PageQuickbuyService->get_by_uid_page_id($this->uid,$id);
+                $all_log = $PageQuickbuyService->get_by_uid_page_id_all($this->uid,$id);
                 if ($all_log) {
                     foreach ($all_log as $log) {
                         $log['pick_code'] && $info['pick_code'] = $log['pick_code'];

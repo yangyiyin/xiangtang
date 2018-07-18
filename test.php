@@ -59,6 +59,7 @@
 //    $list[$_li['pid']][] = $_li;
 //}
 //$tree = make_tree($list);
+$b = 1;
 
-$var=sprintf("%03d", 2);//生成4位数，不足前面补0
-echo $var;//结果为0002
+$b && $a = 1222;
+var_dump($a);
