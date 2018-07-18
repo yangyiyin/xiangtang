@@ -59,6 +59,6 @@
 //    $list[$_li['pid']][] = $_li;
 //}
 //$tree = make_tree($list);
-$list = file_get_contents('http://11dfgdfgfdg1.com');
-var_dump($list);
-json_decode($list, true);
+
+$var=sprintf("%03d", 2);//生成4位数，不足前面补0
+echo $var;//结果为0002

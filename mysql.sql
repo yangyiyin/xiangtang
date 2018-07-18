@@ -317,6 +317,11 @@ alter table shopy_nf_page_quick_buy add phone varchar(12) DEFAULT '';
 alter table shopy_nf_page_sign add phone varchar(12) DEFAULT '';
 alter table shopy_nf_page_praise add phone varchar(12) DEFAULT '';
 
+alter table shopy_nf_page_fightgroup add pick_code varchar(20) DEFAULT '';
+alter table shopy_nf_page_cutprice add pick_code varchar(20) DEFAULT '';
+alter table shopy_nf_page_quick_buy add pick_code varchar(20) DEFAULT '';
+alter table shopy_nf_page_sign add pick_code varchar(20) DEFAULT '';
+alter table shopy_nf_page_praise add pick_code varchar(20) DEFAULT '';
 
 CREATE TABLE `shopy_nf_activity_pay` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
