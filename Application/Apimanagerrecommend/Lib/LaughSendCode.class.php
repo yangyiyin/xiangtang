@@ -7,7 +7,7 @@
  */
 namespace Apimanagerrecommend\Lib;
 use Common\Service;
-class LaughVerifyCode extends BaseApi{
+class LaughSendCode extends BaseApi{
     protected $method = parent::API_METHOD_POST;
 
     public function init() {
@@ -17,19 +17,18 @@ class LaughVerifyCode extends BaseApi{
     public function excute() {
 
         $phone = $this->post_data['phone'];
-        $code = $this->post_data['code'];
-        if (!$phone || !$code) {
+        if (!$phone) {
             return result_json(false, '参数错误');
         }
 
 
-        $ret = curl_post_form('http://api.88plus.net/index.php/waibao/common/verify_code_manager_recommend', ['phone'=>$phone, 'code'=>$code]);
+        $ret = curl_post_form('http://api.88plus.net/index.php/waibao/common/send_code_manager_recommend', ['phone'=>$phone]);
         $ret = json_decode($ret,true);
 
         if ($ret && $ret['code'] == 100) {
-            return result_json(TRUE, '验证成功');
+            return result_json(TRUE, '发送成功');
         } else {
-            return result_json(false, '验证码错误');
+            return result_json(false, '发送失败,请稍后再试');
         }
 
     }
