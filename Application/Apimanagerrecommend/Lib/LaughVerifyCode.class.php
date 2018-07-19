@@ -22,13 +22,10 @@ class LaughVerifyCode extends BaseApi{
             return result_json(false, '参数错误');
         }
 
-        if ($code != '123456') {
-            return result_json(false, '验证码错误');
-        }
 
-//        if (!$ret->success) {
-//            return result_json(false, $ret->message);
-//        }
+        $ret = curl_post_form('http://api.88plus.net/index.php/waibao/common/verify_code_manager_recommend', ['phone'=>$phone, 'code'=>$code]);
+
+        var_dump($ret);
         return result_json(TRUE, '验证成功');
     }
 
