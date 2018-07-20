@@ -92,6 +92,9 @@ class LaughPickVerify extends BaseApi{
             return result_json(false, '对不起,您的手机号或凭证码有误!');
         }
 
+        if (isset($page_sign['price'])) {
+            $page_sign['price'] /= 100;
+        }
         if (!empty($payed)) {
             $page_sign['payed'] = $payed;
         }
