@@ -62,11 +62,11 @@ class LaughPickVerify extends BaseApi{
         $page_sign['title'] = $page_info['title'];
 
         if ($page_sign['pick_status'] == $service::pick_status_verified) {
-            return result_json(false, '该凭证码已过期,店家已验证过此码,不能二次验证!', $page_sign);
+            return result_json(false, '该凭证码已过期,店家已验证过此码!', $page_sign);
         }
 
         if ($page_sign['pick_status'] == $service::pick_status_completed) {
-            return result_json(false, '该凭证码已失效,无法提货!');
+            return result_json(false, '该凭证码已失效,无法再次验证!');
         }
 
         return result_json(TRUE, '验证成功!', $page_sign);
