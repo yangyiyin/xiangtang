@@ -42,6 +42,9 @@ class LaughPageInfo extends BaseApi{
                 if ($all_log) {
                     foreach ($all_log as $log) {
                         $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
+                        if ($log['pick_status'] != \Common\Service\PageBaseService::pick_status_init) {
+                            $info['pick_code'] = '您的凭证码已失效';
+                        }
                     }
                 }
             }
@@ -58,6 +61,9 @@ class LaughPageInfo extends BaseApi{
                 if ($all_log) {
                     foreach ($all_log as $log) {
                         $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
+                        if ($log['pick_status'] != \Common\Service\PageBaseService::pick_status_init) {
+                            $info['pick_code'] = '您的凭证码已失效';
+                        }
                         if ($log['pid'] == 0) {
                             $is_sign_praise = 1;
                         } else {
@@ -86,6 +92,9 @@ class LaughPageInfo extends BaseApi{
                 if ($all_log) {
                     foreach ($all_log as $log) {
                         $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
+                        if ($log['pick_status'] != \Common\Service\PageBaseService::pick_status_init) {
+                            $info['pick_code'] = '您的凭证码已失效';
+                        }
                         if ($log['pid'] == 0) {
                             $is_sign_cutprice = 1;
                         } else {
@@ -129,6 +138,9 @@ class LaughPageInfo extends BaseApi{
                     foreach ($all_log as $log) {
 
                         $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
+                        if ($log['pick_status'] != \Common\Service\PageBaseService::pick_status_init) {
+                            $info['pick_code'] = '您的凭证码已失效';
+                        }
                         if ($log['pid'] == 0) {
                             $is_sign_fightgroup = 1;
                         } else {
@@ -155,6 +167,9 @@ class LaughPageInfo extends BaseApi{
                 if ($all_log) {
                     foreach ($all_log as $log) {
                         $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
+                        if ($log['pick_status'] != \Common\Service\PageBaseService::pick_status_init) {
+                            $info['pick_code'] = '您的凭证码已验证';
+                        }
                     }
                 }
             }

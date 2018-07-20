@@ -93,7 +93,7 @@ class LaughPickVerify extends BaseApi{
         }
 
         if (isset($page_sign['price'])) {
-            $page_sign['price'] /= 100;
+            $page_sign['price'] = format_price($page_sign['price']);
         }
         if (!empty($payed)) {
             $page_sign['payed'] = $payed;
