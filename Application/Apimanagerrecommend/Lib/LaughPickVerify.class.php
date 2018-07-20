@@ -20,7 +20,7 @@ class LaughPickVerify extends BaseApi{
         $code = $this->post_data['code'];
 
         if (!$phone || !$code) {
-            return result_json(false, '对不起,您的验证码不存在!');
+            return result_json(false, '对不起,您的凭证码不存在!');
         }
 
         $type = substr($code, 0, 2);
@@ -44,12 +44,12 @@ class LaughPickVerify extends BaseApi{
         }
 
         if (!$service) {
-            return result_json(false, '对不起,您的验证码不存在!');
+            return result_json(false, '对不起,您的凭证码不存在!');
         }
 
         $page_sign = $service->get_by_phone_pick_code($phone, $code);
         if (!$page_sign) {
-            return result_json(false, '对不起,您的手机号或验证码有误!');
+            return result_json(false, '对不起,您的手机号或凭证码有误!');
         }
 
         //获取标题
@@ -62,11 +62,11 @@ class LaughPickVerify extends BaseApi{
         $page_sign['title'] = $page_info['title'];
 
         if ($page_sign['pick_status'] == $service::pick_status_verified) {
-            return result_json(false, '该验证码已过期,店家已验证过此码,不能二次验证!', $page_sign);
+            return result_json(false, '该凭证码已过期,店家已验证过此码,不能二次验证!', $page_sign);
         }
 
         if ($page_sign['pick_status'] == $service::pick_status_completed) {
-            return result_json(false, '该验证码已失效,无法提货!');
+            return result_json(false, '该凭证码已失效,无法提货!');
         }
 
         return result_json(TRUE, '验证成功!', $page_sign);
