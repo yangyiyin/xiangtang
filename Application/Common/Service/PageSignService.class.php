@@ -4,7 +4,7 @@
  * Time: 2018-01-02 09:28:12
  */
 namespace Common\Service;
-class PageSignService extends BaseService{
+class PageSignService extends PageBaseService{
     public static $name = 'PageSign';
 
     public function add_one($data) {
@@ -118,5 +118,7 @@ class PageSignService extends BaseService{
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->select();
     }
+
+
 
 }

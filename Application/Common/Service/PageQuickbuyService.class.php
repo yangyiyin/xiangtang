@@ -4,7 +4,7 @@
  * Time: 2018-01-02 09:28:12
  */
 namespace Common\Service;
-class PageQuickbuyService extends BaseService{
+class PageQuickbuyService extends PageBaseService{
     public static $name = 'PageQuickBuy';
 
     public function add_one($data) {

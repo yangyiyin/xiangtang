@@ -4,7 +4,7 @@
  * Time: 2018-01-02 09:29:08
  */
 namespace Common\Service;
-class PagePraiseService extends BaseService{
+class PagePraiseService extends PageBaseService{
     public static $name = 'PagePraise';
 
     public function add_one($data) {

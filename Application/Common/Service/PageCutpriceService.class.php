@@ -4,7 +4,7 @@
  * Time: 2018-01-02 09:28:48
  */
 namespace Common\Service;
-class PageCutpriceService extends BaseService{
+class PageCutpriceService extends PageBaseService{
     public static $name = 'PageCutprice';
 
     public function add_one($data) {

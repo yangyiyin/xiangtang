@@ -4,7 +4,7 @@
  * Time: 2018-01-02 09:28:48
  */
 namespace Common\Service;
-class PageFightgroupService extends BaseService{
+class PageFightgroupService extends PageBaseService{
     public static $name = 'PageFightgroup';
     const STATUS_INIT = 0;
     const STATUS_COMPLETE = 1;

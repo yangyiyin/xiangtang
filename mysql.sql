@@ -323,6 +323,13 @@ alter table shopy_nf_page_quick_buy add pick_code varchar(20) DEFAULT '';
 alter table shopy_nf_page_sign add pick_code varchar(20) DEFAULT '';
 alter table shopy_nf_page_praise add pick_code varchar(20) DEFAULT '';
 
+alter table shopy_nf_page_fightgroup add pick_status tinyint(1) DEFAULT '0';
+alter table shopy_nf_page_cutprice add pick_status tinyint(1) DEFAULT '0';
+alter table shopy_nf_page_quick_buy add pick_status tinyint(1) DEFAULT '0';
+alter table shopy_nf_page_sign add pick_status tinyint(1) DEFAULT '0';
+alter table shopy_nf_page_praise add pick_status tinyint(1) DEFAULT '0';
+
+
 CREATE TABLE `shopy_nf_activity_pay` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pay_no` varchar(50) DEFAULT NULL,
