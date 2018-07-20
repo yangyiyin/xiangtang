@@ -18,6 +18,45 @@ class LaughPickVerify extends BaseApi{
 
         $phone = $this->post_data['phone'];
         $code = $this->post_data['code'];
+        $id = $this->post_data['id'];
+
+        if ($id) {//完成验证
+            $code = $this->post_data['pick_code'];
+            $type = substr($code, 0, 2);
+            $service = '';
+            switch ($type) {
+                case \Common\Service\PageBaseService::pick_code_fightgroup:
+                    $service = \Common\Service\PageFightgroupService::get_instance();
+                    break;
+                case \Common\Service\PageBaseService::pick_code_praise:
+                    $service = \Common\Service\PagePraiseService::get_instance();
+                    break;
+                case \Common\Service\PageBaseService::pick_code_sign:
+                    $service = \Common\Service\PageSignService::get_instance();
+                    break;
+                case \Common\Service\PageBaseService::pick_code_quick_buy:
+                    $service = \Common\Service\PageQuickbuyService::get_instance();
+                    break;
+                case \Common\Service\PageBaseService::pick_code_cutprice:
+                    $service = \Common\Service\PageCutpriceService::get_instance();
+                    break;
+            }
+            $info = $service->get_info_by_id($id);
+            if (!$info) {
+                return result_json(false, '对不起,该报名信息不存在,请联系神奇店长客服');
+            }
+
+            if ($info['pick_status'] == $service::pick_status_completed) {
+                return result_json(TRUE, '已完成验证,无需再次操作!', $page_sign);
+            }
+
+            $ret = $service->update_by_id($id, ['pick_status'=>$service::pick_status_completed]);
+            if (!$ret) {
+                return result_json(false, '系统异常,请稍后再试');
+            }
+            return result_json(TRUE, '完成验证成功!', $page_sign);
+        }
+
 
         if (!$phone || !$code) {
             return result_json(false, '对不起,您的凭证码不存在!');
