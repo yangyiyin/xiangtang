@@ -67,6 +67,7 @@ class LaughPickVerify extends BaseApi{
         switch ($type) {
             case \Common\Service\PageBaseService::pick_code_fightgroup:
                 $service = \Common\Service\PageFightgroupService::get_instance();
+                $payed = true;
                 break;
             case \Common\Service\PageBaseService::pick_code_praise:
                 $service = \Common\Service\PagePraiseService::get_instance();
@@ -91,6 +92,9 @@ class LaughPickVerify extends BaseApi{
             return result_json(false, '对不起,您的手机号或凭证码有误!');
         }
 
+        if (!empty($payed)) {
+            $page_sign['payed'] = $payed;
+        }
         //获取标题
         $pageService = \Common\Service\PageService::get_instance();
         $page_info = $pageService->get_info_by_id($page_sign['page_id']);
@@ -101,7 +105,7 @@ class LaughPickVerify extends BaseApi{
         $page_sign['title'] = $page_info['title'];
 
         if ($page_sign['pick_status'] == $service::pick_status_verified) {
-            return result_json(false, '该凭证码已过期,店家已验证过此码!', $page_sign);
+            return result_json(true, '该凭证码已过期,店家已验证过此码!', $page_sign);
         }
 
         if ($page_sign['pick_status'] == $service::pick_status_completed) {
