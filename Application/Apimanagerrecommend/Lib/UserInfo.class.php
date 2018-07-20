@@ -29,6 +29,7 @@ class UserInfo extends BaseApi{
             $data->is_vip = true;
             $data->is_past = false;
             $data->day_left = '';
+            $data->tips = '';
 
             $left_time = strtotime($vip['end_time']) - time();
             if ($left_time <= 0) {
@@ -38,9 +39,9 @@ class UserInfo extends BaseApi{
             } elseif ($left_time < 16 * 3600 * 24) {
                 $left_day = floor($left_time / 3600 / 24);
                 if ($left_day == 0) {
-                    $data->day_left = '今天到期';
+                    $data->day_left = $data->tips = '今天到期';
                 } else {
-                    $data->day_left = '还剩'.$left_day.'天';
+                    $data->day_left = $data->tips = '还剩'.$left_day.'天';
                 }
 
             }
@@ -48,6 +49,7 @@ class UserInfo extends BaseApi{
             $data->vip = [];
             $data->is_vip = false;
             $data->day_left = '';
+            $data->tips = '';
         }
         //账号冻结
         if ($data->status == 0) {
