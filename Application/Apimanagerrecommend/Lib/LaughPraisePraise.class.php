@@ -20,6 +20,17 @@ class LaughPraisePraise extends BaseApi{
         $extra_uid = $this->post_data['extra_uid'];
         $PageService = \Common\Service\PageService::get_instance();
         $page_info = $PageService->get_info_by_id($id);
+
+        if (!$page_info) {
+            return result_json(false, '页面不存在!');
+        }
+
+        $VipService = \Common\Service\VipService::get_instance();
+        $ret = $VipService->is_vip($page_info['uid']);
+        if (!$ret->success) {
+            return result_json(false, '对不起,当前链接暂无法点赞');
+        }
+
         if ($page_info['tmp_data']) {
             $page_info['tmp_data'] = json_decode($page_info['tmp_data'], true);
         }

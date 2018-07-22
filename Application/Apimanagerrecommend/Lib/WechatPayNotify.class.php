@@ -61,7 +61,11 @@ class WechatPayNotify extends BaseSapi{
             //更新财务
             $AccountService = Service\AccountService::get_instance();
             $AccountLogService = Service\AccountLogService::get_instance();
-            $res2 = $AccountLogService->add_one(['uid'=>$pay_info['seller_uid'], 'sum'=>$pay_info['sum'], 'pay_no'=>$pay_info['pay_no']]);
+            $remark = '';
+            if ($pay_info['label'] == Service\PageBaseService::pay_label_fight_group) {
+                $remark = '【拼团商品】';
+            }
+            $res2 = $AccountLogService->add_one(['uid'=>$pay_info['seller_uid'], 'sum'=>$pay_info['sum'], 'pay_no'=>$pay_info['pay_no'], 'remark' => '在线支付收入'.$remark]);
             $res3 = $AccountService->add_account($pay_info['seller_uid'], $pay_info['sum']);
 
             if ($res1->success && $res2->success && $res3->success) {

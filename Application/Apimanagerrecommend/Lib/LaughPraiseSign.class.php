@@ -16,11 +16,23 @@ class LaughPraiseSign extends BaseApi{
 
     public function excute() {
 
+
         $id = $this->post_data['id'];
         $phone = isset($this->post_data['phone']) ? $this->post_data['phone'] : '';
 
         $PageService = \Common\Service\PageService::get_instance();
         $page_info = $PageService->get_info_by_id($id);
+
+        if (!$page_info) {
+            return result_json(false, '页面不存在!');
+        }
+
+        $VipService = \Common\Service\VipService::get_instance();
+        $ret = $VipService->is_vip($page_info['uid']);
+        if (!$ret->success) {
+            return result_json(false, '对不起,当前链接暂无法报名');
+        }
+
         if ($page_info['tmp_data']) {
             $page_info['tmp_data'] = json_decode($page_info['tmp_data'], true);
         }

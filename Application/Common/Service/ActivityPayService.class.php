@@ -146,7 +146,7 @@ class ActivityPayService extends BaseService{
         $is_legal = false;
         $price = 0;
         foreach ($tmp_data['page'] as $item) {
-            if ($activity_label == 'fight_group' && $activity_label == $item['type']) {//检测通过
+            if ($activity_label == \Common\Service\PageBaseService::pay_label_fight_group && $activity_label == $item['type']) {//检测通过
                 $is_legal = true;
                 //获取价格
                 $price = $item['fight_group_price'];//todo 如果有团长价,则团长价

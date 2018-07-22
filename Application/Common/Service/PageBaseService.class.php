@@ -14,6 +14,8 @@ class PageBaseService extends BaseService{
     const pick_status_init = 0;
     const pick_status_verified = 1;
     const pick_status_completed = 2;
+
+    const pay_label_fight_group = 'fight_group';
     public function get_by_phone_pick_code($phone, $pick_code) {
         $NfModel = D('Nf' . static::$name);
         $where = [];

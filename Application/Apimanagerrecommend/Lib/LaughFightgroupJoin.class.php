@@ -34,6 +34,12 @@ class LaughFightgroupJoin extends BaseApi{
             return result_json(false, '页面不存在!');
         }
 
+        $VipService = \Common\Service\VipService::get_instance();
+        $ret = $VipService->is_vip($page_info['uid']);
+        if (!$ret->success) {
+            return result_json(false, '对不起,当前链接暂无法参团');
+        }
+
         if ($extra_uid == $this->uid) {
             return result_json(false, '您不能参加自己的拼团!');
         }
