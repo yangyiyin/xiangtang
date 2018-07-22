@@ -31,6 +31,7 @@ class LaughPageSubmit extends BaseApi{
 
         $data = [];
         $data['uid'] = $this->uid;
+        $data['type'] = $tmp_info['type'];
         $data['title'] = $page_title ? $page_title : $tmp_info['title'];
         $data['img'] = $tmp_info['img'];
         foreach ($tmp_data['page'] as $k => $_page) {

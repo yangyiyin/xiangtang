@@ -329,6 +329,9 @@ alter table shopy_nf_page_quick_buy add pick_status tinyint(1) DEFAULT '0';
 alter table shopy_nf_page_sign add pick_status tinyint(1) DEFAULT '0';
 alter table shopy_nf_page_praise add pick_status tinyint(1) DEFAULT '0';
 
+alter table shopy_nf_page add type tinyint(3) DEFAULT '0';
+alter table shopy_nf_page add type tinyint(3) DEFAULT '0';
+
 
 CREATE TABLE `shopy_nf_activity_pay` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -345,3 +348,4 @@ CREATE TABLE `shopy_nf_activity_pay` (
 ) ENGINE=MyISAM AUTO_INCREMENT=84 DEFAULT CHARSET=utf8;
 alter table shopy_nf_activity_pay add label VARCHAR (20) DEFAULT '';
 alter table shopy_nf_page add status tinyint(1) DEFAULT '1';
+alter table shopy_nf_activity_pay add seller_uid int(11) DEFAULT '0';

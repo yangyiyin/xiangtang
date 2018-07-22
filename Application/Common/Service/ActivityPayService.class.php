@@ -162,6 +162,7 @@ class ActivityPayService extends BaseService{
         $data = [];
         $data['activity_id'] = $page_id;
         $data['uid'] = $uid;
+        $data['seller_uid'] = $page_info['uid'];
         $data['extra_uid'] = $extra_uid;
         $data['sum'] = $price * 100;
         $data['pay_no'] = $this->gen_pay_no($uid, 'fg');

@@ -48,7 +48,27 @@ class WechatPayNotify extends BaseSapi{
         //记录回调
 
         if ($verify_info['result_code'] == 'SUCCESS') {//成功
-            $ActivityPayService->update_by_pay_no($verify_info['out_trade_no'], ['status'=>1]);
+            $pay_info = $ActivityPayService->get_by_pay_no($verify_info['out_trade_no']);
+            if (!$pay_info) {
+                echo 'success';
+                exit;
+            }
+            //开始事务
+            $Model = M();
+            $Model->startTrans();
+
+            $res1 = $ActivityPayService->update_by_pay_no($verify_info['out_trade_no'], ['status'=>1]);
+            //更新财务
+            $AccountService = Service\AccountService::get_instance();
+            $AccountLogService = Service\AccountLogService::get_instance();
+            $res2 = $AccountLogService->add_one(['uid'=>$pay_info['seller_uid'], 'sum'=>$pay_info['sum'], 'pay_no'=>$pay_info['pay_no']]);
+            $res3 = $AccountService->add_account($pay_info['seller_uid'], $pay_info['sum']);
+
+            if ($res1->success && $res2->success && $res3->success) {
+                $Model->commit();
+            } else {
+                $Model->rollback();
+            }
             echo 'success';
             exit;
         } elseif ($verify_info['result_code'] == 'FAIL') {//完成
