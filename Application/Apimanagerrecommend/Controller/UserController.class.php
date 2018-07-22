@@ -43,4 +43,7 @@ class UserController extends BaseController {
     public function my_commission_detail() {
         $this->excute_api('Apimanagerrecommend\Lib\UserMyCommissionDetail');
     }
+    public function user_phones() {
+        $this->excute_api('Apimanagerrecommend\Lib\UserPhones');
+    }
 }

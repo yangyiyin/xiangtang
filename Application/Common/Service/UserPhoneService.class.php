@@ -108,4 +108,11 @@ class UserPhoneService extends BaseService{
         return $NfModel->where($where)->find();
     }
 
+    public function get_all($where) {
+        $NfModel = D('Nf' . static::$name);
+        $where = $where ? $where : [];
+        $where['deleted'] = ['EQ', static::$NOT_DELETED];
+        return $NfModel->where($where)->select();
+    }
+
 }
