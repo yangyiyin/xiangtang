@@ -104,6 +104,12 @@ class LaughFightgroupJoin extends BaseApi{
         //发送短信 todo
         curl_post_raw('http://api.88plus.net/index.php/waibao/common/send_pick_code_manager_recommend', json_encode(['phone'=>$phone,'activity_name'=>$page_info['title'],'pick_phone'=>$phone,'pick_code'=>$pick_code]));
 
+        //记录我的手机号
+        $UserPhoneService = Service\UserPhoneService::get_instance();
+        if (!$UserPhoneService->get_one(['uid'=>$this->uid, 'phone'=>$phone])) {
+            $UserPhoneService->add_one(['uid'=>$this->uid, 'phone'=>$phone]);
+        }
+
         //更新主团信息
         $ret = $PageFightgroupService->join_group($group_info, $data);
         if (!$ret) {
