@@ -16,8 +16,17 @@ class UserMyCommission extends BaseApi{
     }
 
     public function excute() {
-        $info = $this->AccountService->get_info_by_uid($this->uid);
-        $sum = isset($info['sum']) ? $info['sum'] : 0;
-        return result_json(TRUE, '', ['sum' => intval($sum)]);
+
+        $page = I('get.p', 1);
+        if (I('get.limit')) {
+            Service\AccountService::$page_size = I('get.limit');
+        }
+        $where = [];
+        //$where['type'] = ['in', [\Common\Model\NfAccountLogModel::TYPE_OUT_CASH_MINUS, \Common\Model\NfAccountLogModel::TYPE_INVITER_ADD, \Common\Model\NfAccountLogModel::TYPE_INVITER_MINUS, \Common\Model\NfAccountLogModel::TYPE_DEALER_ADD, \Common\Model\NfAccountLogModel::TYPE_DEALER_MINUS]];
+        list($list, $count) = $this->AccountService->get_by_where($where);
+        //$has_more = has_more($count, $page, Service\AccountService::$page_size);
+        $result = ['list' => $list, 'count' => $count];
+        return result_json(TRUE, '', $result);
+
     }
 }
