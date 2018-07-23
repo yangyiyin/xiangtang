@@ -19,6 +19,7 @@ class LaughPageSubmit extends BaseApi{
         $tmp_data = $this->post_data['tmp_data'];
         $tmp_id = $this->post_data['tmp_id'];
         $page_title = $this->post_data['page_title'];
+        $page_stock = isset($this->post_data['page_stock']) ? $this->post_data['page_stock'] : 0;
         if (!$tmp_data || !$tmp_id) {
             return result_json(false, '页面内容异常!');
         }
@@ -33,6 +34,7 @@ class LaughPageSubmit extends BaseApi{
         $data['uid'] = $this->uid;
         $data['type'] = $tmp_info['type'];
         $data['title'] = $page_title ? $page_title : $tmp_info['title'];
+        $data['stock'] = $page_stock;
         $data['img'] = $tmp_info['img'];
         foreach ($tmp_data['page'] as $k => $_page) {
             if ($_page['type'] == 'text') {

@@ -348,6 +348,7 @@ CREATE TABLE `shopy_nf_activity_pay` (
 ) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8;
 alter table shopy_nf_activity_pay add label VARCHAR (20) DEFAULT '';
 alter table shopy_nf_page add status tinyint(1) DEFAULT '1';
+
 alter table shopy_nf_activity_pay add seller_uid int(11) DEFAULT '0';
 
 CREATE TABLE `shopy_nf_user_phone` (
@@ -359,5 +360,29 @@ CREATE TABLE `shopy_nf_user_phone` (
   `uid` int(11) DEFAULT NULL,
   `phone` varchar(12) DEFAULT NULL,
 
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `shopy_nf_user_relation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` tinyint(1) DEFAULT '0',
+   `deleted` tinyint(1) DEFAULT '0',
+  `create_time` timestamp DEFAULT NOW(),
+  `uid` int(11) DEFAULT NULL,
+  `seller_uid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8;
+
+alter table shopy_nf_page add stock int(11) DEFAULT '0';
+alter table shopy_nf_page add sell_num int(11) DEFAULT '0';
+CREATE TABLE `shopy_nf_page_statistics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` tinyint(1) DEFAULT '0',
+   `deleted` tinyint(1) DEFAULT '0',
+  `create_time` timestamp DEFAULT NOW(),
+  `page_id` int(11) DEFAULT NULL,
+  `click` int(11) DEFAULT NULL,
+  `share` int(11) DEFAULT NULL,
+  `submit` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8;

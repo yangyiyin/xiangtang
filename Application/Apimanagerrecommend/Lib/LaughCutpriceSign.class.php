@@ -82,6 +82,11 @@ class LaughCutpriceSign extends BaseApi{
             $UserPhoneService->add_one(['uid'=>$this->uid, 'phone'=>$phone]);
         }
 
+        //记录卖家和买家关系记录
+        $UserRelationService = Service\UserRelationService::get_instance();
+        if (!$UserRelationService->get_one(['uid'=>$this->uid, 'seller_uid'=>$page_info['uid']])) {
+            $UserPhoneService->add_one(['uid'=>$this->uid, 'seller_uid'=>$page_info['uid']]);
+        }
 
         //记录我的报名
         $UserPageService = \Common\Service\UserPageService::get_instance();
