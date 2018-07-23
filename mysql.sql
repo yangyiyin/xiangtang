@@ -381,8 +381,8 @@ CREATE TABLE `shopy_nf_page_statistics` (
    `deleted` tinyint(1) DEFAULT '0',
   `create_time` timestamp DEFAULT NOW(),
   `page_id` int(11) DEFAULT NULL,
-  `click` int(11) DEFAULT NULL,
-  `share` int(11) DEFAULT NULL,
-  `submit` int(11) DEFAULT NULL,
+  `uid` int(11) DEFAULT NULL,
+  `type` tinyint(3) DEFAULT '1',
+  `ip` VARCHAR (20) DEFAULT '',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8;

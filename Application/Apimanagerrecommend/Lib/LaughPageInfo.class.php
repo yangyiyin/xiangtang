@@ -23,6 +23,15 @@ class LaughPageInfo extends BaseApi{
         if ($info) {
            // $info['tmp_data'] = str_replace('<br\/>',"\n",$info['tmp_data']);
            // $info['tmp_data'] = str_replace('<br>',"\n",$info['tmp_data']);
+
+            //库存
+            if ($info['stock'] > 0 && ($info['stock'] - $info['sell_num']) <= 0) {
+                $info['stock_none'] = true;
+            } else {
+                $info['stock_none'] = false;
+            }
+
+
             $tmp_data = $info['content'] = json_decode($info['tmp_data'],true);
             foreach ($info['content']['page'] as $k => $_page) {
                 if ($_page['type'] == 'text') {

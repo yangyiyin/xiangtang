@@ -85,7 +85,7 @@ class LaughCutpriceSign extends BaseApi{
         if ($page_info['stock'] > 0) {
             $PageService->setInc(['id'=>$page_info['id']], 'sell_num', 1);
         }
-        
+
         //记录我的手机号
         $UserPhoneService = Service\UserPhoneService::get_instance();
         if (!$UserPhoneService->get_one(['uid'=>$this->uid, 'phone'=>$phone])) {
