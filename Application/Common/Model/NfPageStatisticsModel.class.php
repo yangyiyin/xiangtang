@@ -6,7 +6,7 @@
 namespace Common\Model;
 use Think\Model;
 class NfPageStatisticsModel extends NfBaseModel {
-    public static $status_map = ['click'=>'查看数', 'share'=>'分享数', 'submit'=>'报名数'];
+    public static $status_map = ['1'=>'查看数', '2'=>'分享数', '3'=>'报名数'];
 
     protected $_validate = array(
         /**

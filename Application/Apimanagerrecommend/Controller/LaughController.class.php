@@ -149,4 +149,8 @@ class LaughController extends BaseController {
     public function pick_verify() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughPickVerify');
     }
+
+    public function statistics_point() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughStatisticsPoint');
+    }
 }
