@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by newModule.
- * Time: 2017-12-26 14:07:31
+ * Time: 2017-08-16 13:54:40
  */
 namespace Common\Service;
-class PageService extends BaseService{
-    public static $name = 'Page';
+class PageStatisticsService extends BaseService{
+    public static $name = 'PageStatistics';
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
@@ -25,16 +25,8 @@ class PageService extends BaseService{
         $NfModel = D('Nf' . static::$name);
         $where = [];
         $where['id'] = ['EQ', $id];
-//        $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->find();
-    }
-
-    public function get_by_ids($ids) {
-        $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['id'] = ['in', $ids];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
-        return $NfModel->where($where)->select();
+        return $NfModel->where($where)->find();
     }
 
     public function update_by_id($id, $data) {
@@ -66,15 +58,12 @@ class PageService extends BaseService{
         }
     }
 
-    public function del_by_id($id, $uid) {
+    public function del_by_id($id) {
         if (!check_num_ids([$id])) {
             return false;
         }
         $NfModel = D('Nf' . static::$name);
-        $where = [];
-        $where['id'] = ['eq', $id];
-        $where['uid'] = $uid;
-        $ret = $NfModel->where($where)->save(['deleted'=>static::$DELETED]);
+        $ret = $NfModel->where('id=' . $id)->save(['deleted'=>static::$DELETED]);
         if ($ret) {
             return result(TRUE);
         } else {
@@ -103,8 +92,16 @@ class PageService extends BaseService{
         }
         return [$data, $count];
     }
+    public function approve($ids) {
+        return $this->update_by_ids($ids, ['status'=>\Common\Model\NfOutCashModel::STATUS_NORMAL]);
+    }
 
+    public function reject($ids) {
+        return $this->update_by_ids($ids, ['status'=>\Common\Model\NfOutCashModel::STATUS_REJECT]);
+    }
 
-
+    public function complete($ids) {
+        return $this->update_by_ids($ids, ['status'=>\Common\Model\NfOutCashModel::STATUS_COMPLETE]);
+    }
 
 }

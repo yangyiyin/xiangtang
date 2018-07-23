@@ -44,6 +44,11 @@ class LaughPraiseSign extends BaseApi{
             }
         }
 
+        //检测库存
+        if ($page_info['stock'] > 0 && ($page_info['stock'] - $page_info['sell_num']) <= 0) {
+            return result_json(false, '对不起,当前库存不足');
+        }
+
         //存入
         $PagePraiseService = \Common\Service\PagePraiseService::get_instance();
         $data = [];
@@ -67,6 +72,10 @@ class LaughPraiseSign extends BaseApi{
         }
         //发送短信 todo
         //curl_post_raw('http://api.88plus.net/index.php/waibao/common/send_pick_code_manager_recommend', json_encode(['phone'=>$phone,'activity_name'=>$page_info['title'],'pick_phone'=>$phone,'pick_code'=>$pick_code]));
+
+        if ($page_info['stock'] > 0) {
+            $PageService->setInc(['id'=>$page_info['id']], 'sell_num', 1);
+        }
 
         //记录我的手机号
         $UserPhoneService = Service\UserPhoneService::get_instance();

@@ -39,4 +39,13 @@ class BaseService {
         return self::$instance_map[$class];
     }
 
+    public function setInc($where, $field, $value) {
+        $NfModel = D('Nf' . static::$name);
+        return $NfModel->where($where)->setInc($field, $value);
+    }
+
+    public function setDec($where, $field, $value) {
+        $NfModel = D('Nf' . static::$name);
+        return $NfModel->where($where)->setDec($field, $value);
+    }
 }
