@@ -92,16 +92,19 @@ class PageStatisticsService extends BaseService{
         }
         return [$data, $count];
     }
-    public function approve($ids) {
-        return $this->update_by_ids($ids, ['status'=>\Common\Model\NfOutCashModel::STATUS_NORMAL]);
+
+    public function count_views($page_id) {
+        $NfModel =  D('Nf' . static::$name);
+        return $this->getAllCount(['page_id'=>$page_id, 'type'=>$NfModel::type_view]);
     }
 
-    public function reject($ids) {
-        return $this->update_by_ids($ids, ['status'=>\Common\Model\NfOutCashModel::STATUS_REJECT]);
+    public function count_shares($page_id) {
+        $NfModel =  D('Nf' . static::$name);
+        return $this->getAllCount(['page_id'=>$page_id, 'type'=>$NfModel::type_share]);
     }
-
-    public function complete($ids) {
-        return $this->update_by_ids($ids, ['status'=>\Common\Model\NfOutCashModel::STATUS_COMPLETE]);
+    public function count_submits($page_id) {
+        $NfModel =  D('Nf' . static::$name);
+        return $this->getAllCount(['page_id'=>$page_id, 'type'=>$NfModel::type_submit]);
     }
 
 }

@@ -48,4 +48,21 @@ class BaseService {
         $NfModel = D('Nf' . static::$name);
         return $NfModel->where($where)->setDec($field, $value);
     }
+
+    public function getAll($where) {
+        $NfModel = D('Nf' . static::$name);
+        return $NfModel->where($where)->select();
+    }
+
+    public function getAllCount($where) {
+        $NfModel = D('Nf' . static::$name);
+        return $NfModel->where($where)->count();
+    }
+
+    public function getOne($where) {
+        $NfModel = D('Nf' . static::$name);
+        return $NfModel->where($where)->find();
+    }
+
+
 }

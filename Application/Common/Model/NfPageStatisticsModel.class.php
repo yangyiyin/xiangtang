@@ -6,6 +6,10 @@
 namespace Common\Model;
 use Think\Model;
 class NfPageStatisticsModel extends NfBaseModel {
+    const type_view = 1;
+    const type_share = 2;
+    const type_submit = 3;
+
     public static $status_map = ['1'=>'查看数', '2'=>'分享数', '3'=>'报名数'];
 
     protected $_validate = array(

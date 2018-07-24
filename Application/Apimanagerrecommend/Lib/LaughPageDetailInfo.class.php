@@ -92,6 +92,11 @@ class LaughPageDetailInfo extends BaseApi{
                 $info['quick_buy_list'] = $quick_buy_list;
             }
 
+            //获取统计
+            $PageStatisticsService = Service\PageStatisticsService::get_instance();
+            $info['view_count'] = $PageStatisticsService->count_views($info['id']);
+            $info['share_count'] = $PageStatisticsService->count_views($info['id']);
+            $info['submit_count'] = $PageStatisticsService->count_views($info['id']);
 
         }
         return result_json(TRUE, '获取成功', $info);

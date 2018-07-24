@@ -59,8 +59,9 @@
 //    $list[$_li['pid']][] = $_li;
 //}
 //$tree = make_tree($list);
-class a {
+class ab {
     static $aa = 1;
 }
-$a = new a();
-var_dump($a::$aa);
+$a = 'a';
+$b = $a . 'b';
+var_dump($a.'b'::$aa);
