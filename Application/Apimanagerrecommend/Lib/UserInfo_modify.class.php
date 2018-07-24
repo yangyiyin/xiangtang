@@ -99,12 +99,12 @@ class UserInfo_modify extends BaseApi{
         $files = [];
         if ($_FILES) {
             foreach ($_FILES as $key => $file) {
-                $files[$key] = $file['tmp_name'];
+                $files[$key] = new \CURLFile(realpath($file['tmp_name']));
             }
         }
-        $ret = curl_post_form('http://api.88plus.net/index.php/waibao/common/qiniu_upload', $files);
+        $ret = curl_post_form('http://api.88plus.net/index.php/waibao/common/qiniu_upload?bucket=onepixel-pub', $files);
         $ret = json_decode($ret, true);
-        if ($ret && isset($ret['code']) && $ret['code'] == 999) {
+        if ($ret && isset($ret['code']) && $ret['code'] == 100) {
             return $ret['data'];
         }
 
