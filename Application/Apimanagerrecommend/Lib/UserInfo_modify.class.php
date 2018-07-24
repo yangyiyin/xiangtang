@@ -68,7 +68,7 @@ class UserInfo_modify extends BaseApi{
             if ($_POST['user_name']) {
                 $data['user_name'] = $_POST['user_name'];
             }
-            $data['avatar'] = '/Uploads/' . $return['avatar']['savepath'] . $return['avatar']['savename'];
+            $data['avatar'] = $return[0];
         }
 
         $ret = $this->UserService->update_by_id($this->uid, $data);
@@ -92,10 +92,22 @@ class UserInfo_modify extends BaseApi{
     public function uploadPicture(){
 
         /* 返回标准数据 */
-        $return  = array('status' => 1, 'info' => '上传成功', 'data' => '');
+//        $return  = array('status' => 1, 'info' => '上传成功', 'data' => '');
+//
+//        $Upload = new Upload();
+//        $return = $Upload->upload();
+        $files = [];
+        if ($_FILES) {
+            foreach ($_FILES as $key => $file) {
+                $files[$key] = $file['tmp_name'];
+            }
+        }
+        $ret = curl_post_form('http://api.88plus.net/index.php/waibao/common/qiniu_upload', $files);
+        $ret = json_decode($ret, true);
+        if ($ret && isset($ret['code']) && $ret['code'] == 999) {
+            return $ret['data'];
+        }
 
-        $Upload = new Upload();
-        $return = $Upload->upload();
-        return $return;
+        return false;
     }
 }

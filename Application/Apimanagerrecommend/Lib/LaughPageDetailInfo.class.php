@@ -95,8 +95,8 @@ class LaughPageDetailInfo extends BaseApi{
             //获取统计
             $PageStatisticsService = Service\PageStatisticsService::get_instance();
             $info['view_count'] = $PageStatisticsService->count_views($info['id']);
-            $info['share_count'] = $PageStatisticsService->count_views($info['id']);
-            $info['submit_count'] = $PageStatisticsService->count_views($info['id']);
+            $info['share_count'] = $PageStatisticsService->count_shares($info['id']);
+            $info['submit_count'] = $PageStatisticsService->count_submits($info['id']);
 
         }
         return result_json(TRUE, '获取成功', $info);
