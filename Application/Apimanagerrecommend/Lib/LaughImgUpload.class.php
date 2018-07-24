@@ -22,7 +22,7 @@ class LaughImgUpload extends BaseApi{
         $return = $this->uploadPicture();
         if ($return) {
 
-            $img = [0];
+            $img = $return[0];
             $img = item_img($img);
         }
 
