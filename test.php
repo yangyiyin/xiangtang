@@ -59,9 +59,5 @@
 //    $list[$_li['pid']][] = $_li;
 //}
 //$tree = make_tree($list);
-class ab {
-    static $aa = 1;
-}
-$a = 'a';
-$b = $a . 'b';
-var_dump($a.'b'::$aa);
+
+var_dump(json_decode('defgsjdkfh',true));

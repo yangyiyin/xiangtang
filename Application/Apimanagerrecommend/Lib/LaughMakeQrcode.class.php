@@ -81,7 +81,7 @@ class LaughMakeQrcode extends BaseApi{
         $page_id = $this->post_data['id'];
         $extra_uid = $this->post_data['extra_uid'];
 
-        $file_name = __ROOT__.'/pages/qrcode/'.md5($page_id.','.$extra_uid).'.png';
+        $file_name ='pages/qrcode/'.md5($page_id.','.$extra_uid).'.png';
         //$file_path = __ROOT__.'/'.$file_name;
 
 //        $link = 'https://www.88plus.net/public/'.$file_name;
@@ -122,13 +122,18 @@ class LaughMakeQrcode extends BaseApi{
         //$ret = json_decode($output,true);
        // var_dump($output);die();
 //        $file_name = 'pages/qrcode/'.md5($page_id.','.$extra_uid).'.png';
-        $ret = file_put_contents($file_name, $output);
-        if ($ret) {
-            $return = $this->uploadPicture($file_name);
-            if (!$return) {
-                return result_json(false, '网络繁忙002,请稍后再试');
+        if ($output && !json_decode($output,true)) {
+            //创建临时文件
+            $ret = file_put_contents($file_name, $output);
+            if ($ret) {
+                $return = $this->uploadPicture($file_name);
+                unlink($file_name);
+                if (!$return) {
+                    return result_json(false, '网络繁忙002,请稍后再试');
+                }
             }
         }
+
 //        $link = 'https://www.88plus.net/public/'.$file_name;
         return result_json(TRUE, '成功', $link);
     }
