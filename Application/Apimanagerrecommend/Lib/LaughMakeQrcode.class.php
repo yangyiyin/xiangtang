@@ -81,9 +81,12 @@ class LaughMakeQrcode extends BaseApi{
         $page_id = $this->post_data['id'];
         $extra_uid = $this->post_data['extra_uid'];
 
-        $file_name = 'pages/qrcode/'.md5($page_id.','.$extra_uid).'.png';
-        $link = 'https://www.88plus.net/public/'.$file_name;
-        if (file_get_contents($file_name)) {
+        $file_name = __ROOT__.'/pages/qrcode/'.md5($page_id.','.$extra_uid).'.png';
+        //$file_path = __ROOT__.'/'.$file_name;
+
+//        $link = 'https://www.88plus.net/public/'.$file_name;
+        $link = 'http://paz3jxo1v.bkt.clouddn.com/'.md5($file_name);
+        if (file_get_contents($link)) {
             return result_json(TRUE, '成功', $link);
         }
 
@@ -119,9 +122,30 @@ class LaughMakeQrcode extends BaseApi{
         //$ret = json_decode($output,true);
        // var_dump($output);die();
 //        $file_name = 'pages/qrcode/'.md5($page_id.','.$extra_uid).'.png';
-        file_put_contents($file_name, $output);
+        $ret = file_put_contents($file_name, $output);
+        if ($ret) {
+            $return = $this->uploadPicture($file_name);
+            if (!$return) {
+                return result_json(false, '网络繁忙002,请稍后再试');
+            }
+        }
 //        $link = 'https://www.88plus.net/public/'.$file_name;
         return result_json(TRUE, '成功', $link);
+    }
+
+    public function uploadPicture($file){
+
+        $files = [];
+        $files['file'] = new \CURLFile(realpath($file));
+        $files['obj_name'] = md5($file);
+        $ret = curl_post_form('http://api.88plus.net/index.php/waibao/common/qiniu_upload?bucket=onepixel-pub', $files);
+        $ret = json_decode($ret, true);
+        if ($ret && isset($ret['code']) && $ret['code'] == 100) {
+            return $ret['data'];
+        }
+
+        return false;
+
     }
 
 
