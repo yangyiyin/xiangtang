@@ -102,7 +102,7 @@ class UserInfo_modify extends BaseApi{
                 $files[$key] = new \CURLFile(realpath($file['tmp_name']));
             }
         }
-        $ret = curl_post_form('http://api.88plus.net/index.php/waibao/common/qiniu_upload?bucket=onepixel-pub', $files);
+        $ret = curl_post_form('http://api.'.C('BASE_WEB_HOST').'/index.php/waibao/common/qiniu_upload?bucket=onepixel-pub', $files);
         $ret = json_decode($ret, true);
         if ($ret && isset($ret['code']) && $ret['code'] == 100) {
             return $ret['data'];

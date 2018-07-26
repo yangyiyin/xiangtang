@@ -19,7 +19,7 @@
 <script>
     $(document).ready(function(){
        $('.cutprice_sign').click(function(){
-           var url = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/cutprice_sign?id={:I("id")}';
+           var url = 'https://www.'.C('BASE_WEB_HOST').'/public/index.php/HomeManagerRecommend/Pages/cutprice_sign?id={:I("id")}';
            $.post(url,{}, function(res){
                alert(res.info);
                 console.log(res);
@@ -27,7 +27,7 @@
         })
 
         $('.cutprice_cut').click(function(){
-            var url = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/cutprice_cut?id={:I("id")}&extra_uid={$extra_uid}';
+            var url = 'https://www.'.C('BASE_WEB_HOST').'/public/index.php/HomeManagerRecommend/Pages/cutprice_cut?id={:I("id")}&extra_uid={$extra_uid}';
             $.post(url,{}, function(res){
                 alert(res.info);
                 console.log(res);

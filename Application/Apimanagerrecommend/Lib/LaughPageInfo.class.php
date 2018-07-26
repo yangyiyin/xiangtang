@@ -183,7 +183,7 @@ class LaughPageInfo extends BaseApi{
                 }
             }
 
-            $info['page_url'] = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/index.html?id=' . $id;
+            $info['page_url'] = 'https://www.'.C('BASE_WEB_HOST').'/public/index.php/HomeManagerRecommend/Pages/index.html?id=' . $id;
         }
         return result_json(TRUE, '获取成功', $info);
     }

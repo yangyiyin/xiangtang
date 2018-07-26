@@ -20,14 +20,14 @@
 <script>
     $(document).ready(function(){
        $('.praise_sign').click(function(){
-           var url = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/praise_sign?id={:I("id")}';
+           var url = 'https://www.'.C('BASE_WEB_HOST').'/public/index.php/HomeManagerRecommend/Pages/praise_sign?id={:I("id")}';
            $.post(url,{}, function(res){
                alert(res.info);
                 console.log(res);
            })
         })
         $('.praise_praise').click(function(){
-            var url = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/praise_praise?id={:I("id")}&extra_uid={$extra_uid}';
+            var url = 'https://www.'.C('BASE_WEB_HOST').'/public/index.php/HomeManagerRecommend/Pages/praise_praise?id={:I("id")}&extra_uid={$extra_uid}';
             $.post(url,{}, function(res){
                 alert(res.info);
                 console.log(res);

@@ -23,7 +23,7 @@ class LaughVerifyCode extends BaseApi{
         }
 
 
-        $ret = curl_post_raw('http://api.88plus.net/index.php/waibao/common/verify_code_manager_recommend', json_encode(['phone'=>$phone, 'code'=>$code]));
+        $ret = curl_post_raw('http://api.'.C('BASE_WEB_HOST').'/index.php/waibao/common/verify_code_manager_recommend', json_encode(['phone'=>$phone, 'code'=>$code]));
         $ret = json_decode($ret,true);
 
         if ($ret && $ret['code'] == 100) {

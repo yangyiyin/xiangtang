@@ -106,7 +106,7 @@ class LaughFightgroupJoin extends BaseApi{
             return result_json(false, '系统异常,您的提货码生成失败,请联系客服');
         }
         //发送短信 todo
-        curl_post_raw('http://api.88plus.net/index.php/waibao/common/send_pick_code_manager_recommend', json_encode(['phone'=>$phone,'activity_name'=>$page_info['title'],'pick_phone'=>$phone,'pick_code'=>$pick_code]));
+        curl_post_raw('http://api.'.C('BASE_WEB_HOST').'/index.php/waibao/common/send_pick_code_manager_recommend', json_encode(['phone'=>$phone,'activity_name'=>$page_info['title'],'pick_phone'=>$phone,'pick_code'=>$pick_code]));
 
         if ($page_info['stock'] > 0) {
             $PageService->setInc(['id'=>$page_info['id']], 'sell_num', 1);

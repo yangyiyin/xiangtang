@@ -57,7 +57,7 @@
 
        $('.vote').click(function(){
            var vote_id = $(this).attr('vote_id');
-           var url = 'https://www.88plus.net/public/index.php/HomeManagerRecommend/Pages/vote?id={:I("id")}&vote_id='+vote_id;
+           var url = 'https://www.'.C('BASE_WEB_HOST').'/public/index.php/HomeManagerRecommend/Pages/vote?id={:I("id")}&vote_id='+vote_id;
            $.post(url,{}, function(res){
                alert(res.info);
                 console.log(res);
