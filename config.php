@@ -8,7 +8,7 @@
  * 系统配文件
  * 所有系统级别的配置
  */
-return array(
+$arr = array(
     /* 模块相关配置 */
     'AUTOLOAD_NAMESPACE' => array('Addons' => ZCMS_ADDON_PATH), //扩展模块列表
     'DEFAULT_MODULE'     => 'Home',
@@ -59,3 +59,10 @@ return array(
     'INVITER_RATE' => 0.01
 
 );
+
+if (file_exists(__ROOT__.'/product.lock')) {
+    $arr['DB_HOST'] = '127.0.0.1';
+    $arr['DB_PWD'] = 'a123123A';
+}
+
+return $arr;
