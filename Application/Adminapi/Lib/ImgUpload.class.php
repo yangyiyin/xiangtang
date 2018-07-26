@@ -22,7 +22,7 @@ class ImgUpload extends BaseSapi{
         $return = $this->uploadPicture();
         if ($return) {
 
-            $img = '/Uploads/' . $return['file']['savepath'] . $return['file']['savename'];
+            $img = $return[0];
             $img = item_img($img);
         }
 
@@ -37,10 +37,25 @@ class ImgUpload extends BaseSapi{
     public function uploadPicture(){
 
         /* 返回标准数据 */
-        $return  = array('status' => 1, 'info' => '上传成功', 'data' => '');
+//        $return  = array('status' => 1, 'info' => '上传成功', 'data' => '');
+//
+//        $Upload = new Upload();
+//        $return = $Upload->upload();
+//        return $return;
 
-        $Upload = new Upload();
-        $return = $Upload->upload();
-        return $return;
+        $files = [];
+        if ($_FILES) {
+            foreach ($_FILES as $key => $file) {
+                $files[$key] = new \CURLFile(realpath($file['tmp_name']));
+            }
+        }
+        $ret = curl_post_form('http://api.88plus.net/index.php/waibao/common/qiniu_upload?bucket=onepixel-pub', $files);
+        $ret = json_decode($ret, true);
+        if ($ret && isset($ret['code']) && $ret['code'] == 100) {
+            return $ret['data'];
+        }
+
+        return false;
+
     }
 }
