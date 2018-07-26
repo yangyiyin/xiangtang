@@ -127,7 +127,7 @@ class LaughMakeQrcode extends BaseApi{
             $ret = file_put_contents($file_name, $output);
             if ($ret) {
                 $return = $this->uploadPicture($file_name);
-                unlink($file_name);
+//                unlink($file_name);
                 if (!$return) {
                     return result_json(false, '网络繁忙002,请稍后再试');
                 }
