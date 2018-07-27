@@ -60,7 +60,7 @@ $arr = array(
     'BASE_WEB_HOST' => '88plus.net'
 );
 
-if (file_exists(__ROOT__.'/product.lock')) {
+if (file_exists('product.lock')) {
     $arr['DB_HOST'] = '127.0.0.1';
     $arr['DB_PWD'] = 'a123123A';
     $arr['BASE_WEB_HOST'] = 'yixsu.com';

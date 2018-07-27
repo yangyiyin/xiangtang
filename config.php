@@ -61,10 +61,10 @@ $arr = array(
 
 );
 
-if (file_exists(__ROOT__.'/product.lock')) {
-    $arr['DB_HOST'] = '127.0.0.1';
-    $arr['DB_PWD'] = 'a123123A';
-    $arr['BASE_WEB_HOST'] = 'yixsu.com';
-}
+//if (file_exists('product.lock')) {
+//    $arr['DB_HOST'] = '127.0.0.1';
+//    $arr['DB_PWD'] = 'a123123A';
+//    $arr['BASE_WEB_HOST'] = 'yixsu.com';
+//}
 
 return $arr;
