@@ -29,8 +29,8 @@ class LaughSysTips extends BaseSapi{
 //        $info = $infos[array_rand($infos,1)];
 
         foreach ($infos as $key => &$info) {
-            if (mb_strlen($info['title'], 'utf-8') > 10) {
-                $info['title'] = mb_substr($info['title'], 0, 10, 'utf-8') . '...';
+            if (mb_strlen($info['title'], 'utf-8') > 15) {
+                $info['title'] = mb_substr($info['title'], 0, 15, 'utf-8') . '...';
             }
         }
         return result_json(TRUE, '', $infos);
