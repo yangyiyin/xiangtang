@@ -59,5 +59,7 @@
 //    $list[$_li['pid']][] = $_li;
 //}
 //$tree = make_tree($list);
-
-var_dump(json_decode('defgsjdkfh',true));
+$str = '的收费开始就';
+var_dump(mb_strlen($str, 'utf-8'));
+$str = mb_substr($str,0,2,'utf-8');
+var_dump($str);

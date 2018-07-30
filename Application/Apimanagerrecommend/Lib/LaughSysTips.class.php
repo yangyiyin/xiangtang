@@ -27,6 +27,12 @@ class LaughSysTips extends BaseSapi{
 //        $infos[]= '店长小助手:长按我的页面可以删除操作';
 
 //        $info = $infos[array_rand($infos,1)];
+
+        foreach ($infos as $key => &$info) {
+            if (mb_strlen($info['title'], 'utf-8') > 10) {
+                $info['title'] = mb_substr($info['title'], 0, 10, 'utf-8') . '...';
+            }
+        }
         return result_json(TRUE, '', $infos);
     }
 
