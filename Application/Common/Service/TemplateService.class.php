@@ -37,7 +37,10 @@ class TemplateService extends BaseService{
 
         $NfModel = D('Nf' . static::$name);
         $where = [];
-        $where['type'] = ['eq', $type];
+        if ($type) {
+            $where['type'] = ['eq', $type];
+        }
+
         $where['id'] = ['in', $ids];
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->select();
