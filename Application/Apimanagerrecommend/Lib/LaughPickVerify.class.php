@@ -105,16 +105,30 @@ class LaughPickVerify extends BaseApi{
         if (!$page_info) {
             return result_json(false, '对不起,您报名的活动不存在,请联系神奇店长的客服咨询相关问题!');
         }
-        $page_sign['title'] = $page_info['title'];
 
+
+        if ($page_info['tmp_data']) {
+            $page_info['tmp_data'] = json_decode($page_info['tmp_data'], true);
+        } else {
+            return result_json(false, '对不起,您报名的活动内容信息异常,请联系神奇店长的客服咨询相关问题!');
+        }
+
+        $page_sign['title'] = $page_info['title'];
+        $page_sign['img'] = $page_info['img'];
+        $page_sign['time_end'] = $page_info['tmp_data']['time_limit_end'];
+        $page_sign['time_start'] = $page_info['create_time'];
         if ($page_sign['pick_status'] == $service::pick_status_verified) {
-            return result_json(true, '该凭证码已过期,店家已验证过此码!', $page_sign);
+            return result_json(true, '该凭证码已使用过,店家已验证过此码!', $page_sign);
         }
 
         if ($page_sign['pick_status'] == $service::pick_status_completed) {
             return result_json(false, '该凭证码已失效,无法再次验证!');
         }
 
+        $ret = $service->update_by_id($page_sign['id'], ['pick_status'=>$service::pick_status_completed]);
+        if (!$ret) {
+            return result_json(false, '系统异常,请稍后再试');
+        }
         return result_json(TRUE, '验证成功!', $page_sign);
     }
 
