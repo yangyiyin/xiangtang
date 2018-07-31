@@ -52,6 +52,13 @@ class LaughPageSubmit extends BaseApi{
         if (!$ret->success) {
             return result_json(false, $ret->message);
         }
+
+        //添加我的模板
+        $UserTemplateService = \Common\Service\UserTemplateService::get_instance();
+        if (!$UserTemplateService->get_by_tids_uid([$tmp_id], $this->uid)) {
+            $UserTemplateService->add_one(['tid'=>$tmp_id, 'uid'=>$this->uid]);
+        }
+
         $url = 'https://www.'.C('BASE_WEB_HOST').'/public/index.php/HomeManagerRecommend/Pages/index.html?id=' . $ret->data;
         return result_json(TRUE, '制作成功',['url'=>$url,'page_id'=>$ret->data]);
     }
