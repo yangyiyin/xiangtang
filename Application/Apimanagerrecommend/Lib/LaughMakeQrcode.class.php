@@ -92,8 +92,8 @@ class LaughMakeQrcode extends BaseApi{
 
         //获取openid
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx979328bc70cabb2d&secret=d2e17f107d1204f6a6545662894040c0");
-        //curl_setopt($ch, CURLOPT_URL, "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx939ea03c3f8d5f12&secret=d792f5bb4265934e2d19e59c16620535");
+        //curl_setopt($ch, CURLOPT_URL, "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx979328bc70cabb2d&secret=d2e17f107d1204f6a6545662894040c0");
+        curl_setopt($ch, CURLOPT_URL, "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx939ea03c3f8d5f12&secret=d792f5bb4265934e2d19e59c16620535");
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -142,7 +142,7 @@ class LaughMakeQrcode extends BaseApi{
 
         $files = [];
         $files['file'] = new \CURLFile(realpath($file));
-        $files['obj_name'] = md5($file);
+        $files['obj_name'] = md5($file).'.png';
         $ret = curl_post_form('http://api.'.C('BASE_WEB_HOST').'/index.php/waibao/common/qiniu_upload?bucket=onepixel-pub', $files);
         $ret = json_decode($ret, true);
         if ($ret && isset($ret['code']) && $ret['code'] == 100) {
