@@ -40,6 +40,27 @@ class LaughAlltmplist extends BaseApi{
             $mylist_map = result_to_map($mylist, 'tid');
             foreach ($list as $k => $value) {
                 $list[$k]['is_add'] = isset($mylist_map[$value['id']]);
+                $list[$k]['tmp_data'] = json_decode($value['content'], true);
+                switch ($value['type']) {
+                    case \Common\Service\TemplateService::TYPE_QUICK_BUY:
+                        $list[$k]['icon'] = 'http://paz3jxo1v.bkt.clouddn.com/lable_discount.png';
+                        break;
+                    case \Common\Service\TemplateService::TYPE_CUT_PRICE:
+                        $list[$k]['icon'] = 'http://paz3jxo1v.bkt.clouddn.com/lable_cutprice.png';
+                        break;
+                    case \Common\Service\TemplateService::TYPE_PRAISE:
+                        $list[$k]['icon'] = 'http://paz3jxo1v.bkt.clouddn.com/label_collect.png';
+                        break;
+                    case \Common\Service\TemplateService::TYPE_VOTE:
+                        $list[$k]['icon'] = 'http://paz3jxo1v.bkt.clouddn.com/lable_vote.png';
+                        break;
+                    case \Common\Service\TemplateService::TYPE_TUWEN:
+                        $list[$k]['icon'] = 'http://paz3jxo1v.bkt.clouddn.com/label_image.png';
+                        break;
+                    case \Common\Service\TemplateService::TYPE_SIGN:
+                        $list[$k]['icon'] = 'http://paz3jxo1v.bkt.clouddn.com/label_sign%20up.png';
+                        break;
+                }
             }
         }
         return $list;

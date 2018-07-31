@@ -6,6 +6,14 @@
 namespace Common\Service;
 class TemplateService extends BaseService{
     public static $name = 'Template';
+    //{id:2,name:'砍价'},{id:1,name:'限时特惠'},{id:7,name:'预约报名'},{id:3,name:'集赞'},{id:4,name:'投票'},{id:5,name:'图文'}
+    const TYPE_QUICK_BUY = 1;
+    const TYPE_CUT_PRICE = 2;
+    const TYPE_PRAISE = 3;
+    const TYPE_VOTE = 4;
+    const TYPE_TUWEN = 5;
+    const TYPE_FIGHT_GROUP = 6;
+    const TYPE_SIGN = 7;
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
