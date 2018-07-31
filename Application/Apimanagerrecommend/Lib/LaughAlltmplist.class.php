@@ -19,7 +19,10 @@ class LaughAlltmplist extends BaseApi{
         $p = I('p',1);
         $TemplateService = \Common\Service\TemplateService::get_instance();
         $where = [];
-        $where['type'] = $type;
+        if ($type) {
+            $where['type'] = $type;
+        }
+
         list($list, $count) = $TemplateService->get_by_where($where, 'id desc', $p);
 
         $result = [];
