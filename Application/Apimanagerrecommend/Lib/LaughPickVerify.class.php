@@ -115,7 +115,7 @@ class LaughPickVerify extends BaseApi{
 
         $page_sign['title'] = $page_info['title'];
         $page_sign['img'] = $page_info['img'];
-        $page_sign['time_end'] = $page_info['tmp_data']['time_limit_end'];
+        $page_sign['time_end'] = isset($page_info['tmp_data']['time_limit_end']) ? $page_info['tmp_data']['time_limit_end'] : '无';
         $page_sign['time_start'] = $page_info['create_time'];
         if ($page_sign['pick_status'] == $service::pick_status_verified) {
             return result_json(true, '该凭证码已使用过,店家已验证过此码!', $page_sign);
