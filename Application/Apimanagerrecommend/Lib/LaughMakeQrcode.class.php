@@ -85,7 +85,7 @@ class LaughMakeQrcode extends BaseApi{
         //$file_path = __ROOT__.'/'.$file_name;
 
 //        $link = 'https://www.88plus.net/public/'.$file_name;
-        $link = 'http://paz3jxo1v.bkt.clouddn.com/'.md5($file_name);
+        $link = 'http://paz3jxo1v.bkt.clouddn.com/'.md5($file_name).'.png';
         if (file_get_contents($link)) {
             return result_json(TRUE, '成功', $link);
         }
