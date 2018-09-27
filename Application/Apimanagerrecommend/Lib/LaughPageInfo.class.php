@@ -48,14 +48,21 @@ class LaughPageInfo extends BaseApi{
                 $info['sign_list'] = $sign_list;
 
                 $all_log = $PageSignService->get_by_uid_page_id_all($this->uid,$id);
+                $is_sign = 0;
                 if ($all_log) {
                     foreach ($all_log as $log) {
                         $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
                         if ($log['pick_status'] != \Common\Service\PageBaseService::pick_status_init) {
                             $info['pick_code'] = '您的凭证码已失效';
                         }
+
+                        if ($log['pid'] == 0) {
+                            $is_sign = 1;
+                        }
+
                     }
                 }
+                $info['is_sign'] = $is_sign;
             }
 
             if ($tmp_data['praise_list']) {
@@ -182,6 +189,15 @@ class LaughPageInfo extends BaseApi{
                     }
                 }
             }
+
+            $info['extra_uid'] = I('extra_uid',0);
+            $info['is_seller'] = ($this->uid == $info['uid']);
+
+            //获取统计
+            $PageStatisticsService = Service\PageStatisticsService::get_instance();
+            $info['view_count'] = $PageStatisticsService->count_views($info['id']);
+            $info['share_count'] = $PageStatisticsService->count_shares($info['id']);
+            $info['submit_count'] = $PageStatisticsService->count_submits($info['id']);
 
             $info['page_url'] = 'https://www.'.C('BASE_WEB_HOST').'/public/index.php/HomeManagerRecommend/Pages/index.html?id=' . $id;
         }

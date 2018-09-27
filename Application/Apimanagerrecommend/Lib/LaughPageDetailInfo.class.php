@@ -22,28 +22,6 @@ class LaughPageDetailInfo extends BaseApi{
 
         if ($info) {
 
-            $tmp_data = $info['content'] = json_decode($info['tmp_data'],true);
-            foreach ($info['content']['page'] as $k => $_page) {
-                if ($_page['type'] == 'sign') {
-                    $info['show_sign_list'] = true;
-                }
-                if ($_page['type'] == 'cutprice_btn') {
-                    $info['show_cutprice_list'] = true;
-                }
-                if ($_page['type'] == 'praise') {
-                    $info['show_praise_list'] = true;
-                }
-                if ($_page['type'] == 'vote') {
-                    $info['show_vote_list'] = true;
-                }
-                if ($_page['type'] == 'fight_group') {
-                    $info['show_fight_group_list'] = true;
-                }
-                if ($_page['type'] == 'quick_buy') {
-                    $info['show_quick_buy_list'] = true;
-                }
-            }
-
             $info['sign_list'] = $info['praise_list'] = $info['cutprice_list'] = $info['vote_list'] = $info['fight_group_list'] = $info['quick_buy_list'] = [];
             if (isset($info['show_sign_list']) && $info['show_sign_list']) {
                 $PageSignService = \Common\Service\PageSignService::get_instance();
@@ -97,7 +75,7 @@ class LaughPageDetailInfo extends BaseApi{
             $info['view_count'] = $PageStatisticsService->count_views($info['id']);
             $info['share_count'] = $PageStatisticsService->count_shares($info['id']);
             $info['submit_count'] = $PageStatisticsService->count_submits($info['id']);
-
+            $info['is_seller'] = ($this->uid == $info['uid']);
         }
         return result_json(TRUE, '获取成功', $info);
     }

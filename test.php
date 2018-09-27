@@ -60,5 +60,5 @@
 //}
 //$tree = make_tree($list);
 //http://pbw56w09g.bkt.clouddn.com/Screen Shot 2018-08-21 at 1.39.53 PM.png-1534832104
-error_reporting(0);
-var_dump((file_get_contents('http://pbw56w09g.bkt.clouddn.com/Screen Shot 2018-08-21 at 1.39.53 PM.png-1534832104')));
+$a = 1==2;
+var_dump($a);

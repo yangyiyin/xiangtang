@@ -49,7 +49,7 @@ class LaughTmpInfo extends BaseApi{
         $VipService = \Common\Service\VipService::get_instance();
         $ret = $VipService->is_vip($this->uid);
         if (!$ret->success) {
-            return result_json(false, $ret->message);
+            return result_json(false, $ret->message, null, 999);
         }
 //        return result_json(false, '您的vip已到期,请联系客服续费', $info);
         return result_json(TRUE, '获取成功', $info);

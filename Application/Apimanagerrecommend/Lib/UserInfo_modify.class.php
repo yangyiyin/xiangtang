@@ -63,6 +63,10 @@ class UserInfo_modify extends BaseApi{
             $data['type'] = $this->post_data['type'];
         }
 
+        if ($this->post_data['wechat_user_info']) {
+            $data['wechat_user_info'] = $this->post_data['wechat_user_info'];
+        }
+
         $return = $this->uploadPicture();
         if ($return) {
             if ($_POST['user_name']) {

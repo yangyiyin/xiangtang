@@ -17,10 +17,10 @@ class UserInfo extends BaseApi{
 
     public function excute() {
         $info = $this->UserService->get_info_by_id($this->uid);
-        $data = convert_obj($info, 'id,type,user_name,avatar,status,entity_title,entity_tel,verify_status,address');
+        $data = convert_obj($info, 'id,type,user_name,avatar,status,entity_title,entity_tel,verify_status,address,wechat_user_info');
         //$data->type = (int) $data->type;
         $data->avatar = $data->avatar ? item_img($data->avatar) : item_img(get_cover(46, 'path'));
-
+        $data->wechat_user_info = $data->wechat_user_info ? json_decode($data->wechat_user_info, true) : [];
         //获取会员信息
         $VipService = \Common\Service\VipService::get_instance();
         $vip = $VipService->get_info_by_uid($this->uid);
