@@ -46,6 +46,10 @@ class LaughController extends BaseController {
         $this->excute_api('Apimanagerrecommend\Lib\LaughSysTips');
     }
 
+    public function sys_news() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughSysNews');
+    }
+
     public function img_upload() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughImgUpload');
     }

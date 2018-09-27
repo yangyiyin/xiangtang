@@ -374,6 +374,7 @@ CREATE TABLE `shopy_nf_user_relation` (
 ) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8;
 
 alter table shopy_nf_page add stock int(11) DEFAULT '0';
+alter table shopy_nf_user add newer tinyint(1) DEFAULT '0';
 alter table shopy_nf_page add sell_num int(11) DEFAULT '0';
 CREATE TABLE `shopy_nf_page_statistics` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -386,3 +387,26 @@ CREATE TABLE `shopy_nf_page_statistics` (
   `ip` VARCHAR (20) DEFAULT '',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `shopy_nf_sys_news` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` tinyint(1) DEFAULT '0',
+   `deleted` tinyint(1) DEFAULT '0',
+  `create_time` timestamp DEFAULT NOW(),
+  `img` VARCHAR(100) DEFAULT NULL,
+  `link` VARCHAR(100) DEFAULT NULL,
+  `type` tinyint(3) DEFAULT '1',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `shopy_nf_sys_news_uid` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` tinyint(1) DEFAULT '0',
+   `deleted` tinyint(1) DEFAULT '0',
+  `create_time` timestamp DEFAULT NOW(),
+  `news_id` int(11) DEFAULT 0,
+  `uid` int(11) DEFAULT 0,
+  `is_read` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

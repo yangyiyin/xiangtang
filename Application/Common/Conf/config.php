@@ -66,4 +66,10 @@ if (file_exists('product.lock')) {
     $arr['BASE_WEB_HOST'] = 'yixsu.com';
 }
 
+if (file_exists('development.lock')) {
+    $arr['DB_HOST'] = '118.25.47.41';
+    $arr['DB_PWD'] = 'a123123A';
+    $arr['BASE_WEB_HOST'] = 'www.myweb.com';
+}
+
 return $arr;

@@ -31,13 +31,18 @@ class LaughMypages extends BaseApi{
 
     public function convert($list) {
         if ($list) {
-//            $ids = result_to_array($list);
-//            $UserTemplateService = \Common\Service\UserTemplateService::get_instance();
-//            $mylist = $UserTemplateService->get_by_tids_uid($ids, $this->uid);
-//            $mylist_map = result_to_map($mylist, 'tid');
-//            foreach ($list as $k => $value) {
-//                $list[$k]['is_add'] = isset($mylist_map[$value['id']]);
-//            }
+
+            foreach ($list as $k => $value) {
+                $list[$k]['active_status'] = '进行中';
+                if ($value['start_time'] && time() < $value['start_time']) {
+                    $list[$k]['active_status'] = '尚未开始';
+                }
+
+                if ($page_info['end_time'] && time() > $page_info['end_time']) {
+                    $list[$k]['active_status'] = '已开始';
+                }
+
+            }
         }
         return $list;
     }

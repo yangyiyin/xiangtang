@@ -4,13 +4,10 @@
  * Time: 2017-12-30 13:37:04
  */
 namespace Common\Service;
-class VipService extends BaseService{
-    public static $name = 'Vip';
-    public static $price_info_list = [
-        ["id"=>1,'time'=>'12个月','months'=>'12','price'=>88,'price_month'=>'低至7.3元/月','price_old'=>'¥180元','remark'=>'特惠'],
-        ['id'=>2,'time'=>'6个月','months'=>'6','price'=>49,'price_month'=>'低至8元/月','price_old'=>'¥90元'],
-        ['id'=>3,'time'=>'1个月','months'=>'1','price'=>9,'price_month'=>'&nbsp;','price_old'=>'¥15元','active'=>true],
-    ];
+class SysNewsUidService extends BaseService{
+    public static $name = 'SysNewsUid';
+    const IS_READ_NO = 0;
+    const IS_READ_YES = 1;
 
     public function add_one($data) {
         $NfModel = D('Nf' . static::$name);
@@ -106,59 +103,6 @@ class VipService extends BaseService{
         return [$data, $count];
     }
 
-    public function extend_days($uid, $days) {
-        //查询
-        $info = $this->get_info_by_uid($uid);
-        $now = time();
-        if ($info) {
-            $end_time_int = strtotime($info['end_time']);
-            //比较是否在期内
-            if ($end_time_int >= $now) {
-                $end_time_int_modify = $end_time_int + $days * 3600 * 24;
-                $end_time = date('Y-m-d H:i:s', $end_time_int_modify);
-                $ret = $this->update_by_id($info['id'], ['end_time' => $end_time]);
-            } else {
-                $end_time_int_modify = $now + $days * 3600 * 24;
-                $end_time = date('Y-m-d H:i:s', $end_time_int_modify);
-
-                $start_time = date('Y-m-d H:i:s', $now);
-                $ret = $this->update_by_id($info['id'], ['start_time' => $start_time, 'end_time' => $end_time]);
-            }
-
-        } else {
-            $end_time_int_modify = $now + $days * 3600 * 24;
-            $end_time = date('Y-m-d H:i:s', $end_time_int_modify);
-            $start_time = date('Y-m-d H:i:s', $now);
-
-            $data = [];
-            $data['uid'] = $uid;
-            $data['start_time'] = $start_time;
-            $data['end_time'] = $end_time;
-            $ret = $this->add_one($data);
-        }
-
-        return $ret;
-    }
-
-    public function is_vip($uid) {
-        $info = $this->get_info_by_uid($uid);
-        if (!$info) {
-            return result(FALSE, '您还不是vip,请联系客服开通');
-        }
-        $date = date('Y-m-d H:i:s');
-        if ($info['start_time'] > $date ) {
-            return result(FALSE, '您的vip未生效');
-        }
-        if ($info['end_time'] < $date) {
-            return result(FALSE, '您的vip已过期');
-        }
-
-        if ($info['start_time'] <= $date && $info['end_time'] >= $date) {
-            return result(TRUE, '');
-        }
-
-        return result(FALSE, '您的vip异常,请联系客服');
-    }
 
 
 }

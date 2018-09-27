@@ -19,6 +19,8 @@ class LaughPageSubmit extends BaseApi{
         $tmp_data = $this->post_data['tmp_data'];
         $tmp_id = $this->post_data['tmp_id'];
         $page_title = $this->post_data['page_title'];
+        $start_time = isset($this->post_data['start_time']) ? $this->post_data['start_time'] : null;
+        $end_time = isset($this->post_data['end_time']) ? $this->post_data['end_time'] : null;
         $page_stock = isset($this->post_data['page_stock']) ? $this->post_data['page_stock'] : 0;
         if (!$tmp_data || !$tmp_id) {
             return result_json(false, '页面内容异常!');
@@ -45,6 +47,15 @@ class LaughPageSubmit extends BaseApi{
         if (isset($tmp_data['time_limit_left']) && $tmp_data['time_limit_left']) {
             $tmp_data['time_limit_end'] = date('Y-m-d H:i:s', (time() + $tmp_data['time_limit_left']));
         }
+        if ($start_time) {
+            $data['start_time'] = $start_time;
+        }
+        if ($end_time) {
+            $data['end_time'] = $end_time;
+            if (isset($tmp_data['time_limit_end'])) {
+                $data['end_time'] = $tmp_data['time_limit_end'];
+            }
+        }
         $data['tmp_data'] = json_encode($tmp_data);
         $PageService = \Common\Service\PageService::get_instance();
         $ret = $PageService->add_one($data);
@@ -56,7 +67,7 @@ class LaughPageSubmit extends BaseApi{
         //添加我的模板
         $UserTemplateService = \Common\Service\UserTemplateService::get_instance();
         if (!$UserTemplateService->get_by_tids_uid([$tmp_id], $this->uid)) {
-            $UserTemplateService->add_one(['tid'=>$tmp_id, 'uid'=>$this->uid]);
+            $UserTemplateService->add_one(['tid'=>$tmp_id, 'type' => $tmp_info['type'], 'uid'=>$this->uid]);
         }
 
         $url = 'https://www.'.C('BASE_WEB_HOST').'/public/index.php/HomeManagerRecommend/Pages/index.html?id=' . $ret->data;

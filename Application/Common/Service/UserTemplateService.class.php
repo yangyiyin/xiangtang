@@ -39,10 +39,13 @@ class UserTemplateService extends BaseService{
     }
 
 
-    public function get_by_uid($uid) {
+    public function get_by_uid($uid, $type=0) {
         $NfModel = D('Nf' . static::$name);
         $where = [];
         $where['uid'] = ['EQ', $uid];
+        if ($type) {
+            $where['type'] = ['EQ', $type];
+        }
         $where['deleted'] = ['EQ', static::$NOT_DELETED];
         return $NfModel->where($where)->order('id desc')->select();
     }

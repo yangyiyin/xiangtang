@@ -174,4 +174,23 @@ class ActivityPayService extends BaseService{
         }
     }
 
+    public function create_pay_vip($uid, $price, $label) {
+
+        //创建支付订单
+        $NfModel = D('Nf' . static::$name);
+        $data = [];
+        $data['activity_id'] = 0;
+        $data['uid'] = $uid;
+        $data['seller_uid'] = 0;
+        $data['extra_uid'] = 0;
+        $data['sum'] = $price * 100;
+        $data['pay_no'] = $this->gen_pay_no($uid, 'vip');
+        $data['label'] = $label;
+        if ($NfModel->add($data)) {
+            return $data;
+        } else {
+            return false;
+        }
+    }
+
 }

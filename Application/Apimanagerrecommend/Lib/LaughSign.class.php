@@ -35,12 +35,13 @@ class LaughSign extends BaseApi{
         if ($page_info['tmp_data']) {
             $page_info['tmp_data'] = json_decode($page_info['tmp_data'], true);
         }
-        if (isset($page_info['tmp_data']['time_limit_end'])) {
-            if (time() > strtotime($page_info['tmp_data']['time_limit_end'])) {
-                return result_json(false, '报名已结束');
-            }
+        if ($page_info['start_time'] && time() < $page_info['start_time']) {
+            return result_json(false, '活动尚未开始!');
         }
 
+        if ($page_info['end_time'] && time() > $page_info['end_time']) {
+            return result_json(false, '活动已结束!');
+        }
         //检测库存
         if ($page_info['stock'] > 0 && ($page_info['stock'] - $page_info['sell_num']) <= 0) {
             return result_json(false, '对不起,当前库存不足');

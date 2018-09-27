@@ -21,4 +21,11 @@ class PayController extends BaseController {
     public function wechat_pay_notify() {
         $this->excute_api('Apimanagerrecommend\Lib\WechatPayNotify');
     }
+
+    public function wechat_pay_create_vip() {
+        $this->excute_api('Apimanagerrecommend\Lib\WechatPayCreateVip');
+    }
+    public function wechat_pay_notify_vip() {
+        $this->excute_api('Apimanagerrecommend\Lib\WechatPayNotifyVip');
+    }
 }

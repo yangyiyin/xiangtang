@@ -37,12 +37,22 @@ class LaughCutpriceCut extends BaseApi{
             $page_info['tmp_data'] = json_decode($page_info['tmp_data'], true);
         }
 
-        if (isset($page_info['tmp_data']['time_limit_end'])) {
-            if (time() > strtotime($page_info['tmp_data']['time_limit_end'])) {
+//        if (isset($page_info['tmp_data']['time_limit_end'])) {
+//            if (time() > strtotime($page_info['tmp_data']['time_limit_end'])) {
+//
+//                return result_json(false, '报名已结束!');
+//            }
+//        }
 
-                return result_json(false, '报名已结束!');
-            }
+        if ($page_info['start_time'] && time() < $page_info['start_time']) {
+            return result_json(false, '活动尚未开始!');
         }
+
+        if ($page_info['end_time'] && time() > $page_info['end_time']) {
+            return result_json(false, '活动已结束!');
+        }
+
+
         $price = $max_minus_price = $average_price = 0;
         foreach ($page_info['tmp_data']['page'] as $_page) {
             if ($_page['type'] == 'cutprice_price') {
