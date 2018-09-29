@@ -103,27 +103,37 @@ class LaughPageInfo extends BaseApi{
                 $info['praise_help_list'] = [];
                 $info['praise_count'] = 0;
                 if ($extra_uid) {
-                    $extra_uid_logs = $PageSignService->get_by_uid_page_id_all($extra_uid,$id);
-                    if ($extra_uid_logs) {
-                        foreach ($extra_uid_logs as $_log) {
-
-                            if ($_log['pid'] == 0) {
-
-                            } else {
-                                $info['praise_help_list'][] = $_log;
-                                $info['praise_count']++;
-                            }
-                        }
-                    }
+                    $help_logs = $PageSignService->get_by_pid_page_id_all($extra_uid,$id);
+//                    $extra_uid_logs = $PageSignService->get_by_uid_page_id_all($extra_uid,$id);
+//                    if ($extra_uid_logs) {
+//                        foreach ($extra_uid_logs as $_log) {
+//
+//                            if ($_log['pid'] == 0) {
+//
+//                            } else {
+//                                $info['praise_help_list'][] = $_log;
+//                                $info['praise_count']++;
+//                            }
+//                        }
+//                    }
                 } elseif($is_sign_praise) {
-                    foreach ($all_log as $_log) {
+                    $help_logs = $PageSignService->get_by_pid_page_id_all($this->uid,$id);
 
-                        if ($_log['pid'] == 0) {
+//                    foreach ($all_log as $_log) {
+//
+//                        if ($_log['pid'] == 0) {
+//
+//                        } else {
+//                            $info['praise_help_list'][] = $_log;
+//                            $info['praise_count']++;
+//                        }
+//                    }
+                }
+                if (isset($help_logs) && $help_logs) {
+                    foreach ($help_logs as $_log) {
 
-                        } else {
-                            $info['praise_help_list'][] = $_log;
-                            $info['praise_count']++;
-                        }
+                        $info['praise_help_list'][] = $_log;
+                        $info['praise_count']++;
                     }
                 }
 
@@ -172,11 +182,12 @@ class LaughPageInfo extends BaseApi{
                             if ($_log['pid'] == 0) {
                                 $info['cut_all_price'] = $_log['cutprice'];
                                 $info['current_price'] = $_log['price'];
-                            } else {
-                                $info['cut_help_list'][] = $_log;
                             }
                         }
                     }
+
+                    $help_logs = $PageCutpriceService->get_by_pid_page_id_all($extra_uid,$id);
+
                 } elseif($is_sign_cutprice) {
                     foreach ($all_log as $_log) {
                         $_log['price'] = format_price($_log['price']);
@@ -184,12 +195,16 @@ class LaughPageInfo extends BaseApi{
                         if ($_log['pid'] == 0) {
                             $info['cut_all_price'] = $_log['cutprice'];
                             $info['current_price'] = $_log['price'];
-                        } else {
-                            $info['cut_help_list'][] = $_log;
                         }
                     }
-                }
+                    $help_logs = $PageCutpriceService->get_by_pid_page_id_all($this->uid,$id);
 
+                }
+                if (isset($help_logs) && $help_logs) {
+                    foreach ($help_logs as $_log) {
+                        $info['cut_help_list'][] = $_log;
+                    }
+                }
                 $info['is_sign_cutprice'] = $is_sign_cutprice;
                 $info['is_help_cutprice'] = $is_help_cutprice;
                 $info['extra_uid'] = $extra_uid;
