@@ -37,7 +37,7 @@ class WechatPayCreateVip extends BaseApi{
         }
         //生成支付单
         $ActivityPayService = Service\ActivityPayService::get_instance();
-        $ret = $ActivityPayService->create_pay_vip($this->uid, 0.01, $label);
+        $ret = $ActivityPayService->create_pay_vip($this->uid, $price * 100, $label);
         if (!$ret) {
             return result_json(FALSE, '创建支付失败');
         }
