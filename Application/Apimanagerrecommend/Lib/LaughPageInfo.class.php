@@ -202,6 +202,8 @@ class LaughPageInfo extends BaseApi{
                 }
                 if (isset($help_logs) && $help_logs) {
                     foreach ($help_logs as $_log) {
+                        $_log['price'] = format_price($_log['price']);
+                        $_log['cutprice'] = format_price($_log['cutprice']);
                         $info['cut_help_list'][] = $_log;
                     }
                 }
