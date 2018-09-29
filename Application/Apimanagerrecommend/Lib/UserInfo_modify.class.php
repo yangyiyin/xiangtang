@@ -34,7 +34,9 @@ class UserInfo_modify extends BaseApi{
         if ($this->post_data['address']) {
             $data['address'] = $this->post_data['address'];
         }
-
+        if ($this->post_data['open_tel']) {
+            $data['open_tel'] = $this->post_data['open_tel'];
+        }
         if ($data['entity_tel'] && !is_tel_num($data['entity_tel'])) {
             result_json(FALSE, '请输入正确的手机号');
         }

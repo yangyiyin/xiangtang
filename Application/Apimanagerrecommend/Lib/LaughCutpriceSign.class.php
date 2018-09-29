@@ -35,11 +35,11 @@ class LaughCutpriceSign extends BaseApi{
             $page_info['tmp_data'] = json_decode($page_info['tmp_data'], true);
         }
 
-        if ($page_info['start_time'] && time() < $page_info['start_time']) {
+        if ($page_info['start_time'] && time() < strtotime($page_info['start_time'])) {
             return result_json(false, '活动尚未开始!');
         }
 
-        if ($page_info['end_time'] && time() > $page_info['end_time']) {
+        if ($page_info['end_time'] && time() > strtotime($page_info['end_time'])) {
             return result_json(false, '活动已结束!');
         }
 
@@ -70,6 +70,10 @@ class LaughCutpriceSign extends BaseApi{
 
         $data['price'] = $price * 100;
         $data['phone'] = $phone;
+
+        $data['user_name'] = $this->user_info['user_name'] ? $this->user_info['user_name'] : ($this->user_info['wechat_user_info']?$this->user_info['wechat_user_info']['nickName']:'');
+        $data['avatar'] = $this->user_info['avatar'] ? $this->user_info['avatar'] : ($this->user_info['wechat_user_info']?$this->user_info['wechat_user_info']['avatarUrl']:'');
+
         $ret = $PageCutpriceService->add_one($data);
         if (!$ret->success) {
             return result_json(false, $ret->message);

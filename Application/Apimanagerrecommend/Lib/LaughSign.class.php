@@ -35,11 +35,11 @@ class LaughSign extends BaseApi{
         if ($page_info['tmp_data']) {
             $page_info['tmp_data'] = json_decode($page_info['tmp_data'], true);
         }
-        if ($page_info['start_time'] && time() < $page_info['start_time']) {
+        if ($page_info['start_time'] && time() < strtotime($page_info['start_time'])) {
             return result_json(false, '活动尚未开始!');
         }
 
-        if ($page_info['end_time'] && time() > $page_info['end_time']) {
+        if ($page_info['end_time'] && time() > strtotime($page_info['end_time'])) {
             return result_json(false, '活动已结束!');
         }
         //检测库存
@@ -53,6 +53,9 @@ class LaughSign extends BaseApi{
         $data['uid'] = $this->uid;
         $data['page_id'] = $id;
         $data['phone'] = $phone;
+        $data['user_name'] = $this->user_info['user_name'] ? $this->user_info['user_name'] : ($this->user_info['wechat_user_info']?$this->user_info['wechat_user_info']['nickName']:'');
+        $data['avatar'] = $this->user_info['avatar'] ? $this->user_info['avatar'] : ($this->user_info['wechat_user_info']?$this->user_info['wechat_user_info']['avatarUrl']:'');
+
         if ($PageSignService->get_by_uid_page_id($data['uid'], $data['page_id'])) {
             return result_json(false, '您已报名');
         }

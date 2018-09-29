@@ -35,11 +35,11 @@ class LaughVote extends BaseApi{
             $page_info['tmp_data'] = json_decode($page_info['tmp_data'], true);
         }
 
-        if ($page_info['start_time'] && time() < $page_info['start_time']) {
+        if ($page_info['start_time'] && time() < strtotime($page_info['start_time'])) {
             return result_json(false, '活动尚未开始!');
         }
 
-        if ($page_info['end_time'] && time() > $page_info['end_time']) {
+        if ($page_info['end_time'] && time() > strtotime($page_info['end_time'])) {
             return result_json(false, '活动已结束!');
         }
 

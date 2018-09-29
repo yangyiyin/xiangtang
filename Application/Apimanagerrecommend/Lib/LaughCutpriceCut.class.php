@@ -44,11 +44,11 @@ class LaughCutpriceCut extends BaseApi{
 //            }
 //        }
 
-        if ($page_info['start_time'] && time() < $page_info['start_time']) {
+        if ($page_info['start_time'] && time() < strtotime($page_info['start_time'])) {
             return result_json(false, '活动尚未开始!');
         }
 
-        if ($page_info['end_time'] && time() > $page_info['end_time']) {
+        if ($page_info['end_time'] && time() > strtotime($page_info['end_time'])) {
             return result_json(false, '活动已结束!');
         }
 
@@ -91,7 +91,9 @@ class LaughCutpriceCut extends BaseApi{
         }
         $can_cut_price = $left_price > ($average_price * 1.4 * 100) ? ($average_price * 1.4 * 100) : $left_price;
 
-        $data['cutprice'] = mt_rand($can_cut_price * 0.4, $can_cut_price);
+        $data['cutprice'] = intval(mt_rand($can_cut_price * 0.4, $can_cut_price));
+        $data['user_name'] = $this->user_info['user_name'] ? $this->user_info['user_name'] : ($this->user_info['wechat_user_info']?$this->user_info['wechat_user_info']['nickName']:'');
+        $data['avatar'] = $this->user_info['avatar'] ? $this->user_info['avatar'] : ($this->user_info['wechat_user_info']?$this->user_info['wechat_user_info']['avatarUrl']:'');
         $ret = $PageCutpriceService->add_one($data);
         if (!$ret->success) {
             return result_json(false, $ret->message);
@@ -107,6 +109,7 @@ class LaughCutpriceCut extends BaseApi{
 
         $data_up = [];
         $data_up['price'] = $cut_info['price'] - $data['cutprice'];
+        $data_up['cutprice'] = $cut_info['cutprice'] + $data['cutprice'];
         $PageCutpriceService->update_by_id($cut_info['id'], $data_up);
 
         //记录我的报名

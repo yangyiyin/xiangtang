@@ -58,10 +58,13 @@ class LaughFightgroupSign extends BaseApi{
         if (!$price || !$max_number) {
             return result_json(false, '页面信息异常2!');
         }
-        if (isset($page_info['tmp_data']['time_limit_end'])) {
-            if (time() > strtotime($page_info['tmp_data']['time_limit_end'])) {
-                return result_json(false, '活动已结束!');
-            }
+
+        if ($page_info['start_time'] && time() < strtotime($page_info['start_time'])) {
+            return result_json(false, '活动尚未开始!');
+        }
+
+        if ($page_info['end_time'] && time() > strtotime($page_info['end_time'])) {
+            return result_json(false, '活动已结束!');
         }
 
         //检测库存

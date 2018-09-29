@@ -190,6 +190,7 @@ class UserService extends BaseService{
     public function is_available($uid) {
         $info = $this->get_info_by_id($uid);
         if ($info && $info['status'] == \Common\Model\NfUserModel::STATUS_NORAML) {
+            $info['wechat_user_info'] = $info['wechat_user_info'] ? json_decode($info['wechat_user_info'],true) : [];
             return result(TRUE, '', $info);
         } else {
             if (!$info) return result(FALSE, '该账号未开通',1);

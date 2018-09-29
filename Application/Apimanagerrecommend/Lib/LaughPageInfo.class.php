@@ -31,6 +31,14 @@ class LaughPageInfo extends BaseApi{
                 $info['stock_none'] = false;
             }
 
+            if ($info['start_time'] && time() < strtotime($info['start_time'])) {
+                $info['cannot_sign'] = true;
+            }
+
+            if ($info['end_time'] && time() > strtotime($info['end_time'])) {
+                $info['cannot_sign'] = true;
+            }
+
 
             $tmp_data = $info['content'] = json_decode($info['tmp_data'],true);
             foreach ($info['content']['page'] as $k => $_page) {
@@ -46,19 +54,18 @@ class LaughPageInfo extends BaseApi{
                 $sign_list = $PageSignService->get_by_page_id($id);
                 $sign_list = $this->convert($sign_list);
                 $info['sign_list'] = $sign_list;
+                $info['sign_list_count'] = $sign_list ? count($sign_list) : 0;
 
                 $all_log = $PageSignService->get_by_uid_page_id_all($this->uid,$id);
                 $is_sign = 0;
+
                 if ($all_log) {
                     foreach ($all_log as $log) {
                         $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
                         if ($log['pick_status'] != \Common\Service\PageBaseService::pick_status_init) {
                             $info['pick_code'] = '您的凭证码已失效';
                         }
-
-                        if ($log['pid'] == 0) {
-                            $is_sign = 1;
-                        }
+                        $is_sign = 1;
 
                     }
                 }
@@ -70,23 +77,52 @@ class LaughPageInfo extends BaseApi{
                 $list = $PageSignService->get_by_page_id($id,1);
                 $list = $this->convert($list);
                 $info['praise_list'] = $list;
-
+                $info['praise_list_count'] = $list ? count($list) : 0;
                 $extra_uid = I('extra_uid');
                 $all_log = $PageSignService->get_by_uid_page_id_all($this->uid,$id);
                 $is_sign_praise = $is_help_praise = 0;
                 if ($all_log) {
                     foreach ($all_log as $log) {
-                        $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
-                        if ($log['pick_status'] != \Common\Service\PageBaseService::pick_status_init) {
-                            $info['pick_code'] = '您的凭证码已失效';
-                        }
+
                         if ($log['pid'] == 0) {
                             $is_sign_praise = 1;
+                            $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
+                            if ($log['pick_status'] != \Common\Service\PageBaseService::pick_status_init) {
+                                $info['pick_code'] = '您的凭证码已失效';
+                            }
                         } else {
                             if ($extra_uid == $log['pid']) {
                                 $is_help_praise = 1;
                             }
 
+                        }
+                    }
+                }
+
+                //获取点赞信息
+                $info['praise_help_list'] = [];
+                $info['praise_count'] = 0;
+                if ($extra_uid) {
+                    $extra_uid_logs = $PageSignService->get_by_uid_page_id_all($extra_uid,$id);
+                    if ($extra_uid_logs) {
+                        foreach ($extra_uid_logs as $_log) {
+
+                            if ($_log['pid'] == 0) {
+
+                            } else {
+                                $info['praise_help_list'][] = $_log;
+                                $info['praise_count']++;
+                            }
+                        }
+                    }
+                } elseif($is_sign_praise) {
+                    foreach ($all_log as $_log) {
+
+                        if ($_log['pid'] == 0) {
+
+                        } else {
+                            $info['praise_help_list'][] = $_log;
+                            $info['praise_count']++;
                         }
                     }
                 }
@@ -101,23 +137,55 @@ class LaughPageInfo extends BaseApi{
                 $list = $PageCutpriceService->get_by_page_id($id,1);
                 $list = $this->convert($list);
                 $info['cutprice_list'] = $list;
+                $info['cutprice_list_count'] = $list ? count($list) : 0;
 
                 $extra_uid = I('extra_uid');
                 $all_log = $PageCutpriceService->get_by_uid_page_id_all($this->uid,$id);
                 $is_sign_cutprice = $is_help_cutprice = 0;
                 if ($all_log) {
                     foreach ($all_log as $log) {
-                        $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
-                        if ($log['pick_status'] != \Common\Service\PageBaseService::pick_status_init) {
-                            $info['pick_code'] = '您的凭证码已失效';
-                        }
+
                         if ($log['pid'] == 0) {
                             $is_sign_cutprice = 1;
+                            $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
+                            if ($log['pick_status'] != \Common\Service\PageBaseService::pick_status_init) {
+                                $info['pick_code'] = '您的凭证码已失效';
+                            }
                         } else {
                             if ($extra_uid == $log['pid']) {
                                 $is_help_cutprice = 1;
                             }
 
+                        }
+                    }
+                }
+
+                //获取砍价信息
+                $info['cut_all_price'] = $info['current_price'] = 0;
+                $info['cut_help_list'] = [];
+                if ($extra_uid) {
+                    $extra_uid_logs = $PageCutpriceService->get_by_uid_page_id_all($extra_uid,$id);
+                    if ($extra_uid_logs) {
+                        foreach ($extra_uid_logs as $_log) {
+                            $_log['price'] = format_price($_log['price']);
+                            $_log['cutprice'] = format_price($_log['cutprice']);
+                            if ($_log['pid'] == 0) {
+                                $info['cut_all_price'] = $_log['cutprice'];
+                                $info['current_price'] = $_log['price'];
+                            } else {
+                                $info['cut_help_list'][] = $_log;
+                            }
+                        }
+                    }
+                } elseif($is_sign_cutprice) {
+                    foreach ($all_log as $_log) {
+                        $_log['price'] = format_price($_log['price']);
+                        $_log['cutprice'] = format_price($_log['cutprice']);
+                        if ($_log['pid'] == 0) {
+                            $info['cut_all_price'] = $_log['cutprice'];
+                            $info['current_price'] = $_log['price'];
+                        } else {
+                            $info['cut_help_list'][] = $_log;
                         }
                     }
                 }
@@ -153,12 +221,13 @@ class LaughPageInfo extends BaseApi{
                 if ($all_log) {
                     foreach ($all_log as $log) {
 
-                        $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
-                        if ($log['pick_status'] != \Common\Service\PageBaseService::pick_status_init) {
-                            $info['pick_code'] = '您的凭证码已失效';
-                        }
+
                         if ($log['pid'] == 0) {
                             $is_sign_fightgroup = 1;
+                            $log['pick_code'] && $info['pick_code'] = $log['pick_code'];
+                            if ($log['pick_status'] != \Common\Service\PageBaseService::pick_status_init) {
+                                $info['pick_code'] = '您的凭证码已失效';
+                            }
                         } else {
                             if ($extra_uid == $log['pid']) {
                                 $is_help_fightgroup = 1;
@@ -191,8 +260,21 @@ class LaughPageInfo extends BaseApi{
             }
 
             $info['extra_uid'] = I('extra_uid',0);
+            $UserService = Service\UserService::get_instance();
+            if ($info['extra_uid']) {
+                //获取报名者信息
+                $info['extra_user_info'] = $UserService->get_info_by_id($info['extra_uid']);
+                if ( $info['extra_user_info'] && $info['extra_user_info']['wechar_user_info']) {
+                    $info['extra_user_info']['wechar_user_info'] = json_decode($info['extra_user_info']['wechar_user_info'], true);
+                }
+            }
+
             $info['is_seller'] = ($this->uid == $info['uid']);
 
+            $info['seller_info'] = $UserService->get_info_by_id($info['uid']);
+            if ($info['seller_info'] && $info['seller_info']['wechat_user_info']) {
+                $info['seller_info']['wechat_user_info'] = json_decode($info['seller_info']['wechat_user_info'], true);
+            }
             //获取统计
             $PageStatisticsService = Service\PageStatisticsService::get_instance();
             $info['view_count'] = $PageStatisticsService->count_views($info['id']);

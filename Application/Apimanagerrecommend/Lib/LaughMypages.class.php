@@ -34,12 +34,12 @@ class LaughMypages extends BaseApi{
 
             foreach ($list as $k => $value) {
                 $list[$k]['active_status'] = '进行中';
-                if ($value['start_time'] && time() < $value['start_time']) {
+                if ($value['start_time'] && time() < strtotime($value['start_time'])) {
                     $list[$k]['active_status'] = '尚未开始';
                 }
 
-                if ($page_info['end_time'] && time() > $page_info['end_time']) {
-                    $list[$k]['active_status'] = '已开始';
+                if ($value['end_time'] && time() > strtotime($value['end_time'])) {
+                    $list[$k]['active_status'] = '已结束';
                 }
 
             }
