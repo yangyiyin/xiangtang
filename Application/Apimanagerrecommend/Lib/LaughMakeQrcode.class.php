@@ -86,7 +86,8 @@ class LaughMakeQrcode extends BaseApi{
 
 //        $link = 'https://www.88plus.net/public/'.$file_name;
         $link = 'http://qiniu-pub.yixsu.com/'.md5(urlencode(md5($file_name).'.png'));
-        if (curl_get($link)) {
+        $img = curl_get($link);
+        if ($img && !json_decode($img, true)) {
             return result_json(TRUE, '成功', $link);
         }
 
@@ -147,7 +148,7 @@ class LaughMakeQrcode extends BaseApi{
         $ret = curl_post_form('http://api.'.C('BASE_WEB_HOST').'/index.php/waibao/common/qiniu_upload?bucket=onepixel-pub', $files);
         $ret = json_decode($ret, true);
         if ($ret && isset($ret['code']) && $ret['code'] == 100) {
-            return $ret['data'];
+            return $ret['data'][0];
         }
 
         return false;
