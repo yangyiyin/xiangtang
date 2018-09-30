@@ -44,7 +44,7 @@ class LaughLogin extends BaseSapi{
         if (!$user_info) {
             //创建
             $data = [];
-            $data['type'] = 1;//默认
+            $data['type'] = 0;//默认
             $data['user_name'] = 'dzdtj'.time().mt_rand(0,9);
             //$data['password_md5'] = md5($this->post_data['passwd']);
             $data['openid'] = $openid;
