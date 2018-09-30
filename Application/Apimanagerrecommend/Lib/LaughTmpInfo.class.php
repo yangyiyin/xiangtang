@@ -27,7 +27,7 @@ class LaughTmpInfo extends BaseApi{
             $info['content']['page_boxes'] = [];
             if (isset($info['content']['boxes']) && $info['content']['boxes']) {
                 foreach ($info['content']['boxes'] as $box){
-                    $info['content']['page_boxes'][$box['name']] = isset($info['content']['page_boxes'][$box['name']]) ? $info['content']['page_boxes'][$box['name']] : ['list'=>[]];
+                    $info['content']['page_boxes'][$box['name']] = isset($info['content']['page_boxes'][$box['name']]) ? $info['content']['page_boxes'][$box['name']] : ['list'=>[],'style'=>$box['style']];
                     foreach ($info['content']['page'] as $_page) {
                         if ($_page['belong_box']['name'] == $box['name']) {
                             $info['content']['page_boxes'][$box['name']]['list'][] = $_page;
@@ -36,7 +36,7 @@ class LaughTmpInfo extends BaseApi{
                     if (isset($box['children']) && $box['children']) {
                         $info['content']['page_boxes'][$box['name']]['children'] = [];
                         foreach ($box['children'] as $box2) {
-                            $info['content']['page_boxes'][$box['name']]['children'][$box2['name']] = isset($info['content']['page_boxes'][$box['name']]['children'][$box2['name']]) ? $info['content']['page_boxes'][$box['name']]['children'][$box2['name']] : ['list'=>[]];
+                            $info['content']['page_boxes'][$box['name']]['children'][$box2['name']] = isset($info['content']['page_boxes'][$box['name']]['children'][$box2['name']]) ? $info['content']['page_boxes'][$box['name']]['children'][$box2['name']] : ['list'=>[], 'style'=>$box2['style']];
                             foreach ($info['content']['page'] as $_page2) {
                                 if ($_page2['belong_box']['name'] == '--'.$box2['name']) {
                                     $info['content']['page_boxes'][$box['name']]['children'][$box2['name']]['list'][] = $_page2;
