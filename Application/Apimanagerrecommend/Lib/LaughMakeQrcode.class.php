@@ -85,8 +85,8 @@ class LaughMakeQrcode extends BaseApi{
         //$file_path = __ROOT__.'/'.$file_name;
 
 //        $link = 'https://www.88plus.net/public/'.$file_name;
-        $link = 'http://paz3jxo1v.bkt.clouddn.com/'.md5($file_name).'.png';
-        if (file_get_contents($link)) {
+        $link = 'http://qiniu-pub.yixsu.com/'.md5(urlencode(md5($file_name).'.png'));
+        if (curl_get($link)) {
             return result_json(TRUE, '成功', $link);
         }
 
@@ -132,7 +132,9 @@ class LaughMakeQrcode extends BaseApi{
                 }
             }
         }
-
+        if (isset($return) && $return) {
+            $link = $return;
+        }
 //        $link = 'https://www.88plus.net/public/'.$file_name;
         return result_json(TRUE, '成功', $link);
     }
