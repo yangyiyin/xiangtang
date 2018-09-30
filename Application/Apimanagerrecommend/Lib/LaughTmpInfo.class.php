@@ -38,7 +38,7 @@ class LaughTmpInfo extends BaseApi{
                         foreach ($box['children'] as $box2) {
                             $info['content']['page_boxes'][$box['name']]['children'][$box2['name']] = isset($info['content']['page_boxes'][$box['name']]['children'][$box2['name']]) ? $info['content']['page_boxes'][$box['name']]['children'][$box2['name']] : ['list'=>[]];
                             foreach ($info['content']['page'] as $_page2) {
-                                if ($_page2['belong_box']['name'] == $box2['name']) {
+                                if ($_page2['belong_box']['name'] == '--'.$box2['name']) {
                                     $info['content']['page_boxes'][$box['name']]['children'][$box2['name']]['list'][] = $_page2;
                                 }
                             }
