@@ -1,0 +1,14 @@
+[
+  {
+
+    "name": "box1",
+    "style": "width:700rpx;margin-top:700rpx;",
+    "children":[
+      {
+        "name":"box1_1",
+        "style":""
+      }
+    ]
+  }
+
+]
