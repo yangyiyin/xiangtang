@@ -23,31 +23,6 @@ class LaughTmpInfo extends BaseApi{
         if ($info) {
             $info['content'] = json_decode($info['content'], true);
 
-            //获取框架形式的数据
-            $info['content']['page_boxes'] = [];
-            if (isset($info['content']['boxes']) && $info['content']['boxes']) {
-                foreach ($info['content']['boxes'] as $box){
-                    $info['content']['page_boxes'][$box['name']] = isset($info['content']['page_boxes'][$box['name']]) ? $info['content']['page_boxes'][$box['name']] : ['list'=>[],'style'=>$box['style']];
-                    foreach ($info['content']['page'] as $_page) {
-                        if ($_page['belong_box']['name'] == $box['name']) {
-                            $info['content']['page_boxes'][$box['name']]['list'][] = $_page;
-                        }
-                    }
-                    if (isset($box['children']) && $box['children']) {
-                        $info['content']['page_boxes'][$box['name']]['children'] = [];
-                        foreach ($box['children'] as $box2) {
-                            $info['content']['page_boxes'][$box['name']]['children'][$box2['name']] = isset($info['content']['page_boxes'][$box['name']]['children'][$box2['name']]) ? $info['content']['page_boxes'][$box['name']]['children'][$box2['name']] : ['list'=>[], 'style'=>$box2['style']];
-                            foreach ($info['content']['page'] as $_page2) {
-                                if ($_page2['belong_box']['name'] == '--'.$box2['name']) {
-                                    $info['content']['page_boxes'][$box['name']]['children'][$box2['name']]['list'][] = $_page2;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-
         }
 
         foreach ($info['content']['page'] as $_page) {
