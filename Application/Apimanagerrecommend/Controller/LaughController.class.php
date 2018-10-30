@@ -157,4 +157,9 @@ class LaughController extends BaseController {
     public function statistics_point() {
         $this->excute_api('Apimanagerrecommend\Lib\LaughStatisticsPoint');
     }
+
+    public function clear_unread() {
+        $this->excute_api('Apimanagerrecommend\Lib\LaughClearUnread');
+    }
+
 }

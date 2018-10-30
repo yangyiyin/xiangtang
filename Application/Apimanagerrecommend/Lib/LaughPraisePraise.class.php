@@ -81,6 +81,9 @@ class LaughPraisePraise extends BaseApi{
             $UserPageService->add_one(['uid'=>$this->uid, 'page_id'=>$id]);
         }
 
+        //增加更新未读数
+        $PagePraiseService->setInc(['id'=>$praise_info['id']],'unread_count', 1);
+
         return result_json(TRUE, '点赞成功!');
     }
 

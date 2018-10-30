@@ -64,5 +64,9 @@ class BaseService {
         return $NfModel->where($where)->find();
     }
 
+    public function update_by_where($where, $data) {
+        $NfModel = D('Nf' . static::$name);
+        return $NfModel->where($where)->save($data);
+    }
 
 }

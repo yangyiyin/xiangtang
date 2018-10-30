@@ -1,24 +1,61 @@
+//[
+//  {
+//    "name": "box1",
+//    "style": "width:750rpx;position:relative;margin-bottom:140rpx;",
+//    "children":[
+//      {
+//        "name": "box1_1",
+//        "style": "width:650rpx;margin:10rpx auto;margin-top:100rpx;",
+//      },
+//      {
+//        "name": "box1_2",
+//        "style": "width:650rpx;margin:10rpx auto;",
+//      },
+//      {
+//        "name": "box1_3",
+//        "style": "width:650rpx;margin:10rpx auto;",
+//      },
+//      {
+//        "name": "box1_4",
+//        "style": "width:650rpx;margin:10rpx auto;",
+//      }
+//    ]
+//  }
+//]
+
 [
   {
     "name": "box1",
-    "style": "width:750rpx;position:relative;margin-bottom:140rpx;",
+    "style": ""
+  },
+  {
+    "name": "box2",
+    "style": "width:750rpx;height:80rpx;line-height:80rpx;background:linear-gradient(to right, #E85264 , #F15F47);position:relative;"
+  },
+  {
+    "name": "box3",
+    "style": "width:690rpx;padding:30rpx;position:relative;"
+  },
+  {
+    "name": "box4",
+    "style": "width:690rpx;padding:30rpx;position:relative;"
+  },
+  {
+    "name": "box5",
+    "style": "width:690rpx;padding:30rpx;margin-top:30rpx;position:relative;",
     "children":[
       {
-        "name": "box1_1",
-        "style": "width:650rpx;margin:10rpx auto;margin-top:100rpx;",
-      },
-      {
-        "name": "box1_2",
-        "style": "width:650rpx;margin:10rpx auto;",
-      },
-      {
-        "name": "box1_3",
-        "style": "width:650rpx;margin:10rpx auto;",
-      },
-      {
-        "name": "box1_4",
-        "style": "width:650rpx;margin:10rpx auto;",
+        "name": "box5_1",
+        "style": "width:400rpx;diplay:inline-block;",
       }
     ]
+  },
+  {
+    "name": "box6",
+    "style": "width:690rpx;padding:30rpx;margin-top:30rpx;position:relative;"
+  },
+  {
+    "name": "box7",
+    "style": "width:750rpx;height:122rpx;position:fixed;bottom:0;left:0;"
   }
 ]
