@@ -36,6 +36,8 @@ class LaughUserPages extends BaseApi{
             $PageService = \Common\Service\PageService::get_instance();
             $pages = $PageService->get_by_ids($ids);
             $pages_map = result_to_map($pages);
+
+            //
             foreach ($list as $k => $value) {
                 $list[$k]['page'] = isset($pages_map[$value['page_id']]) ? $pages_map[$value['page_id']] : [];
             }

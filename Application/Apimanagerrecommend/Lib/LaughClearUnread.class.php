@@ -27,15 +27,11 @@ class LaughClearUnread extends BaseApi{
         if($type=='page') {
             $PageService = Service\PageService::get_instance();
             $PageService->update_by_where(['uid'=>$this->uid, 'id'=>$id],['unread_count'=>0]);
-        } elseif ($type==Service\TemplateService::TYPE_CUT_PRICE) {
-            $PageCutpriceService = Service\PageCutpriceService::get_instance();
-            $PageCutpriceService->update_by_where(['uid'=>$this->uid, 'page_id'=>$id],['unread_count'=>0]);
-        } elseif ($type==Service\TemplateService::TYPE_PRAISE) {
-            $PagePraiseService = Service\PagePraiseService::get_instance();
-            $PagePraiseService->update_by_where(['uid'=>$this->uid, 'page_id'=>$id],['unread_count'=>0]);
+        } else {
+            $UserPageService = Service\UserPageService::get_instance();
+            $UserPageService->update_by_where(['uid'=>$this->uid, 'page_id'=>$id],['unread_count'=>0]);
         }
-
-
+        
         return result_json(TRUE, '操作成功!');
     }
 

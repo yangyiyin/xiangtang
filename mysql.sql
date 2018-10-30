@@ -377,6 +377,7 @@ alter table shopy_nf_page add stock int(11) DEFAULT '0';
 alter table shopy_nf_page add unread_count int(11) DEFAULT '0';
 alter table shopy_nf_page_cutprice add unread_count int(11) DEFAULT '0';
 alter table shopy_nf_page_praise add unread_count int(11) DEFAULT '0';
+alter table shopy_nf_user_page add unread_count int(11) DEFAULT '0';
 alter table shopy_nf_user add newer tinyint(1) DEFAULT '0';
 alter table shopy_nf_page add sell_num int(11) DEFAULT '0';
 CREATE TABLE `shopy_nf_page_statistics` (

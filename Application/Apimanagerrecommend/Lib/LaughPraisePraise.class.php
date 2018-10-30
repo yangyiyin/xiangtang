@@ -82,7 +82,7 @@ class LaughPraisePraise extends BaseApi{
         }
 
         //增加更新未读数
-        $PagePraiseService->setInc(['id'=>$praise_info['id']],'unread_count', 1);
+        $UserPageService->setInc(['uid'=>$extra_uid, 'page_id'=>$id],'unread_count',1);
 
         return result_json(TRUE, '点赞成功!');
     }

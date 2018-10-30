@@ -120,7 +120,7 @@ class LaughCutpriceCut extends BaseApi{
         }
 
         //增加更新未读数
-        $PageCutpriceService->setInc(['id'=>$cut_info['id']],'unread_count', 1);
+        $UserPageService->setInc(['uid'=>$extra_uid, 'page_id'=>$id],'unread_count',1);
 
         return result_json(TRUE, '成功砍价'.format_price($data['cutprice']).'元!');
     }
