@@ -5,7 +5,19 @@
     "children":[
       {
         "name": "box1_1",
-        "style": "width:750rpx;margin-top:600rpx;",
+        "style": "width:650rpx;margin:10rpx auto;margin-top:100rpx;",
+      },
+      {
+        "name": "box1_2",
+        "style": "width:650rpx;margin:10rpx auto;",
+      },
+      {
+        "name": "box1_3",
+        "style": "width:650rpx;margin:10rpx auto;",
+      },
+      {
+        "name": "box1_4",
+        "style": "width:650rpx;margin:10rpx auto;",
       }
     ]
   }

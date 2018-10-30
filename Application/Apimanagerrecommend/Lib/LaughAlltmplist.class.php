@@ -23,7 +23,7 @@ class LaughAlltmplist extends BaseApi{
             $where['type'] = $type;
         }
 
-        list($list, $count) = $TemplateService->get_by_where($where, 'id desc', $p);
+        list($list, $count) = $TemplateService->get_by_where($where, ['sort'=>'desc', 'id'=>'desc'], $p);
 
         $result = [];
         $result['list'] = $this->convert($list);
