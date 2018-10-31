@@ -46,6 +46,18 @@ class LaughPickVerify extends BaseApi{
                 return result_json(false, '对不起,该报名信息不存在,请联系神奇店长客服');
             }
 
+            //获取标题
+            $pageService = \Common\Service\PageService::get_instance();
+            $page_info = $pageService->get_info_by_id($info['page_id']);
+
+            if (!$page_info) {
+                return result_json(false, '对不起,您报名的活动不存在,请联系神奇店长的客服咨询相关问题!');
+            }
+
+            if ($page_info['uid'] != $this->uid) {
+                return result_json(false, '对不起,您无法验证此二维码!');
+            }
+
             if ($info['pick_status'] == $service::pick_status_completed) {
                 return result_json(TRUE, '已完成验证,无需再次操作!', $page_sign);
             }
@@ -106,6 +118,9 @@ class LaughPickVerify extends BaseApi{
             return result_json(false, '对不起,您报名的活动不存在,请联系神奇店长的客服咨询相关问题!');
         }
 
+        if ($page_info['uid'] != $this->uid) {
+            return result_json(false, '对不起,您无法验证此二维码!');
+        }
 
         if ($page_info['tmp_data']) {
             $page_info['tmp_data'] = json_decode($page_info['tmp_data'], true);
